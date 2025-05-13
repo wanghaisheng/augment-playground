@@ -1,0 +1,101 @@
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- 中式园林背景 -->
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#B3E5FC" />
+      <stop offset="100%" stop-color="#E1F5FE" />
+    </linearGradient>
+    <linearGradient id="waterGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0288D1" />
+      <stop offset="100%" stop-color="#03A9F4" />
+    </linearGradient>
+    <linearGradient id="roofGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D32F2F" />
+      <stop offset="100%" stop-color="#B71C1C" />
+    </linearGradient>
+    <linearGradient id="woodGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#795548" />
+      <stop offset="100%" stop-color="#5D4037" />
+    </linearGradient>
+    <linearGradient id="stoneGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9E9E9E" />
+      <stop offset="100%" stop-color="#757575" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 天空 -->
+  <rect x="0" y="0" width="800" height="200" fill="url(#skyGradient)" />
+  
+  <!-- 远山 -->
+  <path d="M0,200 Q100,150 200,180 Q300,130 400,170 Q500,120 600,160 Q700,140 800,200" fill="#A5D6A7" opacity="0.7" />
+  
+  <!-- 水面 -->
+  <rect x="0" y="200" width="800" height="200" fill="url(#waterGradient)" />
+  
+  <!-- 水中倒影 -->
+  <rect x="350" y="250" width="100" height="100" fill="#5D4037" opacity="0.5" />
+  <path d="M350,250 L450,250 L400,200 Z" fill="#B71C1C" opacity="0.5" />
+  
+  <!-- 石桥 -->
+  <path d="M100,250 Q400,300 700,250" stroke="url(#stoneGradient)" stroke-width="20" fill="none" />
+  <rect x="100" y="240" width="20" height="160" fill="url(#stoneGradient)" />
+  <rect x="700" y="240" width="20" height="160" fill="url(#stoneGradient)" />
+  <rect x="250" y="245" width="15" height="155" fill="url(#stoneGradient)" />
+  <rect x="550" y="245" width="15" height="155" fill="url(#stoneGradient)" />
+  
+  <!-- 亭子 -->
+  <g transform="translate(350, 150)">
+    <!-- 亭子底座 -->
+    <rect x="0" y="50" width="100" height="10" fill="url(#stoneGradient)" />
+    
+    <!-- 亭子柱子 -->
+    <rect x="10" y="10" width="10" height="40" fill="url(#woodGradient)" />
+    <rect x="80" y="10" width="10" height="40" fill="url(#woodGradient)" />
+    <rect x="10" y="0" width="80" height="10" fill="url(#woodGradient)" />
+    
+    <!-- 亭子屋顶 -->
+    <path d="M0,0 L100,0 L50,-50 Z" fill="url(#roofGradient)" />
+    <path d="M10,0 L90,0 L50,-40 Z" fill="#D50000" />
+    
+    <!-- 亭子装饰 -->
+    <circle cx="50" cy="-25" r="5" fill="#FFD700" />
+  </g>
+  
+  <!-- 荷花 -->
+  <g transform="translate(200, 300)">
+    <circle cx="0" cy="0" r="15" fill="#E91E63" />
+    <circle cx="0" cy="0" r="8" fill="#FFC107" />
+    <path d="M-20,-5 Q-10,-15 0,-5 Q10,-15 20,-5" fill="#4CAF50" />
+  </g>
+  
+  <g transform="translate(600, 320)">
+    <circle cx="0" cy="0" r="12" fill="#E91E63" />
+    <circle cx="0" cy="0" r="6" fill="#FFC107" />
+    <path d="M-15,-5 Q-8,-12 0,-5 Q8,-12 15,-5" fill="#4CAF50" />
+  </g>
+  
+  <!-- 柳树 -->
+  <g transform="translate(150, 200)">
+    <rect x="-5" y="0" width="10" height="80" fill="#795548" />
+    <path d="M0,0 Q-30,40 -60,100" stroke="#7CB342" stroke-width="2" fill="none" />
+    <path d="M0,0 Q-20,50 -40,120" stroke="#7CB342" stroke-width="2" fill="none" />
+    <path d="M0,0 Q-10,60 -20,130" stroke="#7CB342" stroke-width="2" fill="none" />
+    <path d="M0,0 Q10,60 20,130" stroke="#7CB342" stroke-width="2" fill="none" />
+    <path d="M0,0 Q20,50 40,120" stroke="#7CB342" stroke-width="2" fill="none" />
+    <path d="M0,0 Q30,40 60,100" stroke="#7CB342" stroke-width="2" fill="none" />
+  </g>
+  
+  <g transform="translate(650, 200)">
+    <rect x="-5" y="0" width="10" height="80" fill="#795548" />
+    <path d="M0,0 Q-30,40 -60,100" stroke="#7CB342" stroke-width="2" fill="none" />
+    <path d="M0,0 Q-20,50 -40,120" stroke="#7CB342" stroke-width="2" fill="none" />
+    <path d="M0,0 Q-10,60 -20,130" stroke="#7CB342" stroke-width="2" fill="none" />
+    <path d="M0,0 Q10,60 20,130" stroke="#7CB342" stroke-width="2" fill="none" />
+    <path d="M0,0 Q20,50 40,120" stroke="#7CB342" stroke-width="2" fill="none" />
+    <path d="M0,0 Q30,40 60,100" stroke="#7CB342" stroke-width="2" fill="none" />
+  </g>
+  
+  <!-- 云朵 -->
+  <path d="M100,100 Q120,80 140,90 Q160,70 180,90 Q200,80 220,100 Q200,120 180,110 Q160,130 140,110 Q120,120 100,100" fill="white" opacity="0.8" />
+  <path d="M500,70 Q520,50 540,60 Q560,40 580,60 Q600,50 620,70 Q600,90 580,80 Q560,100 540,80 Q520,90 500,70" fill="white" opacity="0.8" />
+</svg>

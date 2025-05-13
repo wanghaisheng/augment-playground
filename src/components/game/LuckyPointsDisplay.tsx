@@ -1,8 +1,8 @@
 // src/components/game/LuckyPointsDisplay.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getLuckyPointsTotal } from '@/services/timelyRewardService';
-import { useTableRefresh } from '@/hooks/useDataRefresh';
+import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 
 interface LuckyPointsDisplayProps {
   onClick?: () => void;
@@ -13,9 +13,9 @@ interface LuckyPointsDisplayProps {
  * 幸运点显示组件
  * 显示用户当前的幸运点数量
  */
-const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({ 
-  onClick, 
-  variant = 'default' 
+const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
+  onClick,
+  variant = 'default'
 }) => {
   const [points, setPoints] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,16 +39,19 @@ const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
     loadPoints();
   }, []);
 
-  // 使用 useTableRefresh 监听幸运点表的变化
-  useTableRefresh('luckyPoints', () => {
+  // 定义幸运点数据更新处理函数
+  const handleLuckyPointsUpdate = useCallback(() => {
     loadPoints();
     setIsAnimating(true);
-    
+
     // 动画结束后重置状态
     setTimeout(() => {
       setIsAnimating(false);
     }, 1000);
-  });
+  }, [loadPoints]);
+
+  // 使用 useRegisterTableRefresh hook 监听幸运点表的变化
+  useRegisterTableRefresh('luckyPoints', handleLuckyPointsUpdate);
 
   // 处理点击事件
   const handleClick = () => {

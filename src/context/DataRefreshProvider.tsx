@@ -1,5 +1,5 @@
 // src/context/DataRefreshProvider.tsx
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode, useMemo } from 'react';
 import { DataRefreshEvent } from '@/types/dataRefresh';
 
 // 数据刷新上下文类型
@@ -96,11 +96,11 @@ export const DataRefreshProvider: React.FC<DataRefreshProviderProps> = ({ childr
   }, []);
 
   // 提供上下文值
-  const contextValue: DataRefreshContextType = {
+  const contextValue: DataRefreshContextType = useMemo(() => ({
     lastRefresh,
     refreshTable,
     registerRefreshListener
-  };
+  }), [lastRefresh, refreshTable, registerRefreshListener]);
 
   return (
     <DataRefreshContext.Provider value={contextValue}>

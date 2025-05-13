@@ -94,6 +94,17 @@ const RewardModal: React.FC<RewardModalProps> = ({
     }
   };
 
+  // 根据稀有度获取动画样式
+  const getAnimationStyleForRarity = (rarity: string): 'default' | 'burst' | 'float' | 'spin' | 'pulse' => {
+    switch (rarity) {
+      case 'legendary': return 'burst';
+      case 'epic': return 'spin';
+      case 'rare': return 'pulse';
+      case 'uncommon': return 'float';
+      default: return 'default';
+    }
+  };
+
   // 渲染单个奖励展示
   const renderSingleReward = () => {
     // 确保有奖励可以显示
@@ -124,6 +135,9 @@ const RewardModal: React.FC<RewardModalProps> = ({
             amount={currentReward.amount}
             size={120}
             onAnimationComplete={handleAnimationComplete}
+            animationStyle={getAnimationStyleForRarity(currentReward.rarity)}
+            playSound={true}
+            soundVolume={0.6}
           />
         </div>
 

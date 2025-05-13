@@ -133,6 +133,14 @@ export async function createTaskCategory(category: Omit<TaskCategoryRecord, 'id'
 }
 
 /**
+ * 获取单个任务
+ * @param id 任务ID
+ */
+export async function getTask(id: number): Promise<TaskRecord | undefined> {
+  return db.tasks.get(id);
+}
+
+/**
  * 获取所有任务
  * @param filter 可选的过滤条件
  */

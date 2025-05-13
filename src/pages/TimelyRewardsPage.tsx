@@ -14,7 +14,7 @@ import AnimatedButton from '@/components/animation/AnimatedButton';
 import ScrollDialog from '@/components/game/ScrollDialog';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
-import { fetchTimelyRewardsPageView } from '@/services/localizedContentService';
+import { fetchTimelyRewardsPageView } from '@/services';
 import type { TimelyRewardsPageViewLabelsBundle } from '@/types';
 
 /**

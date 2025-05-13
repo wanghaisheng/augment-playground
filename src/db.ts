@@ -12,6 +12,13 @@ import type { PandaAbilityRecord } from '@/services/pandaAbilityService';
 import type { SyncItem } from '@/services/dataSyncService';
 import type { ChallengeRecord, ChallengeCompletionRecord } from '@/services/challengeService';
 import type { TimelyRewardRecord, LuckyPointRecord, LuckyDrawRecord } from '@/services/timelyRewardService';
+import type { SubtaskRecord } from '@/services/subtaskService';
+import type { ChallengeDiscovery } from '@/services/challengeDiscoveryService';
+import type { SocialChallengeRecord, SocialChallengeParticipation, SocialChallengeMilestone } from '@/services/socialChallengeService';
+import type { ReflectionRecord, ReflectionTriggerRecord, MoodRecord } from '@/services/reflectionService';
+import type { TaskReminderRecord } from '@/services/taskReminderService';
+import type { StoreItemRecord, StoreCategoryRecord, PurchaseRecord, VipSubscriptionRecord, UserCurrencyRecord } from '@/services/storeService';
+import type { PandaAccessoryRecord, PandaEnvironmentRecord } from '@/services/pandaCustomizationService';
 
 export class AppDB extends Dexie {
   uiLabels!: Table<UILabelRecord, number>;
@@ -19,36 +26,68 @@ export class AppDB extends Dexie {
   tasks!: Table<TaskRecord, number>;
   taskCategories!: Table<TaskCategoryRecord, number>;
   taskCompletions!: Table<TaskCompletionRecord, number>;
+  subtasks!: Table<SubtaskRecord, number>;
+  taskReminders!: Table<TaskReminderRecord, number>;
   rewards!: Table<RewardRecord, number>;
   items!: Table<ItemRecord, number>;
   badges!: Table<BadgeRecord, number>;
   abilities!: Table<PandaAbilityRecord, number>;
   rewardAbilities!: Table<RewardAbilityRecord, number>;
+  pandaAccessories!: Table<PandaAccessoryRecord, number>;
+  pandaEnvironments!: Table<PandaEnvironmentRecord, number>;
   syncQueue!: Table<SyncItem, string>;
   challenges!: Table<ChallengeRecord, number>;
   challengeCategories!: Table<any, number>;
   challengeCompletions!: Table<ChallengeCompletionRecord, number>;
+  challengeDiscoveries!: Table<ChallengeDiscovery, number>;
+  socialChallenges!: Table<SocialChallengeRecord, number>;
+  socialChallengeParticipations!: Table<SocialChallengeParticipation, number>;
+  socialChallengeMilestones!: Table<SocialChallengeMilestone, number>;
+  reflections!: Table<ReflectionRecord, number>;
+  reflectionTriggers!: Table<ReflectionTriggerRecord, number>;
+  moods!: Table<MoodRecord, number>;
+  storeItems!: Table<StoreItemRecord, number>;
+  storeCategories!: Table<StoreCategoryRecord, number>;
+  purchases!: Table<PurchaseRecord, number>;
+  vipSubscriptions!: Table<VipSubscriptionRecord, number>;
+  userCurrencies!: Table<UserCurrencyRecord, number>;
   timelyRewards!: Table<TimelyRewardRecord, number>;
   luckyPoints!: Table<LuckyPointRecord, number>;
   luckyDraws!: Table<LuckyDrawRecord, number>;
 
   constructor() {
-    super('PandaHabitDB_V6'); // 更新数据库版本
-    this.version(6).stores({
+    super('PandaHabitDB_V13'); // 更新数据库版本
+    this.version(13).stores({
       uiLabels: '++id, scopeKey, labelKey, languageCode, &[scopeKey+labelKey+languageCode]',
       pandaState: '++id, mood, energy, lastUpdated, level',
       tasks: '++id, title, categoryId, priority, status, dueDate, createdAt',
       taskCategories: '++id, name, color, icon, isDefault',
       taskCompletions: '++id, taskId, completedAt, experienceGained',
+      subtasks: '++id, parentTaskId, title, status, order, createdAt',
+      taskReminders: '++id, taskId, userId, reminderTime, isViewed, isCompleted, createdAt',
       rewards: '++id, type, rarity, taskId, obtainedAt, isViewed',
       items: '++id, type, rarity, quantity, obtainedAt',
       badges: '++id, rarity, obtainedAt, isEquipped',
       abilities: '++id, name, type, effectType, requiredLevel, isUnlocked, isActive',
       rewardAbilities: '++id, rarity, obtainedAt, isUnlocked, isActive',
+      pandaAccessories: '++id, name, type, isEquipped, isOwned, obtainedAt, rarity, themeType',
+      pandaEnvironments: '++id, name, isActive, isOwned, obtainedAt, rarity, themeType',
       syncQueue: 'id, table, action, timestamp, status',
       challenges: '++id, title, type, difficulty, status, progress, startDate, endDate, createdAt',
       challengeCategories: '++id, name, description, iconPath',
       challengeCompletions: '++id, challengeId, userId, completedDate, createdAt',
+      challengeDiscoveries: '++id, userId, challengeId, discoveredAt, isViewed, isAccepted, expiresAt',
+      socialChallenges: '++id, title, type, difficulty, status, creatorId, isPublic, inviteCode, createdAt',
+      socialChallengeParticipations: '++id, challengeId, userId, joinedAt, status, contribution',
+      socialChallengeMilestones: '++id, challengeId, title, targetValue, currentValue, isCompleted, order',
+      reflections: '++id, userId, taskId, mood, reflection, action, createdAt, isCompleted',
+      reflectionTriggers: '++id, userId, type, createdAt, isViewed, isCompleted',
+      moods: '++id, userId, mood, intensity, createdAt',
+      storeItems: '++id, name, type, rarity, price, priceType, isAvailable, isFeatured, isOnSale, categoryId, createdAt',
+      storeCategories: '++id, name, order, isVisible, createdAt',
+      purchases: '++id, userId, storeItemId, price, priceType, purchaseDate, isRefunded',
+      vipSubscriptions: '++id, userId, tier, startDate, endDate, isActive, createdAt',
+      userCurrencies: '++id, userId, coins, jade, lastUpdated',
       timelyRewards: '++id, title, type, status, startTime, endTime, createdAt',
       luckyPoints: '++id, userId, amount, isSpent, expiryDate, createdAt',
       luckyDraws: '++id, userId, pointsSpent, timestamp, createdAt'

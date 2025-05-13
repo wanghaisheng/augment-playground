@@ -1,5 +1,5 @@
 // src/hooks/useDataRefresh.ts
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 import { DataRefreshEvent } from '@/types/dataRefresh';
 
@@ -82,16 +82,42 @@ export function useRegisterTableRefresh(
   callback: (data: any) => void
 ): () => void {
   const { registerRefreshListener } = useDataRefreshContext();
+  const callbackRef = useRef(callback);
+  const unregisterFuncRef = useRef<(() => void) | null>(null);
 
+  // Update callbackRef when the callback prop changes
   useEffect(() => {
-    // 注册表监听器
-    const unregister = registerRefreshListener(table, callback);
+    callbackRef.current = callback;
+  }, [callback]);
 
-    // 清理函数
-    return unregister;
-  }, [table, callback, registerRefreshListener]);
+  // Effect for registering and unregistering the listener
+  useEffect(() => {
+    // Define a stable callback function that always uses the latest callback from ref
+    const stableCallback = (data: any) => {
+      callbackRef.current(data);
+    };
 
-  return () => {}; // 返回一个空函数，实际的取消注册在 useEffect 的清理函数中完成
+    // Register the listener
+    const unregister = registerRefreshListener(table, stableCallback);
+    unregisterFuncRef.current = unregister; // Store the unregister function
+
+    // Cleanup function: This is called when the component unmounts or dependencies change
+    return () => {
+      unregister();
+      unregisterFuncRef.current = null; // Clear the ref after unregistering
+    };
+  }, [table, registerRefreshListener]); // Dependencies: re-run if table or registerRefreshListener changes
+
+  // Return a memoized function that the caller can use to manually unregister.
+  // This function is stable and safe to call multiple times (will only unregister once).
+  const manualUnregister = useCallback(() => {
+    if (unregisterFuncRef.current) {
+      unregisterFuncRef.current();
+      unregisterFuncRef.current = null; // Ensure it's only called once via this manual path
+    }
+  }, []); // This useCallback has no dependencies, so manualUnregister is stable.
+
+  return manualUnregister;
 }
 
 /**

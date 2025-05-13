@@ -1,0 +1,22 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 红丝带 -->
+  <defs>
+    <linearGradient id="ribbonGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D73E35" />
+      <stop offset="50%" stop-color="#FF5252" />
+      <stop offset="100%" stop-color="#D73E35" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 丝带主体 -->
+  <path d="M60,90 Q80,85 100,90 Q120,85 140,90 Q120,95 100,100 Q80,95 60,90" fill="url(#ribbonGradient)" />
+  
+  <!-- 丝带左侧 -->
+  <path d="M60,90 Q50,100 40,120 Q45,115 50,110 Q55,105 60,90" fill="#D73E35" />
+  
+  <!-- 丝带右侧 -->
+  <path d="M140,90 Q150,100 160,120 Q155,115 150,110 Q145,105 140,90" fill="#D73E35" />
+  
+  <!-- 丝带装饰 -->
+  <circle cx="100" cy="95" r="5" fill="#FFD700" />
+</svg>

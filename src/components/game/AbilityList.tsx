@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AbilityCard from './AbilityCard';
 import { PandaAbilityRecord, AbilityType } from '@/services/pandaAbilityService';
-import { useTableRefresh } from '@/hooks/useDataRefresh';
 import ScrollDialog from './ScrollDialog';
 
 interface AbilityListProps {

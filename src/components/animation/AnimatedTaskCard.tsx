@@ -1,5 +1,5 @@
 // src/components/animation/AnimatedTaskCard.tsx
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import TaskCard from '@/components/game/TaskCard';
 import { TaskRecord } from '@/services/taskService';
@@ -24,16 +24,17 @@ interface AnimatedTaskCardProps {
  * @param index - 索引，用于计算动画延迟
  * @param className - CSS类名
  */
-const AnimatedTaskCard: React.FC<AnimatedTaskCardProps> = ({
+const AnimatedTaskCard = forwardRef<HTMLDivElement, AnimatedTaskCardProps>(({
   task,
   onComplete,
   onEdit,
   onDelete,
   index = 0,
   className = ''
-}) => {
+}, ref) => {
   return (
     <motion.div
+      ref={ref}
       variants={listItem}
       initial="hidden"
       animate="visible"
@@ -56,6 +57,8 @@ const AnimatedTaskCard: React.FC<AnimatedTaskCardProps> = ({
       />
     </motion.div>
   );
-};
+});
+
+AnimatedTaskCard.displayName = 'AnimatedTaskCard';
 
 export default AnimatedTaskCard;

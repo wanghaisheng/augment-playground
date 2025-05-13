@@ -24,6 +24,8 @@ const Navigation: React.FC<NavigationProps> = ({
   const navAbilitiesText = labels?.navAbilities || "Abilities";
   const navChallengesText = labels?.navChallenges || "Challenges";
   const navRewardsText = labels?.navRewards || "Rewards";
+  const navTeaRoomText = labels?.navTeaRoom || "Tea Room";
+  const navStoreText = labels?.navStore || "Store";
   const navSettingsText = labels?.navSettings || "Settings";
 
   if (!labels) { // Can show a minimal loading state or just render with fallbacks
@@ -63,6 +65,18 @@ const Navigation: React.FC<NavigationProps> = ({
         className={({isActive}) => isActive ? 'active' : ''}
       >
         {navRewardsText}
+      </NavLink>
+      <NavLink
+        to="/tearoom"
+        className={({isActive}) => isActive ? 'active' : ''}
+      >
+        {navTeaRoomText}
+      </NavLink>
+      <NavLink
+        to="/store"
+        className={({isActive}) => isActive ? 'active' : ''}
+      >
+        {navStoreText}
       </NavLink>
       <NavLink
         to="/settings"

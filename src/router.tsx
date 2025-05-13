@@ -11,6 +11,8 @@ const TasksPage = lazy(() => import('@/pages/TasksPage'));
 const AbilitiesPage = lazy(() => import('@/pages/AbilitiesPage'));
 const ChallengesPage = lazy(() => import('@/pages/ChallengesPage'));
 const TimelyRewardsPage = lazy(() => import('@/pages/TimelyRewardsPage'));
+const TeaRoomPage = lazy(() => import('@/pages/TeaRoomPage'));
+const StorePage = lazy(() => import('@/pages/StorePage'));
 
 const AppRouter: React.FC = () => {
   const location = useLocation();
@@ -23,6 +25,8 @@ const AppRouter: React.FC = () => {
         <Route path="/abilities" element={<AbilitiesPage />} />
         <Route path="/challenges" element={<ChallengesPage />} />
         <Route path="/rewards" element={<TimelyRewardsPage />} />
+        <Route path="/tearoom" element={<TeaRoomPage />} />
+        <Route path="/store" element={<StorePage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} /> {/* Fallback route */}
       </Routes>

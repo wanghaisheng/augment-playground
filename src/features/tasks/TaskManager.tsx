@@ -11,7 +11,7 @@ import {
   getAllTasks,
   initializeTaskCategories
 } from '@/services/taskService';
-import { useDataRefresh } from '@/hooks/useDataRefresh';
+import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import TaskForm from '@/components/game/TaskForm';
 import AnimatedTaskList from '@/components/animation/AnimatedTaskList';
 import AnimatedButton from '@/components/animation/AnimatedButton';
@@ -54,14 +54,22 @@ const TaskManager: React.FC<TaskManagerProps> = ({ labels }) => {
   // 合并标签
   const mergedLabels = { ...defaultLabels, ...labels };
 
-  // 使用 useDataRefresh Hook 监听任务数据刷新
+  // 使用 useRef 来避免依赖变化
+  const setRefreshTriggerRef = React.useRef(setRefreshTrigger);
+
+  // 更新 ref 当依赖变化时
+  React.useEffect(() => {
+    setRefreshTriggerRef.current = setRefreshTrigger;
+  }, [setRefreshTrigger]);
+
+  // 使用稳定的回调函数，不依赖于 setRefreshTrigger
   const handleDataRefresh = useCallback(() => {
     // 只需要触发刷新，不需要重新获取所有数据
-    setRefreshTrigger(prev => prev + 1);
-  }, []);
+    setRefreshTriggerRef.current(prev => prev + 1);
+  }, []); // 没有依赖项，使用 ref 来获取最新值
 
-  // 监听 'tasks' 表的数据刷新
-  useDataRefresh(['tasks'], () => handleDataRefresh());
+  // 使用 useRegisterTableRefresh 监听 'tasks' 表的数据刷新
+  useRegisterTableRefresh('tasks', handleDataRefresh);
 
   // 初始化任务类别
   useEffect(() => {

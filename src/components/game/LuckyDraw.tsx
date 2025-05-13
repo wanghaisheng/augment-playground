@@ -1,13 +1,13 @@
 // src/components/game/LuckyDraw.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  getLuckyPointsTotal, 
+import {
+  getLuckyPointsTotal,
   performLuckyDraw,
   PrizeLevel
 } from '@/services/timelyRewardService';
 import { RewardRecord } from '@/services/rewardService';
-import { useTableRefresh } from '@/hooks/useDataRefresh';
+import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import LuckyPointsDisplay from './LuckyPointsDisplay';
 import RewardAnimation from '@/components/animation/RewardAnimation';
 import Button from '@/components/common/Button';
@@ -57,10 +57,13 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
     loadPoints();
   }, []);
 
-  // 使用 useTableRefresh 监听幸运点表的变化
-  useTableRefresh('luckyPoints', () => {
+  // 定义幸运点数据更新处理函数
+  const handleLuckyPointsUpdate = useCallback(() => {
     loadPoints();
-  });
+  }, [loadPoints]);
+
+  // 使用 useRegisterTableRefresh hook 监听幸运点表的变化
+  useRegisterTableRefresh('luckyPoints', handleLuckyPointsUpdate);
 
   // 处理抽奖
   const handleDraw = async () => {
@@ -75,18 +78,18 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
 
       // 执行抽奖
       const result = await performLuckyDraw(selectedPoints);
-      
+
       // 更新幸运点
       setPoints(prev => prev - selectedPoints);
-      
+
       // 设置奖励
       setRewards(result.rewards);
-      
+
       // 显示奖励动画
       setTimeout(() => {
         setShowRewards(true);
       }, 1000);
-      
+
       // 通知父组件
       if (onRewardEarned) {
         onRewardEarned(result.rewards);
@@ -171,7 +174,7 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
           )}
 
           <div className="lucky-draw-actions">
-            <Button 
+            <Button
               onClick={handleDraw}
               disabled={isDrawing || points < selectedPoints}
               className="draw-button"

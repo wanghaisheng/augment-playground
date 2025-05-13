@@ -1,6 +1,7 @@
 // src/services/rewardService.ts
 import { db } from '@/db';
 import { TaskType, TaskPriority, TaskRecord } from './taskService';
+import { addSyncItem } from './dataSyncService';
 
 // 奖励类型枚举
 export enum RewardType {
@@ -374,6 +375,20 @@ export async function getPlayerCoins(): Promise<number> {
     .toArray();
 
   return coinRewards.reduce((total, reward) => total + reward.amount, 0);
+}
+
+/**
+ * 添加物品到用户库存
+ * @param item 物品数据
+ */
+export async function addItem(item: Omit<ItemRecord, 'id'>): Promise<ItemRecord> {
+  const id = await db.table('items').add(item);
+  const newItem = { ...item, id: id as number };
+
+  // 添加到同步队列
+  await addSyncItem('items', 'create', newItem);
+
+  return newItem;
 }
 
 /**

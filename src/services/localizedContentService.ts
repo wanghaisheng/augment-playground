@@ -6,10 +6,12 @@ import type {
   TasksPageViewLabelsBundle,
   ChallengesPageViewLabelsBundle,
   TimelyRewardsPageViewLabelsBundle,
+  AbilitiesPageViewLabelsBundle,
   GlobalLayoutLabelsBundle,
   UILabelRecord, ApiError,
   FetchHomePageViewResult, FetchSettingsPageViewResult, FetchGlobalLayoutViewResult,
-  FetchTasksPageViewResult, FetchChallengesPageViewResult, FetchTimelyRewardsPageViewResult
+  FetchTasksPageViewResult, FetchChallengesPageViewResult, FetchTimelyRewardsPageViewResult,
+  FetchAbilitiesPageViewResult
 } from '@/types';
 
 const SIMULATED_DELAY_MS = 150;
@@ -109,5 +111,12 @@ export async function fetchTimelyRewardsPageView(lang: Language): Promise<FetchT
   console.log(`SVC_DEXIE: Fetching TIMELY REWARDS PAGE VIEW for lang: ${lang}`);
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
   const labels = await getScopedLabels<TimelyRewardsPageViewLabelsBundle>('timelyRewardsView', lang);
+  return { labels, data: null };
+}
+
+export async function fetchAbilitiesPageView(lang: Language): Promise<FetchAbilitiesPageViewResult> {
+  console.log(`SVC_DEXIE: Fetching ABILITIES PAGE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<AbilitiesPageViewLabelsBundle>('abilitiesView', lang);
   return { labels, data: null };
 }

@@ -1,0 +1,37 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 金框 -->
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#FFD700" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 外圆框 -->
+  <circle cx="100" cy="100" r="95" stroke="url(#goldGradient)" stroke-width="10" fill="none" />
+  
+  <!-- 装饰元素 - 上 -->
+  <path d="M100,5 L100,15 M90,7 L110,7" stroke="url(#goldGradient)" stroke-width="5" />
+  
+  <!-- 装饰元素 - 下 -->
+  <path d="M100,185 L100,195 M90,193 L110,193" stroke="url(#goldGradient)" stroke-width="5" />
+  
+  <!-- 装饰元素 - 左 -->
+  <path d="M5,100 L15,100 M7,90 L7,110" stroke="url(#goldGradient)" stroke-width="5" />
+  
+  <!-- 装饰元素 - 右 -->
+  <path d="M185,100 L195,100 M193,90 L193,110" stroke="url(#goldGradient)" stroke-width="5" />
+  
+  <!-- 角落装饰 - 左上 -->
+  <path d="M30,30 Q40,20 50,30" stroke="url(#goldGradient)" stroke-width="5" fill="none" />
+  
+  <!-- 角落装饰 - 右上 -->
+  <path d="M150,30 Q160,20 170,30" stroke="url(#goldGradient)" stroke-width="5" fill="none" />
+  
+  <!-- 角落装饰 - 左下 -->
+  <path d="M30,170 Q40,180 50,170" stroke="url(#goldGradient)" stroke-width="5" fill="none" />
+  
+  <!-- 角落装饰 - 右下 -->
+  <path d="M150,170 Q160,180 170,170" stroke="url(#goldGradient)" stroke-width="5" fill="none" />
+</svg>

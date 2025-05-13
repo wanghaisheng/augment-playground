@@ -10,8 +10,15 @@ import {
   completeTask,
   deleteTask
 } from '@/services/taskService';
+
+// 扩展Window接口，添加全局回调函数
+declare global {
+  interface Window {
+    handleCompletionAnimationEnd?: () => void;
+  }
+}
 import { RewardRecord } from '@/services/rewardService';
-import { useTableRefresh } from '@/hooks/useDataRefresh';
+import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import { TimelyRewardRecord } from '@/services/timelyRewardService';
 import AnimatedContainer from './AnimatedContainer';
 import AnimatedTaskCard from './AnimatedTaskCard';
@@ -19,6 +26,7 @@ import AnimatedButton from './AnimatedButton';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import RewardModal from '@/components/game/RewardModal';
 import TimelyRewardCard from '@/components/game/TimelyRewardCard';
+import TaskCompletionAnimation from './TaskCompletionAnimation';
 import { createContainerVariants } from '@/utils/animation';
 
 interface AnimatedTaskListProps {
@@ -51,6 +59,8 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [timelyReward, setTimelyReward] = useState<TimelyRewardRecord | null>(null);
   const [showTimelyReward, setShowTimelyReward] = useState(false);
+  const [completedTask, setCompletedTask] = useState<TaskRecord | null>(null);
+  const [showCompletionAnimation, setShowCompletionAnimation] = useState(false);
 
   // 加载任务
   const loadTasks = useCallback(async () => {
@@ -73,8 +83,22 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
     loadTasks();
   }, [loadTasks, refreshTrigger]);
 
-  // 使用 useTableRefresh 监听任务表的变化
-  useTableRefresh('tasks', (taskData) => {
+  // 定义任务数据更新处理函数 - 使用 useRef 来避免依赖变化
+  const filterRef = React.useRef(filter);
+  const loadTasksRef = React.useRef(loadTasks);
+
+  // 更新 refs 当依赖变化时
+  React.useEffect(() => {
+    filterRef.current = filter;
+    loadTasksRef.current = loadTasks;
+  }, [filter, loadTasks]);
+
+  // 使用稳定的回调函数，不依赖于 filter 或 loadTasks
+  const handleTaskDataUpdate = useCallback((taskData: any) => {
+    // 使用 ref 值而不是直接依赖
+    const currentFilter = filterRef.current;
+    const currentLoadTasks = loadTasksRef.current;
+
     // 如果有特定任务数据，则更新该任务
     if (taskData && taskData.id) {
       setTasks(prevTasks => {
@@ -88,11 +112,11 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
           );
         } else {
           // 添加新任务（如果符合过滤条件）
-          if (!filter ||
-              ((!filter.status || taskData.status === filter.status) &&
-               (!filter.categoryId || taskData.categoryId === filter.categoryId) &&
-               (!filter.type || taskData.type === filter.type) &&
-               (!filter.priority || taskData.priority === filter.priority))) {
+          if (!currentFilter ||
+              ((!currentFilter.status || taskData.status === currentFilter.status) &&
+               (!currentFilter.categoryId || taskData.categoryId === currentFilter.categoryId) &&
+               (!currentFilter.type || taskData.type === currentFilter.type) &&
+               (!currentFilter.priority || taskData.priority === currentFilter.priority))) {
             return [...prevTasks, taskData];
           }
           return prevTasks;
@@ -100,14 +124,29 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
       });
     } else {
       // 如果没有特定任务数据，则重新加载所有任务
-      loadTasks();
+      currentLoadTasks();
     }
-  });
+  }, [/* 没有依赖项，使用 ref 来获取最新值 */]);
+
+  // Use useRegisterTableRefresh hook to listen for task table changes
+  // Call the hook at the top level. It will manage its own lifecycle.
+  useRegisterTableRefresh('tasks', handleTaskDataUpdate);
+  // console.log('AnimatedTaskList: Registered table refresh for tasks'); // Optional: for debugging
 
   // 处理完成任务
   const handleCompleteTask = async (taskId: number) => {
     try {
       setIsLoading(true);
+
+      // 获取要完成的任务
+      const taskToComplete = tasks.find(task => task.id === taskId);
+      if (!taskToComplete) {
+        throw new Error('任务不存在');
+      }
+
+      // 先显示任务完成动画
+      setCompletedTask(taskToComplete);
+      setShowCompletionAnimation(true);
 
       // 完成任务并获取奖励
       const result = await completeTask(taskId);
@@ -122,28 +161,46 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
         )
       );
 
-      // 显示奖励
-      if (result.rewards && result.rewards.length > 0) {
-        setRewards(result.rewards);
-        setShowRewardModal(true);
-      }
+      // 动画完成后显示奖励
+      const handleCompletionAnimationEnd = () => {
+        setShowCompletionAnimation(false);
 
-      // 如果有及时奖励，显示及时奖励
-      if (result.timelyReward) {
-        setTimelyReward(result.timelyReward);
-
-        // 延迟显示及时奖励，先显示任务奖励
+        // 显示奖励
         if (result.rewards && result.rewards.length > 0) {
           setTimeout(() => {
-            setShowTimelyReward(true);
-          }, 1000);
-        } else {
-          setShowTimelyReward(true);
+            setRewards(result.rewards);
+            setShowRewardModal(true);
+          }, 300);
         }
+
+        // 如果有及时奖励，显示及时奖励
+        if (result.timelyReward) {
+          setTimelyReward(result.timelyReward);
+
+          // 延迟显示及时奖励，先显示任务奖励
+          if (result.rewards && result.rewards.length > 0) {
+            setTimeout(() => {
+              setShowTimelyReward(true);
+            }, 1000);
+          } else {
+            setTimeout(() => {
+              setShowTimelyReward(true);
+            }, 500);
+          }
+        }
+      };
+
+      // 如果动画已经完成，直接显示奖励
+      if (!showCompletionAnimation) {
+        handleCompletionAnimationEnd();
+      } else {
+        // 否则等待动画完成
+        window.handleCompletionAnimationEnd = handleCompletionAnimationEnd;
       }
     } catch (err) {
       console.error('Failed to complete task:', err);
       setError('完成任务失败，请重试');
+      setShowCompletionAnimation(false);
     } finally {
       setIsLoading(false);
     }
@@ -287,6 +344,23 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {/* 任务完成动画 */}
+      {showCompletionAnimation && completedTask && (
+        <TaskCompletionAnimation
+          task={completedTask}
+          style={completedTask.priority === TaskPriority.HIGH ? 'fireworks' :
+                 completedTask.type === TaskType.MAIN ? 'stars' : 'confetti'}
+          onAnimationComplete={() => {
+            setShowCompletionAnimation(false);
+            // 调用全局回调函数（如果存在）
+            if (window.handleCompletionAnimationEnd) {
+              window.handleCompletionAnimationEnd();
+              delete window.handleCompletionAnimationEnd;
+            }
+          }}
+        />
       )}
     </div>
   );

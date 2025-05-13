@@ -13,7 +13,7 @@ import { useLocalizedView } from '@/hooks/useLocalizedView';
 import AnimatedButton from '@/components/animation/AnimatedButton';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
-import { fetchChallengesPageView } from '@/services/localizedContentService';
+import { fetchChallengesPageView } from '@/services';
 import type { ChallengesPageViewLabelsBundle } from '@/types';
 
 /**
@@ -70,7 +70,7 @@ const ChallengesPage: React.FC = () => {
     return (
       <PageTransition>
         <div className="challenges-page">
-          <LoadingSpinner variant="jade" text="加载挑战中..." />
+          <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "加载挑战中..."} />
         </div>
       </PageTransition>
     );
@@ -83,10 +83,10 @@ const ChallengesPage: React.FC = () => {
         <div className="challenges-page">
           <ErrorDisplay
             error={error}
-            title="加载挑战失败"
-            messageTemplate="无法加载挑战数据: {message}"
+            title={pageLabels?.errorTitle || "加载挑战失败"}
+            messageTemplate={pageLabels?.errorMessage || "无法加载挑战数据: {message}"}
             onRetry={refetch}
-            retryButtonText="重试"
+            retryButtonText={pageLabels?.retryButtonText || "重试"}
           />
         </div>
       </PageTransition>
@@ -113,25 +113,25 @@ const ChallengesPage: React.FC = () => {
                 onClick={() => handleStatusFilter(undefined)}
                 className={!filter.status ? 'active' : ''}
               >
-                全部
+                {pageLabels?.filters?.allLabel || '全部'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleStatusFilter(ChallengeStatus.ACTIVE)}
                 className={filter.status === ChallengeStatus.ACTIVE ? 'active' : ''}
               >
-                进行中
+                {pageLabels?.filters?.activeLabel || '进行中'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleStatusFilter(ChallengeStatus.COMPLETED)}
                 className={filter.status === ChallengeStatus.COMPLETED ? 'active' : ''}
               >
-                已完成
+                {pageLabels?.filters?.completedLabel || '已完成'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleStatusFilter(ChallengeStatus.UPCOMING)}
                 className={filter.status === ChallengeStatus.UPCOMING ? 'active' : ''}
               >
-                即将开始
+                {pageLabels?.filters?.upcomingLabel || '即将开始'}
               </AnimatedButton>
             </div>
           </div>
@@ -143,31 +143,31 @@ const ChallengesPage: React.FC = () => {
                 onClick={() => handleTypeFilter(undefined)}
                 className={!filter.type ? 'active' : ''}
               >
-                全部
+                {pageLabels?.filters?.typeAllLabel || '全部'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(ChallengeType.DAILY)}
                 className={filter.type === ChallengeType.DAILY ? 'active' : ''}
               >
-                每日
+                {pageLabels?.filters?.typeDailyLabel || '每日'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(ChallengeType.WEEKLY)}
                 className={filter.type === ChallengeType.WEEKLY ? 'active' : ''}
               >
-                每周
+                {pageLabels?.filters?.typeWeeklyLabel || '每周'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(ChallengeType.EVENT)}
                 className={filter.type === ChallengeType.EVENT ? 'active' : ''}
               >
-                活动
+                {pageLabels?.filters?.typeEventLabel || '活动'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(ChallengeType.ONGOING)}
                 className={filter.type === ChallengeType.ONGOING ? 'active' : ''}
               >
-                持续
+                {pageLabels?.filters?.typeOngoingLabel || '持续'}
               </AnimatedButton>
             </div>
           </div>
@@ -179,38 +179,38 @@ const ChallengesPage: React.FC = () => {
                 onClick={() => handleDifficultyFilter(undefined)}
                 className={!filter.difficulty ? 'active' : ''}
               >
-                全部
+                {pageLabels?.filters?.difficultyAllLabel || '全部'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleDifficultyFilter(ChallengeDifficulty.EASY)}
                 className={filter.difficulty === ChallengeDifficulty.EASY ? 'active' : ''}
               >
-                简单
+                {pageLabels?.filters?.difficultyEasyLabel || '简单'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleDifficultyFilter(ChallengeDifficulty.MEDIUM)}
                 className={filter.difficulty === ChallengeDifficulty.MEDIUM ? 'active' : ''}
               >
-                中等
+                {pageLabels?.filters?.difficultyMediumLabel || '中等'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleDifficultyFilter(ChallengeDifficulty.HARD)}
                 className={filter.difficulty === ChallengeDifficulty.HARD ? 'active' : ''}
               >
-                困难
+                {pageLabels?.filters?.difficultyHardLabel || '困难'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleDifficultyFilter(ChallengeDifficulty.EXPERT)}
                 className={filter.difficulty === ChallengeDifficulty.EXPERT ? 'active' : ''}
               >
-                专家
+                {pageLabels?.filters?.difficultyExpertLabel || '专家'}
               </AnimatedButton>
             </div>
           </div>
 
           <div className="filter-actions">
             <AnimatedButton onClick={clearAllFilters} className="clear-filters-button">
-              清除所有过滤器
+              {pageLabels?.filters?.clearFiltersLabel || '清除所有过滤器'}
             </AnimatedButton>
           </div>
         </div>

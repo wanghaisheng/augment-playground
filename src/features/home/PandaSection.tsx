@@ -1,12 +1,16 @@
 // src/features/home/PandaSection.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PandaAvatar from '@/components/game/PandaAvatar';
 import { usePandaState } from '@/context/PandaStateProvider';
-import { useTableRefresh } from '@/hooks/useDataRefresh';
+import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import AnimatedButton from '@/components/animation/AnimatedButton';
 import GoldenGlow from '@/components/animation/GoldenGlow';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import PandaCustomizationPanel from '@/components/panda/PandaCustomizationPanel';
+import PandaEnvironmentPanel from '@/components/panda/PandaEnvironmentPanel';
+import { initializePandaCustomization } from '@/services/pandaCustomizationService';
+import { playSound, SoundType } from '@/utils/sound';
 
 interface PandaSectionLabels {
   sectionTitle?: string;
@@ -16,6 +20,8 @@ interface PandaSectionLabels {
   feedButtonText?: string;
   playButtonText?: string;
   trainButtonText?: string;
+  customizeButtonText?: string;
+  environmentButtonText?: string;
 }
 
 interface PandaSectionProps {
@@ -35,6 +41,23 @@ const PandaSection: React.FC<PandaSectionProps> = ({ labels }) => {
   } = usePandaState();
 
   const [interactionMode, setInteractionMode] = useState<'none' | 'feed' | 'play' | 'train'>('none');
+  const [showCustomizationPanel, setShowCustomizationPanel] = useState(false);
+  const [showEnvironmentPanel, setShowEnvironmentPanel] = useState(false);
+  const [showAccessories, setShowAccessories] = useState(true);
+  const [showEnvironment, setShowEnvironment] = useState(false);
+
+  // 初始化熊猫定制系统
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        await initializePandaCustomization();
+      } catch (err) {
+        console.error('Failed to initialize panda customization:', err);
+      }
+    };
+
+    initialize();
+  }, []);
 
   // 默认标签文本
   const defaultLabels: PandaSectionLabels = {
@@ -44,17 +67,22 @@ const PandaSection: React.FC<PandaSectionProps> = ({ labels }) => {
     interactButtonText: '互动',
     feedButtonText: '喂食',
     playButtonText: '玩耍',
-    trainButtonText: '训练'
+    trainButtonText: '训练',
+    customizeButtonText: '装扮',
+    environmentButtonText: '环境'
   };
 
   // 合并默认标签和传入的标签
   const mergedLabels = { ...defaultLabels, ...labels };
 
-  // 使用 useTableRefresh 监听熊猫状态变化
-  useTableRefresh('pandaState', () => {
+  // 定义熊猫状态更新处理函数
+  const handlePandaStateUpdate = useCallback(() => {
     // 熊猫状态已经通过 usePandaState 获取，不需要额外处理
     console.log('Panda state updated in PandaSection');
-  });
+  }, []);
+
+  // 使用 useRegisterTableRefresh hook 监听熊猫状态变化
+  useRegisterTableRefresh('pandaState', handlePandaStateUpdate);
 
   // 处理互动按钮点击
   const handleInteractClick = () => {
@@ -84,6 +112,39 @@ const PandaSection: React.FC<PandaSectionProps> = ({ labels }) => {
     await setMood('focused');
     await addExperience(20);
     setInteractionMode('none');
+  };
+
+  // 处理打开装扮面板
+  const handleOpenCustomizationPanel = () => {
+    setShowCustomizationPanel(true);
+    playSound(SoundType.BUTTON_CLICK, 0.3);
+  };
+
+  // 处理关闭装扮面板
+  const handleCloseCustomizationPanel = () => {
+    setShowCustomizationPanel(false);
+  };
+
+  // 处理装扮变化
+  const handleCustomizationChanged = () => {
+    playSound(SoundType.SUCCESS, 0.5);
+  };
+
+  // 处理打开环境面板
+  const handleOpenEnvironmentPanel = () => {
+    setShowEnvironmentPanel(true);
+    playSound(SoundType.BUTTON_CLICK, 0.3);
+  };
+
+  // 处理关闭环境面板
+  const handleCloseEnvironmentPanel = () => {
+    setShowEnvironmentPanel(false);
+  };
+
+  // 处理环境变化
+  const handleEnvironmentChanged = () => {
+    setShowEnvironment(true);
+    playSound(SoundType.SUCCESS, 0.5);
   };
 
   if (isLoading && !pandaState) {
@@ -122,6 +183,8 @@ const PandaSection: React.FC<PandaSectionProps> = ({ labels }) => {
                 size={150}
                 onClick={handleInteractClick}
                 className={pandaState.mood}
+                showAccessories={showAccessories}
+                showEnvironment={showEnvironment}
               />
             </GoldenGlow>
           ) : (
@@ -131,6 +194,8 @@ const PandaSection: React.FC<PandaSectionProps> = ({ labels }) => {
               size={150}
               onClick={handleInteractClick}
               className={pandaState.mood}
+              showAccessories={showAccessories}
+              showEnvironment={showEnvironment}
             />
           )}
         </motion.div>
@@ -160,13 +225,31 @@ const PandaSection: React.FC<PandaSectionProps> = ({ labels }) => {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <AnimatedButton
-              variant="jade"
-              onClick={handleInteractClick}
-              disabled={isLoading}
-            >
-              {isLoading ? '请稍候...' : mergedLabels.interactButtonText}
-            </AnimatedButton>
+            <div className="flex justify-center gap-2">
+              <AnimatedButton
+                variant="jade"
+                onClick={handleInteractClick}
+                disabled={isLoading}
+              >
+                {isLoading ? '请稍候...' : mergedLabels.interactButtonText}
+              </AnimatedButton>
+
+              <AnimatedButton
+                variant="secondary"
+                onClick={handleOpenCustomizationPanel}
+                disabled={isLoading}
+              >
+                {mergedLabels.customizeButtonText}
+              </AnimatedButton>
+
+              <AnimatedButton
+                variant="secondary"
+                onClick={handleOpenEnvironmentPanel}
+                disabled={isLoading}
+              >
+                {mergedLabels.environmentButtonText}
+              </AnimatedButton>
+            </div>
           </motion.div>
         ) : (
           <motion.div
@@ -214,6 +297,20 @@ const PandaSection: React.FC<PandaSectionProps> = ({ labels }) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 装扮面板 */}
+      <PandaCustomizationPanel
+        isOpen={showCustomizationPanel}
+        onClose={handleCloseCustomizationPanel}
+        onCustomizationChanged={handleCustomizationChanged}
+      />
+
+      {/* 环境面板 */}
+      <PandaEnvironmentPanel
+        isOpen={showEnvironmentPanel}
+        onClose={handleCloseEnvironmentPanel}
+        onEnvironmentChanged={handleEnvironmentChanged}
+      />
     </motion.section>
   );
 };

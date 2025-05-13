@@ -1,0 +1,23 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 竹叶帽 -->
+  <defs>
+    <radialGradient id="bambooHatGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#A8C66C" />
+      <stop offset="100%" stop-color="#88B04B" />
+    </radialGradient>
+  </defs>
+  
+  <!-- 帽子主体 -->
+  <ellipse cx="100" cy="40" rx="80" ry="25" fill="url(#bambooHatGradient)" />
+  
+  <!-- 帽子顶部 -->
+  <path d="M100,15 Q130,30 160,40 Q130,50 100,65 Q70,50 40,40 Q70,30 100,15" fill="#88B04B" />
+  
+  <!-- 帽子装饰 - 竹叶 -->
+  <path d="M70,30 Q60,20 50,25 Q55,30 60,35 Q65,33 70,30" fill="#A8C66C" />
+  <path d="M130,30 Q140,20 150,25 Q145,30 140,35 Q135,33 130,30" fill="#A8C66C" />
+  
+  <!-- 帽子绳子 -->
+  <path d="M40,40 Q70,45 100,40 Q130,45 160,40" stroke="#5D4037" stroke-width="1" fill="none" />
+  <path d="M100,40 L100,65" stroke="#5D4037" stroke-width="1" fill="none" />
+</svg>

@@ -22,6 +22,12 @@ const DEFAULT_PANDA_STATE: PandaStateRecord = {
   level: 1
 };
 
+
+export async function getPandaMood(): Promise<PandaMood> {
+  const pandaState = await getPandaState();
+  return pandaState.mood;
+}
+
 /**
  * 获取当前熊猫状态
  * 如果不存在，则创建默认状态

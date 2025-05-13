@@ -101,6 +101,10 @@ export interface TaskManagerLabels {
 export interface TasksPageViewLabelsBundle {
   pageTitle: string;
   taskManager: TaskManagerLabels;
+  loadingMessage?: string;
+  errorTitle?: string;
+  errorMessage?: string;
+  retryButtonText?: string;
 }
 export type FetchTasksPageViewResult = LocalizedContent<null, TasksPageViewLabelsBundle>;
 
@@ -127,6 +131,10 @@ export interface ChallengesPageViewLabelsBundle {
   pageTitle: string;
   filters: ChallengeFilterLabels;
   noChallengesMessage: string;
+  loadingMessage?: string;
+  errorTitle?: string;
+  errorMessage?: string;
+  retryButtonText?: string;
 }
 export type FetchChallengesPageViewResult = LocalizedContent<null, ChallengesPageViewLabelsBundle>;
 
@@ -166,3 +174,30 @@ export interface TimelyRewardsPageViewLabelsBundle {
   noRewardsMessage: string;
 }
 export type FetchTimelyRewardsPageViewResult = LocalizedContent<null, TimelyRewardsPageViewLabelsBundle>;
+
+// --- Abilities Page/View Specific Types ---
+export interface AbilityFilterLabels {
+  allLabel: string;
+  activeLabel: string;
+  lockedLabel: string;
+  typeAllLabel: string;
+  typeAttackLabel: string;
+  typeDefenseLabel: string;
+  typeUtilityLabel: string;
+  typeSpecialLabel: string;
+  clearFiltersLabel: string;
+}
+
+export interface AbilitiesPageViewLabelsBundle {
+  pageTitle: string;
+  filters: AbilityFilterLabels;
+  noAbilitiesMessage: string;
+  loadingMessage?: string;
+  errorTitle?: string;
+  errorMessage?: string;
+  retryButtonText?: string;
+  pandaLevelLabel?: string;
+  unlockedAbilitiesLabel?: string;
+  abilitiesDescription?: string;
+}
+export type FetchAbilitiesPageViewResult = LocalizedContent<null, AbilitiesPageViewLabelsBundle>;

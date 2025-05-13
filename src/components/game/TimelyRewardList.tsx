@@ -1,15 +1,15 @@
 // src/components/game/TimelyRewardList.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  TimelyRewardRecord, 
-  TimelyRewardStatus, 
+import {
+  TimelyRewardRecord,
+  TimelyRewardStatus,
   TimelyRewardType,
   getAllTimelyRewards,
   completeTimelyReward,
   updateTimelyRewardsStatus
 } from '@/services/timelyRewardService';
-import { useTableRefresh } from '@/hooks/useDataRefresh';
+import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import TimelyRewardCard from './TimelyRewardCard';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import RewardModal from '@/components/game/RewardModal';
@@ -63,22 +63,22 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
     loadTimelyRewards();
   }, [loadTimelyRewards]);
 
-  // 使用 useTableRefresh 监听及时奖励表的变化
-  useTableRefresh('timelyRewards', (rewardData) => {
+  // 定义奖励数据更新处理函数
+  const handleRewardDataUpdate = useCallback((rewardData: any) => {
     // 如果有特定奖励数据，则更新该奖励
     if (rewardData && rewardData.id) {
       setRewards(prevRewards => {
         // 检查奖励是否已存在
         const rewardExists = prevRewards.some(reward => reward.id === rewardData.id);
-        
+
         if (rewardExists) {
           // 更新现有奖励
-          return prevRewards.map(reward => 
+          return prevRewards.map(reward =>
             reward.id === rewardData.id ? { ...reward, ...rewardData } : reward
           );
         } else {
           // 添加新奖励（如果符合过滤条件）
-          if (!filter || 
+          if (!filter ||
               ((!filter.status || rewardData.status === filter.status) &&
                (!filter.type || rewardData.type === filter.type))) {
             return [...prevRewards, rewardData];
@@ -90,13 +90,16 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
       // 如果没有特定奖励数据，则重新加载所有奖励
       loadTimelyRewards();
     }
-  });
+  }, [loadTimelyRewards, filter]);
+
+  // 使用 useRegisterTableRefresh hook 监听及时奖励表的变化
+  useRegisterTableRefresh('timelyRewards', handleRewardDataUpdate);
 
   // 处理选择奖励
   const handleSelectReward = (reward: TimelyRewardRecord) => {
     setSelectedReward(reward);
     setShowRewardDetails(true);
-    
+
     if (onSelectReward) {
       onSelectReward(reward);
     }
@@ -114,11 +117,11 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
       setRewards(prevRewards =>
         prevRewards.map(reward =>
           reward.id === rewardId
-            ? { 
-                ...reward, 
-                status: TimelyRewardStatus.COMPLETED, 
+            ? {
+                ...reward,
+                status: TimelyRewardStatus.COMPLETED,
                 progress: 100,
-                completedTime: new Date() 
+                completedTime: new Date()
               }
             : reward
         )
@@ -168,7 +171,7 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
       <div className="lucky-points-container">
         <LuckyPointsDisplay />
       </div>
-      
+
       <AnimatePresence>
         {rewards.map(reward => (
           <TimelyRewardCard
@@ -196,9 +199,9 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
         >
           <div className="reward-details">
             <div className="reward-header">
-              <img 
-                src={selectedReward.iconPath} 
-                alt={selectedReward.title} 
+              <img
+                src={selectedReward.iconPath}
+                alt={selectedReward.title}
                 className="reward-icon-large"
               />
               <div className="reward-meta-details">
@@ -213,21 +216,21 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
                 </div>
               </div>
             </div>
-            
+
             <div className="reward-description-full">
               {selectedReward.description}
             </div>
-            
+
             <div className="reward-progress-details">
               <h4>进度: {selectedReward.progress}%</h4>
               <div className="progress-bar-container">
-                <div 
-                  className="progress-bar-fill" 
+                <div
+                  className="progress-bar-fill"
                   style={{ width: `${selectedReward.progress}%` }}
                 ></div>
               </div>
             </div>
-            
+
             <div className="reward-time-details">
               <div>开始时间: {new Date(selectedReward.startTime).toLocaleString()}</div>
               <div>结束时间: {new Date(selectedReward.endTime).toLocaleString()}</div>
@@ -235,9 +238,9 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
                 <div>完成时间: {new Date(selectedReward.completedTime).toLocaleString()}</div>
               )}
             </div>
-            
+
             {selectedReward.status === TimelyRewardStatus.ACTIVE && (
-              <button 
+              <button
                 className="complete-reward-button-large"
                 onClick={() => handleCompleteReward(selectedReward.id!)}
                 disabled={selectedReward.progress < 100}
