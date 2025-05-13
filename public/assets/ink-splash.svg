@@ -1,0 +1,17 @@
+<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ink splash effect -->
+  <path d="M150,50 
+           C180,30 220,40 240,70 
+           C260,100 250,140 230,160 
+           C210,180 190,200 170,220 
+           C150,240 130,250 110,230 
+           C90,210 70,190 60,160 
+           C50,130 60,100 80,80 
+           C100,60 130,60 150,50 Z" 
+        fill="#1A5F4A" opacity="0.8"/>
+  <!-- Additional ink splatters -->
+  <circle cx="200" cy="100" r="15" fill="#1A5F4A" opacity="0.6"/>
+  <circle cx="80" cy="150" r="20" fill="#1A5F4A" opacity="0.5"/>
+  <circle cx="180" cy="220" r="12" fill="#1A5F4A" opacity="0.7"/>
+  <circle cx="120" cy="80" r="10" fill="#1A5F4A" opacity="0.6"/>
+</svg>
