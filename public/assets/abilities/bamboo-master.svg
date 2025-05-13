@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Bamboo Master</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="masterGradient">
+            <stop stop-color="#FFD700" offset="0%"></stop>
+            <stop stop-color="#D4AF37" offset="100%"></stop>
+        </linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Background circle -->
+        <circle cx="50" cy="50" r="45" fill="#F5F5DC" filter="url(#glow)"></circle>
+        
+        <!-- Golden bamboo stalks -->
+        <path d="M30,20 L30,80" stroke="url(#masterGradient)" stroke-width="4" stroke-linecap="round"></path>
+        <path d="M50,20 L50,80" stroke="url(#masterGradient)" stroke-width="4" stroke-linecap="round"></path>
+        <path d="M70,20 L70,80" stroke="url(#masterGradient)" stroke-width="4" stroke-linecap="round"></path>
+        
+        <!-- Bamboo nodes -->
+        <path d="M25,30 L35,30" stroke="url(#masterGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M25,50 L35,50" stroke="url(#masterGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M25,70 L35,70" stroke="url(#masterGradient)" stroke-width="2" stroke-linecap="round"></path>
+        
+        <path d="M45,40 L55,40" stroke="url(#masterGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M45,60 L55,60" stroke="url(#masterGradient)" stroke-width="2" stroke-linecap="round"></path>
+        
+        <path d="M65,30 L75,30" stroke="url(#masterGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M65,50 L75,50" stroke="url(#masterGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M65,70 L75,70" stroke="url(#masterGradient)" stroke-width="2" stroke-linecap="round"></path>
+        
+        <!-- Bamboo leaves -->
+        <path d="M30,25 C25,20 20,25 25,30" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M30,75 C25,80 20,75 25,70" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+        
+        <path d="M50,35 C45,30 40,35 45,40" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M50,65 C45,70 40,65 45,60" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+        
+        <path d="M70,25 C75,20 80,25 75,30" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M70,75 C75,80 80,75 75,70" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+        
+        <!-- Master symbol -->
+        <circle cx="50" cy="50" r="35" stroke="url(#masterGradient)" stroke-width="2" stroke-dasharray="3,2"></circle>
+        
+        <!-- Border -->
+        <circle cx="50" cy="50" r="45" stroke="#D4AF37" stroke-width="3" stroke-opacity="0.9"></circle>
+    </g>
+</svg>

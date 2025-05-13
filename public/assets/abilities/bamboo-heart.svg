@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Bamboo Heart</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="bambooGradient">
+            <stop stop-color="#88B04B" offset="0%"></stop>
+            <stop stop-color="#1A5F4A" offset="100%"></stop>
+        </linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Background circle -->
+        <circle cx="50" cy="50" r="45" fill="#F5F5DC" filter="url(#glow)"></circle>
+        
+        <!-- Heart shape made of bamboo -->
+        <path d="M50,75 C50,75 25,55 25,40 C25,30 35,25 45,30 C48,32 50,35 50,35 C50,35 52,32 55,30 C65,25 75,30 75,40 C75,55 50,75 50,75 Z" fill="url(#bambooGradient)" stroke="#1A5F4A" stroke-width="2"></path>
+        
+        <!-- Bamboo details -->
+        <path d="M40,35 L40,65" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.7" stroke-linecap="round"></path>
+        <path d="M50,35 L50,65" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.7" stroke-linecap="round"></path>
+        <path d="M60,35 L60,65" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.7" stroke-linecap="round"></path>
+        
+        <path d="M35,45 L65,45" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.7" stroke-linecap="round"></path>
+        <path d="M30,55 L70,55" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.7" stroke-linecap="round"></path>
+        
+        <!-- Border -->
+        <circle cx="50" cy="50" r="45" stroke="#88B04B" stroke-width="2" stroke-opacity="0.7"></circle>
+    </g>
+</svg>

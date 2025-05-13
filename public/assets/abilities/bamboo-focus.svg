@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Bamboo Focus</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="focusGradient">
+            <stop stop-color="#4A90E2" offset="0%"></stop>
+            <stop stop-color="#1A5F4A" offset="100%"></stop>
+        </linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Background circle -->
+        <circle cx="50" cy="50" r="45" fill="#F5F5DC" filter="url(#glow)"></circle>
+        
+        <!-- Target/Focus symbol -->
+        <circle cx="50" cy="50" r="30" stroke="url(#focusGradient)" stroke-width="3" fill="none"></circle>
+        <circle cx="50" cy="50" r="20" stroke="url(#focusGradient)" stroke-width="2" fill="none"></circle>
+        <circle cx="50" cy="50" r="10" stroke="url(#focusGradient)" stroke-width="1" fill="url(#focusGradient)"></circle>
+        
+        <!-- Crosshair lines -->
+        <path d="M50,10 L50,30" stroke="url(#focusGradient)" stroke-width="2"></path>
+        <path d="M50,70 L50,90" stroke="url(#focusGradient)" stroke-width="2"></path>
+        <path d="M10,50 L30,50" stroke="url(#focusGradient)" stroke-width="2"></path>
+        <path d="M70,50 L90,50" stroke="url(#focusGradient)" stroke-width="2"></path>
+        
+        <!-- Bamboo elements -->
+        <path d="M20,20 L25,25" stroke="#88B04B" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M75,75 L80,80" stroke="#88B04B" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M20,80 L25,75" stroke="#88B04B" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M75,25 L80,20" stroke="#88B04B" stroke-width="3" stroke-linecap="round"></path>
+        
+        <!-- Border -->
+        <circle cx="50" cy="50" r="45" stroke="#4A90E2" stroke-width="2" stroke-opacity="0.7"></circle>
+    </g>
+</svg>

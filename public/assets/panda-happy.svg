@@ -1,0 +1,42 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 熊猫头部 - 开心状态 -->
+  
+  <!-- 头部轮廓 -->
+  <circle cx="100" cy="100" r="90" fill="white" stroke="black" stroke-width="2"/>
+  
+  <!-- 左耳朵 -->
+  <ellipse cx="40" cy="40" rx="25" ry="25" fill="black" transform="rotate(-15 40 40)"/>
+  
+  <!-- 右耳朵 -->
+  <ellipse cx="160" cy="40" rx="25" ry="25" fill="black" transform="rotate(15 160 40)"/>
+  
+  <!-- 左眼眶 -->
+  <ellipse cx="70" cy="85" rx="25" ry="23" fill="black" transform="rotate(-10 70 85)"/>
+  
+  <!-- 右眼眶 -->
+  <ellipse cx="130" cy="85" rx="25" ry="23" fill="black" transform="rotate(10 130 85)"/>
+  
+  <!-- 左眼 - 眯眼笑 -->
+  <path d="M60,85 Q70,75 80,85" stroke="white" stroke-width="3" fill="none"/>
+  <circle cx="70" cy="82" r="2" fill="white"/>
+  
+  <!-- 右眼 - 眯眼笑 -->
+  <path d="M120,85 Q130,75 140,85" stroke="white" stroke-width="3" fill="none"/>
+  <circle cx="130" cy="82" r="2" fill="white"/>
+  
+  <!-- 鼻子 -->
+  <ellipse cx="100" cy="110" rx="15" ry="10" fill="black"/>
+  
+  <!-- 嘴巴 - 笑容 -->
+  <path d="M75,125 Q100,145 125,125" stroke="black" stroke-width="3" fill="none"/>
+  
+  <!-- 脸颊 - 更红 -->
+  <circle cx="60" cy="115" r="15" fill="#ff9999" opacity="0.6"/>
+  <circle cx="140" cy="115" r="15" fill="#ff9999" opacity="0.6"/>
+  
+  <!-- 装饰 - 竹子 -->
+  <path d="M180,160 L190,140" stroke="#88B04B" stroke-width="4" stroke-linecap="round"/>
+  <path d="M180,160 L185,150" stroke="#88B04B" stroke-width="2" stroke-linecap="round"/>
+  <path d="M185,150 L190,145" stroke="#88B04B" stroke-width="2" stroke-linecap="round"/>
+  <ellipse cx="180" cy="160" rx="5" ry="3" fill="#1A5F4A" transform="rotate(-30 180 160)"/>
+</svg>

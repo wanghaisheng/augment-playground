@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Food - Common</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="bambooGradient">
+            <stop stop-color="#A0D468" offset="0%"></stop>
+            <stop stop-color="#88B04B" offset="100%"></stop>
+        </linearGradient>
+        <filter id="foodGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Background circle -->
+        <circle cx="50" cy="50" r="40" fill="#F5F5DC" filter="url(#foodGlow)"></circle>
+        
+        <!-- Bamboo shoots -->
+        <path d="M30,30 L40,70 L50,30 L60,70 L70,30" stroke="url(#bambooGradient)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"></path>
+        
+        <!-- Bamboo leaves -->
+        <path d="M30,35 C20,30 25,20 35,25" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M50,35 C40,30 45,20 55,25" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M70,35 C60,30 65,20 75,25" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+        
+        <!-- Border -->
+        <circle cx="50" cy="50" r="40" stroke="#88B04B" stroke-width="2" stroke-opacity="0.7"></circle>
+    </g>
+</svg>

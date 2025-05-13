@@ -6,6 +6,8 @@ import Header from './Header';
 import Navigation from './Navigation';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorDisplay from '../common/ErrorDisplay';
+import ChineseDecoration from '../decoration/ChineseDecoration';
+import SyncStatusIndicator from '../common/SyncStatusIndicator';
 import type { GlobalLayoutLabelsBundle, ApiError } from '@/types';
 
 interface AppShellProps { children: ReactNode; }
@@ -42,12 +44,18 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
       {/* Add Chinese pattern decorative elements */}
       <div className="chinese-pattern top"></div>
 
+      {/* 添加中国风装饰元素 */}
+      <ChineseDecoration />
+
       <Header labels={globalLabels} isFetching={isFetching && !!globalLabels}/> {/* Pass fetching only if labels are loaded */}
 
       <main>{children}</main>
 
       {/* 移动应用底部导航 */}
       <Navigation labels={globalLabels} variant="bamboo" />
+
+      {/* 同步状态指示器 */}
+      <SyncStatusIndicator variant="standard" showCount={true} showLabel={true} />
 
       <div className="chinese-pattern bottom"></div>
     </div>

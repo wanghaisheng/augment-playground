@@ -3,9 +3,13 @@ import type {
   Language, LocalizedContent,
   HomePageViewLabelsBundle, HomePageViewDataPayload, MoodItem,
   SettingsPageViewLabelsBundle,
+  TasksPageViewLabelsBundle,
+  ChallengesPageViewLabelsBundle,
+  TimelyRewardsPageViewLabelsBundle,
   GlobalLayoutLabelsBundle,
   UILabelRecord, ApiError,
-  FetchHomePageViewResult, FetchSettingsPageViewResult, FetchGlobalLayoutViewResult
+  FetchHomePageViewResult, FetchSettingsPageViewResult, FetchGlobalLayoutViewResult,
+  FetchTasksPageViewResult, FetchChallengesPageViewResult, FetchTimelyRewardsPageViewResult
 } from '@/types';
 
 const SIMULATED_DELAY_MS = 150;
@@ -85,4 +89,25 @@ export async function fetchSettingsPageView(lang: Language): Promise<FetchSettin
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
   const labels = await getScopedLabels<SettingsPageViewLabelsBundle>('settingsView', lang);
   return { labels, data: null };
-} 
+}
+
+export async function fetchTasksPageView(lang: Language): Promise<FetchTasksPageViewResult> {
+  console.log(`SVC_DEXIE: Fetching TASKS PAGE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<TasksPageViewLabelsBundle>('tasksView', lang);
+  return { labels, data: null };
+}
+
+export async function fetchChallengesPageView(lang: Language): Promise<FetchChallengesPageViewResult> {
+  console.log(`SVC_DEXIE: Fetching CHALLENGES PAGE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<ChallengesPageViewLabelsBundle>('challengesView', lang);
+  return { labels, data: null };
+}
+
+export async function fetchTimelyRewardsPageView(lang: Language): Promise<FetchTimelyRewardsPageViewResult> {
+  console.log(`SVC_DEXIE: Fetching TIMELY REWARDS PAGE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<TimelyRewardsPageViewLabelsBundle>('timelyRewardsView', lang);
+  return { labels, data: null };
+}

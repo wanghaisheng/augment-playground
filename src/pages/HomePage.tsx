@@ -1,12 +1,15 @@
 // src/pages/HomePage.tsx
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { fetchHomePageView } from '@/services';
 import WelcomeSection from '@/features/home/WelcomeSection';
 import MoodsSection from '@/features/home/MoodsSection';
+import PandaSection from '@/features/home/PandaSection';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
-import Button from '@/components/common/Button'; // Example of using common button
+import AnimatedButton from '@/components/animation/AnimatedButton';
+import { pageTransition } from '@/utils/animation';
 import type { HomePageViewDataPayload, HomePageViewLabelsBundle, ApiError } from '@/types';
 
 const HomePage: React.FC = () => {
@@ -34,11 +37,19 @@ const HomePage: React.FC = () => {
   const isLoadingData = isPending || (isFetching && !pageData); // True if data is still being fetched/refetched
 
   return (
-    <div className="page-container"> {/* Use regular container first */}
+    <motion.div
+      className="page-container"
+      variants={pageTransition}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
       <div className="bamboo-frame"> {/* Wrap content in bamboo-frame */}
         <h2>{pageLabels?.pageTitle || "Dashboard"}</h2>
 
         <WelcomeSection labels={pageLabels?.welcomeSection} username={pageData?.username} />
+
+        <PandaSection labels={pageLabels?.pandaSection} />
 
         <MoodsSection
           labels={pageLabels?.moodsSection}
@@ -49,13 +60,13 @@ const HomePage: React.FC = () => {
 
         {/* Example of a page-level button using a page-level label with jade style */}
         {pageLabels?.someActionText && (
-          <Button
+          <AnimatedButton
             variant="jade"
             onClick={() => alert('Action Confirmed!')}
             style={{marginTop: '20px'}}
           >
             {pageLabels.someActionText}
-          </Button>
+          </AnimatedButton>
         )}
 
         {/* Show specific data error if labels loaded but data part failed */}
@@ -71,7 +82,7 @@ const HomePage: React.FC = () => {
              <LoadingSpinner variant="jade" text="Fetching latest data..." />
          )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 export default HomePage;

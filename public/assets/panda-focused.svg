@@ -1,0 +1,42 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 熊猫头部 - 专注状态 -->
+  
+  <!-- 头部轮廓 -->
+  <circle cx="100" cy="100" r="90" fill="white" stroke="black" stroke-width="2"/>
+  
+  <!-- 左耳朵 -->
+  <ellipse cx="40" cy="40" rx="25" ry="25" fill="black" transform="rotate(-15 40 40)"/>
+  
+  <!-- 右耳朵 -->
+  <ellipse cx="160" cy="40" rx="25" ry="25" fill="black" transform="rotate(15 160 40)"/>
+  
+  <!-- 左眼眶 -->
+  <ellipse cx="70" cy="85" rx="25" ry="23" fill="black" transform="rotate(-10 70 85)"/>
+  
+  <!-- 右眼眶 -->
+  <ellipse cx="130" cy="85" rx="25" ry="23" fill="black" transform="rotate(10 130 85)"/>
+  
+  <!-- 左眼 - 专注 -->
+  <ellipse cx="70" cy="85" rx="8" ry="10" fill="white" transform="rotate(-10 70 85)"/>
+  <circle cx="70" cy="85" r="5" fill="black"/>
+  <circle cx="68" cy="83" r="2" fill="white"/>
+  
+  <!-- 右眼 - 专注 -->
+  <ellipse cx="130" cy="85" rx="8" ry="10" fill="white" transform="rotate(10 130 85)"/>
+  <circle cx="130" cy="85" r="5" fill="black"/>
+  <circle cx="128" cy="83" r="2" fill="white"/>
+  
+  <!-- 眉毛 - 专注 -->
+  <path d="M55,65 L85,70" stroke="black" stroke-width="3" fill="none"/>
+  <path d="M145,65 L115,70" stroke="black" stroke-width="3" fill="none"/>
+  
+  <!-- 鼻子 -->
+  <ellipse cx="100" cy="110" rx="15" ry="10" fill="black"/>
+  
+  <!-- 嘴巴 - 抿嘴 -->
+  <path d="M85,125 L115,125" stroke="black" stroke-width="2" fill="none"/>
+  
+  <!-- 装饰 - 竹叶 -->
+  <path d="M30,160 C20,150 25,140 35,145" stroke="#88B04B" stroke-width="2" fill="none"/>
+  <path d="M30,160 C40,150 45,140 35,135" stroke="#88B04B" stroke-width="2" fill="none"/>
+</svg>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Panda Wisdom</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="wisdomGradient">
+            <stop stop-color="#9C27B0" offset="0%"></stop>
+            <stop stop-color="#673AB7" offset="100%"></stop>
+        </linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Background circle -->
+        <circle cx="50" cy="50" r="45" fill="#F5F5DC" filter="url(#glow)"></circle>
+        
+        <!-- Panda face -->
+        <circle cx="50" cy="45" r="25" fill="white" stroke="black" stroke-width="2"></circle>
+        
+        <!-- Panda ears -->
+        <circle cx="35" cy="30" r="8" fill="black"></circle>
+        <circle cx="65" cy="30" r="8" fill="black"></circle>
+        
+        <!-- Panda eyes -->
+        <ellipse cx="42" cy="42" rx="6" ry="5" fill="black"></ellipse>
+        <ellipse cx="58" cy="42" rx="6" ry="5" fill="black"></ellipse>
+        
+        <!-- Panda nose -->
+        <ellipse cx="50" cy="50" rx="4" ry="3" fill="black"></ellipse>
+        
+        <!-- Wisdom scroll -->
+        <path d="M30,65 L70,65 L70,80 C65,75 60,78 55,80 C50,82 45,82 40,80 C35,78 30,75 30,80 L30,65 Z" fill="#F8F0D8" stroke="#9C27B0" stroke-width="2"></path>
+        
+        <!-- Scroll lines -->
+        <path d="M35,70 L65,70" stroke="#9C27B0" stroke-width="1" stroke-opacity="0.5"></path>
+        <path d="M35,75 L65,75" stroke="#9C27B0" stroke-width="1" stroke-opacity="0.5"></path>
+        
+        <!-- Wisdom aura -->
+        <path d="M30,20 L35,15 L40,20 L45,15 L50,20 L55,15 L60,20 L65,15 L70,20" stroke="url(#wisdomGradient)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+        
+        <!-- Stars -->
+        <path d="M25,35 L27,30 L29,35 L34,35 L30,38 L32,43 L27,40 L22,43 L24,38 L20,35 Z" fill="url(#wisdomGradient)" opacity="0.7"></path>
+        <path d="M75,35 L77,30 L79,35 L84,35 L80,38 L82,43 L77,40 L72,43 L74,38 L70,35 Z" fill="url(#wisdomGradient)" opacity="0.7"></path>
+        
+        <!-- Border -->
+        <circle cx="50" cy="50" r="45" stroke="#9C27B0" stroke-width="2" stroke-opacity="0.7"></circle>
+    </g>
+</svg>

@@ -20,6 +20,10 @@ const Navigation: React.FC<NavigationProps> = ({
 }) => {
   // Provide fallbacks for label properties
   const navHomeText = labels?.navHome || "Home";
+  const navTasksText = labels?.navTasks || "Tasks";
+  const navAbilitiesText = labels?.navAbilities || "Abilities";
+  const navChallengesText = labels?.navChallenges || "Challenges";
+  const navRewardsText = labels?.navRewards || "Rewards";
   const navSettingsText = labels?.navSettings || "Settings";
 
   if (!labels) { // Can show a minimal loading state or just render with fallbacks
@@ -35,6 +39,30 @@ const Navigation: React.FC<NavigationProps> = ({
         className={({isActive}) => isActive ? 'active' : ''}
       >
         {navHomeText}
+      </NavLink>
+      <NavLink
+        to="/tasks"
+        className={({isActive}) => isActive ? 'active' : ''}
+      >
+        {navTasksText}
+      </NavLink>
+      <NavLink
+        to="/abilities"
+        className={({isActive}) => isActive ? 'active' : ''}
+      >
+        {navAbilitiesText}
+      </NavLink>
+      <NavLink
+        to="/challenges"
+        className={({isActive}) => isActive ? 'active' : ''}
+      >
+        {navChallengesText}
+      </NavLink>
+      <NavLink
+        to="/rewards"
+        className={({isActive}) => isActive ? 'active' : ''}
+      >
+        {navRewardsText}
       </NavLink>
       <NavLink
         to="/settings"

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Panda Vitality</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="energyGradient">
+            <stop stop-color="#FFD700" offset="0%"></stop>
+            <stop stop-color="#FFA500" offset="100%"></stop>
+        </linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Background circle -->
+        <circle cx="50" cy="50" r="45" fill="#F5F5DC" filter="url(#glow)"></circle>
+        
+        <!-- Panda face -->
+        <circle cx="50" cy="50" r="30" fill="white" stroke="black" stroke-width="2"></circle>
+        
+        <!-- Panda ears -->
+        <circle cx="30" cy="30" r="10" fill="black"></circle>
+        <circle cx="70" cy="30" r="10" fill="black"></circle>
+        
+        <!-- Panda eyes -->
+        <ellipse cx="40" cy="45" rx="8" ry="7" fill="black"></ellipse>
+        <ellipse cx="60" cy="45" rx="8" ry="7" fill="black"></ellipse>
+        
+        <!-- Panda nose -->
+        <ellipse cx="50" cy="55" rx="5" ry="4" fill="black"></ellipse>
+        
+        <!-- Energy aura -->
+        <circle cx="50" cy="50" r="38" stroke="url(#energyGradient)" stroke-width="3" stroke-dasharray="5,3"></circle>
+        
+        <!-- Energy rays -->
+        <path d="M50,12 L50,20" stroke="url(#energyGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M50,80 L50,88" stroke="url(#energyGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M12,50 L20,50" stroke="url(#energyGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M80,50 L88,50" stroke="url(#energyGradient)" stroke-width="2" stroke-linecap="round"></path>
+        
+        <path d="M25,25 L31,31" stroke="url(#energyGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M69,69 L75,75" stroke="url(#energyGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M25,75 L31,69" stroke="url(#energyGradient)" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M69,31 L75,25" stroke="url(#energyGradient)" stroke-width="2" stroke-linecap="round"></path>
+        
+        <!-- Border -->
+        <circle cx="50" cy="50" r="45" stroke="#FFA500" stroke-width="2" stroke-opacity="0.7"></circle>
+    </g>
+</svg>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Toy - Common</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="toyGradient">
+            <stop stop-color="#8CC152" offset="0%"></stop>
+            <stop stop-color="#A0D468" offset="100%"></stop>
+        </linearGradient>
+        <filter id="toyGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Background circle -->
+        <circle cx="50" cy="50" r="40" fill="#F5F5DC" filter="url(#toyGlow)"></circle>
+        
+        <!-- Bamboo ball -->
+        <circle cx="50" cy="50" r="25" fill="url(#toyGradient)"></circle>
+        <circle cx="50" cy="50" r="25" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.7"></circle>
+        
+        <!-- Decorative patterns -->
+        <path d="M35,40 L65,40" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M35,50 L65,50" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M35,60 L65,60" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"></path>
+        
+        <!-- Border -->
+        <circle cx="50" cy="50" r="40" stroke="#8CC152" stroke-width="2" stroke-opacity="0.7"></circle>
+    </g>
+</svg>

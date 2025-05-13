@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150px" height="150px" viewBox="0 0 150 150" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Lotus Flower</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="petalGradient">
+            <stop stop-color="#F8C8DC" offset="0%"></stop>
+            <stop stop-color="#E57373" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="centerGradient">
+            <stop stop-color="#FFD700" offset="0%"></stop>
+            <stop stop-color="#FFA000" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Outer petals -->
+        <path d="M75,20 C85,30 95,50 75,70 C55,50 65,30 75,20 Z" 
+              fill="url(#petalGradient)" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <path d="M75,20 C65,30 55,50 75,70 C95,50 85,30 75,20 Z" 
+              fill="url(#petalGradient)" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <path d="M40,40 C50,50 60,70 75,70 C60,50 50,30 40,40 Z" 
+              fill="url(#petalGradient)" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <path d="M110,40 C100,50 90,70 75,70 C90,50 100,30 110,40 Z" 
+              fill="url(#petalGradient)" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <path d="M30,75 C50,65 70,65 75,70 C60,80 40,85 30,75 Z" 
+              fill="url(#petalGradient)" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <path d="M120,75 C100,65 80,65 75,70 C90,80 110,85 120,75 Z" 
+              fill="url(#petalGradient)" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <path d="M40,110 C50,90 70,80 75,70 C60,90 50,110 40,110 Z" 
+              fill="url(#petalGradient)" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <path d="M110,110 C100,90 80,80 75,70 C90,90 100,110 110,110 Z" 
+              fill="url(#petalGradient)" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <!-- Inner petals -->
+        <path d="M75,40 C80,45 85,55 75,65 C65,55 70,45 75,40 Z" 
+              fill="#F8C8DC" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <path d="M75,40 C70,45 65,55 75,65 C85,55 80,45 75,40 Z" 
+              fill="#F8C8DC" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <path d="M55,50 C60,55 65,65 75,65 C65,55 60,45 55,50 Z" 
+              fill="#F8C8DC" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <path d="M95,50 C90,55 85,65 75,65 C85,55 90,45 95,50 Z" 
+              fill="#F8C8DC" 
+              stroke="#E57373" 
+              stroke-width="1">
+        </path>
+        
+        <!-- Center -->
+        <circle cx="75" cy="65" r="10" fill="url(#centerGradient)" stroke="#FFA000" stroke-width="1"></circle>
+        
+        <!-- Stem -->
+        <path d="M75,70 L75,130" stroke="#88B04B" stroke-width="3" stroke-linecap="round"></path>
+        
+        <!-- Leaves -->
+        <path d="M75,100 C60,90 40,100 30,120" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M75,100 C90,90 110,100 120,120" stroke="#88B04B" stroke-width="2" stroke-linecap="round"></path>
+    </g>
+</svg>

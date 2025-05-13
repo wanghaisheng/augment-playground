@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300px" height="150px" viewBox="0 0 300 150" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Mountain Landscape</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="mountainGradient1">
+            <stop stop-color="#1A5F4A" offset="0%"></stop>
+            <stop stop-color="#0D2F25" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="mountainGradient2">
+            <stop stop-color="#88B04B" offset="0%"></stop>
+            <stop stop-color="#1A5F4A" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="waterGradient">
+            <stop stop-color="#1A6DB0" offset="0%"></stop>
+            <stop stop-color="#0D3658" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="0%" id="skyGradient">
+            <stop stop-color="#F7F9F9" offset="0%"></stop>
+            <stop stop-color="#E0E0E0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Sky -->
+        <rect x="0" y="0" width="300" height="150" fill="url(#skyGradient)"></rect>
+        
+        <!-- Far mountains -->
+        <path d="M0,70 L50,40 L100,60 L150,30 L200,50 L250,35 L300,60 L300,150 L0,150 Z" 
+              fill="url(#mountainGradient1)" 
+              opacity="0.7">
+        </path>
+        
+        <!-- Near mountains -->
+        <path d="M0,90 L30,70 L60,85 L90,60 L120,80 L150,50 L180,75 L210,55 L240,70 L270,60 L300,80 L300,150 L0,150 Z" 
+              fill="url(#mountainGradient2)" 
+              opacity="0.9">
+        </path>
+        
+        <!-- Water -->
+        <path d="M0,120 C30,115 60,125 90,120 C120,115 150,125 180,120 C210,115 240,125 270,120 C300,115 300,150 300,150 L0,150 Z" 
+              fill="url(#waterGradient)" 
+              opacity="0.6">
+        </path>
+        
+        <!-- Sun -->
+        <circle cx="250" cy="30" r="15" fill="#FFD700" opacity="0.8"></circle>
+        
+        <!-- Clouds -->
+        <path d="M50,40 C40,40 35,35 40,30 C45,25 55,25 60,30 C65,20 75,15 85,20 C95,25 100,20 110,20 C120,20 130,30 125,40 C135,40 140,50 130,55 C120,60 110,55 105,50 C100,55 90,60 80,55 C70,50 65,55 60,50 C55,45 50,40 50,40 Z" 
+              fill="#FFFFFF" 
+              opacity="0.7">
+        </path>
+        
+        <path d="M180,50 C170,50 165,45 170,40 C175,35 185,35 190,40 C195,30 205,25 215,30 C225,35 230,30 240,30 C250,30 260,40 255,50 C265,50 270,60 260,65 C250,70 240,65 235,60 C230,65 220,70 210,65 C200,60 195,65 190,60 C185,55 180,50 180,50 Z" 
+              fill="#FFFFFF" 
+              opacity="0.5">
+        </path>
+        
+        <!-- Trees -->
+        <path d="M60,100 L60,120 L55,120 L65,130 L75,120 L70,120 L70,100 Z" 
+              fill="#88B04B">
+        </path>
+        
+        <path d="M240,100 L240,120 L235,120 L245,130 L255,120 L250,120 L250,100 Z" 
+              fill="#88B04B">
+        </path>
+        
+        <!-- Bamboo -->
+        <path d="M100,90 L100,130" stroke="#88B04B" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M110,95 L110,130" stroke="#88B04B" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M120,100 L120,130" stroke="#88B04B" stroke-width="3" stroke-linecap="round"></path>
+        
+        <path d="M95,100 L105,100" stroke="#88B04B" stroke-width="1" stroke-linecap="round"></path>
+        <path d="M95,110 L105,110" stroke="#88B04B" stroke-width="1" stroke-linecap="round"></path>
+        <path d="M95,120 L105,120" stroke="#88B04B" stroke-width="1" stroke-linecap="round"></path>
+        
+        <path d="M105,105 L115,105" stroke="#88B04B" stroke-width="1" stroke-linecap="round"></path>
+        <path d="M105,115 L115,115" stroke="#88B04B" stroke-width="1" stroke-linecap="round"></path>
+        <path d="M105,125 L115,125" stroke="#88B04B" stroke-width="1" stroke-linecap="round"></path>
+        
+        <path d="M115,110 L125,110" stroke="#88B04B" stroke-width="1" stroke-linecap="round"></path>
+        <path d="M115,120 L125,120" stroke="#88B04B" stroke-width="1" stroke-linecap="round"></path>
+        
+        <!-- Birds -->
+        <path d="M160,40 C165,35 170,40 175,35" stroke="#333333" stroke-width="1" stroke-linecap="round"></path>
+        <path d="M180,30 C185,25 190,30 195,25" stroke="#333333" stroke-width="1" stroke-linecap="round"></path>
+    </g>
+</svg>

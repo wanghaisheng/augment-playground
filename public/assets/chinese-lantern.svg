@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="150px" viewBox="0 0 100 150" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Chinese Lantern</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="lanternGradient">
+            <stop stop-color="#D73E35" offset="0%"></stop>
+            <stop stop-color="#9E1A1A" offset="100%"></stop>
+        </linearGradient>
+        <filter id="lanternGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Lantern top -->
+        <path d="M40,20 L60,20 L55,30 L45,30 Z" 
+              fill="#D4AF37" 
+              stroke="#7A0000" 
+              stroke-width="1">
+        </path>
+        
+        <!-- Lantern body -->
+        <path d="M45,30 C25,40 25,90 45,100 L55,100 C75,90 75,40 55,30 Z" 
+              fill="url(#lanternGradient)" 
+              stroke="#7A0000" 
+              stroke-width="2"
+              filter="url(#lanternGlow)">
+        </path>
+        
+        <!-- Lantern bottom -->
+        <path d="M45,100 L55,100 L60,110 L40,110 Z" 
+              fill="#D4AF37" 
+              stroke="#7A0000" 
+              stroke-width="1">
+        </path>
+        
+        <!-- Decorative lines -->
+        <path d="M45,30 L45,100" stroke="#7A0000" stroke-width="1" stroke-dasharray="5,5"></path>
+        <path d="M55,30 L55,100" stroke="#7A0000" stroke-width="1" stroke-dasharray="5,5"></path>
+        <path d="M35,50 L65,50" stroke="#7A0000" stroke-width="1" stroke-dasharray="5,5"></path>
+        <path d="M35,70 L65,70" stroke="#7A0000" stroke-width="1" stroke-dasharray="5,5"></path>
+        
+        <!-- Chinese character for "福" (Fortune) -->
+        <text x="50" y="65" font-family="Ma Shan Zheng, cursive" font-size="24" fill="#FFD700" text-anchor="middle">福</text>
+        
+        <!-- Tassel -->
+        <path d="M50,110 L50,130" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M45,130 L55,130" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M45,130 L40,140" stroke="#D4AF37" stroke-width="1" stroke-linecap="round"></path>
+        <path d="M50,130 L50,140" stroke="#D4AF37" stroke-width="1" stroke-linecap="round"></path>
+        <path d="M55,130 L60,140" stroke="#D4AF37" stroke-width="1" stroke-linecap="round"></path>
+        
+        <!-- String -->
+        <path d="M50,10 L50,20" stroke="#7A0000" stroke-width="1"></path>
+    </g>
+</svg>

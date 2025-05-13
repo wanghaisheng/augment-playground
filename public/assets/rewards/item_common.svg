@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Item - Common</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="itemGradient">
+            <stop stop-color="#FFC107" offset="0%"></stop>
+            <stop stop-color="#FF9800" offset="100%"></stop>
+        </linearGradient>
+        <filter id="itemGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Background circle -->
+        <circle cx="50" cy="50" r="40" fill="#F5F5DC" filter="url(#itemGlow)"></circle>
+        
+        <!-- Item box -->
+        <rect x="30" y="30" width="40" height="40" rx="5" fill="#FFFFFF" stroke="#FF9800" stroke-width="2"></rect>
+        
+        <!-- Box decoration -->
+        <rect x="35" y="35" width="30" height="30" rx="3" fill="url(#itemGradient)" fill-opacity="0.3"></rect>
+        
+        <!-- Question mark -->
+        <text x="50" y="60" font-family="Arial" font-size="30" fill="#FF9800" text-anchor="middle">?</text>
+        
+        <!-- Border -->
+        <circle cx="50" cy="50" r="40" stroke="#FF9800" stroke-width="2" stroke-opacity="0.7"></circle>
+    </g>
+</svg>

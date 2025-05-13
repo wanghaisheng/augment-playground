@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="150px" viewBox="0 0 100 150" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Chinese Knot</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="knotGradient">
+            <stop stop-color="#D73E35" offset="0%"></stop>
+            <stop stop-color="#9E1A1A" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Main knot structure -->
+        <path d="M50,10 C60,10 70,20 70,30 C70,40 60,45 50,45 C40,45 30,40 30,30 C30,20 40,10 50,10 Z" 
+              fill="url(#knotGradient)" 
+              stroke="#7A0000" 
+              stroke-width="2">
+        </path>
+        
+        <path d="M50,45 C60,45 70,50 70,60 C70,70 60,75 50,75 C40,75 30,70 30,60 C30,50 40,45 50,45 Z" 
+              fill="url(#knotGradient)" 
+              stroke="#7A0000" 
+              stroke-width="2">
+        </path>
+        
+        <path d="M50,75 C60,75 70,80 70,90 C70,100 60,105 50,105 C40,105 30,100 30,90 C30,80 40,75 50,75 Z" 
+              fill="url(#knotGradient)" 
+              stroke="#7A0000" 
+              stroke-width="2">
+        </path>
+        
+        <!-- Decorative elements -->
+        <circle cx="50" cy="30" r="5" fill="#FFD700" stroke="#7A0000" stroke-width="1"></circle>
+        <circle cx="50" cy="60" r="5" fill="#FFD700" stroke="#7A0000" stroke-width="1"></circle>
+        <circle cx="50" cy="90" r="5" fill="#FFD700" stroke="#7A0000" stroke-width="1"></circle>
+        
+        <!-- Tassels -->
+        <path d="M45,105 L40,140" stroke="#7A0000" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M55,105 L60,140" stroke="#7A0000" stroke-width="2" stroke-linecap="round"></path>
+        
+        <path d="M40,120 L35,130" stroke="#7A0000" stroke-width="1" stroke-linecap="round"></path>
+        <path d="M40,130 L35,140" stroke="#7A0000" stroke-width="1" stroke-linecap="round"></path>
+        
+        <path d="M60,120 L65,130" stroke="#7A0000" stroke-width="1" stroke-linecap="round"></path>
+        <path d="M60,130 L65,140" stroke="#7A0000" stroke-width="1" stroke-linecap="round"></path>
+    </g>
+</svg>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Lattice Pattern</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Horizontal lines -->
+        <line x1="0" y1="0" x2="100" y2="0" stroke="#D4AF37" stroke-width="2"></line>
+        <line x1="0" y1="25" x2="100" y2="25" stroke="#D4AF37" stroke-width="2"></line>
+        <line x1="0" y1="50" x2="100" y2="50" stroke="#D4AF37" stroke-width="2"></line>
+        <line x1="0" y1="75" x2="100" y2="75" stroke="#D4AF37" stroke-width="2"></line>
+        <line x1="0" y1="100" x2="100" y2="100" stroke="#D4AF37" stroke-width="2"></line>
+        
+        <!-- Vertical lines -->
+        <line x1="0" y1="0" x2="0" y2="100" stroke="#D4AF37" stroke-width="2"></line>
+        <line x1="25" y1="0" x2="25" y2="100" stroke="#D4AF37" stroke-width="2"></line>
+        <line x1="50" y1="0" x2="50" y2="100" stroke="#D4AF37" stroke-width="2"></line>
+        <line x1="75" y1="0" x2="75" y2="100" stroke="#D4AF37" stroke-width="2"></line>
+        <line x1="100" y1="0" x2="100" y2="100" stroke="#D4AF37" stroke-width="2"></line>
+        
+        <!-- Decorative elements at intersections -->
+        <circle cx="0" cy="0" r="3" fill="#D4AF37"></circle>
+        <circle cx="25" cy="0" r="3" fill="#D4AF37"></circle>
+        <circle cx="50" cy="0" r="3" fill="#D4AF37"></circle>
+        <circle cx="75" cy="0" r="3" fill="#D4AF37"></circle>
+        <circle cx="100" cy="0" r="3" fill="#D4AF37"></circle>
+        
+        <circle cx="0" cy="25" r="3" fill="#D4AF37"></circle>
+        <circle cx="25" cy="25" r="3" fill="#D4AF37"></circle>
+        <circle cx="50" cy="25" r="3" fill="#D4AF37"></circle>
+        <circle cx="75" cy="25" r="3" fill="#D4AF37"></circle>
+        <circle cx="100" cy="25" r="3" fill="#D4AF37"></circle>
+        
+        <circle cx="0" cy="50" r="3" fill="#D4AF37"></circle>
+        <circle cx="25" cy="50" r="3" fill="#D4AF37"></circle>
+        <circle cx="50" cy="50" r="3" fill="#D4AF37"></circle>
+        <circle cx="75" cy="50" r="3" fill="#D4AF37"></circle>
+        <circle cx="100" cy="50" r="3" fill="#D4AF37"></circle>
+        
+        <circle cx="0" cy="75" r="3" fill="#D4AF37"></circle>
+        <circle cx="25" cy="75" r="3" fill="#D4AF37"></circle>
+        <circle cx="50" cy="75" r="3" fill="#D4AF37"></circle>
+        <circle cx="75" cy="75" r="3" fill="#D4AF37"></circle>
+        <circle cx="100" cy="75" r="3" fill="#D4AF37"></circle>
+        
+        <circle cx="0" cy="100" r="3" fill="#D4AF37"></circle>
+        <circle cx="25" cy="100" r="3" fill="#D4AF37"></circle>
+        <circle cx="50" cy="100" r="3" fill="#D4AF37"></circle>
+        <circle cx="75" cy="100" r="3" fill="#D4AF37"></circle>
+        <circle cx="100" cy="100" r="3" fill="#D4AF37"></circle>
+        
+        <!-- Decorative elements in cells -->
+        <path d="M12.5,12.5 L18.75,6.25 L12.5,6.25 L12.5,12.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M37.5,12.5 L43.75,6.25 L37.5,6.25 L37.5,12.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M62.5,12.5 L68.75,6.25 L62.5,6.25 L62.5,12.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M87.5,12.5 L93.75,6.25 L87.5,6.25 L87.5,12.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        
+        <path d="M12.5,37.5 L18.75,31.25 L12.5,31.25 L12.5,37.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M37.5,37.5 L43.75,31.25 L37.5,31.25 L37.5,37.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M62.5,37.5 L68.75,31.25 L62.5,31.25 L62.5,37.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M87.5,37.5 L93.75,31.25 L87.5,31.25 L87.5,37.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        
+        <path d="M12.5,62.5 L18.75,56.25 L12.5,56.25 L12.5,62.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M37.5,62.5 L43.75,56.25 L37.5,56.25 L37.5,62.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M62.5,62.5 L68.75,56.25 L62.5,56.25 L62.5,62.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M87.5,62.5 L93.75,56.25 L87.5,56.25 L87.5,62.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        
+        <path d="M12.5,87.5 L18.75,81.25 L12.5,81.25 L12.5,87.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M37.5,87.5 L43.75,81.25 L37.5,81.25 L37.5,87.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M62.5,87.5 L68.75,81.25 L62.5,81.25 L62.5,87.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+        <path d="M87.5,87.5 L93.75,81.25 L87.5,81.25 L87.5,87.5 Z" fill="#D4AF37" fill-opacity="0.5"></path>
+    </g>
+</svg>

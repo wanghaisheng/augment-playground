@@ -27,6 +27,10 @@ export interface LocalizedContent<TDataPayload, TLabelsBundle> {
 export interface GlobalLayoutLabelsBundle {
   appTitle: string;
   navHome: string;
+  navTasks: string;
+  navAbilities: string;
+  navRewards: string;
+  navChallenges: string;
   navSettings: string;
   footerText: string;
   loadingGeneric: string;
@@ -46,10 +50,20 @@ export interface HomeMoodsSectionLabels {
   noMoodsMessage: string;
   refreshButtonText: string;
 }
+export interface HomePandaSectionLabels {
+  sectionTitle: string;
+  levelLabel: string;
+  experienceLabel: string;
+  interactButtonText: string;
+  feedButtonText: string;
+  playButtonText: string;
+  trainButtonText: string;
+}
 export interface HomePageViewLabelsBundle {
   pageTitle: string;
   welcomeSection: HomeWelcomeSectionLabels;
   moodsSection: HomeMoodsSectionLabels;
+  pandaSection: HomePandaSectionLabels;
   someActionText: string; // Example of a page-level label for a generic action
 }
 export interface HomePageViewDataPayload {
@@ -72,4 +86,83 @@ export interface SettingsPageViewLabelsBundle {
   pageTitle: string;
   languageSection: SettingsLanguageSectionLabels;
 }
-export type FetchSettingsPageViewResult = LocalizedContent<null, SettingsPageViewLabelsBundle>; 
+export type FetchSettingsPageViewResult = LocalizedContent<null, SettingsPageViewLabelsBundle>;
+
+// --- Tasks Page/View Specific Types ---
+export interface TaskManagerLabels {
+  sectionTitle: string;
+  createTaskButton: string;
+  filterAllLabel: string;
+  filterTodoLabel: string;
+  filterInProgressLabel: string;
+  filterCompletedLabel: string;
+  noTasksMessage: string;
+}
+export interface TasksPageViewLabelsBundle {
+  pageTitle: string;
+  taskManager: TaskManagerLabels;
+}
+export type FetchTasksPageViewResult = LocalizedContent<null, TasksPageViewLabelsBundle>;
+
+// --- Challenges Page/View Specific Types ---
+export interface ChallengeFilterLabels {
+  allLabel: string;
+  activeLabel: string;
+  completedLabel: string;
+  upcomingLabel: string;
+  typeAllLabel: string;
+  typeDailyLabel: string;
+  typeWeeklyLabel: string;
+  typeEventLabel: string;
+  typeOngoingLabel: string;
+  difficultyAllLabel: string;
+  difficultyEasyLabel: string;
+  difficultyMediumLabel: string;
+  difficultyHardLabel: string;
+  difficultyExpertLabel: string;
+  clearFiltersLabel: string;
+}
+
+export interface ChallengesPageViewLabelsBundle {
+  pageTitle: string;
+  filters: ChallengeFilterLabels;
+  noChallengesMessage: string;
+}
+export type FetchChallengesPageViewResult = LocalizedContent<null, ChallengesPageViewLabelsBundle>;
+
+// --- Timely Rewards Page/View Specific Types ---
+export interface TimelyRewardFilterLabels {
+  allLabel: string;
+  activeLabel: string;
+  completedLabel: string;
+  upcomingLabel: string;
+  typeAllLabel: string;
+  typeDailyLabel: string;
+  typeMorningLabel: string;
+  typeStreakLabel: string;
+  typeSpecialLabel: string;
+  clearFiltersLabel: string;
+}
+
+export interface LuckyDrawLabels {
+  title: string;
+  buttonText: string;
+  basicDrawLabel: string;
+  advancedDrawLabel: string;
+  premiumDrawLabel: string;
+  basicDrawDescription: string;
+  advancedDrawDescription: string;
+  premiumDrawDescription: string;
+  insufficientPointsLabel: string;
+  drawingLabel: string;
+  closeLabel: string;
+  continueLabel: string;
+}
+
+export interface TimelyRewardsPageViewLabelsBundle {
+  pageTitle: string;
+  filters: TimelyRewardFilterLabels;
+  luckyDraw: LuckyDrawLabels;
+  noRewardsMessage: string;
+}
+export type FetchTimelyRewardsPageViewResult = LocalizedContent<null, TimelyRewardsPageViewLabelsBundle>;

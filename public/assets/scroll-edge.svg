@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="30px" viewBox="0 0 800 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <title>Scroll Edge</title>
+    <defs>
+        <linearGradient x1="0%" y1="50%" x2="100%" y2="50%" id="scrollGradient">
+            <stop stop-color="#D4AF37" offset="0%"></stop>
+            <stop stop-color="#FFA000" offset="50%"></stop>
+            <stop stop-color="#D4AF37" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M0,0 L800,0 L800,5 C750,8 700,15 650,20 C600,25 550,28 500,29 C450,30 400,30 350,29 C300,28 250,25 200,20 C150,15 100,8 50,5 L0,5 L0,0 Z" fill="#f8f0d8"></path>
+        <path d="M0,5 C50,8 100,15 150,20 C200,25 250,28 300,29 C350,30 400,30 450,29 C500,28 550,25 600,20 C650,15 700,8 750,5 L800,5 L800,30 L0,30 L0,5 Z" fill="#e8d8b8"></path>
+        <path d="M0,5 C50,8 100,15 150,20 C200,25 250,28 300,29 C350,30 400,30 450,29 C500,28 550,25 600,20 C650,15 700,8 750,5" stroke="url(#scrollGradient)" stroke-width="1.5" stroke-linecap="round"></path>
+    </g>
+</svg>
