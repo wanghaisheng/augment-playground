@@ -1,8 +1,8 @@
 // src/pages/TeaRoomPage.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ReflectionTriggerRecord, 
+import {
+  ReflectionTriggerRecord,
   ReflectionTriggerType,
   getUnviewedReflectionTriggers,
   markTriggerAsViewed,
@@ -10,16 +10,21 @@ import {
 } from '@/services/reflectionService';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import ErrorDisplay from '@/components/common/ErrorDisplay';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import EnhancedReflectionModule from '@/components/reflection/EnhancedReflectionModule';
 import ReflectionHistory from '@/components/reflection/ReflectionHistory';
 import MoodTracker from '@/components/reflection/MoodTracker';
+import { useLocalizedView } from '@/hooks/useLocalizedView';
+import { fetchTeaRoomPageView } from '@/services';
+import type { TeaRoomPageViewLabelsBundle } from '@/types';
+import { pageTransition } from '@/utils/animation';
 import ReflectionTriggerNotification from '@/components/reflection/ReflectionTriggerNotification';
 import { playSound, SoundType } from '@/utils/sound';
 
 /**
- * 静心茶室页面
- * 用于提供反思、情绪追踪和支持性反馈
+ * Tea Room Page
+ * Provides reflection, mood tracking, and supportive feedback
  */
 const TeaRoomPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,136 +32,159 @@ const TeaRoomPage: React.FC = () => {
   const [showReflectionModule, setShowReflectionModule] = useState(false);
   const [showReflectionHistory, setShowReflectionHistory] = useState(false);
   const [selectedTrigger, setSelectedTrigger] = useState<ReflectionTriggerRecord | null>(null);
-  
-  // 当前用户ID（在实际应用中，这应该从用户会话中获取）
+
+  // Current user ID (in a real application, this should be retrieved from the user session)
   const userId = 'current-user';
 
-  // 加载页面数据
+  // Get localized labels
+  const {
+    labels: pageLabels,
+    isPending: isLabelsPending,
+    isError: isLabelsError,
+    error: labelsError,
+    refetch: refetchLabels
+  } = useLocalizedView<null, TeaRoomPageViewLabelsBundle>(
+    'teaRoomPageViewContent',
+    fetchTeaRoomPageView
+  );
+
+  // Load page data
   const loadPageData = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      
-      // 在这里可以加载其他数据
-      
+
+      // Load other data here
+
     } catch (err) {
       console.error('Failed to load tea room data:', err);
-      setError('加载数据失败，请重试');
+      setError('Failed to load data, please try again');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 初始加载
+  // Initial loading
   useEffect(() => {
     loadPageData();
   }, []);
 
-  // 注册数据刷新监听
+  // Register data refresh listeners
   useRegisterTableRefresh('reflections', loadPageData);
   useRegisterTableRefresh('reflectionTriggers', loadPageData);
   useRegisterTableRefresh('moods', loadPageData);
 
-  // 处理开始反思
+  // Handle start reflection
   const handleStartReflection = () => {
-    // 播放点击音效
+    // Play click sound
     playSound(SoundType.BUTTON_CLICK, 0.5);
-    
-    // 创建手动触发记录
+
+    // Create manual trigger record
     createReflectionTrigger({
       userId,
       type: ReflectionTriggerType.MANUAL
     });
-    
-    // 显示反思模块
+
+    // Show reflection module
     setShowReflectionModule(true);
   };
 
-  // 处理查看历史
+  // Handle view history
   const handleViewHistory = () => {
-    // 播放点击音效
+    // Play click sound
     playSound(SoundType.BUTTON_CLICK, 0.5);
-    
-    // 显示反思历史
+
+    // Show reflection history
     setShowReflectionHistory(true);
   };
 
-  // 处理触发接受
+  // Handle trigger accepted
   const handleTriggerAccepted = (trigger: ReflectionTriggerRecord) => {
     setSelectedTrigger(trigger);
     setShowReflectionModule(true);
   };
 
-  // 处理反思完成
+  // Handle reflection complete
   const handleReflectionComplete = () => {
-    // 重置选中的触发记录
+    // Reset selected trigger
     setSelectedTrigger(null);
-    
-    // 重新加载页面数据
+
+    // Reload page data
     loadPageData();
   };
 
-  // 渲染页面内容
+  // Render page content
   const renderPageContent = () => {
     return (
       <div className="tea-room-content">
-        <div className="tea-room-header mb-6">
-          <h1 className="text-2xl font-bold text-jade-800 mb-2">静心茶室</h1>
-          <p className="text-gray-600">
-            这是一个安静的空间，你可以在这里反思、记录情绪，并获得支持和建议。
+        <div className="bamboo-frame">
+          <h2>{pageLabels?.pageTitle || "Tea Room"}</h2>
+          <p className="text-gray-600 mb-6">
+            {pageLabels?.reflectionSection?.description || "Take some time to reflect on your experiences, feelings, and thoughts to better understand yourself and find direction."}
           </p>
-        </div>
-        
-        <div className="tea-room-sections grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* 情绪追踪区域 */}
-          <div className="mood-tracking-section bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold text-jade-700 mb-4">情绪追踪</h2>
-            <MoodTracker />
-          </div>
-          
-          {/* 反思区域 */}
-          <div className="reflection-section bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold text-amber-700 mb-4">反思</h2>
-            <p className="text-gray-600 mb-4">
-              花点时间反思你的经历、感受和想法，可以帮助你更好地了解自己，并找到前进的方向。
-            </p>
-            <div className="reflection-actions flex flex-col gap-2">
-              <Button
-                variant="jade"
-                onClick={handleStartReflection}
-                className="w-full"
-              >
-                开始反思
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={handleViewHistory}
-                className="w-full"
-              >
-                查看历史反思
-              </Button>
+
+          <div className="tea-room-sections grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Mood Tracking Section */}
+            <div className="mood-tracking-section bg-white p-4 rounded-lg shadow-md border-l-4 border-jade-500">
+              <h2 className="text-xl font-bold text-jade-700 mb-4">
+                <span className="mr-2">🍵</span>
+                {pageLabels?.moodTrackingSection?.title || "Mood Tracking"}
+              </h2>
+              <MoodTracker
+              labels={pageLabels?.moodTrackingSection}
+            />
             </div>
-          </div>
-        </div>
-        
-        {/* 每日提示区域 */}
-        <div className="daily-tips-section bg-white p-4 rounded-lg shadow-md mt-6">
-          <h2 className="text-xl font-bold text-amber-700 mb-4">今日提示</h2>
-          <div className="daily-tip p-3 bg-amber-50 rounded-lg border border-amber-200">
-            <div className="flex items-start">
-              <div className="tip-icon mr-3">
-                <span className="text-2xl">💡</span>
-              </div>
-              <div className="tip-content">
-                <p className="text-gray-700">
-                  自我同情是心理健康的重要组成部分。当你面对困难时，试着用对待好朋友的方式对待自己，给自己一些理解和宽容。
-                </p>
+
+            {/* Reflection Section */}
+            <div className="reflection-section bg-white p-4 rounded-lg shadow-md border-l-4 border-amber-500">
+              <h2 className="text-xl font-bold text-amber-700 mb-4">
+                <span className="mr-2">🪷</span>
+                {pageLabels?.reflectionSection?.title || "Reflection"}
+              </h2>
+              <p className="text-gray-600 mb-4">
+                {pageLabels?.reflectionSection?.description || "Taking time to reflect on your experiences, feelings, and thoughts can help you better understand yourself and find direction."}
+              </p>
+              <div className="reflection-actions flex flex-col gap-2">
+                <Button
+                  variant="jade"
+                  onClick={handleStartReflection}
+                  className="w-full"
+                >
+                  {pageLabels?.reflectionSection?.startReflectionButton || "Start Reflection"}
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={handleViewHistory}
+                  className="w-full"
+                >
+                  {pageLabels?.reflectionSection?.viewHistoryButton || "View History"}
+                </Button>
               </div>
             </div>
           </div>
+
+          {/* Daily Tips Section */}
+          <div className="daily-tips-section bg-white p-4 rounded-lg shadow-md mt-6 border border-amber-200">
+            <h2 className="text-xl font-bold text-amber-700 mb-4">
+              <span className="mr-2">💡</span>
+              {pageLabels?.dailyTipSection?.title || "Daily Wisdom"}
+            </h2>
+            <div className="daily-tip p-3 bg-amber-50 rounded-lg">
+              <div className="flex items-start">
+                <div className="tip-icon mr-3">
+                  <span className="text-2xl">🎋</span>
+                </div>
+                <div className="tip-content">
+                  <p className="text-gray-700">
+                    {pageLabels?.dailyTipSection?.content || "Self-compassion is an essential part of mental health. When facing difficulties, try to treat yourself as you would a good friend, with understanding and kindness."}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        {/* 反思模块 */}
+
+        {/* Reflection Module */}
         {showReflectionModule && (
           <EnhancedReflectionModule
             isOpen={showReflectionModule}
@@ -165,34 +193,79 @@ const TeaRoomPage: React.FC = () => {
             onReflectionComplete={handleReflectionComplete}
           />
         )}
-        
-        {/* 反思历史 */}
+
+        {/* Reflection History */}
         {showReflectionHistory && (
           <ReflectionHistory
             isOpen={showReflectionHistory}
             onClose={() => setShowReflectionHistory(false)}
           />
         )}
-        
-        {/* 反思触发通知 */}
+
+        {/* Reflection Trigger Notification */}
         <ReflectionTriggerNotification
           onTriggerAccepted={handleTriggerAccepted}
+          labels={pageLabels?.reflectionTriggers}
         />
       </div>
     );
   };
 
+  // Show loading state
+  if (isLabelsPending && !pageLabels) {
+    return (
+      <motion.div
+        className="page-container"
+        variants={pageTransition}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        <div className="loading-container flex justify-center items-center h-64">
+          <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "Loading tea room content..."} />
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Show error state
+  if (isLabelsError && !pageLabels) {
+    return (
+      <motion.div
+        className="page-container"
+        variants={pageTransition}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        <div className="error-container text-center p-4">
+          <ErrorDisplay
+            error={labelsError}
+            title={pageLabels?.errorTitle || "Tea Room Page Error"}
+            onRetry={refetchLabels}
+          />
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
-    <div className="tea-room-page bg-gray-50 min-h-screen p-4">
+    <motion.div
+      className="page-container"
+      variants={pageTransition}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
       {isLoading ? (
         <div className="loading-container flex justify-center items-center h-64">
-          <LoadingSpinner variant="jade" size="large" />
+          <LoadingSpinner variant="jade" size="large" text={pageLabels?.loadingMessage || "Loading tea room content..."} />
         </div>
       ) : error ? (
         <div className="error-container text-center p-4">
           <div className="error-message text-red-500 mb-4">{error}</div>
           <Button variant="jade" onClick={loadPageData}>
-            重试
+            {pageLabels?.retryButtonText || "Retry"}
           </Button>
         </div>
       ) : (
@@ -207,7 +280,7 @@ const TeaRoomPage: React.FC = () => {
           </motion.div>
         </AnimatePresence>
       )}
-    </div>
+    </motion.div>
   );
 };
 

@@ -7,11 +7,15 @@ import type {
   ChallengesPageViewLabelsBundle,
   TimelyRewardsPageViewLabelsBundle,
   AbilitiesPageViewLabelsBundle,
+  StorePageViewLabelsBundle,
+  TeaRoomPageViewLabelsBundle,
   GlobalLayoutLabelsBundle,
+  ComponentsLabelsBundle,
   UILabelRecord, ApiError,
   FetchHomePageViewResult, FetchSettingsPageViewResult, FetchGlobalLayoutViewResult,
   FetchTasksPageViewResult, FetchChallengesPageViewResult, FetchTimelyRewardsPageViewResult,
-  FetchAbilitiesPageViewResult
+  FetchAbilitiesPageViewResult, FetchStorePageViewResult, FetchTeaRoomPageViewResult,
+  FetchComponentsLabelsResult
 } from '@/types';
 
 const SIMULATED_DELAY_MS = 150;
@@ -118,5 +122,32 @@ export async function fetchAbilitiesPageView(lang: Language): Promise<FetchAbili
   console.log(`SVC_DEXIE: Fetching ABILITIES PAGE VIEW for lang: ${lang}`);
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
   const labels = await getScopedLabels<AbilitiesPageViewLabelsBundle>('abilitiesView', lang);
+  return { labels, data: null };
+}
+
+export async function fetchStorePageView(lang: Language): Promise<FetchStorePageViewResult> {
+  console.log(`SVC_DEXIE: Fetching STORE PAGE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<StorePageViewLabelsBundle>('storeView', lang);
+  return { labels, data: null };
+}
+
+export async function fetchTeaRoomPageView(lang: Language): Promise<FetchTeaRoomPageViewResult> {
+  console.log(`SVC_DEXIE: Fetching TEA ROOM PAGE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<TeaRoomPageViewLabelsBundle>('teaRoomView', lang);
+  return { labels, data: null };
+}
+
+/**
+ * Fetches localized labels for common UI components
+ *
+ * @param lang - The language to fetch labels for
+ * @returns A promise that resolves to the localized component labels
+ */
+export async function fetchComponentsLabels(lang: Language): Promise<FetchComponentsLabelsResult> {
+  console.log(`SVC_DEXIE: Fetching COMPONENTS LABELS for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<ComponentsLabelsBundle>('components', lang);
   return { labels, data: null };
 }

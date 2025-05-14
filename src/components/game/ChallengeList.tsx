@@ -23,13 +23,33 @@ interface ChallengeListProps {
     difficulty?: ChallengeDifficulty;
   };
   onSelectChallenge?: (challenge: ChallengeRecord) => void;
+  labels?: {
+    statusLabel?: string;
+    typeLabel?: string;
+    difficultyLabel?: string;
+    progressLabel?: string;
+    statusActive?: string;
+    statusCompleted?: string;
+    statusExpired?: string;
+    statusUpcoming?: string;
+    difficultyEasy?: string;
+    difficultyMedium?: string;
+    difficultyHard?: string;
+    difficultyExpert?: string;
+    startLabel?: string;
+    endLabel?: string;
+    completedOnLabel?: string;
+    completeButtonText?: string;
+    inProgressText?: string;
+    noItemsMessage?: string;
+  };
 }
 
 /**
- * 挑战列表组件
- * 显示挑战列表，支持过滤和选择
+ * Challenge List Component
+ * Displays a list of challenges with filtering and selection support
  */
-const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge }) => {
+const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge, labels }) => {
   const [challenges, setChallenges] = useState<ChallengeRecord[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +58,7 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
   const [selectedChallenge, setSelectedChallenge] = useState<ChallengeRecord | null>(null);
   const [showChallengeDetails, setShowChallengeDetails] = useState(false);
 
-  // 加载挑战
+  // Load challenges
   const loadChallenges = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -48,32 +68,32 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
       setChallenges(challengeList);
     } catch (err) {
       console.error('Failed to load challenges:', err);
-      setError('加载挑战失败，请重试');
+      setError('Failed to load challenges. Please try again.');
     } finally {
       setIsLoading(false);
     }
   }, [filter]);
 
-  // 初始加载
+  // Initial loading
   useEffect(() => {
     loadChallenges();
   }, [loadChallenges]);
 
-  // 定义挑战数据更新处理函数
+  // Define challenge data update handler
   const handleChallengeDataUpdate = useCallback((challengeData: any) => {
-    // 如果有特定挑战数据，则更新该挑战
+    // If there is specific challenge data, update that challenge
     if (challengeData && challengeData.id) {
       setChallenges(prevChallenges => {
-        // 检查挑战是否已存在
+        // Check if challenge already exists
         const challengeExists = prevChallenges.some(challenge => challenge.id === challengeData.id);
 
         if (challengeExists) {
-          // 更新现有挑战
+          // Update existing challenge
           return prevChallenges.map(challenge =>
             challenge.id === challengeData.id ? { ...challenge, ...challengeData } : challenge
           );
         } else {
-          // 添加新挑战（如果符合过滤条件）
+          // Add new challenge (if it matches filter criteria)
           if (!filter ||
               ((!filter.status || challengeData.status === filter.status) &&
                (!filter.type || challengeData.type === filter.type) &&
@@ -84,15 +104,15 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
         }
       });
     } else {
-      // 如果没有特定挑战数据，则重新加载所有挑战
+      // If no specific challenge data, reload all challenges
       loadChallenges();
     }
   }, [loadChallenges, filter]);
 
-  // 使用 useRegisterTableRefresh hook 监听挑战表的变化
+  // Use useRegisterTableRefresh hook to listen for changes in the challenges table
   useRegisterTableRefresh('challenges', handleChallengeDataUpdate);
 
-  // 处理选择挑战
+  // Handle challenge selection
   const handleSelectChallenge = (challenge: ChallengeRecord) => {
     setSelectedChallenge(challenge);
     setShowChallengeDetails(true);
@@ -102,15 +122,15 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
     }
   };
 
-  // 处理完成挑战
+  // Handle challenge completion
   const handleCompleteChallenge = async (challengeId: number) => {
     try {
       setIsLoading(true);
 
-      // 完成挑战并获取奖励
+      // Complete challenge and get rewards
       const challengeRewards = await completeChallenge(challengeId);
 
-      // 更新挑战列表
+      // Update challenge list
       setChallenges(prevChallenges =>
         prevChallenges.map(challenge =>
           challenge.id === challengeId
@@ -124,43 +144,43 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
         )
       );
 
-      // 显示奖励
+      // Show rewards
       if (challengeRewards && challengeRewards.length > 0) {
         setRewards(challengeRewards);
         setShowRewardModal(true);
       }
     } catch (err) {
       console.error('Failed to complete challenge:', err);
-      setError('完成挑战失败，请重试');
+      setError('Failed to complete challenge. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 关闭奖励模态框
+  // Close reward modal
   const handleCloseRewardModal = () => {
     setShowRewardModal(false);
   };
 
-  // 关闭挑战详情
+  // Close challenge details
   const handleCloseChallengeDetails = () => {
     setShowChallengeDetails(false);
     setSelectedChallenge(null);
   };
 
-  // 如果正在加载，显示加载动画
+  // If loading, show loading spinner
   if (isLoading && challenges.length === 0) {
     return <LoadingSpinner />;
   }
 
-  // 如果有错误，显示错误信息
+  // If error, show error message
   if (error && challenges.length === 0) {
     return <div className="error-message">{error}</div>;
   }
 
-  // 如果没有挑战，显示提示信息
+  // If no challenges, show message
   if (challenges.length === 0) {
-    return <div className="no-challenges-message">暂无挑战</div>;
+    return <div className="no-challenges-message">{labels?.noItemsMessage || 'No challenges available'}</div>;
   }
 
   return (
@@ -172,11 +192,12 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
             challenge={challenge}
             onClick={handleSelectChallenge}
             onComplete={handleCompleteChallenge}
+            labels={labels}
           />
         ))}
       </AnimatePresence>
 
-      {/* 奖励模态框 */}
+      {/* Reward modal */}
       {showRewardModal && (
         <RewardModal
           rewards={rewards}
@@ -184,7 +205,7 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
         />
       )}
 
-      {/* 挑战详情 */}
+      {/* Challenge details */}
       {showChallengeDetails && selectedChallenge && (
         <ScrollDialog
           title={selectedChallenge.title}
@@ -199,13 +220,24 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
               />
               <div className="challenge-meta-details">
                 <div className="challenge-difficulty">
-                  难度: {selectedChallenge.difficulty}
+                  {labels?.difficultyLabel || 'Difficulty'}: {
+                    selectedChallenge.difficulty === ChallengeDifficulty.EASY ? (labels?.difficultyEasy || 'Easy') :
+                    selectedChallenge.difficulty === ChallengeDifficulty.MEDIUM ? (labels?.difficultyMedium || 'Medium') :
+                    selectedChallenge.difficulty === ChallengeDifficulty.HARD ? (labels?.difficultyHard || 'Hard') :
+                    selectedChallenge.difficulty === ChallengeDifficulty.EXPERT ? (labels?.difficultyExpert || 'Expert') :
+                    selectedChallenge.difficulty
+                  }
                 </div>
                 <div className="challenge-type">
-                  类型: {selectedChallenge.type}
+                  {labels?.typeLabel || 'Type'}: {selectedChallenge.type}
                 </div>
                 <div className="challenge-status">
-                  状态: {selectedChallenge.status}
+                  {labels?.statusLabel || 'Status'}: {
+                    selectedChallenge.status === ChallengeStatus.ACTIVE ? (labels?.statusActive || 'Active') :
+                    selectedChallenge.status === ChallengeStatus.COMPLETED ? (labels?.statusCompleted || 'Completed') :
+                    selectedChallenge.status === ChallengeStatus.UPCOMING ? (labels?.statusUpcoming || 'Upcoming') :
+                    selectedChallenge.status
+                  }
                 </div>
               </div>
             </div>
@@ -215,7 +247,7 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
             </div>
 
             <div className="challenge-progress-details">
-              <h4>进度: {selectedChallenge.progress}%</h4>
+              <h4>{labels?.progressLabel || 'Progress'}: {selectedChallenge.progress}%</h4>
               <div className="progress-bar-container">
                 <div
                   className="progress-bar-fill"
@@ -225,12 +257,12 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
             </div>
 
             <div className="challenge-dates-details">
-              <div>开始日期: {selectedChallenge.startDate.toLocaleDateString()}</div>
+              <div>{labels?.startLabel || 'Start Date'}: {selectedChallenge.startDate.toLocaleDateString()}</div>
               {selectedChallenge.endDate && (
-                <div>结束日期: {selectedChallenge.endDate.toLocaleDateString()}</div>
+                <div>{labels?.endLabel || 'End Date'}: {selectedChallenge.endDate.toLocaleDateString()}</div>
               )}
               {selectedChallenge.completedDate && (
-                <div>完成日期: {selectedChallenge.completedDate.toLocaleDateString()}</div>
+                <div>{labels?.completedOnLabel || 'Completed On'}: {selectedChallenge.completedDate.toLocaleDateString()}</div>
               )}
             </div>
 
@@ -240,7 +272,7 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
                 onClick={() => handleCompleteChallenge(selectedChallenge.id!)}
                 disabled={selectedChallenge.progress < 100}
               >
-                {selectedChallenge.progress >= 100 ? '完成挑战' : '继续努力'}
+                {selectedChallenge.progress >= 100 ? (labels?.completeButtonText || 'Complete Challenge') : (labels?.inProgressText || 'Keep Going')}
               </button>
             )}
           </div>

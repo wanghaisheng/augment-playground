@@ -12,6 +12,7 @@ import LuckyPointsDisplay from './LuckyPointsDisplay';
 import RewardAnimation from '@/components/animation/RewardAnimation';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { getLocalizedLabel, getLocalizedLabels } from '@/utils/localization';
 
 interface LuckyDrawProps {
   onClose?: () => void;
@@ -30,13 +31,46 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
   const [showRewards, setShowRewards] = useState(false);
   const [selectedPoints, setSelectedPoints] = useState(10); // 默认使用10点
   const [error, setError] = useState<string | null>(null);
+  const [labels, setLabels] = useState({
+    title: 'Lucky Draw',
+    basicDrawLabel: 'Basic Draw',
+    basicDrawDescription: 'Chance to get common rewards',
+    premiumDrawLabel: 'Premium Draw',
+    premiumDrawDescription: 'Higher chance to get rare rewards',
+    deluxeDrawLabel: 'Deluxe Draw',
+    deluxeDrawDescription: 'Highest chance to get epic and legendary rewards',
+    notEnoughPointsError: 'Not enough lucky points',
+    loadPointsError: 'Failed to load lucky points, please try again',
+    drawError: 'Failed to perform lucky draw, please try again',
+    continueDrawingButton: 'Continue Drawing',
+    closeButton: 'Close',
+    drawingButton: 'Drawing...',
+    drawButton: 'Draw'
+  });
 
   // 抽奖选项
   const drawOptions = [
-    { points: 10, label: '基础抽奖', description: '获得普通奖励的机会' },
-    { points: 30, label: '高级抽奖', description: '获得稀有奖励的更高机会' },
-    { points: 50, label: '豪华抽奖', description: '获得史诗和传说奖励的最高机会' }
+    { points: 10, label: labels.basicDrawLabel, description: labels.basicDrawDescription },
+    { points: 30, label: labels.premiumDrawLabel, description: labels.premiumDrawDescription },
+    { points: 50, label: labels.deluxeDrawLabel, description: labels.deluxeDrawDescription }
   ];
+
+  // 加载本地化标签
+  useEffect(() => {
+    const loadLocalizedLabels = async () => {
+      const languageCode = localStorage.getItem('language') || 'en';
+      const localizedLabels = await getLocalizedLabels('luckyDraw', languageCode);
+
+      if (Object.keys(localizedLabels).length > 0) {
+        setLabels(prev => ({
+          ...prev,
+          ...localizedLabels
+        }));
+      }
+    };
+
+    loadLocalizedLabels();
+  }, []);
 
   // 加载幸运点数量
   const loadPoints = async () => {
@@ -46,7 +80,7 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
       setPoints(total);
     } catch (err) {
       console.error('Failed to load lucky points:', err);
-      setError('加载幸运点失败，请重试');
+      setError(labels.loadPointsError);
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +102,7 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
   // 处理抽奖
   const handleDraw = async () => {
     if (points < selectedPoints) {
-      setError('幸运点不足');
+      setError(labels.notEnoughPointsError);
       return;
     }
 
@@ -96,7 +130,7 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
       }
     } catch (err) {
       console.error('Failed to perform lucky draw:', err);
-      setError('抽奖失败，请重试');
+      setError(labels.drawError);
     } finally {
       setIsDrawing(false);
     }
@@ -123,7 +157,7 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
   return (
     <div className="lucky-draw-container">
       <div className="lucky-draw-header">
-        <h2 className="lucky-draw-title">幸运抽奖</h2>
+        <h2 className="lucky-draw-title">{labels.title}</h2>
         <LuckyPointsDisplay variant="large" />
       </div>
 
@@ -133,8 +167,8 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
         <div className="lucky-draw-results">
           <RewardAnimation rewards={rewards} />
           <div className="lucky-draw-actions">
-            <Button onClick={handleContinue}>继续抽奖</Button>
-            <Button onClick={handleClose}>关闭</Button>
+            <Button onClick={handleContinue}>{labels.continueDrawingButton}</Button>
+            <Button onClick={handleClose}>{labels.closeButton}</Button>
           </div>
         </div>
       ) : (
@@ -162,7 +196,7 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
                   </div>
                   <p className="draw-option-description">{option.description}</p>
                   {points < option.points && (
-                    <div className="draw-option-insufficient">幸运点不足</div>
+                    <div className="draw-option-insufficient">{labels.notEnoughPointsError}</div>
                   )}
                 </motion.div>
               ))}
@@ -179,9 +213,9 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
               disabled={isDrawing || points < selectedPoints}
               className="draw-button"
             >
-              {isDrawing ? '抽奖中...' : '抽奖'}
+              {isDrawing ? labels.drawingButton : labels.drawButton}
             </Button>
-            <Button onClick={handleClose}>关闭</Button>
+            <Button onClick={handleClose}>{labels.closeButton}</Button>
           </div>
         </>
       )}

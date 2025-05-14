@@ -16,6 +16,7 @@ import RewardModal from '@/components/game/RewardModal';
 import { RewardRecord } from '@/services/rewardService';
 import ScrollDialog from './ScrollDialog';
 import LuckyPointsDisplay from './LuckyPointsDisplay';
+import { TimelyRewardCardLabels } from '@/types';
 
 interface TimelyRewardListProps {
   filter?: {
@@ -23,13 +24,16 @@ interface TimelyRewardListProps {
     type?: TimelyRewardType;
   };
   onSelectReward?: (reward: TimelyRewardRecord) => void;
+  labels?: TimelyRewardCardLabels;
 }
 
 /**
- * 及时奖励列表组件
- * 显示及时奖励列表，支持过滤和选择
+ * Timely reward list component
+ * Displays a list of timely rewards with filtering and selection support
  */
-const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectReward }) => {
+const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectReward, labels }) => {
+  // Add console log to check labels
+  console.log('TimelyRewardList labels:', labels);
   const [rewards, setRewards] = useState<TimelyRewardRecord[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +56,7 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
       setRewards(rewardList);
     } catch (err) {
       console.error('Failed to load timely rewards:', err);
-      setError('加载及时奖励失败，请重试');
+      setError('Failed to load timely rewards, please try again');
     } finally {
       setIsLoading(false);
     }
@@ -105,6 +109,38 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
     }
   };
 
+  // Get type text for a reward with localization
+  const getTypeTextForReward = (reward: TimelyRewardRecord) => {
+    switch (reward.type) {
+      case TimelyRewardType.DAILY:
+        return labels?.typeDaily || 'Daily Reward';
+      case TimelyRewardType.MORNING:
+        return labels?.typeMorning || 'Early Bird Reward';
+      case TimelyRewardType.STREAK:
+        return labels?.typeStreak || 'Streak Reward';
+      case TimelyRewardType.SPECIAL:
+        return labels?.typeSpecial || 'Special Reward';
+      default:
+        return '';
+    }
+  };
+
+  // Get status text for a reward with localization
+  const getStatusTextForReward = (reward: TimelyRewardRecord) => {
+    switch (reward.status) {
+      case TimelyRewardStatus.ACTIVE:
+        return labels?.statusActive || 'Active';
+      case TimelyRewardStatus.COMPLETED:
+        return labels?.statusCompleted || 'Completed';
+      case TimelyRewardStatus.EXPIRED:
+        return labels?.statusExpired || 'Expired';
+      case TimelyRewardStatus.UPCOMING:
+        return labels?.statusUpcoming || 'Upcoming';
+      default:
+        return '';
+    }
+  };
+
   // 处理完成奖励
   const handleCompleteReward = async (rewardId: number) => {
     try {
@@ -134,7 +170,7 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
       }
     } catch (err) {
       console.error('Failed to complete timely reward:', err);
-      setError('完成及时奖励失败，请重试');
+      setError('Failed to complete timely reward, please try again');
     } finally {
       setIsLoading(false);
     }
@@ -163,7 +199,7 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
 
   // 如果没有奖励，显示提示信息
   if (rewards.length === 0) {
-    return <div className="no-rewards-message">暂无及时奖励</div>;
+    return <div className="no-rewards-message">{labels?.noRewardsMessage || "No timely rewards available"}</div>;
   }
 
   return (
@@ -179,6 +215,7 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
             reward={reward}
             onClick={handleSelectReward}
             onComplete={handleCompleteReward}
+            labels={labels}
           />
         ))}
       </AnimatePresence>
@@ -206,13 +243,13 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
               />
               <div className="reward-meta-details">
                 <div className="reward-type">
-                  类型: {selectedReward.type}
+                  {labels?.typeLabel || "Type"}: {getTypeTextForReward(selectedReward)}
                 </div>
                 <div className="reward-status">
-                  状态: {selectedReward.status}
+                  {labels?.statusLabel || "Status"}: {getStatusTextForReward(selectedReward)}
                 </div>
                 <div className="reward-lucky-points">
-                  幸运点: {selectedReward.luckyPoints}
+                  {labels?.luckyPointsLabel || "Lucky Points"}: {selectedReward.luckyPoints}
                 </div>
               </div>
             </div>
@@ -222,7 +259,7 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
             </div>
 
             <div className="reward-progress-details">
-              <h4>进度: {selectedReward.progress}%</h4>
+              <h4>{labels?.progressLabel || "Progress"}: {selectedReward.progress}%</h4>
               <div className="progress-bar-container">
                 <div
                   className="progress-bar-fill"
@@ -232,10 +269,10 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
             </div>
 
             <div className="reward-time-details">
-              <div>开始时间: {new Date(selectedReward.startTime).toLocaleString()}</div>
-              <div>结束时间: {new Date(selectedReward.endTime).toLocaleString()}</div>
+              <div>{labels?.startTimeLabel || "Start Time"}: {new Date(selectedReward.startTime).toLocaleString()}</div>
+              <div>{labels?.endTimeLabel || "End Time"}: {new Date(selectedReward.endTime).toLocaleString()}</div>
               {selectedReward.completedTime && (
-                <div>完成时间: {new Date(selectedReward.completedTime).toLocaleString()}</div>
+                <div>{labels?.completedTimeLabel || "Completed Time"}: {new Date(selectedReward.completedTime).toLocaleString()}</div>
               )}
             </div>
 
@@ -245,7 +282,9 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
                 onClick={() => handleCompleteReward(selectedReward.id!)}
                 disabled={selectedReward.progress < 100}
               >
-                {selectedReward.progress >= 100 ? '领取奖励' : '继续努力'}
+                {selectedReward.progress >= 100
+                  ? (labels?.claimRewardButton || 'Claim Reward')
+                  : (labels?.continueEffortButton || 'Keep Going')}
               </button>
             )}
           </div>

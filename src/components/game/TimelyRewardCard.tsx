@@ -4,18 +4,22 @@ import { motion } from 'framer-motion';
 import { TimelyRewardRecord, TimelyRewardStatus, TimelyRewardType } from '@/services/timelyRewardService';
 import ProgressBar from '@/components/common/ProgressBar';
 import { formatTime } from '@/utils/dateUtils';
+import { TimelyRewardCardLabels } from '@/types';
 
 interface TimelyRewardCardProps {
   reward: TimelyRewardRecord;
   onClick?: (reward: TimelyRewardRecord) => void;
   onComplete?: (rewardId: number) => void;
+  labels?: TimelyRewardCardLabels;
 }
 
 /**
- * 及时奖励卡片组件
- * 显示及时奖励的基本信息和进度
+ * Timely reward card component
+ * Displays basic information and progress of a timely reward
  */
-const TimelyRewardCard: React.FC<TimelyRewardCardProps> = ({ reward, onClick, onComplete }) => {
+const TimelyRewardCard: React.FC<TimelyRewardCardProps> = ({ reward, onClick, onComplete, labels }) => {
+  // Add console log to check labels
+  console.log('TimelyRewardCard labels:', labels);
   // 获取奖励状态对应的样式类
   const getStatusClass = () => {
     switch (reward.status) {
@@ -32,52 +36,55 @@ const TimelyRewardCard: React.FC<TimelyRewardCardProps> = ({ reward, onClick, on
     }
   };
 
-  // 获取奖励类型对应的文本
+  // Get reward type text with localization
   const getTypeText = () => {
     switch (reward.type) {
       case TimelyRewardType.DAILY:
-        return '每日奖励';
+        return labels?.typeDaily || 'Daily Reward';
       case TimelyRewardType.MORNING:
-        return '早起鸟奖励';
+        return labels?.typeMorning || 'Early Bird Reward';
       case TimelyRewardType.STREAK:
-        return '连续完成奖励';
+        return labels?.typeStreak || 'Streak Reward';
       case TimelyRewardType.SPECIAL:
-        return '特殊奖励';
+        return labels?.typeSpecial || 'Special Reward';
       default:
         return '';
     }
   };
 
-  // 获取奖励状态对应的文本
+  // Get reward status text with localization
   const getStatusText = () => {
     switch (reward.status) {
       case TimelyRewardStatus.ACTIVE:
-        return '进行中';
+        return labels?.statusActive || 'Active';
       case TimelyRewardStatus.COMPLETED:
-        return '已完成';
+        return labels?.statusCompleted || 'Completed';
       case TimelyRewardStatus.EXPIRED:
-        return '已过期';
+        return labels?.statusExpired || 'Expired';
       case TimelyRewardStatus.UPCOMING:
-        return '即将开始';
+        return labels?.statusUpcoming || 'Upcoming';
       default:
         return '';
     }
   };
 
-  // 计算剩余时间
+  // Calculate remaining time with localization
   const getRemainingTime = () => {
     const now = new Date();
     const endTime = new Date(reward.endTime);
-    
+
     if (now > endTime) {
-      return '已结束';
+      return labels?.timeEnded || 'Ended';
     }
-    
+
     const diffMs = endTime.getTime() - now.getTime();
     const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    
-    return `${diffHrs}小时${diffMins}分钟`;
+
+    const hourUnit = labels?.hourUnit || 'h';
+    const minuteUnit = labels?.minuteUnit || 'm';
+
+    return `${diffHrs}${hourUnit} ${diffMins}${minuteUnit}`;
   };
 
   // 处理点击事件
@@ -123,12 +130,12 @@ const TimelyRewardCard: React.FC<TimelyRewardCardProps> = ({ reward, onClick, on
 
       <div className="reward-card-body">
         <p className="reward-description">{reward.description}</p>
-        
+
         <div className="reward-progress-section">
-          <ProgressBar 
-            progress={reward.progress} 
-            total={100} 
-            showPercentage 
+          <ProgressBar
+            progress={reward.progress}
+            total={100}
+            showPercentage
             className={getStatusClass()}
           />
           <div className="reward-time-info">
@@ -137,7 +144,7 @@ const TimelyRewardCard: React.FC<TimelyRewardCardProps> = ({ reward, onClick, on
             </div>
             {reward.status === TimelyRewardStatus.ACTIVE && (
               <div className="reward-remaining-time">
-                剩余时间: {getRemainingTime()}
+                {labels?.remainingTimeLabel || 'Remaining time'}: {getRemainingTime()}
               </div>
             )}
           </div>
@@ -147,22 +154,22 @@ const TimelyRewardCard: React.FC<TimelyRewardCardProps> = ({ reward, onClick, on
       <div className="reward-card-footer">
         <div className="reward-points">
           <span className="lucky-points-icon">🍀</span>
-          <span className="lucky-points-value">{reward.luckyPoints} 幸运点</span>
+          <span className="lucky-points-value">{reward.luckyPoints} {labels?.luckyPointsLabel || 'Lucky Points'}</span>
         </div>
-        
+
         {reward.status === TimelyRewardStatus.ACTIVE && (
-          <button 
+          <button
             className="complete-reward-button"
             onClick={handleComplete}
             disabled={reward.progress < 100}
           >
-            {reward.progress >= 100 ? '领取奖励' : '进行中...'}
+            {reward.progress >= 100 ? (labels?.claimRewardButton || 'Claim Reward') : (labels?.inProgressButton || 'In Progress...')}
           </button>
         )}
         {reward.status === TimelyRewardStatus.COMPLETED && (
           <div className="reward-completed-info">
             <span className="completion-date">
-              完成于: {formatTime(reward.completedTime!)}
+              {labels?.completedOnLabel || 'Completed on'}: {formatTime(reward.completedTime!)}
             </span>
           </div>
         )}

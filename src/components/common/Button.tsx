@@ -1,5 +1,6 @@
 // src/components/common/Button.tsx
 import React from 'react';
+import { useComponentLabels } from '@/hooks/useComponentLabels';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'jade' | 'gold';
@@ -12,15 +13,19 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
  *
  * @param variant - 'primary' (default), 'secondary', 'jade' (game-themed green), 'gold' (premium)
  * @param isLoading - Whether to show loading state
- * @param loadingText - Text to display when loading
+ * @param loadingText - Text to display when loading (overrides default localized text)
  */
 const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',
   isLoading = false,
-  loadingText = "Loading...",
+  loadingText,
   ...props
 }) => {
+  // Get localized labels
+  const { labels } = useComponentLabels();
+  // Use provided loadingText or fall back to localized label
+  const finalLoadingText = loadingText || labels.button.loading;
   // Determine the appropriate CSS class based on variant
   let variantStyle = '';
 
@@ -48,7 +53,7 @@ const Button: React.FC<ButtonProps> = ({
       disabled={isLoading || props.disabled}
       {...props}
     >
-      {isLoading ? loadingText : children}
+      {isLoading ? finalLoadingText : children}
     </button>
   );
 };

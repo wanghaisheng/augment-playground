@@ -70,27 +70,27 @@ const RewardModal: React.FC<RewardModalProps> = ({
     }
   };
 
-  // 获取奖励稀有度的中文名称
+  // 获取奖励稀有度的名称
   const getRarityName = (rarity: string): string => {
     switch (rarity) {
-      case 'common': return '普通';
-      case 'uncommon': return '不常见';
-      case 'rare': return '稀有';
-      case 'epic': return '史诗';
-      case 'legendary': return '传说';
-      default: return '普通';
+      case 'common': return 'Common';
+      case 'uncommon': return 'Uncommon';
+      case 'rare': return 'Rare';
+      case 'epic': return 'Epic';
+      case 'legendary': return 'Legendary';
+      default: return 'Common';
     }
   };
 
-  // 获取奖励类型的中文名称
+  // 获取奖励类型的名称
   const getTypeName = (type: string): string => {
     switch (type) {
-      case 'experience': return '经验值';
-      case 'coin': return '竹币';
-      case 'item': return '物品';
-      case 'badge': return '徽章';
-      case 'ability': return '能力';
-      default: return '奖励';
+      case 'experience': return 'Experience';
+      case 'coin': return 'Bamboo Coin';
+      case 'item': return 'Item';
+      case 'badge': return 'Badge';
+      case 'ability': return 'Ability';
+      default: return 'Reward';
     }
   };
 
@@ -111,10 +111,10 @@ const RewardModal: React.FC<RewardModalProps> = ({
     if (!rewards.length || !currentReward) {
       return (
         <div className="reward-showcase">
-          <h3 className="reward-title">暂无奖励</h3>
+          <h3 className="reward-title">No Rewards</h3>
           <div className="reward-navigation">
             <Button variant="gold" onClick={onClose}>
-              关闭
+              Close
             </Button>
           </div>
         </div>
@@ -124,7 +124,7 @@ const RewardModal: React.FC<RewardModalProps> = ({
     return (
       <div className="reward-showcase">
         <h3 className="reward-title">
-          获得{getTypeName(currentReward.type)}奖励！
+          You got a {getTypeName(currentReward.type)} reward!
         </h3>
 
         <div className="reward-animation-container">
@@ -151,7 +151,7 @@ const RewardModal: React.FC<RewardModalProps> = ({
           </p>
           {currentReward.amount > 1 && (
             <p className="reward-amount">
-              数量: {currentReward.amount}
+              Quantity: {currentReward.amount}
             </p>
           )}
         </div>
@@ -167,11 +167,11 @@ const RewardModal: React.FC<RewardModalProps> = ({
               >
                 {currentRewardIndex < rewards.length - 1 ? (
                   <Button variant="jade" onClick={handleNextReward}>
-                    下一个奖励
+                    Next Reward
                   </Button>
                 ) : (
                   <Button variant="jade" onClick={() => setShowAll(true)}>
-                    查看全部奖励
+                    View All Rewards
                   </Button>
                 )}
               </motion.div>
@@ -188,10 +188,10 @@ const RewardModal: React.FC<RewardModalProps> = ({
     if (!rewards.length) {
       return (
         <div className="rewards-summary">
-          <h3 className="rewards-summary-title">暂无奖励</h3>
+          <h3 className="rewards-summary-title">No Rewards</h3>
           <div className="rewards-summary-footer">
             <Button variant="gold" onClick={onClose}>
-              关闭
+              Close
             </Button>
           </div>
         </div>
@@ -201,7 +201,7 @@ const RewardModal: React.FC<RewardModalProps> = ({
     return (
       <div className="rewards-summary">
         <h3 className="rewards-summary-title">
-          任务奖励总览
+          Rewards Summary
         </h3>
 
         <div className="rewards-list">
@@ -229,7 +229,7 @@ const RewardModal: React.FC<RewardModalProps> = ({
 
         <div className="rewards-summary-footer">
           <Button variant="gold" onClick={onClose}>
-            关闭
+            Close
           </Button>
         </div>
       </div>
@@ -240,7 +240,7 @@ const RewardModal: React.FC<RewardModalProps> = ({
     <ScrollDialog
       isOpen={isOpen}
       onClose={onClose}
-      title="任务奖励"
+      title="Task Rewards"
       closeOnOutsideClick={false}
       closeOnEsc={false}
       showCloseButton={showAll}

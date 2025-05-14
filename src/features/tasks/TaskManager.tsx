@@ -25,6 +25,42 @@ interface TaskManagerLabels {
   filterInProgressLabel?: string;
   filterCompletedLabel?: string;
   noTasksMessage?: string;
+  taskForm?: {
+    title?: {
+      create?: string;
+      edit?: string;
+    };
+    fields?: {
+      titleLabel?: string;
+      titlePlaceholder?: string;
+      titleRequired?: string;
+      descriptionLabel?: string;
+      descriptionPlaceholder?: string;
+      categoryLabel?: string;
+      categoryPlaceholder?: string;
+      categoryRequired?: string;
+      typeLabel?: string;
+      priorityLabel?: string;
+      dueDateLabel?: string;
+      estimatedTimeLabel?: string;
+      estimatedTimePlaceholder?: string;
+    };
+    types?: {
+      daily?: string;
+      main?: string;
+      side?: string;
+    };
+    priorities?: {
+      low?: string;
+      medium?: string;
+      high?: string;
+    };
+    buttons?: {
+      create?: string;
+      save?: string;
+      cancel?: string;
+    };
+  };
 }
 
 interface TaskManagerProps {
@@ -147,6 +183,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ labels }) => {
               initialTask={editingTask || {}}
               onSubmit={editingTask ? handleUpdateTask : handleCreateTask}
               onCancel={handleCancelForm}
+              labels={mergedLabels.taskForm}
             />
           </PageTransition>
         ) : (

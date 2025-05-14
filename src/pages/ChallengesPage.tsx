@@ -5,7 +5,8 @@ import {
   ChallengeStatus,
   ChallengeType,
   ChallengeDifficulty,
-  initializeChallengeCategories
+  initializeChallengeCategories,
+  generateTestChallengeData
 } from '@/services/challengeService';
 import ChallengeList from '@/components/game/ChallengeList';
 import PageTransition from '@/components/animation/PageTransition';
@@ -17,8 +18,8 @@ import { fetchChallengesPageView } from '@/services';
 import type { ChallengesPageViewLabelsBundle } from '@/types';
 
 /**
- * 挑战页面
- * 显示挑战列表和过滤选项
+ * Challenges Page
+ * Displays challenge list and filter options
  */
 const ChallengesPage: React.FC = () => {
   const [filter, setFilter] = useState<{
@@ -28,6 +29,8 @@ const ChallengesPage: React.FC = () => {
   }>({
     status: ChallengeStatus.ACTIVE
   });
+
+  const [isGeneratingData, setIsGeneratingData] = useState(false);
 
   const {
     labels: pageLabels,
@@ -40,53 +43,67 @@ const ChallengesPage: React.FC = () => {
     fetchChallengesPageView
   );
 
-  // 初始化挑战类别
+  // Initialize challenge categories
   useEffect(() => {
     initializeChallengeCategories();
   }, []);
 
-  // 处理状态过滤
+  // Handle status filter
   const handleStatusFilter = (status?: ChallengeStatus) => {
     setFilter(prev => ({ ...prev, status }));
   };
 
-  // 处理类型过滤
+  // Handle type filter
   const handleTypeFilter = (type?: ChallengeType) => {
     setFilter(prev => ({ ...prev, type }));
   };
 
-  // 处理难度过滤
+  // Handle difficulty filter
   const handleDifficultyFilter = (difficulty?: ChallengeDifficulty) => {
     setFilter(prev => ({ ...prev, difficulty }));
   };
 
-  // 清除所有过滤器
+  // Clear all filters
   const clearAllFilters = () => {
     setFilter({});
   };
 
-  // 显示加载状态
+  // Generate test data
+  const handleGenerateTestData = async () => {
+    try {
+      setIsGeneratingData(true);
+      await generateTestChallengeData();
+      // Refresh the page to show new data
+      window.location.reload();
+    } catch (error) {
+      console.error('Error generating test data:', error);
+    } finally {
+      setIsGeneratingData(false);
+    }
+  };
+
+  // Show loading state
   if (isPending) {
     return (
       <PageTransition>
         <div className="challenges-page">
-          <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "加载挑战中..."} />
+          <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "Loading challenges..."} />
         </div>
       </PageTransition>
     );
   }
 
-  // 显示错误状态
+  // Show error state
   if (isError) {
     return (
       <PageTransition>
         <div className="challenges-page">
           <ErrorDisplay
             error={error}
-            title={pageLabels?.errorTitle || "加载挑战失败"}
-            messageTemplate={pageLabels?.errorMessage || "无法加载挑战数据: {message}"}
+            title={pageLabels?.errorTitle || "Challenge Page Error"}
+            messageTemplate={pageLabels?.errorMessage || "Failed to load challenges: {message}"}
             onRetry={refetch}
-            retryButtonText={pageLabels?.retryButtonText || "重试"}
+            retryButtonText={pageLabels?.retryButtonText || "Retry"}
           />
         </div>
       </PageTransition>
@@ -102,121 +119,137 @@ const ChallengesPage: React.FC = () => {
         exit={{ opacity: 0 }}
       >
         <div className="page-header">
-          <h1 className="page-title">{pageLabels?.pageTitle || '挑战'}</h1>
+          <h1 className="page-title">{pageLabels?.pageTitle || 'Challenges'}</h1>
+          <button
+            className="generate-test-data-button"
+            onClick={handleGenerateTestData}
+            disabled={isGeneratingData}
+          >
+            {isGeneratingData ? 'Generating...' : 'Generate Test Data'}
+          </button>
         </div>
 
         <div className="filter-section">
           <div className="filter-group">
-            <h3 className="filter-title">状态</h3>
+            <h3 className="filter-title">{pageLabels?.statusFilterLabel || 'Status'}</h3>
             <div className="filter-buttons">
               <AnimatedButton
                 onClick={() => handleStatusFilter(undefined)}
                 className={!filter.status ? 'active' : ''}
               >
-                {pageLabels?.filters?.allLabel || '全部'}
+                {pageLabels?.filters?.allLabel || 'All'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleStatusFilter(ChallengeStatus.ACTIVE)}
                 className={filter.status === ChallengeStatus.ACTIVE ? 'active' : ''}
               >
-                {pageLabels?.filters?.activeLabel || '进行中'}
+                {pageLabels?.filters?.activeLabel || 'Active'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleStatusFilter(ChallengeStatus.COMPLETED)}
                 className={filter.status === ChallengeStatus.COMPLETED ? 'active' : ''}
               >
-                {pageLabels?.filters?.completedLabel || '已完成'}
+                {pageLabels?.filters?.completedLabel || 'Completed'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleStatusFilter(ChallengeStatus.UPCOMING)}
                 className={filter.status === ChallengeStatus.UPCOMING ? 'active' : ''}
               >
-                {pageLabels?.filters?.upcomingLabel || '即将开始'}
+                {pageLabels?.filters?.upcomingLabel || 'Upcoming'}
               </AnimatedButton>
             </div>
           </div>
 
           <div className="filter-group">
-            <h3 className="filter-title">类型</h3>
+            <h3 className="filter-title">{pageLabels?.typeFilterLabel || 'Type'}</h3>
             <div className="filter-buttons">
               <AnimatedButton
                 onClick={() => handleTypeFilter(undefined)}
                 className={!filter.type ? 'active' : ''}
               >
-                {pageLabels?.filters?.typeAllLabel || '全部'}
+                {pageLabels?.filters?.typeAllLabel || 'All'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(ChallengeType.DAILY)}
                 className={filter.type === ChallengeType.DAILY ? 'active' : ''}
               >
-                {pageLabels?.filters?.typeDailyLabel || '每日'}
+                {pageLabels?.filters?.typeDailyLabel || 'Daily'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(ChallengeType.WEEKLY)}
                 className={filter.type === ChallengeType.WEEKLY ? 'active' : ''}
               >
-                {pageLabels?.filters?.typeWeeklyLabel || '每周'}
+                {pageLabels?.filters?.typeWeeklyLabel || 'Weekly'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(ChallengeType.EVENT)}
                 className={filter.type === ChallengeType.EVENT ? 'active' : ''}
               >
-                {pageLabels?.filters?.typeEventLabel || '活动'}
+                {pageLabels?.filters?.typeEventLabel || 'Event'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(ChallengeType.ONGOING)}
                 className={filter.type === ChallengeType.ONGOING ? 'active' : ''}
               >
-                {pageLabels?.filters?.typeOngoingLabel || '持续'}
+                {pageLabels?.filters?.typeOngoingLabel || 'Ongoing'}
               </AnimatedButton>
             </div>
           </div>
 
           <div className="filter-group">
-            <h3 className="filter-title">难度</h3>
+            <h3 className="filter-title">{pageLabels?.difficultyFilterLabel || 'Difficulty'}</h3>
             <div className="filter-buttons">
               <AnimatedButton
                 onClick={() => handleDifficultyFilter(undefined)}
                 className={!filter.difficulty ? 'active' : ''}
               >
-                {pageLabels?.filters?.difficultyAllLabel || '全部'}
+                {pageLabels?.filters?.difficultyAllLabel || 'All'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleDifficultyFilter(ChallengeDifficulty.EASY)}
                 className={filter.difficulty === ChallengeDifficulty.EASY ? 'active' : ''}
               >
-                {pageLabels?.filters?.difficultyEasyLabel || '简单'}
+                {pageLabels?.filters?.difficultyEasyLabel || 'Easy'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleDifficultyFilter(ChallengeDifficulty.MEDIUM)}
                 className={filter.difficulty === ChallengeDifficulty.MEDIUM ? 'active' : ''}
               >
-                {pageLabels?.filters?.difficultyMediumLabel || '中等'}
+                {pageLabels?.filters?.difficultyMediumLabel || 'Medium'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleDifficultyFilter(ChallengeDifficulty.HARD)}
                 className={filter.difficulty === ChallengeDifficulty.HARD ? 'active' : ''}
               >
-                {pageLabels?.filters?.difficultyHardLabel || '困难'}
+                {pageLabels?.filters?.difficultyHardLabel || 'Hard'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleDifficultyFilter(ChallengeDifficulty.EXPERT)}
                 className={filter.difficulty === ChallengeDifficulty.EXPERT ? 'active' : ''}
               >
-                {pageLabels?.filters?.difficultyExpertLabel || '专家'}
+                {pageLabels?.filters?.difficultyExpertLabel || 'Expert'}
               </AnimatedButton>
             </div>
           </div>
 
           <div className="filter-actions">
             <AnimatedButton onClick={clearAllFilters} className="clear-filters-button">
-              {pageLabels?.filters?.clearFiltersLabel || '清除所有过滤器'}
+              {pageLabels?.filters?.clearFiltersLabel || 'Clear All Filters'}
             </AnimatedButton>
           </div>
         </div>
 
         <div className="challenges-container">
-          <ChallengeList filter={filter} />
+          <ChallengeList
+            filter={filter}
+            labels={{
+              ...pageLabels?.challengeCard,
+              statusLabel: pageLabels?.statusFilterLabel,
+              typeLabel: pageLabels?.typeFilterLabel,
+              difficultyLabel: pageLabels?.difficultyFilterLabel,
+              noItemsMessage: pageLabels?.noChallengesMessage
+            }}
+          />
         </div>
       </motion.div>
     </PageTransition>

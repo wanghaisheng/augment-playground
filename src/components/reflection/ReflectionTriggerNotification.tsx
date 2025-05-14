@@ -1,8 +1,8 @@
 // src/components/reflection/ReflectionTriggerNotification.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ReflectionTriggerRecord, 
+import {
+  ReflectionTriggerRecord,
   ReflectionTriggerType,
   getUnviewedReflectionTriggers,
   markTriggerAsViewed,
@@ -12,24 +12,52 @@ import Button from '@/components/common/Button';
 import { playSound, SoundType } from '@/utils/sound';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 
+interface ReflectionTriggerNotificationLabels {
+  title?: string;
+  triggerTypes?: {
+    moodChange?: string;
+    taskFailure?: string;
+    dailyReflection?: string;
+    weeklyReview?: string;
+    manual?: string;
+    unknown?: string;
+  };
+  messages?: {
+    moodChange?: string;
+    taskFailureWithTitle?: string;
+    taskFailureGeneric?: string;
+    dailyReflection?: string;
+    weeklyReview?: string;
+    manual?: string;
+    unknown?: string;
+  };
+  buttons?: {
+    dismiss?: string;
+    later?: string;
+    start?: string;
+  };
+}
+
 interface ReflectionTriggerNotificationProps {
   onTriggerAccepted?: (trigger: ReflectionTriggerRecord) => void;
   onTriggerDismissed?: (trigger: ReflectionTriggerRecord) => void;
+  labels?: ReflectionTriggerNotificationLabels;
 }
 
 /**
- * 反思触发通知组件
- * 用于显示反思触发通知并处理用户响应
+ * Reflection Trigger Notification Component
+ * Used to display reflection trigger notifications and handle user responses
  */
 const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps> = ({
   onTriggerAccepted,
-  onTriggerDismissed
+  onTriggerDismissed,
+  labels
 }) => {
   const [triggers, setTriggers] = useState<ReflectionTriggerRecord[]>([]);
   const [currentTriggerIndex, setCurrentTriggerIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // 当前用户ID（在实际应用中，这应该从用户会话中获取）
   const userId = 'current-user';
 
@@ -39,7 +67,7 @@ const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps
       setIsLoading(true);
       const unviewedTriggers = await getUnviewedReflectionTriggers(userId);
       setTriggers(unviewedTriggers);
-      
+
       // 如果有未查看的触发记录，显示通知
       if (unviewedTriggers.length > 0) {
         setIsVisible(true);
@@ -64,19 +92,19 @@ const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps
   // 处理接受反思
   const handleAccept = async () => {
     if (triggers.length === 0) return;
-    
+
     const currentTrigger = triggers[currentTriggerIndex];
-    
+
     try {
       // 标记为已查看
       await markTriggerAsViewed(currentTrigger.id!);
-      
+
       // 播放点击音效
       playSound(SoundType.BUTTON_CLICK, 0.5);
-      
+
       // 隐藏通知
       setIsVisible(false);
-      
+
       // 通知父组件
       if (onTriggerAccepted) {
         setTimeout(() => {
@@ -91,24 +119,24 @@ const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps
   // 处理稍后提醒
   const handleRemindLater = async () => {
     if (triggers.length === 0) return;
-    
+
     const currentTrigger = triggers[currentTriggerIndex];
-    
+
     try {
       // 标记为已查看
       await markTriggerAsViewed(currentTrigger.id!);
-      
+
       // 播放点击音效
       playSound(SoundType.BUTTON_CLICK, 0.3);
-      
+
       // 移除当前触发记录
-      setTriggers(prevTriggers => 
+      setTriggers(prevTriggers =>
         prevTriggers.filter((_, index) => index !== currentTriggerIndex)
       );
-      
+
       // 重置索引
       setCurrentTriggerIndex(0);
-      
+
       // 如果没有更多触发记录，隐藏通知
       if (triggers.length <= 1) {
         setIsVisible(false);
@@ -121,29 +149,29 @@ const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps
   // 处理忽略
   const handleDismiss = async () => {
     if (triggers.length === 0) return;
-    
+
     const currentTrigger = triggers[currentTriggerIndex];
-    
+
     try {
       // 标记为已完成
       await markTriggerAsCompleted(currentTrigger.id!);
-      
+
       // 播放点击音效
       playSound(SoundType.BUTTON_CLICK, 0.3);
-      
+
       // 移除当前触发记录
-      setTriggers(prevTriggers => 
+      setTriggers(prevTriggers =>
         prevTriggers.filter((_, index) => index !== currentTriggerIndex)
       );
-      
+
       // 重置索引
       setCurrentTriggerIndex(0);
-      
+
       // 如果没有更多触发记录，隐藏通知
       if (triggers.length <= 1) {
         setIsVisible(false);
       }
-      
+
       // 通知父组件
       if (onTriggerDismissed) {
         onTriggerDismissed(currentTrigger);
@@ -153,41 +181,41 @@ const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps
     }
   };
 
-  // 获取触发类型标签
+  // Get trigger type label
   const getTriggerTypeLabel = (type: ReflectionTriggerType): string => {
     switch (type) {
       case ReflectionTriggerType.MOOD_CHANGE:
-        return '情绪变化';
+        return labels?.triggerTypes?.moodChange || "Mood Change";
       case ReflectionTriggerType.TASK_FAILURE:
-        return '任务失败';
+        return labels?.triggerTypes?.taskFailure || "Task Failure";
       case ReflectionTriggerType.DAILY_REFLECTION:
-        return '每日反思';
+        return labels?.triggerTypes?.dailyReflection || "Daily Reflection";
       case ReflectionTriggerType.WEEKLY_REVIEW:
-        return '每周回顾';
+        return labels?.triggerTypes?.weeklyReview || "Weekly Review";
       case ReflectionTriggerType.MANUAL:
-        return '手动触发';
+        return labels?.triggerTypes?.manual || "Manual Trigger";
       default:
-        return '未知';
+        return labels?.triggerTypes?.unknown || "Unknown";
     }
   };
 
-  // 获取触发消息
+  // Get trigger message
   const getTriggerMessage = (trigger: ReflectionTriggerRecord): string => {
     switch (trigger.type) {
       case ReflectionTriggerType.MOOD_CHANGE:
-        return '熊猫注意到你的情绪有些波动，想和你聊聊吗？';
+        return labels?.messages?.moodChange || "Panda noticed your mood has changed. Would you like to talk about it?";
       case ReflectionTriggerType.TASK_FAILURE:
         return trigger.data?.taskTitle
-          ? `任务"${trigger.data.taskTitle}"未能按时完成，想花点时间反思一下吗？`
-          : '有一个任务未能按时完成，想花点时间反思一下吗？';
+          ? (labels?.messages?.taskFailureWithTitle || "Task '{0}' was not completed on time. Would you like to reflect on it?").replace('{0}', trigger.data.taskTitle)
+          : labels?.messages?.taskFailureGeneric || "A task was not completed on time. Would you like to reflect on it?";
       case ReflectionTriggerType.DAILY_REFLECTION:
-        return '今天过得如何？想花点时间进行每日反思吗？';
+        return labels?.messages?.dailyReflection || "How was your day? Would you like to take some time for daily reflection?";
       case ReflectionTriggerType.WEEKLY_REVIEW:
-        return '这周过得如何？想花点时间进行每周回顾吗？';
+        return labels?.messages?.weeklyReview || "How was your week? Would you like to take some time for a weekly review?";
       case ReflectionTriggerType.MANUAL:
-        return '想花点时间进行反思吗？';
+        return labels?.messages?.manual || "Would you like to take some time for reflection?";
       default:
-        return '熊猫想和你聊聊，有时间吗？';
+        return labels?.messages?.unknown || "Panda would like to chat with you. Do you have time?";
     }
   };
 
@@ -215,7 +243,7 @@ const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps
                 <span className="text-2xl">🐼</span>
               </div>
               <div className="flex-grow">
-                <h3 className="text-md font-bold text-amber-800">静心茶室</h3>
+                <h3 className="text-md font-bold text-amber-800">{labels?.title || "Tea Room"}</h3>
                 <p className="text-xs text-amber-600">
                   {getTriggerTypeLabel(currentTrigger.type)}
                 </p>
@@ -229,34 +257,34 @@ const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps
               </div>
             </div>
           </div>
-          
+
           {/* 通知内容 */}
           <div className="notification-content p-3">
             <p className="text-gray-700 mb-3">
               {getTriggerMessage(currentTrigger)}
             </p>
-            
+
             <div className="notification-actions flex justify-end gap-2">
               <Button
                 variant="secondary"
                 size="small"
                 onClick={handleDismiss}
               >
-                忽略
+                {labels?.buttons?.dismiss || "Dismiss"}
               </Button>
               <Button
                 variant="secondary"
                 size="small"
                 onClick={handleRemindLater}
               >
-                稍后
+                {labels?.buttons?.later || "Later"}
               </Button>
               <Button
                 variant="jade"
                 size="small"
                 onClick={handleAccept}
               >
-                开始
+                {labels?.buttons?.start || "Start"}
               </Button>
             </div>
           </div>

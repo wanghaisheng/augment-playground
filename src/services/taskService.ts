@@ -27,6 +27,15 @@ export enum TaskType {
   SIDE = 'side'       // 支线任务
 }
 
+// 任务类别枚举
+export enum TaskCategory {
+  WORK = 'work',
+  PERSONAL = 'personal',
+  HEALTH = 'health',
+  LEARNING = 'learning',
+  ERRANDS = 'errands'
+}
+
 // 任务记录类型
 export interface TaskRecord {
   id?: number;

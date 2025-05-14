@@ -8,6 +8,11 @@ interface CurrencyDisplayProps {
   isVip?: boolean;
   compact?: boolean;
   className?: string;
+  labels?: {
+    coinsLabel?: string;
+    jadeLabel?: string;
+    vipLabel?: string;
+  };
 }
 
 /**
@@ -18,7 +23,8 @@ const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
   currency,
   isVip = false,
   compact = false,
-  className = ''
+  className = '',
+  labels
 }) => {
   // 格式化数字
   const formatNumber = (num: number): string => {
@@ -53,43 +59,44 @@ const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
   }
 
   return (
-    <div className={`currency-display p-3 bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}>
+    <div className={`currency-display p-4 bg-white rounded-lg shadow-md border border-amber-200 ${className}`}>
       <div className="flex justify-between items-center">
-        <div className="currency-section">
-          <div className="coins-display flex items-center mb-2">
-            <motion.span
-              className="coin-icon text-xl mr-2"
+        <div className="currency-section flex items-center gap-6">
+          <div className="coins-display flex items-center">
+            <motion.div
+              className="coin-icon text-2xl mr-3 bg-amber-100 p-2 rounded-full"
               initial={{ rotateY: 0 }}
               whileHover={{ rotateY: 180 }}
               transition={{ duration: 0.5 }}
             >
               🪙
-            </motion.span>
+            </motion.div>
             <div>
-              <div className="coin-value font-bold">{formatNumber(currency.coins)}</div>
-              <div className="coin-label text-xs text-gray-500">金币</div>
+              <div className="coin-value font-bold text-lg">{formatNumber(currency.coins)}</div>
+              <div className="coin-label text-xs text-gray-500">{labels?.coinsLabel || "Coins"}</div>
             </div>
           </div>
           <div className="jade-display flex items-center">
-            <motion.span
-              className="jade-icon text-xl mr-2"
+            <motion.div
+              className="jade-icon text-2xl mr-3 bg-jade-100 p-2 rounded-full"
               initial={{ rotate: 0 }}
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.5 }}
             >
               💎
-            </motion.span>
+            </motion.div>
             <div>
-              <div className="jade-value font-bold">{formatNumber(currency.jade)}</div>
-              <div className="jade-label text-xs text-gray-500">玉石</div>
+              <div className="jade-value font-bold text-lg">{formatNumber(currency.jade)}</div>
+              <div className="jade-label text-xs text-gray-500">{labels?.jadeLabel || "Jade"}</div>
             </div>
           </div>
         </div>
-        
+
         {isVip && (
           <div className="vip-section">
-            <div className="vip-badge px-3 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-300 font-medium">
-              VIP会员
+            <div className="vip-badge px-4 py-2 rounded-full bg-amber-100 text-amber-800 border border-amber-300 font-medium flex items-center">
+              <span className="mr-1">✨</span>
+              {labels?.vipLabel || "VIP Member"}
             </div>
           </div>
         )}

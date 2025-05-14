@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useComponentLabels } from '@/hooks/useComponentLabels';
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,20 +13,26 @@ interface ModalProps {
   className?: string;
   overlayClassName?: string;
   contentClassName?: string;
+  title?: string;
+  ariaLabelledBy?: string;
+  ariaDescribedBy?: string;
 }
 
 /**
- * 基础模态框组件
- * 提供可重用的模态框功能，支持动画和自定义样式
- * 
- * @param isOpen - 控制模态框是否显示
- * @param onClose - 关闭模态框的回调函数
- * @param children - 模态框内容
- * @param closeOnOutsideClick - 是否在点击外部区域时关闭模态框，默认为true
- * @param closeOnEsc - 是否在按下ESC键时关闭模态框，默认为true
- * @param className - 自定义模态框容器类名
- * @param overlayClassName - 自定义遮罩层类名
- * @param contentClassName - 自定义内容区域类名
+ * Basic modal component
+ * Provides reusable modal functionality with animation and customizable styles
+ *
+ * @param isOpen - Controls whether the modal is displayed
+ * @param onClose - Callback function to close the modal
+ * @param children - Modal content
+ * @param closeOnOutsideClick - Whether to close the modal when clicking outside, defaults to true
+ * @param closeOnEsc - Whether to close the modal when pressing ESC, defaults to true
+ * @param className - Custom class name for the modal container
+ * @param overlayClassName - Custom class name for the overlay
+ * @param contentClassName - Custom class name for the content area
+ * @param title - Optional title for accessibility
+ * @param ariaLabelledBy - Optional ID of element that labels the modal
+ * @param ariaDescribedBy - Optional ID of element that describes the modal
  */
 const Modal: React.FC<ModalProps> = ({
   isOpen,
@@ -36,10 +43,15 @@ const Modal: React.FC<ModalProps> = ({
   className = '',
   overlayClassName = '',
   contentClassName = '',
+  title,
+  ariaLabelledBy,
+  ariaDescribedBy,
 }) => {
+  // Get localized labels
+  const { labels } = useComponentLabels();
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // 处理ESC键关闭
+  // Handle ESC key to close
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (closeOnEsc && event.key === 'Escape' && isOpen) {
@@ -49,25 +61,25 @@ const Modal: React.FC<ModalProps> = ({
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscKey);
-      // 禁止背景滚动
+      // Prevent background scrolling
       document.body.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscKey);
-      // 恢复背景滚动
+      // Restore background scrolling
       document.body.style.overflow = '';
     };
   }, [isOpen, onClose, closeOnEsc]);
 
-  // 处理点击外部区域关闭
+  // Handle clicking outside to close
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (closeOnOutsideClick && e.target === e.currentTarget) {
       onClose();
     }
   };
 
-  // 动画变体
+  // Animation variants
   const overlayVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.3 } },
@@ -76,28 +88,28 @@ const Modal: React.FC<ModalProps> = ({
 
   const contentVariants = {
     hidden: { opacity: 0, scale: 0.9, y: -20 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      y: 0, 
-      transition: { 
-        type: 'spring', 
-        damping: 25, 
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        damping: 25,
         stiffness: 300,
         delay: 0.1
-      } 
+      }
     },
-    exit: { 
-      opacity: 0, 
-      scale: 0.95, 
-      y: 10, 
-      transition: { 
-        duration: 0.2 
-      } 
+    exit: {
+      opacity: 0,
+      scale: 0.95,
+      y: 10,
+      transition: {
+        duration: 0.2
+      }
     }
   };
 
-  // 使用Portal将模态框渲染到body下
+  // Use Portal to render the modal to the body
   return createPortal(
     <AnimatePresence>
       {isOpen && (
@@ -108,6 +120,11 @@ const Modal: React.FC<ModalProps> = ({
           animate="visible"
           exit="exit"
           onClick={handleOverlayClick}
+          role="dialog"
+          aria-modal="true"
+          aria-label={title || labels.modal.close}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={ariaDescribedBy}
         >
           <motion.div
             ref={contentRef}

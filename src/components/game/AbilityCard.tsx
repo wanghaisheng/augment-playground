@@ -1,64 +1,86 @@
 // src/components/game/AbilityCard.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { PandaAbilityRecord, AbilityType } from '@/services/pandaAbilityService';
+import { PandaAbilityRecord, AbilityType, getAbilityKeyFromName, getLocalizedAbilityName, getLocalizedAbilityDescription } from '@/services/pandaAbilityService';
 import { RewardRarity } from '@/services/rewardService';
+import { AbilityCardLabels } from '@/types';
 
 interface AbilityCardProps {
   ability: PandaAbilityRecord;
   isUnlocked: boolean;
   onActivate?: () => void;
   className?: string;
+  labels?: AbilityCardLabels;
 }
 
 /**
- * 熊猫能力卡片组件
- * 显示熊猫能力的详细信息
- * 
- * @param ability - 能力数据
- * @param isUnlocked - 是否已解锁
- * @param onActivate - 激活能力的回调函数
- * @param className - 自定义类名
+ * Panda ability card component
+ * Displays detailed information about a panda ability
+ *
+ * @param ability - Ability data
+ * @param isUnlocked - Whether the ability is unlocked
+ * @param onActivate - Callback function to activate the ability
+ * @param className - Custom class name
+ * @param labels - Localized labels for the component
  */
 const AbilityCard: React.FC<AbilityCardProps> = ({
   ability,
   isUnlocked,
   onActivate,
-  className = ''
+  className = '',
+  labels
 }) => {
-  // 获取能力类型的中文名称
+  const [localizedName, setLocalizedName] = useState<string>(ability.name);
+  const [localizedDescription, setLocalizedDescription] = useState<string>(ability.description);
+
+  // Load localized name and description
+  useEffect(() => {
+    const abilityKey = getAbilityKeyFromName(ability.name);
+    if (abilityKey) {
+      // Load localized name
+      getLocalizedAbilityName(abilityKey, ability.name)
+        .then(name => setLocalizedName(name))
+        .catch(err => console.error('Error loading localized ability name:', err));
+
+      // Load localized description
+      getLocalizedAbilityDescription(abilityKey, ability.description)
+        .then(desc => setLocalizedDescription(desc))
+        .catch(err => console.error('Error loading localized ability description:', err));
+    }
+  }, [ability.name, ability.description]);
+  // Get ability type name with localization
   const getAbilityTypeName = (type: AbilityType): string => {
     switch (type) {
       case AbilityType.PASSIVE:
-        return '被动';
+        return labels?.typePassive || 'Passive';
       case AbilityType.ACTIVE:
-        return '主动';
+        return labels?.typeActive || 'Active';
       case AbilityType.ULTIMATE:
-        return '终极';
+        return labels?.typeUltimate || 'Ultimate';
       default:
-        return '未知';
+        return labels?.typeUnknown || 'Unknown';
     }
   };
 
-  // 获取稀有度的中文名称
+  // Get rarity name with localization
   const getRarityName = (rarity: RewardRarity): string => {
     switch (rarity) {
       case RewardRarity.COMMON:
-        return '普通';
+        return labels?.rarityCommon || 'Common';
       case RewardRarity.UNCOMMON:
-        return '不常见';
+        return labels?.rarityUncommon || 'Uncommon';
       case RewardRarity.RARE:
-        return '稀有';
+        return labels?.rarityRare || 'Rare';
       case RewardRarity.EPIC:
-        return '史诗';
+        return labels?.rarityEpic || 'Epic';
       case RewardRarity.LEGENDARY:
-        return '传说';
+        return labels?.rarityLegendary || 'Legendary';
       default:
-        return '普通';
+        return labels?.rarityCommon || 'Common';
     }
   };
 
-  // 获取稀有度的颜色
+  // Get rarity color
   const getRarityColor = (rarity: RewardRarity): string => {
     switch (rarity) {
       case RewardRarity.COMMON:
@@ -76,30 +98,30 @@ const AbilityCard: React.FC<AbilityCardProps> = ({
     }
   };
 
-  // 检查能力是否可用（已解锁且不在冷却中）
+  // Check if ability is available (unlocked and not on cooldown)
   const isAvailable = (): boolean => {
     if (!isUnlocked) {
       return false;
     }
 
-    // 被动能力总是可用
+    // Passive abilities are always available
     if (ability.type === AbilityType.PASSIVE) {
       return true;
     }
 
-    // 检查冷却时间
+    // Check cooldown time
     if (ability.lastUsedAt && ability.cooldownMinutes) {
       const now = new Date();
       const cooldownEndTime = new Date(ability.lastUsedAt);
       cooldownEndTime.setMinutes(cooldownEndTime.getMinutes() + ability.cooldownMinutes);
-      
+
       return now >= cooldownEndTime;
     }
 
     return true;
   };
 
-  // 获取冷却剩余时间
+  // Get remaining cooldown time with localization
   const getCooldownRemaining = (): string => {
     if (!ability.lastUsedAt || !ability.cooldownMinutes) {
       return '';
@@ -116,12 +138,15 @@ const AbilityCard: React.FC<AbilityCardProps> = ({
     const remainingMs = cooldownEndTime.getTime() - now.getTime();
     const remainingMinutes = Math.ceil(remainingMs / (1000 * 60));
 
+    const minutesUnit = labels?.minutesUnit || 'min';
+    const hourUnit = 'h'; // We could add this to labels if needed
+
     if (remainingMinutes < 60) {
-      return `${remainingMinutes}分钟`;
+      return `${remainingMinutes} ${minutesUnit}`;
     } else {
       const hours = Math.floor(remainingMinutes / 60);
       const minutes = remainingMinutes % 60;
-      return `${hours}小时${minutes > 0 ? ` ${minutes}分钟` : ''}`;
+      return `${hours}${hourUnit}${minutes > 0 ? ` ${minutes}${minutesUnit}` : ''}`;
     }
   };
 
@@ -136,8 +161,8 @@ const AbilityCard: React.FC<AbilityCardProps> = ({
     >
       <div className="ability-card-header">
         <div className="ability-icon">
-          <img 
-            src={ability.iconPath} 
+          <img
+            src={ability.iconPath}
             alt={ability.name}
             onError={(e) => {
               const target = e.target as HTMLImageElement;
@@ -148,7 +173,7 @@ const AbilityCard: React.FC<AbilityCardProps> = ({
         </div>
         <div className="ability-info">
           <h3 className="ability-name" style={{ color: getRarityColor(ability.rarity) }}>
-            {ability.name}
+            {localizedName}
           </h3>
           <div className="ability-meta">
             <span className="ability-type">{getAbilityTypeName(ability.type)}</span>
@@ -158,21 +183,21 @@ const AbilityCard: React.FC<AbilityCardProps> = ({
       </div>
 
       <div className="ability-card-body">
-        <p className="ability-description">{ability.description}</p>
-        
+        <p className="ability-description">{localizedDescription}</p>
+
         {!isUnlocked && (
           <div className="ability-unlock-info">
             <span className="ability-lock-icon">🔒</span>
-            <span>需要等级 {ability.requiredLevel} 解锁</span>
+            <span>{labels?.requiredLevelLabel || 'Required Level'} {ability.requiredLevel}</span>
           </div>
         )}
-        
+
         {isUnlocked && ability.type !== AbilityType.PASSIVE && (
           <div className="ability-cooldown">
             {getCooldownRemaining() ? (
-              <span className="cooldown-remaining">冷却中: {getCooldownRemaining()}</span>
+              <span className="cooldown-remaining">{labels?.cooldownRemainingLabel || 'Cooling down'}: {getCooldownRemaining()}</span>
             ) : (
-              <span className="cooldown-info">冷却时间: {ability.cooldownMinutes} 分钟</span>
+              <span className="cooldown-info">{labels?.cooldownLabel || 'Cooldown'}: {ability.cooldownMinutes} {labels?.minutesUnit || 'min'}</span>
             )}
           </div>
         )}
@@ -185,7 +210,9 @@ const AbilityCard: React.FC<AbilityCardProps> = ({
             onClick={onActivate}
             disabled={!isAvailable()}
           >
-            {ability.isActive ? '已激活' : '激活能力'}
+            {ability.isActive
+              ? (labels?.alreadyActivatedText || 'Already Activated')
+              : (labels?.activateButtonText || 'Activate Ability')}
           </button>
         </div>
       )}

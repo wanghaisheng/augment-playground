@@ -2,28 +2,28 @@
 import { db } from '@/db';
 import { RewardRarity } from './rewardService';
 
-// 熊猫能力类型枚举
+// Panda ability type enum
 export enum AbilityType {
-  PASSIVE = 'passive',   // 被动能力（常驻效果）
-  ACTIVE = 'active',     // 主动能力（需要激活）
-  ULTIMATE = 'ultimate'  // 终极能力（强力但有冷却）
+  PASSIVE = 'passive',   // Passive ability (permanent effect)
+  ACTIVE = 'active',     // Active ability (needs activation)
+  ULTIMATE = 'ultimate'  // Ultimate ability (powerful but with cooldown)
 }
 
-// 熊猫能力效果类型枚举
+// Panda ability effect type enum
 export enum AbilityEffectType {
-  EXPERIENCE_BOOST = 'experience_boost',       // 经验值提升
-  ENERGY_BOOST = 'energy_boost',               // 能量提升
-  TASK_EFFICIENCY = 'task_efficiency',         // 任务效率提升
-  REWARD_BOOST = 'reward_boost',               // 奖励提升
-  MOOD_STABILIZER = 'mood_stabilizer',         // 情绪稳定
-  TIME_EXTENSION = 'time_extension',           // 时间延长
-  FOCUS_ENHANCEMENT = 'focus_enhancement',     // 专注力增强
-  INSPIRATION = 'inspiration',                 // 灵感激发
-  RESILIENCE = 'resilience',                   // 韧性增强
-  WISDOM = 'wisdom'                            // 智慧提升
+  EXPERIENCE_BOOST = 'experience_boost',       // Experience boost
+  ENERGY_BOOST = 'energy_boost',               // Energy boost
+  TASK_EFFICIENCY = 'task_efficiency',         // Task efficiency boost
+  REWARD_BOOST = 'reward_boost',               // Reward boost
+  MOOD_STABILIZER = 'mood_stabilizer',         // Mood stabilizer
+  TIME_EXTENSION = 'time_extension',           // Time extension
+  FOCUS_ENHANCEMENT = 'focus_enhancement',     // Focus enhancement
+  INSPIRATION = 'inspiration',                 // Inspiration
+  RESILIENCE = 'resilience',                   // Resilience
+  WISDOM = 'wisdom'                            // Wisdom
 }
 
-// 熊猫能力记录类型
+// Panda ability record type
 export interface PandaAbilityRecord {
   id?: number;
   name: string;
@@ -41,12 +41,12 @@ export interface PandaAbilityRecord {
   unlockDate?: Date;
 }
 
-// 预定义的熊猫能力列表
+// Predefined panda abilities list
 const PREDEFINED_ABILITIES: PandaAbilityRecord[] = [
-  // 被动能力 - 初级
+  // Passive abilities - Basic
   {
-    name: '竹林之心',
-    description: '被动：完成任务时获得的经验值增加10%',
+    name: 'Bamboo Heart',
+    description: 'Passive: Increases experience gained from completing tasks by 10%',
     type: AbilityType.PASSIVE,
     effectType: AbilityEffectType.EXPERIENCE_BOOST,
     effectValue: 0.1,
@@ -57,8 +57,8 @@ const PREDEFINED_ABILITIES: PandaAbilityRecord[] = [
     isActive: false
   },
   {
-    name: '熊猫活力',
-    description: '被动：熊猫能量恢复速度提高15%',
+    name: 'Panda Vitality',
+    description: 'Passive: Increases panda energy recovery rate by 15%',
     type: AbilityType.PASSIVE,
     effectType: AbilityEffectType.ENERGY_BOOST,
     effectValue: 0.15,
@@ -69,10 +69,10 @@ const PREDEFINED_ABILITIES: PandaAbilityRecord[] = [
     isActive: false
   },
 
-  // 主动能力 - 中级
+  // Active abilities - Intermediate
   {
-    name: '竹影专注',
-    description: '主动：激活后，1小时内完成任务获得的经验值增加25%',
+    name: 'Bamboo Focus',
+    description: 'Active: When activated, increases experience gained from completing tasks by 25% for 1 hour',
     type: AbilityType.ACTIVE,
     effectType: AbilityEffectType.FOCUS_ENHANCEMENT,
     effectValue: 0.25,
@@ -84,8 +84,8 @@ const PREDEFINED_ABILITIES: PandaAbilityRecord[] = [
     cooldownMinutes: 120
   },
   {
-    name: '熊猫智慧',
-    description: '主动：激活后，2小时内任务完成奖励数量增加20%',
+    name: 'Panda Wisdom',
+    description: 'Active: When activated, increases rewards from completed tasks by 20% for 2 hours',
     type: AbilityType.ACTIVE,
     effectType: AbilityEffectType.REWARD_BOOST,
     effectValue: 0.2,
@@ -97,10 +97,10 @@ const PREDEFINED_ABILITIES: PandaAbilityRecord[] = [
     cooldownMinutes: 240
   },
 
-  // 终极能力 - 高级
+  // Ultimate abilities - Advanced
   {
-    name: '竹林大师',
-    description: '终极：激活后，4小时内所有能力效果提升50%',
+    name: 'Bamboo Master',
+    description: 'Ultimate: When activated, increases all ability effects by 50% for 4 hours',
     type: AbilityType.ULTIMATE,
     effectType: AbilityEffectType.WISDOM,
     effectValue: 0.5,
@@ -109,13 +109,13 @@ const PREDEFINED_ABILITIES: PandaAbilityRecord[] = [
     requiredLevel: 10,
     isUnlocked: false,
     isActive: false,
-    cooldownMinutes: 1440 // 24小时
+    cooldownMinutes: 1440 // 24 hours
   }
 ];
 
 /**
- * 初始化熊猫能力系统
- * 如果数据库中没有能力记录，则添加预定义的能力
+ * Initialize panda abilities system
+ * If there are no ability records in the database, add predefined abilities
  */
 export async function initializePandaAbilities(): Promise<void> {
   const abilities = await db.table('abilities').toArray();
@@ -126,34 +126,34 @@ export async function initializePandaAbilities(): Promise<void> {
 }
 
 /**
- * 获取所有熊猫能力
+ * Get all panda abilities
  */
 export async function getAllPandaAbilities(): Promise<PandaAbilityRecord[]> {
   return db.table('abilities').toArray();
 }
 
 /**
- * 获取已解锁的熊猫能力
+ * Get unlocked panda abilities
  */
 export async function getUnlockedPandaAbilities(): Promise<PandaAbilityRecord[]> {
   try {
-    // 检查表是否存在
+    // Check if table exists
     if (!db.tables.some(table => table.name === 'abilities')) {
       console.warn('abilities table does not exist yet');
-      // 初始化能力系统
+      // Initialize abilities system
       await initializePandaAbilities();
     }
 
-    // 尝试获取所有能力，然后在内存中过滤
+    // Try to get all abilities, then filter in memory
     try {
       const allAbilities = await db.table('abilities').toArray();
-      // 确保返回的是一个数组，并且每个元素都有正确的属性
+      // Ensure the result is an array and each element has the correct properties
       return allAbilities
         .filter(ability => ability && typeof ability === 'object')
         .filter(ability => ability.isUnlocked === true);
     } catch (err) {
       console.error('Error querying unlocked abilities:', err);
-      // 如果查询失败，返回空数组
+      // If query fails, return empty array
       return [];
     }
   } catch (err) {
@@ -163,19 +163,19 @@ export async function getUnlockedPandaAbilities(): Promise<PandaAbilityRecord[]>
 }
 
 /**
- * 获取可用的熊猫能力（已解锁且未在冷却中）
+ * Get available panda abilities (unlocked and not on cooldown)
  */
 export async function getAvailablePandaAbilities(): Promise<PandaAbilityRecord[]> {
   const now = new Date();
   const unlockedAbilities = await getUnlockedPandaAbilities();
 
   return unlockedAbilities.filter(ability => {
-    // 被动能力总是可用
+    // Passive abilities are always available
     if (ability.type === AbilityType.PASSIVE) {
       return true;
     }
 
-    // 主动或终极能力需要检查冷却时间
+    // Active or ultimate abilities need to check cooldown time
     if (ability.lastUsedAt && ability.cooldownMinutes) {
       const cooldownEndTime = new Date(ability.lastUsedAt);
       cooldownEndTime.setMinutes(cooldownEndTime.getMinutes() + ability.cooldownMinutes);
@@ -188,9 +188,9 @@ export async function getAvailablePandaAbilities(): Promise<PandaAbilityRecord[]
 }
 
 /**
- * 检查并解锁熊猫能力
- * 根据熊猫当前等级解锁相应的能力
- * @param currentLevel 熊猫当前等级
+ * Check and unlock panda abilities
+ * Unlock abilities based on the current panda level
+ * @param currentLevel Current panda level
  */
 export async function checkAndUnlockAbilities(currentLevel: number): Promise<PandaAbilityRecord[]> {
   const abilities = await getAllPandaAbilities();
@@ -198,14 +198,14 @@ export async function checkAndUnlockAbilities(currentLevel: number): Promise<Pan
 
   for (const ability of abilities) {
     if (!ability.isUnlocked && ability.requiredLevel <= currentLevel) {
-      // 解锁能力
+      // Unlock ability
       const now = new Date();
       await db.table('abilities').update(ability.id!, {
         isUnlocked: true,
         unlockDate: now
       });
 
-      // 添加到新解锁列表
+      // Add to newly unlocked list
       newlyUnlocked.push({
         ...ability,
         isUnlocked: true,
@@ -218,8 +218,8 @@ export async function checkAndUnlockAbilities(currentLevel: number): Promise<Pan
 }
 
 /**
- * 激活熊猫能力
- * @param abilityId 要激活的能力ID
+ * Activate panda ability
+ * @param abilityId ID of the ability to activate
  */
 export async function activateAbility(abilityId: number): Promise<PandaAbilityRecord> {
   const ability = await db.table('abilities').get(abilityId);
@@ -232,12 +232,12 @@ export async function activateAbility(abilityId: number): Promise<PandaAbilityRe
     throw new Error(`Ability with id ${abilityId} is not unlocked yet`);
   }
 
-  // 被动能力不需要激活
+  // Passive abilities don't need activation
   if (ability.type === AbilityType.PASSIVE) {
     return ability;
   }
 
-  // 检查冷却时间
+  // Check cooldown time
   if (ability.lastUsedAt && ability.cooldownMinutes) {
     const now = new Date();
     const cooldownEndTime = new Date(ability.lastUsedAt);
@@ -248,7 +248,7 @@ export async function activateAbility(abilityId: number): Promise<PandaAbilityRe
     }
   }
 
-  // 激活能力
+  // Activate ability
   const now = new Date();
   const updatedAbility = {
     ...ability,
@@ -261,32 +261,95 @@ export async function activateAbility(abilityId: number): Promise<PandaAbilityRe
 }
 
 /**
- * 获取能力效果描述
- * @param effectType 能力效果类型
+ * Get ability effect description
+ * @param effectType Ability effect type
  */
 export function getAbilityEffectDescription(effectType: AbilityEffectType): string {
   switch (effectType) {
     case AbilityEffectType.EXPERIENCE_BOOST:
-      return '经验值提升';
+      return 'Experience Boost';
     case AbilityEffectType.ENERGY_BOOST:
-      return '能量提升';
+      return 'Energy Boost';
     case AbilityEffectType.TASK_EFFICIENCY:
-      return '任务效率提升';
+      return 'Task Efficiency Boost';
     case AbilityEffectType.REWARD_BOOST:
-      return '奖励提升';
+      return 'Reward Boost';
     case AbilityEffectType.MOOD_STABILIZER:
-      return '情绪稳定';
+      return 'Mood Stabilizer';
     case AbilityEffectType.TIME_EXTENSION:
-      return '时间延长';
+      return 'Time Extension';
     case AbilityEffectType.FOCUS_ENHANCEMENT:
-      return '专注力增强';
+      return 'Focus Enhancement';
     case AbilityEffectType.INSPIRATION:
-      return '灵感激发';
+      return 'Inspiration';
     case AbilityEffectType.RESILIENCE:
-      return '韧性增强';
+      return 'Resilience';
     case AbilityEffectType.WISDOM:
-      return '智慧提升';
+      return 'Wisdom';
     default:
-      return '未知效果';
+      return 'Unknown Effect';
   }
+}
+
+/**
+ * Get localized ability name
+ * @param abilityKey The key of the ability (e.g., 'bambooHeart')
+ * @param defaultName Default name to use if localized name is not found
+ */
+export async function getLocalizedAbilityName(abilityKey: string, defaultName: string): Promise<string> {
+  const languageCode = localStorage.getItem('language') || 'en';
+  try {
+    // Query the database directly
+    const label = await db.table('uiLabels')
+      .where('[scopeKey+labelKey+languageCode]')
+      .equals(['abilities', `${abilityKey}.name`, languageCode])
+      .first();
+
+    return label ? label.translatedText : defaultName;
+  } catch (error) {
+    console.error(`Error getting localized name for ability ${abilityKey}:`, error);
+    return defaultName;
+  }
+}
+
+/**
+ * Get localized ability description
+ * @param abilityKey The key of the ability (e.g., 'bambooHeart')
+ * @param defaultDescription Default description to use if localized description is not found
+ */
+export async function getLocalizedAbilityDescription(abilityKey: string, defaultDescription: string): Promise<string> {
+  const languageCode = localStorage.getItem('language') || 'en';
+  try {
+    // Query the database directly
+    const label = await db.table('uiLabels')
+      .where('[scopeKey+labelKey+languageCode]')
+      .equals(['abilities', `${abilityKey}.description`, languageCode])
+      .first();
+
+    return label ? label.translatedText : defaultDescription;
+  } catch (error) {
+    console.error(`Error getting localized description for ability ${abilityKey}:`, error);
+    return defaultDescription;
+  }
+}
+
+/**
+ * Get ability key from name
+ * @param name The name of the ability
+ */
+export function getAbilityKeyFromName(name: string): string {
+  const nameMap: Record<string, string> = {
+    'Bamboo Heart': 'bambooHeart',
+    'Panda Vitality': 'pandaVitality',
+    'Bamboo Focus': 'bambooFocus',
+    'Panda Wisdom': 'pandaWisdom',
+    'Bamboo Master': 'bambooMaster',
+    '竹林之心': 'bambooHeart',
+    '熊猫活力': 'pandaVitality',
+    '竹影专注': 'bambooFocus',
+    '熊猫智慧': 'pandaWisdom',
+    '竹林大师': 'bambooMaster'
+  };
+
+  return nameMap[name] || '';
 }

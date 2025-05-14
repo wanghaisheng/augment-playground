@@ -1,8 +1,8 @@
 // src/components/game/ChallengeDiscoverySection.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  getRecommendedChallenges, 
+import {
+  getRecommendedChallenges,
   getUnviewedDiscoveries,
   ChallengeRecommendation,
   ChallengeDiscovery
@@ -13,20 +13,32 @@ import ChallengeDiscoveryCard from './ChallengeDiscoveryCard';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
+import { ChallengeDiscoveryCardLabels, ChallengeRecommendationCardLabels } from '@/types';
 
 interface ChallengeDiscoverySectionProps {
   onChallengeAccepted?: () => void;
   onChallengeViewed?: (challengeId: number) => void;
+  labels?: {
+    challengeDiscoveryCard?: ChallengeDiscoveryCardLabels;
+    challengeRecommendationCard?: ChallengeRecommendationCardLabels;
+  };
 }
 
 /**
- * 挑战发现区域组件
- * 用于显示挑战发现和推荐
+ * Challenge discovery section component
+ * Used to display challenge discoveries and recommendations
+ *
+ * @param onChallengeAccepted - Callback function when a challenge is accepted
+ * @param onChallengeViewed - Callback function when a challenge is viewed
+ * @param labels - Localized labels for the component
  */
 const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
   onChallengeAccepted,
-  onChallengeViewed
+  onChallengeViewed,
+  labels
 }) => {
+  // Add console log to check labels
+  console.log('ChallengeDiscoverySection labels:', labels);
   const [recommendations, setRecommendations] = useState<ChallengeRecommendation[]>([]);
   const [discoveries, setDiscoveries] = useState<ChallengeDiscovery[]>([]);
   const [currentDiscoveryIndex, setCurrentDiscoveryIndex] = useState(0);
@@ -39,11 +51,11 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // 获取未查看的挑战发现
       const unviewedDiscoveries = await getUnviewedDiscoveries();
       setDiscoveries(unviewedDiscoveries);
-      
+
       // 获取推荐的挑战
       const recommendedChallenges = await getRecommendedChallenges(3);
       setRecommendations(recommendedChallenges);
@@ -71,10 +83,10 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
       await updateChallenge(challengeId, {
         status: ChallengeStatus.ACTIVE
       });
-      
+
       // 重新加载数据
       await loadData();
-      
+
       // 通知父组件
       if (onChallengeAccepted) {
         onChallengeAccepted();
@@ -96,13 +108,13 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
   // 处理接受发现的挑战
   const handleAcceptDiscovery = () => {
     // 移除当前发现
-    setDiscoveries(prevDiscoveries => 
+    setDiscoveries(prevDiscoveries =>
       prevDiscoveries.filter((_, index) => index !== currentDiscoveryIndex)
     );
-    
+
     // 重置索引
     setCurrentDiscoveryIndex(0);
-    
+
     // 通知父组件
     if (onChallengeAccepted) {
       onChallengeAccepted();
@@ -112,10 +124,10 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
   // 处理拒绝发现的挑战
   const handleDeclineDiscovery = () => {
     // 移除当前发现
-    setDiscoveries(prevDiscoveries => 
+    setDiscoveries(prevDiscoveries =>
       prevDiscoveries.filter((_, index) => index !== currentDiscoveryIndex)
     );
-    
+
     // 重置索引
     setCurrentDiscoveryIndex(0);
   };
@@ -123,10 +135,10 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
   // 处理关闭发现卡片
   const handleCloseDiscovery = () => {
     // 移除当前发现
-    setDiscoveries(prevDiscoveries => 
+    setDiscoveries(prevDiscoveries =>
       prevDiscoveries.filter((_, index) => index !== currentDiscoveryIndex)
     );
-    
+
     // 重置索引
     setCurrentDiscoveryIndex(0);
   };
@@ -191,10 +203,11 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
             onAccept={handleAcceptDiscovery}
             onDecline={handleDeclineDiscovery}
             onClose={handleCloseDiscovery}
+            labels={labels?.challengeDiscoveryCard}
           />
         </div>
       )}
-      
+
       {/* 挑战推荐区域 */}
       <div className="challenge-recommendations-container">
         <div className="section-header flex justify-between items-center mb-4">
@@ -207,7 +220,7 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
             {showRecommendations ? '隐藏推荐' : '查看推荐'}
           </Button>
         </div>
-        
+
         <AnimatePresence>
           {showRecommendations && (
             <motion.div
@@ -227,6 +240,7 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
                       recommendation={recommendation}
                       onAccept={handleAcceptChallenge}
                       onViewDetails={handleViewChallengeDetails}
+                      labels={labels?.challengeRecommendationCard}
                     />
                   </motion.div>
                 ))

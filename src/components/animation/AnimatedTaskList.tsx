@@ -26,6 +26,7 @@ import AnimatedButton from './AnimatedButton';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import RewardModal from '@/components/game/RewardModal';
 import TimelyRewardCard from '@/components/game/TimelyRewardCard';
+import { useComponentLabels } from '@/hooks/useComponentLabels';
 import TaskCompletionAnimation from './TaskCompletionAnimation';
 import { createContainerVariants } from '@/utils/animation';
 
@@ -62,6 +63,9 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
   const [completedTask, setCompletedTask] = useState<TaskRecord | null>(null);
   const [showCompletionAnimation, setShowCompletionAnimation] = useState(false);
 
+  // Get localized labels
+  const { labels } = useComponentLabels();
+
   // 加载任务
   const loadTasks = useCallback(async () => {
     try {
@@ -72,7 +76,7 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
       setTasks(taskList);
     } catch (err) {
       console.error('Failed to load tasks:', err);
-      setError('加载任务失败，请重试');
+      setError(labels?.error?.loadingError || 'Failed to load tasks, please try again');
     } finally {
       setIsLoading(false);
     }
@@ -141,7 +145,7 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
       // 获取要完成的任务
       const taskToComplete = tasks.find(task => task.id === taskId);
       if (!taskToComplete) {
-        throw new Error('任务不存在');
+        throw new Error(labels?.error?.taskNotFound || 'Task not found');
       }
 
       // 先显示任务完成动画
@@ -199,7 +203,7 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
       }
     } catch (err) {
       console.error('Failed to complete task:', err);
-      setError('完成任务失败，请重试');
+      setError(labels?.error?.completeTaskError || 'Failed to complete task, please try again');
       setShowCompletionAnimation(false);
     } finally {
       setIsLoading(false);
@@ -208,7 +212,7 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
 
   // 处理删除任务
   const handleDeleteTask = async (taskId: number) => {
-    if (!window.confirm('确定要删除这个任务吗？')) {
+    if (!window.confirm(labels?.deleteConfirmation || 'Are you sure you want to delete this task?')) {
       return;
     }
 
@@ -221,7 +225,7 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
       setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
     } catch (err) {
       console.error('Failed to delete task:', err);
-      setError('删除任务失败，请重试');
+      setError(labels?.error?.deleteTaskError || 'Failed to delete task, please try again');
     } finally {
       setIsLoading(false);
     }
@@ -246,7 +250,7 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
   });
 
   if (isLoading && tasks.length === 0) {
-    return <LoadingSpinner variant="jade" text="加载任务中..." />;
+    return <LoadingSpinner variant="jade" text={labels?.loading?.data || "Loading tasks..."} />;
   }
 
   if (error) {
@@ -254,7 +258,7 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
       <div className="task-list-error">
         <p>{error}</p>
         <AnimatedButton variant="jade" onClick={() => window.location.reload()}>
-          重试
+          {labels?.button?.retry || "Retry"}
         </AnimatedButton>
       </div>
     );
@@ -266,7 +270,7 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
         variants={createContainerVariants(0.1, 0.2)}
         className="task-list-empty"
       >
-        <p>暂无任务</p>
+        <p>{labels?.emptyState?.noItems || "No tasks available"}</p>
       </AnimatedContainer>
     );
   }
@@ -324,22 +328,23 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
         />
       )}
 
-      {/* 及时奖励模态框 */}
+      {/* Timely reward modal */}
       {showTimelyReward && timelyReward && (
         <div className="timely-reward-modal">
           <div className="timely-reward-modal-backdrop" onClick={handleCloseTimelyReward}></div>
           <div className="timely-reward-modal-content">
-            <h3 className="timely-reward-modal-title">及时奖励</h3>
+            <h3 className="timely-reward-modal-title">{labels?.taskReminder?.title || "Timely Reward"}</h3>
             <p className="timely-reward-modal-description">
-              恭喜！你在规定时间内完成了任务，获得了及时奖励！
+              {labels?.timelyRewardCongrats || "Congratulations! You completed the task in time and earned a timely reward!"}
             </p>
             <TimelyRewardCard
               reward={timelyReward}
               onComplete={() => {}}
+              labels={labels?.taskReminder}
             />
             <div className="timely-reward-modal-actions">
               <AnimatedButton onClick={handleCloseTimelyReward}>
-                关闭
+                {labels?.modal?.close || "Close"}
               </AnimatedButton>
             </div>
           </div>

@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorDisplay from './ErrorDisplay';
+import { useComponentLabels } from '@/hooks/useComponentLabels';
 
 interface DataLoaderProps<T> {
   isLoading: boolean;
@@ -19,35 +20,38 @@ interface DataLoaderProps<T> {
 }
 
 /**
- * 通用数据加载组件
- * 处理加载状态、错误状态和空数据状态
- * 
- * @param isLoading - 是否正在加载
- * @param isError - 是否出错
- * @param error - 错误对象
- * @param data - 数据
- * @param loadingText - 加载文本
- * @param errorTitle - 错误标题
- * @param onRetry - 重试回调
- * @param emptyState - 空数据状态组件
- * @param children - 渲染数据的函数
- * @param loadingComponent - 自定义加载组件
- * @param errorComponent - 自定义错误组件
+ * Generic data loading component
+ * Handles loading, error, and empty data states with localized text support
+ *
+ * @param isLoading - Whether data is currently loading
+ * @param isError - Whether an error occurred
+ * @param error - Error object
+ * @param data - Data to render
+ * @param loadingText - Optional custom loading text (overrides localized text)
+ * @param errorTitle - Optional custom error title (overrides localized text)
+ * @param onRetry - Optional retry callback
+ * @param emptyState - Optional custom empty state component
+ * @param children - Function to render data
+ * @param loadingComponent - Optional custom loading component
+ * @param errorComponent - Optional custom error component
  */
 function DataLoader<T>({
   isLoading,
   isError,
   error,
   data,
-  loadingText = '加载数据中...',
-  errorTitle = '加载错误',
+  loadingText,
+  errorTitle,
   onRetry,
   emptyState,
   children,
   loadingComponent,
   errorComponent
 }: DataLoaderProps<T>) {
-  // 加载状态
+  // Get localized labels
+  const { labels } = useComponentLabels();
+
+  // Loading state
   if (isLoading && !data) {
     return (
       <motion.div
@@ -56,12 +60,12 @@ function DataLoader<T>({
         exit={{ opacity: 0 }}
         className="data-loader-container"
       >
-        {loadingComponent || <LoadingSpinner variant="jade" text={loadingText} />}
+        {loadingComponent || <LoadingSpinner variant="jade" text={loadingText} type="data" />}
       </motion.div>
     );
   }
 
-  // 错误状态
+  // Error state
   if (isError && !data) {
     return (
       <motion.div
@@ -81,7 +85,7 @@ function DataLoader<T>({
     );
   }
 
-  // 空数据状态
+  // Empty data state
   if (!data) {
     return (
       <motion.div
@@ -92,14 +96,14 @@ function DataLoader<T>({
       >
         {emptyState || (
           <div className="empty-state">
-            <p>暂无数据</p>
+            <p>{labels.emptyState.noData}</p>
           </div>
         )}
       </motion.div>
     );
   }
 
-  // 渲染数据
+  // Render data
   return <>{children(data)}</>;
 }
 

@@ -4,34 +4,43 @@ import { motion, AnimatePresence } from 'framer-motion';
 import AbilityCard from './AbilityCard';
 import { PandaAbilityRecord, AbilityType } from '@/services/pandaAbilityService';
 import ScrollDialog from './ScrollDialog';
+import { AbilityCardLabels, AbilityDetailLabels, AbilityFilterLabels } from '@/types';
 
 interface AbilityListProps {
   abilities: PandaAbilityRecord[];
   unlockedAbilities: PandaAbilityRecord[];
   onActivateAbility: (abilityId: number) => Promise<void>;
   pandaLevel: number;
+  labels?: {
+    filters?: AbilityFilterLabels;
+    card?: AbilityCardLabels;
+    detail?: AbilityDetailLabels;
+    noAbilitiesMessage?: string;
+  };
 }
 
 /**
- * 熊猫能力列表组件
- * 显示所有熊猫能力，并允许激活已解锁的能力
+ * Panda ability list component
+ * Displays all panda abilities and allows activation of unlocked abilities
  *
- * @param abilities - 所有能力列表
- * @param unlockedAbilities - 已解锁的能力列表
- * @param onActivateAbility - 激活能力的回调函数
- * @param pandaLevel - 当前熊猫等级
+ * @param abilities - List of all abilities
+ * @param unlockedAbilities - List of unlocked abilities
+ * @param onActivateAbility - Callback function to activate an ability
+ * @param pandaLevel - Current panda level
+ * @param labels - Localized labels for the component
  */
 const AbilityList: React.FC<AbilityListProps> = ({
   abilities,
   unlockedAbilities,
   onActivateAbility,
-  pandaLevel
+  pandaLevel,
+  labels
 }) => {
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [selectedAbility, setSelectedAbility] = useState<PandaAbilityRecord | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
-  // 过滤能力
+  // Filter abilities based on selected filter
   const filteredAbilities = abilities.filter(ability => {
     if (activeFilter === 'all') {
       return true;
@@ -54,23 +63,23 @@ const AbilityList: React.FC<AbilityListProps> = ({
     return true;
   });
 
-  // 检查能力是否已解锁
+  // Check if ability is unlocked
   const isAbilityUnlocked = (ability: PandaAbilityRecord): boolean => {
     return unlockedAbilities.some(unlocked => unlocked.id === ability.id);
   };
 
-  // 处理能力激活
+  // Handle ability activation
   const handleActivateAbility = async (abilityId: number) => {
     await onActivateAbility(abilityId);
   };
 
-  // 打开能力详情模态框
+  // Open ability detail modal
   const openAbilityDetail = (ability: PandaAbilityRecord) => {
     setSelectedAbility(ability);
     setIsDetailModalOpen(true);
   };
 
-  // 关闭能力详情模态框
+  // Close ability detail modal
   const closeAbilityDetail = () => {
     setIsDetailModalOpen(false);
     setSelectedAbility(null);
@@ -78,43 +87,46 @@ const AbilityList: React.FC<AbilityListProps> = ({
 
   return (
     <div className="ability-list-container">
-      <div className="ability-filters">
-        <button
-          className={`filter-button ${activeFilter === 'all' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('all')}
-        >
-          全部
-        </button>
-        <button
-          className={`filter-button ${activeFilter === 'unlocked' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('unlocked')}
-        >
-          已解锁
-        </button>
-        <button
-          className={`filter-button ${activeFilter === 'locked' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('locked')}
-        >
-          未解锁
-        </button>
-        <button
-          className={`filter-button ${activeFilter === 'passive' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('passive')}
-        >
-          被动
-        </button>
-        <button
-          className={`filter-button ${activeFilter === 'active' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('active')}
-        >
-          主动
-        </button>
-        <button
-          className={`filter-button ${activeFilter === 'ultimate' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('ultimate')}
-        >
-          终极
-        </button>
+      <div className="filter-section">
+        <h3 className="filter-title">{labels?.filters?.statusLabel || 'Status'}</h3>
+        <div className="ability-filters">
+          <button
+            className={`filter-button ${activeFilter === 'all' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('all')}
+          >
+            {labels?.filters?.allLabel || 'All'}
+          </button>
+          <button
+            className={`filter-button ${activeFilter === 'unlocked' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('unlocked')}
+          >
+            {labels?.filters?.unlockedLabel || 'Unlocked'}
+          </button>
+          <button
+            className={`filter-button ${activeFilter === 'locked' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('locked')}
+          >
+            {labels?.filters?.lockedLabel || 'Locked'}
+          </button>
+          <button
+            className={`filter-button ${activeFilter === 'passive' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('passive')}
+          >
+            {labels?.filters?.passiveLabel || 'Passive'}
+          </button>
+          <button
+            className={`filter-button ${activeFilter === 'active' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('active')}
+          >
+            {labels?.filters?.activeLabel || 'Active'}
+          </button>
+          <button
+            className={`filter-button ${activeFilter === 'ultimate' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('ultimate')}
+          >
+            {labels?.filters?.ultimateLabel || 'Ultimate'}
+          </button>
+        </div>
       </div>
 
       <div className="abilities-grid">
@@ -133,6 +145,7 @@ const AbilityList: React.FC<AbilityListProps> = ({
                 ability={ability}
                 isUnlocked={isAbilityUnlocked(ability)}
                 onActivate={() => ability.id && handleActivateAbility(ability.id)}
+                labels={labels?.card}
               />
             </motion.div>
           ))}
@@ -141,15 +154,15 @@ const AbilityList: React.FC<AbilityListProps> = ({
 
       {filteredAbilities.length === 0 && (
         <div className="no-abilities">
-          <p>没有符合条件的能力</p>
+          <p>{labels?.noAbilitiesMessage || 'No abilities match the current filter'}</p>
         </div>
       )}
 
-      {/* 能力详情模态框 */}
+      {/* Ability detail modal */}
       <ScrollDialog
         isOpen={isDetailModalOpen}
         onClose={closeAbilityDetail}
-        title={selectedAbility?.name || '能力详情'}
+        title={selectedAbility?.name || labels?.detail?.title || 'Ability Details'}
       >
         {selectedAbility && (
           <div className="ability-detail">
@@ -172,31 +185,34 @@ const AbilityList: React.FC<AbilityListProps> = ({
 
               <div className="ability-detail-meta">
                 <div className="meta-item">
-                  <span className="meta-label">类型:</span>
+                  <span className="meta-label">{labels?.detail?.typeLabel || 'Type'}:</span>
                   <span className="meta-value">
-                    {selectedAbility.type === AbilityType.PASSIVE ? '被动' :
-                     selectedAbility.type === AbilityType.ACTIVE ? '主动' : '终极'}
+                    {selectedAbility.type === AbilityType.PASSIVE
+                      ? (labels?.card?.typePassive || 'Passive')
+                      : selectedAbility.type === AbilityType.ACTIVE
+                        ? (labels?.card?.typeActive || 'Active')
+                        : (labels?.card?.typeUltimate || 'Ultimate')}
                   </span>
                 </div>
 
                 <div className="meta-item">
-                  <span className="meta-label">效果值:</span>
+                  <span className="meta-label">{labels?.detail?.effectLabel || 'Effect Value'}:</span>
                   <span className="meta-value">{selectedAbility.effectValue * 100}%</span>
                 </div>
 
                 {selectedAbility.cooldownMinutes && (
                   <div className="meta-item">
-                    <span className="meta-label">冷却时间:</span>
-                    <span className="meta-value">{selectedAbility.cooldownMinutes} 分钟</span>
+                    <span className="meta-label">{labels?.detail?.cooldownLabel || 'Cooldown'}:</span>
+                    <span className="meta-value">{selectedAbility.cooldownMinutes} {labels?.card?.minutesUnit || 'minutes'}</span>
                   </div>
                 )}
 
                 <div className="meta-item">
-                  <span className="meta-label">解锁等级:</span>
+                  <span className="meta-label">{labels?.detail?.requiredLevelLabel || 'Required Level'}:</span>
                   <span className="meta-value">
                     {selectedAbility.requiredLevel}
                     {pandaLevel < selectedAbility.requiredLevel &&
-                      ` (还需 ${selectedAbility.requiredLevel - pandaLevel} 级)`}
+                      ` (${labels?.detail?.levelsNeededText || 'Need'} ${selectedAbility.requiredLevel - pandaLevel} ${labels?.detail?.levelsNeededText ? '' : 'more'})`}
                   </span>
                 </div>
               </div>
@@ -211,7 +227,9 @@ const AbilityList: React.FC<AbilityListProps> = ({
                     }}
                     disabled={selectedAbility.isActive}
                   >
-                    {selectedAbility.isActive ? '已激活' : '激活能力'}
+                    {selectedAbility.isActive
+                      ? (labels?.detail?.alreadyActivatedText || 'Already Activated')
+                      : (labels?.detail?.activateButtonText || 'Activate Ability')}
                   </button>
                 </div>
               )}

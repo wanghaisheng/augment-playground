@@ -6,24 +6,35 @@ import { ChallengeRecord, getChallenge, ChallengeDifficulty } from '@/services/c
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { playSound, SoundType } from '@/utils/sound';
+import { ChallengeDiscoveryCardLabels } from '@/types';
 
 interface ChallengeDiscoveryCardProps {
   discovery: ChallengeDiscovery;
   onAccept?: () => void;
   onDecline?: () => void;
   onClose?: () => void;
+  labels?: ChallengeDiscoveryCardLabels;
 }
 
 /**
- * 挑战发现卡片组件
- * 用于显示发现的挑战和相关操作
+ * Challenge discovery card component
+ * Used to display discovered challenges and related actions
+ *
+ * @param discovery - Challenge discovery data
+ * @param onAccept - Callback function when challenge is accepted
+ * @param onDecline - Callback function when challenge is declined
+ * @param onClose - Callback function when card is closed
+ * @param labels - Localized labels for the component
  */
 const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
   discovery,
   onAccept,
   onDecline,
-  onClose
+  onClose,
+  labels
 }) => {
+  // Add console log to check labels
+  console.log('ChallengeDiscoveryCard labels:', labels);
   const [challenge, setChallenge] = useState<ChallengeRecord | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,27 +47,27 @@ const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // 获取挑战数据
         const challengeData = await getChallenge(discovery.challengeId);
         if (challengeData) {
           setChallenge(challengeData);
-          
+
           // 标记为已查看
           if (!discovery.isViewed) {
             await markDiscoveryAsViewed(discovery.id!);
           }
         } else {
-          setError('无法加载挑战数据');
+          setError(labels?.cannotLoadChallenge || 'Unable to load challenge data');
         }
       } catch (err) {
         console.error('Failed to load challenge:', err);
-        setError('加载挑战失败，请重试');
+        setError(labels?.errorLoadingChallenge || 'Failed to load challenge, please try again');
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     loadChallenge();
   }, [discovery]);
 
@@ -64,16 +75,16 @@ const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
   const handleAccept = async () => {
     try {
       setIsAccepting(true);
-      
+
       // 接受挑战
       await acceptChallenge(discovery.id!);
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 触发关闭动画
       setIsVisible(false);
-      
+
       // 通知父组件
       if (onAccept) {
         setTimeout(() => {
@@ -92,10 +103,10 @@ const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
   const handleDecline = () => {
     // 播放点击音效
     playSound(SoundType.BUTTON_CLICK, 0.3);
-    
+
     // 触发关闭动画
     setIsVisible(false);
-    
+
     // 通知父组件
     if (onDecline) {
       setTimeout(() => {
@@ -108,10 +119,10 @@ const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
   const handleClose = () => {
     // 播放点击音效
     playSound(SoundType.BUTTON_CLICK, 0.3);
-    
+
     // 触发关闭动画
     setIsVisible(false);
-    
+
     // 通知父组件
     if (onClose) {
       setTimeout(() => {
@@ -139,16 +150,16 @@ const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
   // 计算剩余时间
   const getRemainingTime = () => {
     if (!discovery.expiresAt) return '永不过期';
-    
+
     const now = new Date();
     const expiresAt = new Date(discovery.expiresAt);
     const diffMs = expiresAt.getTime() - now.getTime();
-    
+
     if (diffMs <= 0) return '已过期';
-    
+
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    
+
     if (diffDays > 0) {
       return `${diffDays}天${diffHours}小时`;
     } else {
@@ -172,7 +183,7 @@ const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
               <button
                 onClick={handleClose}
                 className="text-gray-500 hover:text-gray-700"
-                aria-label="关闭"
+                aria-label={labels?.closeButtonAriaLabel || "Close"}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -184,7 +195,7 @@ const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
               剩余时间: {getRemainingTime()}
             </p>
           </div>
-          
+
           {/* 卡片内容 */}
           <div className="card-content p-4">
             {isLoading ? (
@@ -221,25 +232,25 @@ const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="challenge-description mb-4">
                   <p className="text-gray-700">{challenge.description}</p>
                 </div>
-                
+
                 <div className="challenge-dates text-sm text-gray-600 mb-4">
-                  <p>开始日期: {new Date(challenge.startDate).toLocaleDateString()}</p>
+                  <p>{labels?.startDateLabel || 'Start Date'}: {new Date(challenge.startDate).toLocaleDateString()}</p>
                   {challenge.endDate && (
-                    <p>结束日期: {new Date(challenge.endDate).toLocaleDateString()}</p>
+                    <p>{labels?.endDateLabel || 'End Date'}: {new Date(challenge.endDate).toLocaleDateString()}</p>
                   )}
                 </div>
               </div>
             ) : (
               <div className="text-center p-4">
-                无法加载挑战信息
+                {labels?.cannotLoadChallenge || 'Unable to load challenge information'}
               </div>
             )}
           </div>
-          
+
           {/* 卡片底部 */}
           <div className="card-footer bg-gray-50 p-4 border-t border-gray-200 flex justify-end gap-2">
             <Button
@@ -247,7 +258,7 @@ const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
               onClick={handleDecline}
               disabled={isAccepting}
             >
-              稍后再说
+              {labels?.laterButton || 'Maybe Later'}
             </Button>
             <Button
               variant="jade"
@@ -257,7 +268,7 @@ const ChallengeDiscoveryCard: React.FC<ChallengeDiscoveryCardProps> = ({
               {isAccepting ? (
                 <LoadingSpinner variant="white" size="small" />
               ) : (
-                '接受挑战'
+                labels?.acceptButton || 'Accept Challenge'
               )}
             </Button>
           </div>

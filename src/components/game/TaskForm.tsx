@@ -1,27 +1,67 @@
 // src/components/game/TaskForm.tsx
 import React, { useState, useEffect } from 'react';
-import { 
-  TaskRecord, 
-  TaskPriority, 
-  TaskType, 
+import {
+  TaskRecord,
+  TaskPriority,
+  TaskType,
   TaskCategoryRecord,
   getAllTaskCategories
 } from '@/services/taskService';
 import Button from '@/components/common/Button';
 
+interface TaskFormLabels {
+  title?: {
+    create?: string;
+    edit?: string;
+  };
+  fields?: {
+    titleLabel?: string;
+    titlePlaceholder?: string;
+    titleRequired?: string;
+    descriptionLabel?: string;
+    descriptionPlaceholder?: string;
+    categoryLabel?: string;
+    categoryPlaceholder?: string;
+    categoryRequired?: string;
+    typeLabel?: string;
+    priorityLabel?: string;
+    dueDateLabel?: string;
+    estimatedTimeLabel?: string;
+    estimatedTimePlaceholder?: string;
+  };
+  types?: {
+    daily?: string;
+    main?: string;
+    side?: string;
+  };
+  priorities?: {
+    low?: string;
+    medium?: string;
+    high?: string;
+  };
+  buttons?: {
+    create?: string;
+    save?: string;
+    cancel?: string;
+  };
+}
+
 interface TaskFormProps {
   initialTask?: Partial<TaskRecord>;
   onSubmit: (task: Omit<TaskRecord, 'id' | 'createdAt' | 'updatedAt' | 'status'>) => void;
   onCancel: () => void;
+  labels?: TaskFormLabels;
 }
 
 /**
- * 任务表单组件，用于创建和编辑任务
+ * Task Form Component
+ * Used for creating and editing tasks
  */
 const TaskForm: React.FC<TaskFormProps> = ({
   initialTask = {},
   onSubmit,
-  onCancel
+  onCancel,
+  labels
 }) => {
   // 表单状态
   const [title, setTitle] = useState(initialTask.title || '');
@@ -30,8 +70,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
   const [type, setType] = useState<TaskType>(initialTask.type || TaskType.DAILY);
   const [priority, setPriority] = useState<TaskPriority>(initialTask.priority || TaskPriority.MEDIUM);
   const [dueDate, setDueDate] = useState<string>(
-    initialTask.dueDate 
-      ? new Date(initialTask.dueDate).toISOString().split('T')[0] 
+    initialTask.dueDate
+      ? new Date(initialTask.dueDate).toISOString().split('T')[0]
       : ''
   );
   const [estimatedMinutes, setEstimatedMinutes] = useState<number | undefined>(
@@ -48,7 +88,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         setIsLoading(true);
         const allCategories = await getAllTaskCategories();
         setCategories(allCategories);
-        
+
         // 如果没有选择类别，默认选择第一个
         if (!categoryId && allCategories.length > 0) {
           setCategoryId(allCategories[0].id);
@@ -59,22 +99,22 @@ const TaskForm: React.FC<TaskFormProps> = ({
         setIsLoading(false);
       }
     };
-    
+
     loadCategories();
   }, [categoryId]);
 
-  // 验证表单
+  // Validate form
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!title.trim()) {
-      newErrors.title = '请输入任务标题';
+      newErrors.title = labels?.fields?.titleRequired || 'Please enter a task title';
     }
-    
+
     if (!categoryId) {
-      newErrors.categoryId = '请选择任务类别';
+      newErrors.categoryId = labels?.fields?.categoryRequired || 'Please select a task category';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -82,11 +122,11 @@ const TaskForm: React.FC<TaskFormProps> = ({
   // 处理表单提交
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     const taskData: Omit<TaskRecord, 'id' | 'createdAt' | 'updatedAt' | 'status'> = {
       title,
       description: description || undefined,
@@ -96,40 +136,40 @@ const TaskForm: React.FC<TaskFormProps> = ({
       dueDate: dueDate ? new Date(dueDate) : undefined,
       estimatedMinutes: estimatedMinutes || undefined
     };
-    
+
     onSubmit(taskData);
   };
 
   return (
     <form className="task-form bamboo-frame" onSubmit={handleSubmit}>
-      <h2>{initialTask.id ? '编辑任务' : '创建新任务'}</h2>
-      
+      <h2>{initialTask.id ? (labels?.title?.edit || "Edit Task") : (labels?.title?.create || "Create New Task")}</h2>
+
       <div className="form-group">
-        <label htmlFor="task-title">标题 *</label>
+        <label htmlFor="task-title">{labels?.fields?.titleLabel || "Title"} *</label>
         <input
           id="task-title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className={errors.title ? 'error' : ''}
-          placeholder="输入任务标题"
+          placeholder={labels?.fields?.titlePlaceholder || "Enter task title"}
         />
         {errors.title && <div className="error-message">{errors.title}</div>}
       </div>
-      
+
       <div className="form-group">
-        <label htmlFor="task-description">描述</label>
+        <label htmlFor="task-description">{labels?.fields?.descriptionLabel || "Description"}</label>
         <textarea
           id="task-description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="输入任务描述（可选）"
+          placeholder={labels?.fields?.descriptionPlaceholder || "Enter task description (optional)"}
           rows={3}
         />
       </div>
-      
+
       <div className="form-group">
-        <label htmlFor="task-category">类别 *</label>
+        <label htmlFor="task-category">{labels?.fields?.categoryLabel || "Category"} *</label>
         <select
           id="task-category"
           value={categoryId}
@@ -137,7 +177,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
           className={errors.categoryId ? 'error' : ''}
           disabled={isLoading}
         >
-          <option value="">选择类别</option>
+          <option value="">{labels?.fields?.categoryPlaceholder || "Select category"}</option>
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
               {category.name}
@@ -146,35 +186,35 @@ const TaskForm: React.FC<TaskFormProps> = ({
         </select>
         {errors.categoryId && <div className="error-message">{errors.categoryId}</div>}
       </div>
-      
+
       <div className="form-group">
-        <label htmlFor="task-type">任务类型</label>
+        <label htmlFor="task-type">{labels?.fields?.typeLabel || "Task Type"}</label>
         <select
           id="task-type"
           value={type}
           onChange={(e) => setType(e.target.value as TaskType)}
         >
-          <option value={TaskType.DAILY}>日常任务</option>
-          <option value={TaskType.MAIN}>主线任务</option>
-          <option value={TaskType.SIDE}>支线任务</option>
+          <option value={TaskType.DAILY}>{labels?.types?.daily || "Daily Task"}</option>
+          <option value={TaskType.MAIN}>{labels?.types?.main || "Main Task"}</option>
+          <option value={TaskType.SIDE}>{labels?.types?.side || "Side Task"}</option>
         </select>
       </div>
-      
+
       <div className="form-group">
-        <label htmlFor="task-priority">优先级</label>
+        <label htmlFor="task-priority">{labels?.fields?.priorityLabel || "Priority"}</label>
         <select
           id="task-priority"
           value={priority}
           onChange={(e) => setPriority(e.target.value as TaskPriority)}
         >
-          <option value={TaskPriority.LOW}>低</option>
-          <option value={TaskPriority.MEDIUM}>中</option>
-          <option value={TaskPriority.HIGH}>高</option>
+          <option value={TaskPriority.LOW}>{labels?.priorities?.low || "Low"}</option>
+          <option value={TaskPriority.MEDIUM}>{labels?.priorities?.medium || "Medium"}</option>
+          <option value={TaskPriority.HIGH}>{labels?.priorities?.high || "High"}</option>
         </select>
       </div>
-      
+
       <div className="form-group">
-        <label htmlFor="task-due-date">截止日期</label>
+        <label htmlFor="task-due-date">{labels?.fields?.dueDateLabel || "Due Date"}</label>
         <input
           id="task-due-date"
           type="date"
@@ -182,25 +222,25 @@ const TaskForm: React.FC<TaskFormProps> = ({
           onChange={(e) => setDueDate(e.target.value)}
         />
       </div>
-      
+
       <div className="form-group">
-        <label htmlFor="task-estimated-time">预计时间（分钟）</label>
+        <label htmlFor="task-estimated-time">{labels?.fields?.estimatedTimeLabel || "Estimated Time (minutes)"}</label>
         <input
           id="task-estimated-time"
           type="number"
           min="1"
           value={estimatedMinutes || ''}
           onChange={(e) => setEstimatedMinutes(e.target.value ? Number(e.target.value) : undefined)}
-          placeholder="预计完成时间（可选）"
+          placeholder={labels?.fields?.estimatedTimePlaceholder || "Estimated completion time (optional)"}
         />
       </div>
-      
+
       <div className="form-actions">
         <Button variant="jade" type="submit">
-          {initialTask.id ? '保存修改' : '创建任务'}
+          {initialTask.id ? (labels?.buttons?.save || "Save Changes") : (labels?.buttons?.create || "Create Task")}
         </Button>
         <Button variant="secondary" type="button" onClick={onCancel}>
-          取消
+          {labels?.buttons?.cancel || "Cancel"}
         </Button>
       </div>
     </form>

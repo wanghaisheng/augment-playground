@@ -13,8 +13,8 @@ import { fetchAbilitiesPageView } from '@/services';
 import { AbilitiesPageViewLabelsBundle } from '@/types';
 
 /**
- * 熊猫能力页面
- * 显示所有熊猫能力，并允许激活已解锁的能力
+ * Panda Abilities Page
+ * Displays all panda abilities and allows activation of unlocked abilities
  */
 const AbilitiesPage: React.FC = () => {
   const {
@@ -75,10 +75,10 @@ const AbilitiesPage: React.FC = () => {
         <div className="page-content">
           <ErrorDisplay
             error={error}
-            title={pageLabels?.errorTitle || "加载能力失败"}
-            messageTemplate={pageLabels?.errorMessage || "无法加载能力数据: {message}"}
+            title={pageLabels?.errorTitle || "Failed to Load Abilities"}
+            messageTemplate={pageLabels?.errorMessage || "Unable to load ability data: {message}"}
             onRetry={refetch}
-            retryButtonText={pageLabels?.retryButtonText || "重试"}
+            retryButtonText={pageLabels?.retryButtonText || "Retry"}
           />
         </div>
       </PageTransition>
@@ -89,11 +89,11 @@ const AbilitiesPage: React.FC = () => {
     <PageTransition>
       <div className="page-content">
         <div className="bamboo-frame">
-          <h2>{pageLabels?.pageTitle || "熊猫能力"}</h2>
+          <h2>{pageLabels?.pageTitle || "Panda Abilities"}</h2>
 
           {isLoading ? (
             <div className="loading-container">
-              <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "加载能力中..."} />
+              <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "Loading abilities..."} />
             </div>
           ) : (
             <>
@@ -104,8 +104,8 @@ const AbilitiesPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <h3>{pageLabels?.pandaLevelLabel || "熊猫等级"}: {pandaState?.level || 1}</h3>
-                  <p>{pageLabels?.unlockedAbilitiesLabel || "解锁能力"}: {unlockedAbilities.length} / {abilities.length}</p>
+                  <h3>{pageLabels?.pandaLevelLabel || "Panda Level"}: {pandaState?.level || 1}</h3>
+                  <p>{pageLabels?.unlockedAbilitiesLabel || "Unlocked Abilities"}: {unlockedAbilities.length} / {abilities.length}</p>
                 </motion.div>
 
                 <motion.div
@@ -116,7 +116,7 @@ const AbilitiesPage: React.FC = () => {
                 >
                   <p>
                     {pageLabels?.abilitiesDescription ||
-                      "熊猫能力可以帮助你更高效地完成任务，获得更多奖励。随着熊猫等级的提升，你将解锁更多强大的能力。"}
+                      "Panda abilities help you complete tasks more efficiently and earn more rewards. As your panda levels up, you'll unlock more powerful abilities."}
                   </p>
                 </motion.div>
               </div>
@@ -126,16 +126,23 @@ const AbilitiesPage: React.FC = () => {
                 unlockedAbilities={unlockedAbilities}
                 onActivateAbility={handleActivateAbility}
                 pandaLevel={pandaState?.level || 1}
+                labels={{
+                  filters: pageLabels?.filters,
+                  card: pageLabels?.abilityCard,
+                  detail: pageLabels?.abilityDetail,
+                  noAbilitiesMessage: pageLabels?.noAbilitiesMessage
+                }}
               />
             </>
           )}
         </div>
 
-        {/* 能力解锁通知 */}
+        {/* Ability unlock notification */}
         {showUnlockNotification && (
           <AbilityUnlockNotification
             newlyUnlockedAbilities={newlyUnlockedAbilities}
             onClose={handleCloseUnlockNotification}
+            labels={pageLabels?.abilityUnlockNotification}
           />
         )}
       </div>

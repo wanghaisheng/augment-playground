@@ -18,8 +18,8 @@ import { fetchTimelyRewardsPageView } from '@/services';
 import type { TimelyRewardsPageViewLabelsBundle } from '@/types';
 
 /**
- * 及时奖励页面
- * 显示及时奖励列表和幸运抽奖
+ * Timely Rewards Page
+ * Displays timely rewards list and lucky draw
  */
 const TimelyRewardsPage: React.FC = () => {
   const [filter, setFilter] = useState<{
@@ -41,44 +41,44 @@ const TimelyRewardsPage: React.FC = () => {
     fetchTimelyRewardsPageView
   );
 
-  // 初始化及时奖励
+  // Initialize timely rewards
   useEffect(() => {
     initializeTimelyRewards();
   }, []);
 
-  // 处理状态过滤
+  // Handle status filter
   const handleStatusFilter = (status?: TimelyRewardStatus) => {
     setFilter(prev => ({ ...prev, status }));
   };
 
-  // 处理类型过滤
+  // Handle type filter
   const handleTypeFilter = (type?: TimelyRewardType) => {
     setFilter(prev => ({ ...prev, type }));
   };
 
-  // 清除所有过滤器
+  // Clear all filters
   const clearAllFilters = () => {
     setFilter({});
   };
 
-  // 打开幸运抽奖
+  // Open lucky draw
   const openLuckyDraw = () => {
     setShowLuckyDraw(true);
   };
 
-  // 关闭幸运抽奖
+  // Close lucky draw
   const closeLuckyDraw = () => {
     setShowLuckyDraw(false);
   };
 
-  if (isPending && !pageLabels) { // 完整页面初始加载
-    return <LoadingSpinner variant="jade" text="加载及时奖励页面内容..." />;
+  if (isPending && !pageLabels) { // Full page initial loading
+    return <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "Loading rewards..."} />;
   }
 
-  if (isError && !pageLabels) { // 关键错误：页面标签加载失败
+  if (isError && !pageLabels) { // Critical error: page labels failed to load
     return (
       <div className="page-content">
-        <ErrorDisplay error={error} title="及时奖励页面错误" onRetry={refetch} />
+        <ErrorDisplay error={error} title={pageLabels?.errorTitle || "Timely Rewards Page Error"} onRetry={refetch} />
       </div>
     );
   }
@@ -92,98 +92,101 @@ const TimelyRewardsPage: React.FC = () => {
         exit={{ opacity: 0 }}
       >
         <div className="page-header">
-          <h1 className="page-title">{pageLabels?.pageTitle || '及时奖励'}</h1>
+          <h1 className="page-title">{pageLabels?.pageTitle || 'Timely Rewards'}</h1>
           <AnimatedButton
             onClick={openLuckyDraw}
             className="lucky-draw-button"
           >
-            {pageLabels?.luckyDraw?.buttonText || '幸运抽奖'}
+            {pageLabels?.luckyDraw?.buttonText || 'Lucky Draw'}
           </AnimatedButton>
         </div>
 
         <div className="filter-section">
           <div className="filter-group">
-            <h3 className="filter-title">状态</h3>
+            <h3 className="filter-title">{pageLabels?.filters?.statusLabel || 'Status'}</h3>
             <div className="filter-buttons">
               <AnimatedButton
                 onClick={() => handleStatusFilter(undefined)}
                 className={!filter.status ? 'active' : ''}
               >
-                {pageLabels?.filters?.allLabel || '全部'}
+                {pageLabels?.filters?.allLabel || 'All'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleStatusFilter(TimelyRewardStatus.ACTIVE)}
                 className={filter.status === TimelyRewardStatus.ACTIVE ? 'active' : ''}
               >
-                {pageLabels?.filters?.activeLabel || '进行中'}
+                {pageLabels?.filters?.activeLabel || 'Active'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleStatusFilter(TimelyRewardStatus.COMPLETED)}
                 className={filter.status === TimelyRewardStatus.COMPLETED ? 'active' : ''}
               >
-                {pageLabels?.filters?.completedLabel || '已完成'}
+                {pageLabels?.filters?.completedLabel || 'Completed'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleStatusFilter(TimelyRewardStatus.UPCOMING)}
                 className={filter.status === TimelyRewardStatus.UPCOMING ? 'active' : ''}
               >
-                {pageLabels?.filters?.upcomingLabel || '即将开始'}
+                {pageLabels?.filters?.upcomingLabel || 'Upcoming'}
               </AnimatedButton>
             </div>
           </div>
 
           <div className="filter-group">
-            <h3 className="filter-title">类型</h3>
+            <h3 className="filter-title">{pageLabels?.filters?.typeLabel || 'Type'}</h3>
             <div className="filter-buttons">
               <AnimatedButton
                 onClick={() => handleTypeFilter(undefined)}
                 className={!filter.type ? 'active' : ''}
               >
-                {pageLabels?.filters?.typeAllLabel || '全部'}
+                {pageLabels?.filters?.typeAllLabel || 'All'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(TimelyRewardType.DAILY)}
                 className={filter.type === TimelyRewardType.DAILY ? 'active' : ''}
               >
-                {pageLabels?.filters?.typeDailyLabel || '每日奖励'}
+                {pageLabels?.filters?.typeDailyLabel || 'Daily Reward'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(TimelyRewardType.MORNING)}
                 className={filter.type === TimelyRewardType.MORNING ? 'active' : ''}
               >
-                {pageLabels?.filters?.typeMorningLabel || '早起鸟奖励'}
+                {pageLabels?.filters?.typeMorningLabel || 'Early Bird Reward'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(TimelyRewardType.STREAK)}
                 className={filter.type === TimelyRewardType.STREAK ? 'active' : ''}
               >
-                {pageLabels?.filters?.typeStreakLabel || '连续完成奖励'}
+                {pageLabels?.filters?.typeStreakLabel || 'Streak Reward'}
               </AnimatedButton>
               <AnimatedButton
                 onClick={() => handleTypeFilter(TimelyRewardType.SPECIAL)}
                 className={filter.type === TimelyRewardType.SPECIAL ? 'active' : ''}
               >
-                {pageLabels?.filters?.typeSpecialLabel || '特殊奖励'}
+                {pageLabels?.filters?.typeSpecialLabel || 'Special Reward'}
               </AnimatedButton>
             </div>
           </div>
 
           <div className="filter-actions">
             <AnimatedButton onClick={clearAllFilters} className="clear-filters-button">
-              {pageLabels?.filters?.clearFiltersLabel || '清除所有过滤器'}
+              {pageLabels?.filters?.clearFiltersLabel || 'Clear All Filters'}
             </AnimatedButton>
           </div>
         </div>
 
         <div className="rewards-container">
-          <TimelyRewardList filter={filter} />
+          <TimelyRewardList
+            filter={filter}
+            labels={pageLabels?.rewardCard}
+          />
         </div>
 
-        {/* 幸运抽奖模态框 */}
+        {/* Lucky Draw Modal */}
         {showLuckyDraw && (
           <ScrollDialog
             isOpen={showLuckyDraw}
-            title={pageLabels?.luckyDraw?.title || '幸运抽奖'}
+            title={pageLabels?.luckyDraw?.title || 'Lucky Draw'}
             onClose={closeLuckyDraw}
           >
             <div className="lucky-draw-dialog">

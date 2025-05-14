@@ -366,3 +366,131 @@ export async function updateChallengeProgressFromTasks(challengeId: number): Pro
   // 更新挑战进度
   return updateChallengeProgress(challengeId, progress);
 }
+
+/**
+ * Generate test challenge data
+ * Creates sample challenges for testing
+ */
+export async function generateTestChallengeData(): Promise<void> {
+  try {
+    // Check if challenges already exist
+    const existingChallenges = await db.table('challenges').count();
+    if (existingChallenges > 0) {
+      console.log('Test challenge data already exists, skipping generation');
+      return;
+    }
+
+    // Initialize challenge categories if needed
+    await initializeChallengeCategories();
+
+    // Sample challenge data
+    const testChallenges: Omit<ChallengeRecord, 'id' | 'createdAt' | 'updatedAt'>[] = [
+      // Active challenges
+      {
+        title: 'Morning Meditation',
+        description: 'Complete a 10-minute meditation session every morning for 7 days to improve focus and mindfulness.',
+        type: ChallengeType.DAILY,
+        difficulty: ChallengeDifficulty.EASY,
+        status: ChallengeStatus.ACTIVE,
+        progress: 57,
+        startDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+        endDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),   // 4 days from now
+        taskIds: [],
+        iconPath: '/assets/challenges/meditation.svg'
+      },
+      {
+        title: 'Productivity Sprint',
+        description: 'Complete 20 high-priority tasks within 5 days to boost your productivity and task management skills.',
+        type: ChallengeType.WEEKLY,
+        difficulty: ChallengeDifficulty.MEDIUM,
+        status: ChallengeStatus.ACTIVE,
+        progress: 35,
+        startDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+        endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),   // 5 days from now
+        taskIds: [],
+        iconPath: '/assets/challenges/productivity.svg'
+      },
+      {
+        title: 'Healthy Eating Challenge',
+        description: 'Prepare and eat healthy meals for 14 days straight. Track your nutrition and avoid processed foods.',
+        type: ChallengeType.ONGOING,
+        difficulty: ChallengeDifficulty.HARD,
+        status: ChallengeStatus.ACTIVE,
+        progress: 21,
+        startDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+        endDate: new Date(Date.now() + 11 * 24 * 60 * 60 * 1000),  // 11 days from now
+        taskIds: [],
+        iconPath: '/assets/challenges/health.svg'
+      },
+
+      // Completed challenges
+      {
+        title: 'Reading Marathon',
+        description: 'Read for at least 30 minutes every day for a week to develop a reading habit.',
+        type: ChallengeType.WEEKLY,
+        difficulty: ChallengeDifficulty.EASY,
+        status: ChallengeStatus.COMPLETED,
+        progress: 100,
+        startDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 14 days ago
+        endDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),     // 7 days ago
+        completedDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        taskIds: [],
+        iconPath: '/assets/challenges/learning.svg'
+      },
+      {
+        title: 'Coding Project',
+        description: 'Complete a personal coding project within 10 days to improve your programming skills.',
+        type: ChallengeType.EVENT,
+        difficulty: ChallengeDifficulty.HARD,
+        status: ChallengeStatus.COMPLETED,
+        progress: 100,
+        startDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000), // 20 days ago
+        endDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),   // 10 days ago
+        completedDate: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000),
+        taskIds: [],
+        iconPath: '/assets/challenges/learning.svg'
+      },
+
+      // Upcoming challenges
+      {
+        title: 'Fitness Challenge',
+        description: 'Exercise for at least 30 minutes every day for 21 days to build a fitness habit.',
+        type: ChallengeType.ONGOING,
+        difficulty: ChallengeDifficulty.MEDIUM,
+        status: ChallengeStatus.UPCOMING,
+        progress: 0,
+        startDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),  // 2 days from now
+        endDate: new Date(Date.now() + 23 * 24 * 60 * 60 * 1000),   // 23 days from now
+        taskIds: [],
+        iconPath: '/assets/challenges/health.svg'
+      },
+      {
+        title: 'Language Learning Sprint',
+        description: 'Practice a new language for 15 minutes daily for 30 days to build vocabulary and fluency.',
+        type: ChallengeType.EVENT,
+        difficulty: ChallengeDifficulty.EXPERT,
+        status: ChallengeStatus.UPCOMING,
+        progress: 0,
+        startDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),  // 5 days from now
+        endDate: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000),   // 35 days from now
+        taskIds: [],
+        iconPath: '/assets/challenges/learning.svg'
+      }
+    ];
+
+    // Add challenges to database
+    const now = new Date();
+    for (const challenge of testChallenges) {
+      const challengeWithDates = {
+        ...challenge,
+        createdAt: now,
+        updatedAt: now
+      };
+      await db.table('challenges').add(challengeWithDates);
+    }
+
+    console.log('Test challenge data generated successfully');
+  } catch (error) {
+    console.error('Error generating test challenge data:', error);
+  }
+}

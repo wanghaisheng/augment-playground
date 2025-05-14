@@ -9,13 +9,28 @@ interface ChallengeCardProps {
   challenge: ChallengeRecord;
   onClick?: (challenge: ChallengeRecord) => void;
   onComplete?: (challengeId: number) => void;
+  labels?: {
+    statusActive?: string;
+    statusCompleted?: string;
+    statusExpired?: string;
+    statusUpcoming?: string;
+    difficultyEasy?: string;
+    difficultyMedium?: string;
+    difficultyHard?: string;
+    difficultyExpert?: string;
+    startLabel?: string;
+    endLabel?: string;
+    completedOnLabel?: string;
+    completeButtonText?: string;
+    inProgressText?: string;
+  };
 }
 
 /**
  * 挑战卡片组件
  * 显示挑战的基本信息和进度
  */
-const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onClick, onComplete }) => {
+const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onClick, onComplete, labels }) => {
   // 获取挑战状态对应的样式类
   const getStatusClass = () => {
     switch (challenge.status) {
@@ -52,13 +67,13 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onClick, onCom
   const getDifficultyText = () => {
     switch (challenge.difficulty) {
       case ChallengeDifficulty.EASY:
-        return '简单';
+        return labels?.difficultyEasy || 'Easy';
       case ChallengeDifficulty.MEDIUM:
-        return '中等';
+        return labels?.difficultyMedium || 'Medium';
       case ChallengeDifficulty.HARD:
-        return '困难';
+        return labels?.difficultyHard || 'Hard';
       case ChallengeDifficulty.EXPERT:
-        return '专家';
+        return labels?.difficultyExpert || 'Expert';
       default:
         return '';
     }
@@ -68,13 +83,13 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onClick, onCom
   const getStatusText = () => {
     switch (challenge.status) {
       case ChallengeStatus.ACTIVE:
-        return '进行中';
+        return labels?.statusActive || 'Active';
       case ChallengeStatus.COMPLETED:
-        return '已完成';
+        return labels?.statusCompleted || 'Completed';
       case ChallengeStatus.EXPIRED:
-        return '已过期';
+        return labels?.statusExpired || 'Expired';
       case ChallengeStatus.UPCOMING:
-        return '即将开始';
+        return labels?.statusUpcoming || 'Upcoming';
       default:
         return '';
     }
@@ -134,9 +149,9 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onClick, onCom
             className={getStatusClass()}
           />
           <div className="challenge-dates">
-            <span>开始: {formatTime(challenge.startDate, false)}</span>
+            <span>{labels?.startLabel || 'Start'}: {formatTime(challenge.startDate, false)}</span>
             {challenge.endDate && (
-              <span>结束: {formatTime(challenge.endDate, false)}</span>
+              <span>{labels?.endLabel || 'End'}: {formatTime(challenge.endDate, false)}</span>
             )}
           </div>
         </div>
@@ -149,13 +164,13 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onClick, onCom
             onClick={handleComplete}
             disabled={challenge.progress < 100}
           >
-            {challenge.progress >= 100 ? '完成挑战' : '进行中...'}
+            {challenge.progress >= 100 ? (labels?.completeButtonText || 'Complete Challenge') : (labels?.inProgressText || 'In Progress...')}
           </button>
         )}
         {challenge.status === ChallengeStatus.COMPLETED && (
           <div className="challenge-completed-info">
             <span className="completion-date">
-              完成于: {formatTime(challenge.completedDate!, false)}
+              {labels?.completedOnLabel || 'Completed on'}: {formatTime(challenge.completedDate!, false)}
             </span>
           </div>
         )}

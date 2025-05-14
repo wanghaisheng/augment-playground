@@ -13,6 +13,13 @@ export interface PandaStateRecord {
   level: number; // 等级
 }
 
+// 扩展的熊猫状态（用于游戏初始化）
+export interface PandaState extends Omit<PandaStateRecord, 'lastUpdated'> {
+  name?: string;
+  outfit?: string;
+  accessories?: string[];
+}
+
 // 默认熊猫状态
 const DEFAULT_PANDA_STATE: PandaStateRecord = {
   mood: 'normal',
@@ -137,4 +144,41 @@ export async function resetPandaState(): Promise<PandaStateRecord> {
   await addSyncItem('pandaState', 'update', resetState);
 
   return resetState;
+}
+
+/**
+ * 更新熊猫状态（用于游戏初始化）
+ * @param state 新的熊猫状态
+ */
+export async function updatePandaState(state: PandaState): Promise<PandaStateRecord> {
+  const currentState = await getPandaState();
+
+  // 创建更新后的状态
+  const updatedState = {
+    ...currentState,
+    mood: state.mood || currentState.mood,
+    energy: typeof state.energy === 'number' ? state.energy : currentState.energy,
+    experience: state.experience !== undefined ? state.experience : currentState.experience,
+    level: state.level || currentState.level,
+    lastUpdated: new Date()
+  };
+
+  // 更新数据库
+  await db.table('pandaState').update(currentState.id!, updatedState);
+
+  // 添加同步项目
+  await addSyncItem('pandaState', 'update', updatedState);
+
+  // 如果提供了名称、装扮或配件，可以在这里处理
+  // 这里假设有一个单独的表来存储这些信息
+  if (state.name || state.outfit || state.accessories) {
+    console.log('Additional panda customization:', {
+      name: state.name,
+      outfit: state.outfit,
+      accessories: state.accessories
+    });
+    // 在实际应用中，这里可以更新相应的表
+  }
+
+  return updatedState;
 }

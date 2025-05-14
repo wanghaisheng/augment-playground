@@ -4,6 +4,17 @@ import { TaskRecord, TaskPriority, TaskStatus, TaskType } from '@/services/taskS
 import { hasSubtasks } from '@/services/subtaskService';
 import TaskDetailDialog from './TaskDetailDialog';
 
+interface TaskCardLabels {
+  subtasks?: {
+    hasSubtasks?: string;
+  };
+  buttons?: {
+    complete?: string;
+    edit?: string;
+    delete?: string;
+  };
+}
+
 interface TaskCardProps {
   task: TaskRecord;
   onComplete?: (taskId: number) => void;
@@ -11,6 +22,7 @@ interface TaskCardProps {
   onDelete?: (taskId: number) => void;
   onTaskUpdated?: () => void;
   className?: string;
+  labels?: TaskCardLabels;
 }
 
 /**
@@ -22,7 +34,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
   onEdit,
   onDelete,
   onTaskUpdated,
-  className = ''
+  className = '',
+  labels
 }) => {
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [hasSubtasksList, setHasSubtasksList] = useState(false);
@@ -137,7 +150,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
           </div>
           <h3 className="task-title">{task.title}</h3>
           {hasSubtasksList && (
-            <div className="subtasks-indicator ml-2" title="包含子任务">
+            <div className="subtasks-indicator ml-2" title={labels?.subtasks?.hasSubtasks || "Contains subtasks"}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
@@ -172,7 +185,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
             onClick={handleComplete}
             aria-label="Complete task"
           >
-            完成
+            {labels?.buttons?.complete || "Complete"}
           </button>
         )}
 
@@ -181,7 +194,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
           onClick={handleEdit}
           aria-label="Edit task"
         >
-          编辑
+          {labels?.buttons?.edit || "Edit"}
         </button>
 
         <button
@@ -189,7 +202,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
           onClick={handleDelete}
           aria-label="Delete task"
         >
-          删除
+          {labels?.buttons?.delete || "Delete"}
         </button>
       </div>
       </div>

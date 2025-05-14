@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getLuckyPointsTotal } from '@/services/timelyRewardService';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
+import { getLocalizedLabel } from '@/utils/localization';
 
 interface LuckyPointsDisplayProps {
   onClick?: () => void;
@@ -20,6 +21,13 @@ const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
   const [points, setPoints] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [labels, setLabels] = useState<{
+    label: string;
+    loadingText: string;
+  }>({
+    label: 'Lucky Points',
+    loadingText: 'Loading...'
+  });
 
   // 加载幸运点数量
   const loadPoints = async () => {
@@ -33,6 +41,22 @@ const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
       setIsLoading(false);
     }
   };
+
+  // 加载本地化标签
+  useEffect(() => {
+    const loadLabels = async () => {
+      const languageCode = localStorage.getItem('language') || 'en';
+      const labelText = await getLocalizedLabel('luckyPointsDisplay', 'label', languageCode);
+      const loadingText = await getLocalizedLabel('luckyPointsDisplay', 'loadingText', languageCode);
+
+      setLabels({
+        label: labelText || 'Lucky Points',
+        loadingText: loadingText || 'Loading...'
+      });
+    };
+
+    loadLabels();
+  }, []);
 
   // 初始加载
   useEffect(() => {
@@ -90,13 +114,13 @@ const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
           transition={{ duration: 0.3 }}
         >
           {isLoading ? (
-            <span className="loading-dots">...</span>
+            <span className="loading-dots">{labels.loadingText}</span>
           ) : (
             <span>{points}</span>
           )}
         </motion.div>
       </AnimatePresence>
-      <div className="lucky-points-label">幸运点</div>
+      <div className="lucky-points-label">{labels.label}</div>
     </motion.div>
   );
 };
