@@ -334,6 +334,13 @@ export async function getUserVipSubscription(userId: string): Promise<VipSubscri
  * @param userId 用户ID
  */
 export async function isUserVip(userId: string): Promise<boolean> {
+  // First check the panda state for VIP status
+  const pandaState = await db.table('pandaState').toArray();
+  if (pandaState.length > 0 && pandaState[0].isVip) {
+    return true;
+  }
+
+  // If not found in panda state, check subscription
   const subscription = await getUserVipSubscription(userId);
   if (!subscription) {
     return false;
@@ -348,6 +355,15 @@ export async function isUserVip(userId: string): Promise<boolean> {
       updatedAt: new Date()
     });
     return false;
+  }
+
+  // If subscription is valid, update panda state
+  if (pandaState.length > 0) {
+    await db.table('pandaState').update(pandaState[0].id!, {
+      ...pandaState[0],
+      isVip: true,
+      lastUpdated: new Date()
+    });
   }
 
   return true;
@@ -393,6 +409,23 @@ export async function activateVipSubscription(
     // 添加到同步队列
     await addSyncItem('vipSubscriptions', 'update', updatedSubscription);
 
+    // Update panda state
+    const pandaState = await db.table('pandaState').toArray();
+    if (pandaState.length > 0) {
+      await db.table('pandaState').update(pandaState[0].id!, {
+        ...pandaState[0],
+        isVip: true,
+        lastUpdated: new Date()
+      });
+
+      // Add to sync queue
+      await addSyncItem('pandaState', 'update', {
+        ...pandaState[0],
+        isVip: true,
+        lastUpdated: new Date()
+      });
+    }
+
     return updatedSubscription;
   } else {
     // 创建新的订阅
@@ -415,6 +448,23 @@ export async function activateVipSubscription(
 
     // 添加到同步队列
     await addSyncItem('vipSubscriptions', 'create', createdSubscription);
+
+    // Update panda state
+    const pandaState = await db.table('pandaState').toArray();
+    if (pandaState.length > 0) {
+      await db.table('pandaState').update(pandaState[0].id!, {
+        ...pandaState[0],
+        isVip: true,
+        lastUpdated: new Date()
+      });
+
+      // Add to sync queue
+      await addSyncItem('pandaState', 'update', {
+        ...pandaState[0],
+        isVip: true,
+        lastUpdated: new Date()
+      });
+    }
 
     return createdSubscription;
   }

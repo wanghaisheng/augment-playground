@@ -80,6 +80,34 @@ export interface TaskReminderLabels {
   unknownTask: string;
 }
 
+export interface VipSubscriptionBadgeLabels {
+  recommended: string;
+  bestValue: string;
+}
+
+export interface VipSubscriptionButtonLabels {
+  subscribe: string;
+  restore: string;
+  cancel: string;
+}
+
+export interface VipSubscriptionPlanLabels {
+  title: string;
+  price: string;
+  monthlyPrice: string;
+  benefits: string;
+}
+
+export interface VipSubscriptionLabels {
+  title: string;
+  subtitle: string;
+  monthly: VipSubscriptionPlanLabels;
+  seasonal: VipSubscriptionPlanLabels;
+  annual: VipSubscriptionPlanLabels;
+  buttons: VipSubscriptionButtonLabels;
+  badges: VipSubscriptionBadgeLabels;
+}
+
 export interface ComponentsLabelsBundle {
   button: ButtonLabels;
   loading: LoadingLabels;
@@ -87,6 +115,7 @@ export interface ComponentsLabelsBundle {
   emptyState: EmptyStateLabels;
   modal: ModalLabels;
   taskReminder: TaskReminderLabels;
+  vipSubscription: VipSubscriptionLabels;
 }
 
 export type FetchComponentsLabelsResult = LocalizedContent<null, ComponentsLabelsBundle>;
@@ -99,6 +128,10 @@ export interface GlobalLayoutLabelsBundle {
   navAbilities: string;
   navRewards: string;
   navChallenges: string;
+  navTeaRoom: string;
+  navStore: string;
+  navVip: string;
+  navBattlePass: string;
   navSettings: string;
   footerText: string;
   loadingGeneric: string;
@@ -434,6 +467,57 @@ export interface AbilitiesPageViewLabelsBundle {
 }
 export type FetchAbilitiesPageViewResult = LocalizedContent<null, AbilitiesPageViewLabelsBundle>;
 
+// --- VIP Benefits Page/View Specific Types ---
+export interface VipBenefitCategoryLabels {
+  identity: string;
+  resources: string;
+  features: string;
+  exclusive: string;
+}
+
+export interface VipBenefitItemLabels {
+  title: string;
+  free: string;
+  vip: string;
+}
+
+export interface VipBenefitsLabels {
+  avatarFrame: VipBenefitItemLabels;
+  title: VipBenefitItemLabels;
+  bambooReward: VipBenefitItemLabels;
+  growthSpeed: VipBenefitItemLabels;
+  luckyDraw: VipBenefitItemLabels;
+  customGoals: VipBenefitItemLabels;
+  pandaSkins: VipBenefitItemLabels;
+  specialTasks: VipBenefitItemLabels;
+  meditation: VipBenefitItemLabels;
+}
+
+export interface VipBenefitsButtonLabels {
+  subscribe: string;
+  viewOptions: string;
+  back: string;
+}
+
+export interface VipBenefitsPageViewLabelsBundle {
+  pageTitle: string;
+  headerTitle: string;
+  headerSubtitle: string;
+  alreadyVipMessage?: string;
+  compareTitle: string;
+  freeTitle: string;
+  vipTitle: string;
+  benefitCategories: VipBenefitCategoryLabels;
+  benefits: VipBenefitsLabels;
+  buttons: VipBenefitsButtonLabels;
+  loadingMessage?: string;
+  errorTitle?: string;
+  errorMessage?: string;
+  retryButtonText?: string;
+}
+
+export type FetchVipBenefitsPageViewResult = LocalizedContent<null, VipBenefitsPageViewLabelsBundle>;
+
 // --- Store Page/View Specific Types ---
 export interface StorePageViewLabelsBundle {
   pageTitle: string;
@@ -547,3 +631,7 @@ export interface TeaRoomPageViewLabelsBundle {
   };
 }
 export type FetchTeaRoomPageViewResult = LocalizedContent<null, TeaRoomPageViewLabelsBundle>;
+
+// --- Battle Pass Page/View Specific Types ---
+import { BattlePassPageViewLabelsBundle } from './battle-pass';
+export type FetchBattlePassPageViewResult = LocalizedContent<null, BattlePassPageViewLabelsBundle>;

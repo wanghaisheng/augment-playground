@@ -73,6 +73,9 @@ const soundPaths: Record<SoundType, string> = {
 // 音频对象缓存
 const audioCache: Record<string, HTMLAudioElement> = {};
 
+// 音频播放状态
+let soundEnabled = true;
+
 /**
  * 播放音效
  * @param type 音效类型
@@ -80,6 +83,11 @@ const audioCache: Record<string, HTMLAudioElement> = {};
  * @returns 是否成功播放
  */
 export function playSound(type: SoundType, volume: number = 0.5): boolean {
+  // 如果声音被禁用，直接返回
+  if (!soundEnabled) {
+    return false;
+  }
+
   try {
     const soundPath = soundPaths[type];
 
@@ -99,6 +107,13 @@ export function playSound(type: SoundType, volume: number = 0.5): boolean {
     // 播放音效
     audio.play().catch(error => {
       console.warn(`Failed to play sound: ${error.message}`);
+
+      // 如果是自动播放限制，禁用声音功能
+      if (error.name === 'NotAllowedError') {
+        console.log('Sound autoplay is restricted by the browser. Sound will be disabled until user interaction.');
+        soundEnabled = false;
+      }
+
       return false;
     });
 
@@ -107,6 +122,15 @@ export function playSound(type: SoundType, volume: number = 0.5): boolean {
     console.error('Error playing sound:', error);
     return false;
   }
+}
+
+/**
+ * 启用声音
+ * 在用户交互后调用此函数可以重新启用声音
+ */
+export function enableSound(): void {
+  soundEnabled = true;
+  console.log('Sound has been enabled');
 }
 
 /**

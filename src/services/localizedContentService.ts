@@ -7,6 +7,7 @@ import type {
   ChallengesPageViewLabelsBundle,
   TimelyRewardsPageViewLabelsBundle,
   AbilitiesPageViewLabelsBundle,
+  VipBenefitsPageViewLabelsBundle,
   StorePageViewLabelsBundle,
   TeaRoomPageViewLabelsBundle,
   GlobalLayoutLabelsBundle,
@@ -14,7 +15,7 @@ import type {
   UILabelRecord, ApiError,
   FetchHomePageViewResult, FetchSettingsPageViewResult, FetchGlobalLayoutViewResult,
   FetchTasksPageViewResult, FetchChallengesPageViewResult, FetchTimelyRewardsPageViewResult,
-  FetchAbilitiesPageViewResult, FetchStorePageViewResult, FetchTeaRoomPageViewResult,
+  FetchAbilitiesPageViewResult, FetchVipBenefitsPageViewResult, FetchStorePageViewResult, FetchTeaRoomPageViewResult,
   FetchComponentsLabelsResult
 } from '@/types';
 
@@ -140,6 +141,19 @@ export async function fetchTeaRoomPageView(lang: Language): Promise<FetchTeaRoom
 }
 
 /**
+ * Fetches localized content for the VIP benefits page
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized VIP benefits page content
+ */
+export async function fetchVipBenefitsPageView(lang: Language): Promise<FetchVipBenefitsPageViewResult> {
+  console.log(`SVC_DEXIE: Fetching VIP BENEFITS PAGE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<VipBenefitsPageViewLabelsBundle>('vipBenefitsView', lang);
+  return { labels, data: null };
+}
+
+/**
  * Fetches localized labels for common UI components
  *
  * @param lang - The language to fetch labels for
@@ -149,5 +163,18 @@ export async function fetchComponentsLabels(lang: Language): Promise<FetchCompon
   console.log(`SVC_DEXIE: Fetching COMPONENTS LABELS for lang: ${lang}`);
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
   const labels = await getScopedLabels<ComponentsLabelsBundle>('components', lang);
+  return { labels, data: null };
+}
+
+/**
+ * Fetches localized content for the Battle Pass page
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized Battle Pass page content
+ */
+export async function fetchBattlePassPageView(lang: Language): Promise<any> {
+  console.log(`SVC_DEXIE: Fetching BATTLE PASS PAGE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('battlePassView', lang);
   return { labels, data: null };
 }

@@ -71,6 +71,37 @@ export function useComponentLabels() {
       laterButton: 'Later',
       viewTaskButton: 'View Task',
       unknownTask: 'Unknown Task'
+    },
+    vipSubscription: {
+      title: 'Choose Your Guardian Plan',
+      subtitle: 'Select the plan that suits you best',
+      monthly: {
+        title: 'Monthly Guardian',
+        price: '$9.99',
+        monthlyPrice: '$9.99/month',
+        benefits: 'All Guardian benefits,Monthly exclusive gift,Cancel anytime'
+      },
+      seasonal: {
+        title: 'Seasonal Guardian',
+        price: '$24.99',
+        monthlyPrice: '$8.33/month',
+        benefits: 'All Guardian benefits,Seasonal exclusive gift,Priority support,10% bonus on all rewards'
+      },
+      annual: {
+        title: 'Annual Guardian',
+        price: '$79.99',
+        monthlyPrice: '$6.67/month',
+        benefits: 'All Guardian benefits,Annual exclusive gift,VIP exclusive panda skin,Priority support,20% bonus on all rewards,Exclusive seasonal events'
+      },
+      buttons: {
+        subscribe: 'Subscribe',
+        restore: 'Restore Purchase',
+        cancel: 'Cancel'
+      },
+      badges: {
+        recommended: 'RECOMMENDED',
+        bestValue: 'BEST VALUE'
+      }
     }
   } as ComponentsLabelsBundle;
 
@@ -82,7 +113,8 @@ export function useComponentLabels() {
         error: { ...fallbackLabels.error, ...componentLabels.error },
         emptyState: { ...fallbackLabels.emptyState, ...componentLabels.emptyState },
         modal: { ...fallbackLabels.modal, ...componentLabels.modal },
-        taskReminder: { ...fallbackLabels.taskReminder, ...componentLabels.taskReminder }
+        taskReminder: { ...fallbackLabels.taskReminder, ...componentLabels.taskReminder },
+        vipSubscription: { ...fallbackLabels.vipSubscription, ...componentLabels.vipSubscription }
       }
     : fallbackLabels;
 

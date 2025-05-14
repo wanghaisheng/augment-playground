@@ -1,6 +1,7 @@
 // src/pages/StorePage.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   StoreCategoryRecord,
   StoreItemRecord,
@@ -34,6 +35,7 @@ import type { StorePageViewLabelsBundle } from '@/types';
  * 用于显示和购买商店物品
  */
 const StorePage: React.FC = () => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState<StoreCategoryRecord[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<StoreCategoryRecord | null>(null);
   const [items, setItems] = useState<StoreItemRecord[]>([]);
@@ -336,6 +338,15 @@ const StorePage: React.FC = () => {
                     <p className="text-gray-600 mt-2">
                       {pageLabels?.vipSection?.description || 'Unlock exclusive benefits and enhance your experience'}
                     </p>
+                    <div className="mt-4">
+                      <Button
+                        variant="gold"
+                        onClick={() => navigate('/vip-benefits')}
+                        className="px-6 py-2"
+                      >
+                        View Detailed VIP Benefits
+                      </Button>
+                    </div>
                   </div>
 
                   <div className="vip-options-grid grid grid-cols-1 md:grid-cols-3 gap-6">

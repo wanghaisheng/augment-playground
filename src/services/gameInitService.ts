@@ -45,7 +45,8 @@ export async function initializeGameData(): Promise<void> {
       experience: 0,
       name: 'Bamboo',
       outfit: 'default',
-      accessories: []
+      accessories: [],
+      isVip: false // Initialize with non-VIP status
     });
 
     // Generate some initial rewards

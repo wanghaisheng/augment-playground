@@ -11,6 +11,7 @@ export interface PandaStateRecord {
   lastUpdated: Date;
   experience: number; // 经验值
   level: number; // 等级
+  isVip?: boolean; // VIP状态
 }
 
 // 扩展的熊猫状态（用于游戏初始化）
@@ -18,6 +19,7 @@ export interface PandaState extends Omit<PandaStateRecord, 'lastUpdated'> {
   name?: string;
   outfit?: string;
   accessories?: string[];
+  isVip?: boolean;
 }
 
 // 默认熊猫状态
@@ -26,7 +28,8 @@ const DEFAULT_PANDA_STATE: PandaStateRecord = {
   energy: 'medium',
   lastUpdated: new Date(),
   experience: 0,
-  level: 1
+  level: 1,
+  isVip: false
 };
 
 
@@ -160,6 +163,7 @@ export async function updatePandaState(state: PandaState): Promise<PandaStateRec
     energy: typeof state.energy === 'number' ? state.energy : currentState.energy,
     experience: state.experience !== undefined ? state.experience : currentState.experience,
     level: state.level || currentState.level,
+    isVip: state.isVip !== undefined ? state.isVip : currentState.isVip,
     lastUpdated: new Date()
   };
 
@@ -179,6 +183,27 @@ export async function updatePandaState(state: PandaState): Promise<PandaStateRec
     });
     // 在实际应用中，这里可以更新相应的表
   }
+
+  return updatedState;
+}
+
+/**
+ * 更新熊猫VIP状态
+ * @param isVip 新的VIP状态
+ */
+export async function updatePandaVipStatus(isVip: boolean): Promise<PandaStateRecord> {
+  const currentState = await getPandaState();
+  const updatedState = {
+    ...currentState,
+    isVip,
+    lastUpdated: new Date()
+  };
+
+  // 更新数据库
+  await db.table('pandaState').update(currentState.id!, updatedState);
+
+  // 添加同步项目
+  await addSyncItem('pandaState', 'update', updatedState);
 
   return updatedState;
 }

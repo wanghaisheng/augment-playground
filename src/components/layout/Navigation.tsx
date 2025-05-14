@@ -2,6 +2,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import type { GlobalLayoutLabelsBundle } from '@/types';
+import { usePandaState } from '@/context/PandaStateProvider';
 
 interface NavigationProps {
   labels: GlobalLayoutLabelsBundle | undefined;
@@ -26,12 +27,15 @@ const Navigation: React.FC<NavigationProps> = ({
   const navRewardsText = labels?.navRewards || "Rewards";
   const navTeaRoomText = labels?.navTeaRoom || "Tea Room";
   const navStoreText = labels?.navStore || "Store";
+  const navVipText = labels?.navVip || "VIP";
+  const navBattlePassText = labels?.navBattlePass || "Battle Pass";
   const navSettingsText = labels?.navSettings || "Settings";
 
   if (!labels) { // Can show a minimal loading state or just render with fallbacks
     return <nav className={variant === 'bamboo' ? 'bamboo-nav' : ''}>Loading navigation...</nav>;
   }
 
+  const { pandaState } = usePandaState();
   const navClass = variant === 'bamboo' ? 'bamboo-nav' : '';
 
   return (
@@ -77,6 +81,21 @@ const Navigation: React.FC<NavigationProps> = ({
         className={({isActive}) => isActive ? 'active' : ''}
       >
         {navStoreText}
+      </NavLink>
+      <NavLink
+        to="/vip-benefits"
+        className={({isActive}) => isActive ? 'active' : ''}
+      >
+        <div className="nav-item-with-badge">
+          {navVipText}
+          {pandaState?.isVip && <span className="nav-vip-badge">VIP</span>}
+        </div>
+      </NavLink>
+      <NavLink
+        to="/battle-pass"
+        className={({isActive}) => isActive ? 'active' : ''}
+      >
+        {navBattlePassText}
       </NavLink>
       <NavLink
         to="/settings"

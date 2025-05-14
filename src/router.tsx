@@ -13,6 +13,8 @@ const ChallengesPage = lazy(() => import('@/pages/ChallengesPage'));
 const TimelyRewardsPage = lazy(() => import('@/pages/TimelyRewardsPage'));
 const TeaRoomPage = lazy(() => import('@/pages/TeaRoomPage'));
 const StorePage = lazy(() => import('@/pages/StorePage'));
+const VipBenefitsPage = lazy(() => import('@/pages/VipBenefitsPage'));
+const BattlePassPage = lazy(() => import('@/pages/BattlePassPage'));
 
 const AppRouter: React.FC = () => {
   const location = useLocation();
@@ -27,6 +29,8 @@ const AppRouter: React.FC = () => {
         <Route path="/rewards" element={<TimelyRewardsPage />} />
         <Route path="/tearoom" element={<TeaRoomPage />} />
         <Route path="/store" element={<StorePage />} />
+        <Route path="/vip-benefits" element={<VipBenefitsPage />} />
+        <Route path="/battle-pass" element={<BattlePassPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} /> {/* Fallback route */}
       </Routes>

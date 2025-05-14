@@ -7,6 +7,10 @@ import { LanguageProvider } from '@/context/LanguageProvider';
 import { PandaStateProvider } from '@/context/PandaStateProvider';
 import { DataRefreshProvider } from '@/context/DataRefreshProvider';
 import { populateDB, db } from '@/db';
+import { addVipNavigationLabels, addBattlePassPageViewLabels } from '@/db-update';
+import { initializeBattlePassDatabase } from '@/db-battle-pass';
+import { populateBattlePassSampleData } from '@/db-battle-pass-sample';
+import { initializeBattlePassTaskTracking } from '@/services/battlePassTaskTrackingService';
 import AppShell from '@/components/layout/AppShell';
 import AppRouter from '@/router';
 import { initializeDataSync } from '@/services/dataSyncService';
@@ -21,6 +25,21 @@ const App: React.FC = () => {
         // Populate Dexie DB on app start for development
         if (import.meta.env.DEV) { // Vite specific dev check
           await populateDB();
+
+          // Add VIP navigation labels
+          await addVipNavigationLabels();
+
+          // Add Battle Pass page view labels
+          await addBattlePassPageViewLabels();
+
+          // Initialize Battle Pass database
+          await initializeBattlePassDatabase();
+
+          // Populate Battle Pass sample data
+          await populateBattlePassSampleData();
+
+          // Initialize Battle Pass task tracking
+          await initializeBattlePassTaskTracking('current-user');
         }
 
         // 初始化数据同步服务
