@@ -316,6 +316,32 @@ export async function fetchPainPointSolutionView(lang: Language): Promise<Locali
   return { labels, data: null };
 }
 
+/**
+ * Fetches localized content for the bamboo collection panel
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized bamboo collection panel content
+ */
+export async function fetchBambooCollectionPanelView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching BAMBOO COLLECTION PANEL VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('bambooCollectionPanel', lang);
+  return { labels, data: null };
+}
+
+/**
+ * Fetches localized content for the bamboo spot card
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized bamboo spot card content
+ */
+export async function fetchBambooSpotCardView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching BAMBOO SPOT CARD VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('bambooSpotCard', lang);
+  return { labels, data: null };
+}
+
 // --- Bamboo Planting Page Service ---
 export async function fetchBambooPlantingPageView(lang: Language): Promise<FetchBambooPlantingPageViewResult> {
   console.log(`SVC_DEXIE: Fetching BAMBOO PLANTING PAGE VIEW for lang: ${lang}`);

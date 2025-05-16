@@ -1,12 +1,12 @@
 // src/components/bamboo/BambooPlotCard.tsx
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { BambooPlotRecord } from '@/db-old';
 import { unlockPlot, upgradePlot } from '@/services/bambooPlantingService';
 import { useLanguage } from '@/context/LanguageProvider';
 import { playSound, SoundType } from '@/utils/sound';
 import { generateSparkleParticles } from '@/utils/particleEffects';
 import Button from '@/components/common/Button';
-import { useDataRefresh } from '@/context/DataRefreshProvider';
+import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 
 interface BambooPlotCardProps {
   plot: BambooPlotRecord;
@@ -27,11 +27,17 @@ const BambooPlotCard: React.FC<BambooPlotCardProps> = ({
   bambooCount
 }) => {
   const { language } = useLanguage();
-  const { refreshData } = useDataRefresh();
+  const { refreshTable } = useDataRefreshContext();
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [showParticles, setShowParticles] = useState(false);
   const [particles, setParticles] = useState<React.ReactNode[]>([]);
+
+  // 刷新数据的函数
+  const refreshData = useCallback(() => {
+    refreshTable('bambooPlots');
+    refreshTable('userCurrencies');
+  }, [refreshTable]);
 
   // 解锁地块
   const handleUnlock = async () => {

@@ -1,5 +1,5 @@
 // src/components/bamboo/BambooCollectionPanel.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   BambooSpotRecord,
@@ -17,6 +17,8 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 // import { formatDistanceToNow } from 'date-fns';
 // import { zhCN, enUS } from 'date-fns/locale';
 import { BambooSpotCardSkeleton } from '@/components/skeleton';
+import { fetchBambooCollectionPanelView } from '@/services/localizedContentService';
+import { Language } from '@/types';
 
 interface BambooCollectionPanelProps {
   isOpen: boolean;
@@ -40,36 +42,21 @@ const BambooCollectionPanel: React.FC<BambooCollectionPanelProps> = ({
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // 获取本地化内容
-  // 创建一个模拟的本地化内容对象，实际项目中应该使用正确的fetchViewFn
-  const mockFetchBambooCollection = async () => ({
-    labels: {
-      title: '竹子收集',
-      spotsTab: '收集点',
-      statsTab: '统计',
-      noSpotsFound: '没有找到竹子收集点',
-      noStatsFound: '没有找到统计数据',
-      totalCollected: '总共收集',
-      todayCollected: '今日收集',
-      collectionBySource: '按来源统计',
-      source: '来源',
-      amount: '数量',
-      noCollectionData: '暂无收集数据',
-      taskSource: '任务',
-      dailySource: '每日奖励',
-      collectionSource: '收集点',
-      giftSource: '礼物',
-      purchaseSource: '购买',
-      challengeSource: '挑战',
-      battlePassSource: '竹令',
-      vipSource: 'VIP奖励',
-      unknownError: '发生未知错误'
-    },
-    data: null
-  });
+  // 创建一个函数来获取本地化内容
+  const fetchBambooCollectionPanelViewFn = useCallback(async (lang: Language) => {
+    try {
+      return await fetchBambooCollectionPanelView(lang);
+    } catch (error) {
+      console.error('Error fetching bamboo collection panel view:', error);
+      throw error;
+    }
+  }, []);
 
-  const { data } = useLocalizedView(mockFetchBambooCollection);
+  // 使用 useLocalizedView 钩子获取本地化内容
+  const { data: viewData } = useLocalizedView<null, any>('bambooCollectionPanel', fetchBambooCollectionPanelViewFn);
+
   // 为了兼容现有代码，创建一个content对象
-  const content = data?.labels || {
+  const content = viewData?.labels || {
     title: '竹子收集',
     spotsTab: '收集点',
     statsTab: '统计',

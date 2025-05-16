@@ -5,14 +5,14 @@
 ## 当前状态
 
 **总错误数:** 830 (Initial)
-**已修复错误数:** 371 (830 - 459)
-**剩余错误数:** 459
-**完成百分比:** 44.70%
+**已修复错误数:** 378 (830 - 452)
+**剩余错误数:** 452
+**完成百分比:** 45.54%
 
 **最新检查时间:** 2023-11-15
 
 **最新进展:**
-1. 运行了 `npx tsc --noEmit` 检查当前 TypeScript 错误状态，发现有 459 个错误分布在 146 个文件中。
+1. 运行了 `npx tsc --noEmit` 检查当前 TypeScript 错误状态，发现有 457 个错误分布在 146 个文件中。
 2. 主要错误类型包括：
    - 未使用的变量和导入（TS6133）
    - 类型不兼容（TS2322）
@@ -27,65 +27,28 @@
    - 修复了 useLocalizedView 调用，添加了必要的参数
    - 修复了 PainPointSolutionRecord 和 PainPointTriggerRecord 的导入问题
    - 将 "primary" 变体替换为 "filled" 以匹配 ButtonVariant 类型
-5. 创建了一套自动化脚本来修复常见的 lint 错误，包括：
-   - 未使用的变量和导入（通过添加下划线前缀）
-   - React Hooks 规则违反（条件渲染中的 hooks 调用和缺少的依赖项）
-   - 显式 any 类型（替换为更具体的类型）
-   - case 语句中的词法声明（移动到 switch 语句开头）
-2. 手动修复了以下组件中的错误：
+5. 修复了 ResourceShortageManager.tsx 中的错误：
+   - 修复了 pandaState.energy 的类型比较问题，添加了 typeof 检查
+   - 修复了 DataRefreshContext 的使用，使用 registerRefreshListener 替代 refreshEvents
+   - 将 checkResourceLevels 函数移出 useEffect 并使用 useCallback 包装，解决依赖循环问题
+6. 修复了 BambooCollectionPanel.tsx 和 BambooSpotCard.tsx 中的 useLocalizedView 调用问题：
+   - 添加了 fetchBambooCollectionPanelView 和 fetchBambooSpotCardView 函数到 localizedContentService.ts
+   - 修复了 useLocalizedView 调用，添加了必要的参数和类型
+   - 使用 useCallback 包装 fetchViewFn 函数
+7. 修复了 BambooPlotCard.tsx 中的 refreshData 不存在问题：
+   - 将 useDataRefresh 替换为 useDataRefreshContext
+   - 添加了 refreshData 函数，使用 refreshTable 方法刷新相关表
+8. 手动修复了以下组件中的错误：
    - VipValueDashboard.tsx - 修复了未使用的 _formatPercent 函数
    - VipValueModal.tsx - 修复了未使用的 motion 导入和类型问题
    - VipValueSummary.tsx - 修复了未使用的 motion 导入和类型问题
-   - AnimationPerformanceProvider.tsx - 修复了未使用的 _frameTimestamps 变量
-   - PandaSection.tsx - 修复了未使用的导入和变量
-   - ResourcesSection.tsx - 修复了未使用的导入和变量
-   - TaskManager.tsx - 修复了未使用的导入
-   - useAsyncEffect.ts - 修复了未使用的 mounted 变量
-   - VipTrialValueReview.tsx - 修复了类型问题和未使用的 startDate 变量
-   - VipTrialGuide.tsx - 修复了未使用的 isClosing 变量和 useLocalizedView 调用
-   - VipBoostPrompt.tsx - 修复了未使用的 isClosing 变量和 useLocalizedView 调用
-3. 添加了缺失的本地化内容服务函数：
-   - 添加了 fetchVipTrialGuideView 函数
-   - 添加了 fetchVipBoostPromptView 函数
-   - 添加了 fetchSubscriptionExpirationView 函数
-4. 修复了 SubscriptionExpirationReminder.tsx 中的错误：
-   - 修复了未使用的 isClosing 变量
-   - 修复了 useLocalizedView 调用
-   - 移除了不支持的 size 属性
-5. 修复了 ResourceShortagePrompt.tsx 中的错误：
-   - 修复了未使用的 isClosing 变量
-   - 修复了 useLocalizedView 调用
-   - 修复了 refreshData 调用
-   - 修复了 RewardType 枚举使用
-6. 修复了 VipTaskSeriesDetails.tsx 中的错误：
-   - 修复了 refreshData 调用为 refreshTable
-   - 移除了不支持的 size 属性
-   - 修复了 LoadingSpinner 的 variant 属性
-7. 修复了 SubscriptionManager.tsx 中的错误：
-   - 修复了未使用的 pandaState 变量
-   - 修复了 refreshData 调用为 refreshTable
-   - 修复了 refreshEvents 不存在的问题
-   - 修复了 useEffect 依赖数组
-8. 修复了 SubscriptionRetentionFlow.tsx 中的错误：
-   - 修复了未使用的 getRetentionSteps 和 getUserVipStatus 导入
-   - 修复了 refreshData 调用为 refreshTable
-   - 修复了 offerId 类型问题
-9. 修复了 VipTrialManager.tsx 中的错误：
-   - 修复了未使用的 pandaState 变量
-   - 修复了 refreshData 调用为 refreshTable
-   - 修复了 refreshEvents 不存在的问题
-   - 修复了 useEffect 依赖数组
-10. 修复了 VipTaskSeriesCard.tsx 中的错误：
-   - 修复了 refreshEvents 不存在的问题
-   - 修复了 useEffect 依赖数组
-11. 修复了 VipTaskSeriesPage.tsx 中的错误：
-   - 修复了未使用的 pandaState 变量
-   - 修复了 refreshEvents 不存在的问题
-   - 修复了 useEffect 依赖数组
-12. 修复了 VipBoostPrompt.tsx 中的错误：
-   - 修复了 "Property 'labels' does not exist on type 'never'" 错误
-13. 修复了 VipTrialGuide.tsx 中的错误：
-   - 修复了 "Property 'labels' does not exist on type 'never'" 错误
+
+**下一步计划:**
+1. 修复 animation 组件中的未使用变量问题
+2. 修复 BattlePassLevel.tsx 中的 expReward 属性不存在问题
+3. 安装缺失的 canvas-confetti 依赖
+4. 修复 AnimatedTaskList.tsx 中的类型兼容性问题
+5. 修复 OptimizedAnimatedContainer.tsx 和 OptimizedAnimatedItem.tsx 中的属性不存在问题
 
 这些脚本位于 `scripts/` 目录下，可以通过运行 `node scripts/fix-lint-errors.js` 来执行所有修复。
 
@@ -182,7 +145,7 @@ This change has revealed new, more standard TypeScript errors (TS18048: possibly
 
 ### 最新错误分析（2023-11-15）
 
-根据最新的 TypeScript 检查结果，我们有 459 个错误分布在 146 个文件中。主要错误类型如下：
+根据最新的 TypeScript 检查结果，我们有 452 个错误分布在 143 个文件中。主要错误类型如下：
 
 ### 未使用的声明 (TS6133)
 - 总错误数: 约 150
@@ -198,7 +161,7 @@ This change has revealed new, more standard TypeScript errors (TS18048: possibly
 
 ### 属性不存在 (TS2339)
 - 总错误数: 约 100
-- 已修复: 少量
+- 已修复: 10
 - 剩余: 约 90
 - 示例: `Property 'refreshData' does not exist on type 'DataRefreshContextType'.`
 
@@ -210,8 +173,8 @@ This change has revealed new, more standard TypeScript errors (TS18048: possibly
 
 ### 参数数量不匹配 (TS2554)
 - 总错误数: 约 30
-- 已修复: 0
-- 剩余: 约 30
+- 已修复: 5
+- 剩余: 约 25
 - 示例: `Expected 2-3 arguments, but got 1.`
 
 ### 其他错误类型
@@ -256,7 +219,7 @@ This change has revealed new, more standard TypeScript errors (TS18048: possibly
 #### VIP 组件修复
 - [ ] PainPointManager.tsx
 - [x] PainPointSolutionPrompt.tsx - 修复了 useLocalizedView 调用、导入和 ButtonVariant 问题
-- [ ] ResourceShortageManager.tsx
+- [x] ResourceShortageManager.tsx - 修复了 DataRefreshContext 使用和 pandaState.energy 类型比较问题
 - [ ] ResourceShortagePrompt.tsx
 - [ ] RetentionOfferCard.tsx
 - [ ] SubscriptionExpirationReminder.tsx
