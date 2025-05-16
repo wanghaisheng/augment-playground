@@ -66,7 +66,7 @@ const VipValueModal: React.FC<VipValueModalProps> = ({
           onClose={handleClose}
           title={content.modalTitle || 'VIP会员价值分析'}
           showCloseButton={true}
-          size="large"
+          // size prop is not supported by LatticeDialog
         >
           <div className="vip-value-modal p-4">
             <VipValueDashboard
