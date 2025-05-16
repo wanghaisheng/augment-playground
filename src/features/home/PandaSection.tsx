@@ -1,7 +1,7 @@
 // src/features/home/PandaSection.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import PandaAvatar from '@/components/game/PandaAvatar';
+import { motion } from 'framer-motion';
+// import PandaAvatar from '@/components/game/PandaAvatar';
 import PandaAnimation from '@/components/game/PandaAnimation';
 import { usePandaState } from '@/context/PandaStateProvider';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
@@ -41,15 +41,16 @@ const PandaSection: React.FC<PandaSectionProps> = ({ labels }) => {
   const {
     pandaState,
     isLoading,
-    setMood,
-    addExperience
+    // setMood and addExperience are currently unused but may be needed in future updates
+    // setMood,
+    // addExperience
   } = usePandaState();
 
-  const [interactionMode, setInteractionMode] = useState<'none' | 'feed' | 'play' | 'train'>('none');
+  // const [interactionMode, setInteractionMode] = useState<'none' | 'feed' | 'play' | 'train'>('none');
   const [showCustomizationPanel, setShowCustomizationPanel] = useState(false);
   const [showEnvironmentPanel, setShowEnvironmentPanel] = useState(false);
   const [showSkinPanel, setShowSkinPanel] = useState(false);
-  const [showAccessories, setShowAccessories] = useState(true);
+  const [showAccessories] = useState(true); // setShowAccessories is currently unused
   const [showEnvironment, setShowEnvironment] = useState(false);
 
   // 初始化熊猫系统

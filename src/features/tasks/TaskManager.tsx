@@ -4,8 +4,8 @@ import { AnimatePresence } from 'framer-motion';
 import {
   TaskRecord,
   TaskStatus,
-  TaskPriority,
-  TaskType,
+  // TaskPriority, // Unused import
+  // TaskType, // Unused import
   createTask,
   updateTask,
   getAllTasks,

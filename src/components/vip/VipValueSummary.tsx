@@ -1,6 +1,6 @@
 // src/components/vip/VipValueSummary.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 import {
   VipValueStats,
   calculateVipValueStats
@@ -47,7 +47,7 @@ const VipValueSummary: React.FC<VipValueSummaryProps> = ({
   }, []);
 
   // Fetch localized content for the VIP value
-  const { data: viewData } = useLocalizedView<null, any>('vipValue', fetchVipValueViewFn);
+  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipValue', fetchVipValueViewFn);
 
   // 创建加载VIP价值统计数据的函数
   const loadVipValueStats = useCallback(async () => {

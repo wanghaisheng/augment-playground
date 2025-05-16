@@ -8,10 +8,10 @@ import LuckyPointsDisplay from '@/components/game/LuckyPointsDisplay';
 import CurrencyDisplay from '@/components/store/CurrencyDisplay';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import BambooCollectionPanel from '@/components/bamboo/BambooCollectionPanel';
-import { initializeBambooCollectionSystem as initializeBambooCollection } from '@/services/bambooCollectionService';
+// import { initializeBambooCollectionSystem as initializeBambooCollection } from '@/services/bambooCollectionService';
 import { playSound, SoundType } from '@/utils/sound';
 // import SectionHeader from '@/components/common/SectionHeader'; // Commented out due to path issue
-import { useLanguage } from '@/context/LanguageProvider';
+// import { useLanguage } from '@/context/LanguageProvider';
 import { useAuth } from '@/context/AuthContext';
 import { useNotifications } from '@/context/NotificationProvider';
 // import { ResourceType } from '@/types/resources'; // Commented out due to path issue
@@ -19,7 +19,7 @@ import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 
 // Types
 import type { BambooCollectionRecord } from '@/db';
-import type { ApiError, Language } from '@/types';
+import type { Language } from '@/types';
 import { NotificationType } from '@/types/notification'; // Import NotificationType
 // import type { ResourcesSectionLabelsBundle } from '@/types/page-specific/homeViewTypes'; // Commented out path issue
 
@@ -28,7 +28,7 @@ import { NotificationType } from '@/types/notification'; // Import NotificationT
 const fetchResourcesSectionView = async (lang: Language): Promise<any> => { // Using any for now
   console.log(`Fetching resources section view for ${lang}`);
   // Replace with actual data fetching logic that returns { labels: YourLabelsBundle, data: YourDataPayload | null }
-  return Promise.resolve({ labels: defaultLabels, data: null }); 
+  return Promise.resolve({ labels: defaultLabels, data: null });
 };
 
 interface ResourcesSectionLabelsBundle { // Local definition for now
@@ -55,19 +55,19 @@ const defaultLabels: ResourcesSectionLabelsBundle = {
 };
 
 const ResourcesSection: React.FC = () => {
-  const { language } = useLanguage();
+  // const { language } = useLanguage(); // Unused variable
   const { currentUser } = useAuth();
   const userId = currentUser?.id;
   const { addNotification } = useNotifications();
-  const triggerRefresh = useDataRefreshContext().refreshTable;
+  // const triggerRefresh = useDataRefreshContext().refreshTable; // Unused variable
 
   const [userCurrency, setUserCurrency] = useState<UserCurrencyRecord | null>(null);
-  const [luckyPoints, setLuckyPoints] = useState(0);
+  // const [luckyPoints, setLuckyPoints] = useState(0); // Unused variable
   const [isLoading, setIsLoading] = useState(true);
-  const [lastBambooCollection, setLastBambooCollection] = useState<BambooCollectionRecord | null>(null);
+  // const [lastBambooCollection, setLastBambooCollection] = useState<BambooCollectionRecord | null>(null); // Unused variable
   const [isBambooPanelOpen, setIsBambooPanelOpen] = useState(false); // Added state for panel
 
-  const { labels, data, isPending: labelsPending, isError: labelsError, error: labelsLoadingError } = 
+  const { labels, /* data, */ isPending: labelsPending, isError: labelsError, error: labelsLoadingError } =
     useLocalizedView<null, ResourcesSectionLabelsBundle>(
       'resourcesSectionView', // Query key
       fetchResourcesSectionView // Fetch function
@@ -81,8 +81,8 @@ const ResourcesSection: React.FC = () => {
     try {
       const currencyData = await getUserCurrency(userId);
       setUserCurrency(currencyData);
-      const points = await getLuckyPointsTotal(); // Corrected: no userId argument
-      setLuckyPoints(points);
+      // const points = await getLuckyPointsTotal(); // Corrected: no userId argument
+      // setLuckyPoints(points); // Unused variable
     } catch (error) {
       console.error("Error loading resources data:", error);
       addNotification({
@@ -117,7 +117,7 @@ const ResourcesSection: React.FC = () => {
       priority: 'low' as any, // Cast priority for now
     });
   };
-  
+
   if (labelsPending || isLoading) {
     return <div className="p-4">Loading resources...</div>;
   }
@@ -127,14 +127,14 @@ const ResourcesSection: React.FC = () => {
   }
 
   return (
-    <motion.div 
+    <motion.div
       className="resources-section p-4 bg-white shadow-lg rounded-lg mb-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
       <h2 className="text-xl font-semibold mb-4 text-gray-700">{currentLabels.title}</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         {userCurrency && (
           <>
@@ -147,11 +147,11 @@ const ResourcesSection: React.FC = () => {
       <button onClick={handleCollectBamboo} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
         {currentLabels.collectBambooButton}
       </button>
-      <BambooCollectionPanel 
+      <BambooCollectionPanel
         isOpen={isBambooPanelOpen}
         onClose={() => setIsBambooPanelOpen(false)}
       />
-      
+
     </motion.div>
   );
 };

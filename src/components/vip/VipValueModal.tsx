@@ -1,6 +1,6 @@
 // src/components/vip/VipValueModal.tsx
 import React, { useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import VipValueDashboard from './VipValueDashboard';
 import LatticeDialog from '@/components/game/LatticeDialog';
 import { playSound, SoundType } from '@/utils/sound';
@@ -39,7 +39,7 @@ const VipValueModal: React.FC<VipValueModalProps> = ({
   }, []);
 
   // Fetch localized content for the VIP value
-  const { data: viewData } = useLocalizedView<null, any>('vipValue', fetchVipValueViewFn);
+  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipValue', fetchVipValueViewFn);
 
   // Get content from viewData
   const content = viewData?.labels || {};

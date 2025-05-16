@@ -46,7 +46,7 @@ const VipValueDashboard: React.FC<VipValueDashboardProps> = ({
   }, []);
 
   // Fetch localized content for the VIP value
-  const { data: viewData } = useLocalizedView<null, any>('vipValue', fetchVipValueViewFn);
+  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipValue', fetchVipValueViewFn);
 
   // Get content from viewData
   const content = viewData?.labels || {};
@@ -108,10 +108,10 @@ const VipValueDashboard: React.FC<VipValueDashboardProps> = ({
     return `¥${num.toLocaleString('zh-CN', { maximumFractionDigits: 2 })}`;
   };
 
-  // 格式化百分比
-  const formatPercent = (num: number) => {
-    return `${(num * 100).toFixed(0)}%`;
-  };
+  // 格式化百分比 - 暂时未使用，保留供将来使用
+  // const formatPercent = (num: number) => {
+  //   return `${(num * 100).toFixed(0)}%`;
+  // };
 
   // 格式化倍数
   const formatMultiplier = (num: number) => {

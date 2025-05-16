@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 
 /**
  * A hook that simplifies using async functions in useEffect
- * 
+ *
  * @param effect The async effect function to run
  * @param deps The dependencies array for the effect
  * @param cleanup An optional cleanup function
- * 
+ *
  * @example
  * useAsyncEffect(async () => {
  *   const data = await fetchData();
@@ -20,9 +20,9 @@ export function useAsyncEffect(
   cleanup?: () => void
 ): void {
   useEffect(() => {
-    let mounted = true;
+    // let mounted = true; // This variable is not used in the effect
     let cleanupFromEffect: void | (() => void);
-    
+
     const runEffect = async () => {
       try {
         cleanupFromEffect = await effect();
@@ -30,17 +30,17 @@ export function useAsyncEffect(
         console.error('Error in async effect:', error);
       }
     };
-    
+
     runEffect();
-    
+
     return () => {
-      mounted = false;
-      
+      // mounted = false; // This variable is not used in the cleanup
+
       // Run the cleanup function from the effect if it exists
       if (typeof cleanupFromEffect === 'function') {
         cleanupFromEffect();
       }
-      
+
       // Run the cleanup function passed to useAsyncEffect if it exists
       if (cleanup) {
         cleanup();
@@ -52,10 +52,10 @@ export function useAsyncEffect(
 
 /**
  * A hook that runs an async effect only once on mount
- * 
+ *
  * @param effect The async effect function to run
  * @param cleanup An optional cleanup function
- * 
+ *
  * @example
  * useAsyncEffectOnce(async () => {
  *   const data = await fetchInitialData();
@@ -66,18 +66,18 @@ export function useAsyncEffectOnce(
   effect: () => Promise<void | (() => void)>,
   cleanup?: () => void
 ): void {
-   
+
   useAsyncEffect(effect, [], cleanup);
 }
 
 /**
  * A hook that runs an async effect when a condition is true
- * 
+ *
  * @param condition The condition to check
  * @param effect The async effect function to run
  * @param deps The dependencies array for the effect
  * @param cleanup An optional cleanup function
- * 
+ *
  * @example
  * useConditionalAsyncEffect(
  *   isLoggedIn,
