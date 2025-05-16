@@ -19,7 +19,15 @@
    - 属性不存在（TS2339）
    - 可能为 undefined 的值（TS18048）
    - 参数数量不匹配（TS2554）
-3. 创建了一套自动化脚本来修复常见的 lint 错误，包括：
+3. 修复了 SoundType 枚举问题：
+   - 在 src/utils/sound.ts 中添加了缺失的 CONFIRM 枚举值
+   - 在 soundPaths 中添加了对应的音效路径
+4. 修复了 PainPointSolutionPrompt.tsx 中的错误：
+   - 添加了 fetchPainPointSolutionView 函数到 localizedContentService.ts
+   - 修复了 useLocalizedView 调用，添加了必要的参数
+   - 修复了 PainPointSolutionRecord 和 PainPointTriggerRecord 的导入问题
+   - 将 "primary" 变体替换为 "filled" 以匹配 ButtonVariant 类型
+5. 创建了一套自动化脚本来修复常见的 lint 错误，包括：
    - 未使用的变量和导入（通过添加下划线前缀）
    - React Hooks 规则违反（条件渲染中的 hooks 调用和缺少的依赖项）
    - 显式 any 类型（替换为更具体的类型）
@@ -93,8 +101,8 @@ This change has revealed new, more standard TypeScript errors (TS18048: possibly
 
 ### 任务 1.1: 修复 SoundType 枚举
 - [ ] 移除重复的枚举值
-- [ ] 添加缺失的枚举值
-- [ ] 更新使用这些枚举的组件
+- [x] 添加缺失的枚举值（添加了 CONFIRM 枚举值）
+- [x] 更新使用这些枚举的组件（修复了 PainPointSolutionPrompt.tsx 中的使用）
 
 ### 任务 1.2: 修复 BattlePass 类型定义
 - [ ] 移除重复的标识符
@@ -247,7 +255,7 @@ This change has revealed new, more standard TypeScript errors (TS18048: possibly
 
 #### VIP 组件修复
 - [ ] PainPointManager.tsx
-- [ ] PainPointSolutionPrompt.tsx
+- [x] PainPointSolutionPrompt.tsx - 修复了 useLocalizedView 调用、导入和 ButtonVariant 问题
 - [ ] ResourceShortageManager.tsx
 - [ ] ResourceShortagePrompt.tsx
 - [ ] RetentionOfferCard.tsx
@@ -256,9 +264,9 @@ This change has revealed new, more standard TypeScript errors (TS18048: possibly
 - [ ] VipSubscriptionOptions.tsx
 - [ ] VipTrialManager.tsx
 - [ ] VipTrialValueReview.tsx
-- [ ] VipValueDashboard.tsx
-- [ ] VipValueModal.tsx
-- [ ] VipValueSummary.tsx
+- [x] VipValueDashboard.tsx - 修复了未使用的 _formatPercent 函数
+- [x] VipValueModal.tsx - 修复了未使用的 motion 导入和类型问题
+- [x] VipValueSummary.tsx - 修复了未使用的 motion 导入和类型问题
 
 #### 页面组件修复
 - [ ] BambooTradingPage.tsx

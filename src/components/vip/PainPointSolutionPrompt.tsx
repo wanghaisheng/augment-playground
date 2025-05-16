@@ -1,18 +1,19 @@
 // src/components/vip/PainPointSolutionPrompt.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/common/Button';
 import LatticeDialog from '@/components/game/LatticeDialog';
-import { 
-  PainPointSolutionRecord, 
-  PainPointTriggerRecord,
+import {
   markPainPointTriggerAsViewed,
   resolvePainPointTrigger,
   getPainPointSolutionDetails
 } from '@/services/painPointService';
+import type { PainPointSolutionRecord, PainPointTriggerRecord } from '@/types/painpoints';
 import { playSound, SoundType } from '@/utils/sound';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
+import { fetchPainPointSolutionView } from '@/services/localizedContentService';
+import { Language } from '@/types';
 
 interface PainPointSolutionPromptProps {
   triggerId: number;
@@ -21,7 +22,7 @@ interface PainPointSolutionPromptProps {
 
 /**
  * 痛点解决方案提示组件
- * 
+ *
  * 在用户遇到困难时提供帮助和解决方案
  */
 const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
@@ -35,7 +36,22 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
   const [trigger, setTrigger] = useState<PainPointTriggerRecord | null>(null);
   const [isVip, setIsVip] = useState<boolean>(false);
   const [isResolved, setIsResolved] = useState<boolean>(false);
-  const { content } = useLocalizedView('painPointSolution');
+
+  // Function to fetch localized content for pain point solution
+  const fetchPainPointSolutionViewFn = useCallback(async (lang: Language) => {
+    try {
+      return await fetchPainPointSolutionView(lang);
+    } catch (error) {
+      console.error('Error fetching pain point solution view:', error);
+      throw error;
+    }
+  }, []);
+
+  // Fetch localized content for the pain point solution
+  const { data: viewData } = useLocalizedView<null, any>('painPointSolution', fetchPainPointSolutionViewFn);
+
+  // Get content from viewData
+  const content = viewData?.labels || {};
 
   // 加载痛点解决方案详情
   useEffect(() => {
@@ -73,15 +89,15 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
       if (!trigger || !solution) return;
 
       playSound(SoundType.CONFIRM);
-      
+
       // 标记为已解决
       await resolvePainPointTrigger(
         trigger.id!,
         isVip ? 'Applied VIP solution' : 'Applied regular solution'
       );
-      
+
       setIsResolved(true);
-      
+
       // 如果是VIP用户，可能需要应用特殊解决方案
       if (isVip) {
         // 这里可以根据不同的痛点类型应用不同的VIP解决方案
@@ -89,7 +105,7 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
         // 如果是连续打卡中断，可以恢复连续打卡记录
         // 等等
       }
-      
+
       // 延迟关闭对话框
       setTimeout(() => {
         onClose();
@@ -133,7 +149,8 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
         <div className="text-center py-8">
           <p className="text-red-500">{error || '无法加载解决方案'}</p>
           <Button
-            variant="primary"
+            variant="filled"
+            color="jade"
             onClick={onClose}
             className="mt-4"
           >
@@ -155,7 +172,7 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
         <p className="text-gray-700 mb-4">
           {solution.description}
         </p>
-        
+
         <div className="solution-container mb-6">
           <div className={`p-4 rounded-lg ${isVip ? 'bg-gold-50 border border-gold-200' : 'bg-gray-50 border border-gray-200'}`}>
             <h3 className={`font-medium mb-2 ${isVip ? 'text-gold-700' : 'text-gray-700'}`}>
@@ -168,11 +185,11 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
                 content.regularSolutionTitle || '推荐解决方案'
               )}
             </h3>
-            
+
             <p className="text-gray-600">
               {isVip ? solution.vipSolution : solution.regularSolution}
             </p>
-            
+
             {!isVip && (
               <div className="mt-4 p-3 bg-gold-50 border border-gold-200 rounded-lg">
                 <h4 className="font-medium text-gold-700 flex items-center">
@@ -186,7 +203,7 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
             )}
           </div>
         </div>
-        
+
         <div className="flex justify-end space-x-3">
           <Button
             variant="secondary"
@@ -195,7 +212,7 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
           >
             {content.laterButton || '稍后再说'}
           </Button>
-          
+
           {!isVip && (
             <Button
               variant="gold"
@@ -205,19 +222,20 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
               {content.upgradeButton || '升级到VIP'}
             </Button>
           )}
-          
+
           <Button
-            variant="primary"
+            variant="filled"
+            color="jade"
             onClick={handleApplySolution}
             disabled={isResolved}
             isLoading={isResolved}
           >
-            {isResolved 
-              ? (content.appliedButton || '已应用') 
+            {isResolved
+              ? (content.appliedButton || '已应用')
               : (content.applyButton || '应用解决方案')}
           </Button>
         </div>
-        
+
         {/* 成功应用解决方案的动画 */}
         <AnimatePresence>
           {isResolved && (

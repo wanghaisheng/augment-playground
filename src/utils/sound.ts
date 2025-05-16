@@ -36,6 +36,7 @@ export enum SoundType {
   SUCCESS = 'success',
   NOTIFICATION = 'notification',
   ACHIEVEMENT = 'achievement',
+  CONFIRM = 'confirm',
 
   // 熊猫互动音效
   PANDA_HAPPY = 'panda_happy',
@@ -99,6 +100,7 @@ export const soundPaths: Record<SoundType, string> = {
   [SoundType.SUCCESS]: '/assets/sounds/success.mp3',
   [SoundType.NOTIFICATION]: '/assets/sounds/notification.mp3',
   [SoundType.ACHIEVEMENT]: '/assets/sounds/achievement.mp3',
+  [SoundType.CONFIRM]: '/assets/sounds/success.mp3', // Using success sound for confirm
 
   // 熊猫互动音效
   [SoundType.PANDA_HAPPY]: '/assets/sounds/panda_happy.mp3',
