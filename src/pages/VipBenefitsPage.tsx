@@ -163,7 +163,7 @@ const VipBenefitsPage: React.FC = () => {
 
   // Handle show VIP value modal
   const handleShowVipValueModal = useCallback(() => {
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
     setShowVipValueModal(true);
   }, []);
 

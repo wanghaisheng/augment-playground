@@ -183,7 +183,7 @@ async function updateTaskProgress(
       await addBattlePassExperience(userId, passId, task.expReward);
 
       // Play sound effect
-      playSound(SoundType.TASK_COMPLETE);
+      playSound(SoundType.COMPLETE);
 
       // Show notification
       showTaskCompletionNotification(task);

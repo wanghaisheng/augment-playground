@@ -153,7 +153,7 @@ const BambooTradingPage: React.FC = () => {
       console.error('Failed to trade:', error);
       const errorMessage = error instanceof Error ? error.message : (safePageLabels.transactionFailedMessage ?? 'Failed to trade');
       setTradeMessage({ type: 'error', message: errorMessage });
-      playSound(SoundType.TASK_FAILED); // Changed from TRADE_FAIL, an alternative is SoundType.ERROR
+      playSound(SoundType.FAIL); // Changed from TRADE_FAIL, an alternative is SoundType.ERROR
     } finally {
       setIsTrading(false);
     }

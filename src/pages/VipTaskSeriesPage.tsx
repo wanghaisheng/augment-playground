@@ -100,7 +100,7 @@ const VipTaskSeriesPage: React.FC = () => {
   
   // 处理导航到VIP页面
   const handleNavigateToVip = () => {
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
     navigate('/vip-benefits');
   };
   

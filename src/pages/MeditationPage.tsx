@@ -142,21 +142,21 @@ const MeditationPage: React.FC = () => {
   const handleDifficultyFilter = (difficulty: MeditationDifficulty | 'all') => {
     setSelectedDifficulty(difficulty);
     // applyFilters will be called by the useEffect above
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
   };
   
   // 处理类型过滤
   const handleTypeFilter = (type: MeditationType | 'all') => {
     setSelectedType(type);
     // applyFilters will be called by the useEffect above
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
   };
   
   // 处理时长过滤
   const handleDurationFilter = (duration: 'short' | 'medium' | 'long' | 'all') => {
     setSelectedDuration(duration);
     // applyFilters will be called by the useEffect above
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
   };
   
   // 处理课程点击
@@ -172,7 +172,7 @@ const MeditationPage: React.FC = () => {
   
   // 处理导航到VIP页面
   const handleNavigateToVip = () => {
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
     navigate('/vip-benefits');
   };
   

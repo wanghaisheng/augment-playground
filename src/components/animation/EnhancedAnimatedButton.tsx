@@ -1,7 +1,7 @@
 // src/components/animation/EnhancedAnimatedButton.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, HTMLMotionProps } from 'framer-motion';
-import Button from '@/components/common/Button';
+import Button, { ButtonVariant, ButtonColor } from '@/components/common/Button';
 import { playSound, SoundType } from '@/utils/sound';
 import {
   generateBurstParticles,
@@ -18,7 +18,8 @@ export type ButtonAnimationType =
   | 'bounce'
   | 'shake'
   | 'ripple'
-  | 'ink';
+  | 'ink'
+  | 'inkSpread';
 
 // 按钮音效类型
 export type ButtonSoundType =
@@ -36,9 +37,10 @@ export type ButtonParticleType =
   | 'none';
 
 // 增强动画按钮属性
-interface EnhancedAnimatedButtonProps extends Omit<HTMLMotionProps<'button'>, 'variant' | 'size'> {
-  variant?: 'jade' | 'gold' | 'primary' | 'secondary';
+interface EnhancedAnimatedButtonProps extends Omit<HTMLMotionProps<'button'>, 'variant' | 'size' | 'color'> {
+  variant?: ButtonVariant;
   size?: 'small' | 'medium' | 'large';
+  color?: ButtonColor;
   isLoading?: boolean;
   loadingText?: string;
   children: React.ReactNode;
@@ -59,8 +61,9 @@ interface EnhancedAnimatedButtonProps extends Omit<HTMLMotionProps<'button'>, 'v
  * 增强的动画按钮组件，支持多种动画效果、音效和粒子效果
  */
 const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
-  variant = 'primary',
+  variant = 'filled',
   size = 'medium',
+  color: themeColor = 'jade',
   isLoading = false,
   loadingText,
   children,
@@ -107,7 +110,7 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
   const playButtonSound = (type: ButtonSoundType, volume: number) => {
     switch (type) {
       case 'click':
-        playSound(SoundType.BUTTON_CLICK, volume);
+        playSound(SoundType.CLICK, volume);
         break;
       case 'success':
         playSound(SoundType.SUCCESS, volume);
@@ -123,9 +126,8 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
 
   // 生成粒子效果
   const generateParticles = () => {
-    // 确保传递的variant是getParticleColorsByVariant支持的类型
-    const safeVariant = variant === 'primary' || variant === 'secondary' ? 'jade' : variant;
-    const colors = getParticleColorsByVariant(safeVariant as 'jade' | 'gold');
+    const particleColorBase = (themeColor === 'jade' || themeColor === 'gold') ? themeColor : 'jade';
+    const colors = getParticleColorsByVariant(particleColorBase);
     let newParticles: React.ReactNode[] = [];
 
     switch (particleType) {
@@ -165,7 +167,7 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
       case 'sparkle':
         newParticles = generateBurstParticles({
           count: particleCount,
-          colors: variant === 'gold' ? ['#FFD700', '#FFC107', '#FFEB3B'] : colors,
+          colors: themeColor === 'gold' ? ['#FFD700', '#FFC107', '#FFEB3B'] : colors,
           spread: 360,
           distance: [20, 40],
           duration: [0.3, 0.8],
@@ -208,9 +210,9 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
       case 'glow':
         return {
           whileHover: {
-            boxShadow: variant === 'jade'
+            boxShadow: themeColor === 'jade'
               ? '0 0 15px rgba(136, 176, 75, 0.7)'
-              : variant === 'gold'
+              : themeColor === 'gold'
                 ? '0 0 15px rgba(212, 175, 55, 0.7)'
                 : '0 0 15px rgba(59, 130, 246, 0.5)'
           },
@@ -222,8 +224,8 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
             scale: [1, 1.05, 1.03],
             transition: {
               duration: 0.8,
-              repeat: Infinity,
-              repeatType: 'reverse'
+              repeat: Infinity as number,
+              repeatType: 'reverse' as const
             }
           },
           whileTap: { scale: 0.95 }
@@ -248,17 +250,14 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
             transition: { duration: 0.1 }
           }
         };
-      case 'ink':
+      case 'inkSpread':
         return {
-          whileHover: {
-            filter: 'brightness(1.1) contrast(1.1)',
-            transition: { duration: 0.3 }
-          },
+          whileHover: { scale: 1.02 },
           whileTap: {
             scale: 0.98,
-            filter: 'brightness(0.95) contrast(1.05)',
-            transition: { duration: 0.1 }
-          }
+            filter: themeColor === 'jade' || themeColor === 'gold' ? 'brightness(0.9)' : 'brightness(1.1)'
+          },
+          transition: { duration: 0.1 }
         };
       default:
         return {
@@ -302,9 +301,7 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
         whileTap={animationProps.whileTap}
       >
         <Button
-          variant={variant === 'primary' ? 'filled' :
-                  variant === 'secondary' ? 'outlined' :
-                  variant as any}
+          variant={variant === 'secondary' ? 'outlined' : variant}
           isLoading={isLoading}
           loadingText={loadingText}
           onClick={handleClick}
@@ -335,11 +332,14 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
           transition={{ duration: 0.6 }}
           style={{
             borderRadius: 'inherit',
-            backgroundColor: variant === 'jade'
-              ? 'rgba(136, 176, 75, 0.3)'
-              : variant === 'gold'
-                ? 'rgba(212, 175, 55, 0.3)'
-                : 'rgba(59, 130, 246, 0.2)'
+            backgroundColor: themeColor === 'primary'
+              ? 'rgba(255, 255, 255, 0.2)'
+              : themeColor === 'jade'
+                ? 'rgba(136, 176, 75, 0.3)'
+                : themeColor === 'gold'
+                  ? 'rgba(212, 175, 55, 0.3)'
+                  : 'rgba(59, 130, 246, 0.2)',
+            position: 'absolute',
           }}
         />
       )}

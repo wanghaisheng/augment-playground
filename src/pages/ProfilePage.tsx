@@ -124,12 +124,12 @@ const ProfilePage: React.FC = () => {
   useRegisterTableRefresh('userTitles', loadUserData); // For UserTitleRecord changes
 
   const handleEditClick = () => {
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
     setIsEditing(true);
   };
   
   const handleCancelEdit = () => {
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
     setIsEditing(false);
   };
   
@@ -140,7 +140,7 @@ const ProfilePage: React.FC = () => {
 
     try {
       setIsSaving(true);
-      playSound(SoundType.BUTTON_CLICK);
+      playSound(SoundType.CLICK);
       await updateUserProfile(profileToSave);
       setUserProfile(profileToSave);
       setIsEditing(false);
@@ -166,7 +166,7 @@ const ProfilePage: React.FC = () => {
   };
   
   const handleTabChange = (tab: 'achievements' | 'statistics' | 'customization' | 'social') => {
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
     setActiveTab(tab);
   };
   
@@ -233,7 +233,7 @@ const ProfilePage: React.FC = () => {
       {/* Tab Navigation */}
       <div className="mb-6 border-b border-gray-300">
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-          {(Object.keys(pageLabels.tabs) as Array<keyof typeof pageLabels.tabs>).map((tabKey) => (
+          {pageLabels && pageLabels.tabs && (Object.keys(pageLabels.tabs) as Array<keyof typeof pageLabels.tabs>).map((tabKey) => (
         <button
               key={tabKey}
               onClick={() => handleTabChange(tabKey as 'achievements' | 'statistics' | 'customization' | 'social')}
@@ -242,7 +242,7 @@ const ProfilePage: React.FC = () => {
                   ? 'border-jade-500 text-jade-600' 
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
         >
-              {pageLabels.tabs[tabKey]}
+              {pageLabels.tabs![tabKey]}
         </button>
           ))}
         </nav>

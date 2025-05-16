@@ -1433,7 +1433,7 @@ const BattlePassPage: React.FC = () => {
 
                       if (updatedProgress) {
                         // Play task completion sound
-                        playSound(SoundType.TASK_COMPLETE);
+                        playSound(SoundType.COMPLETE);
 
                         // Show toast notification
                         setCompletedTask({

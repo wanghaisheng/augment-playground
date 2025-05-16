@@ -1,10 +1,12 @@
 // src/components/vip/VipValueModal.tsx
-import React from 'react';
+import React, { useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import VipValueDashboard from './VipValueDashboard';
 import LatticeDialog from '@/components/game/LatticeDialog';
 import { playSound, SoundType } from '@/utils/sound';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
+import { fetchVipValueView } from '@/services/localizedContentService';
+import { Language } from '@/types';
 
 interface VipValueModalProps {
   isOpen: boolean;
@@ -16,7 +18,7 @@ interface VipValueModalProps {
 
 /**
  * VIP价值模态框组件
- * 
+ *
  * 在模态框中展示VIP价值仪表盘
  */
 const VipValueModal: React.FC<VipValueModalProps> = ({
@@ -26,14 +28,28 @@ const VipValueModal: React.FC<VipValueModalProps> = ({
   isVip,
   onSubscribe
 }) => {
-  const { content } = useLocalizedView('vipValue');
-  
+  // Function to fetch localized content for VIP value
+  const fetchVipValueViewFn = useCallback(async (lang: Language) => {
+    try {
+      return await fetchVipValueView(lang);
+    } catch (error) {
+      console.error('Error fetching VIP value view:', error);
+      throw error;
+    }
+  }, []);
+
+  // Fetch localized content for the VIP value
+  const { data: viewData } = useLocalizedView<null, any>('vipValue', fetchVipValueViewFn);
+
+  // Get content from viewData
+  const content = viewData?.labels || {};
+
   // 处理关闭
   const handleClose = () => {
     playSound(SoundType.BUTTON_CLICK);
     onClose();
   };
-  
+
   // 处理订阅
   const handleSubscribe = () => {
     if (onSubscribe) {
@@ -41,7 +57,7 @@ const VipValueModal: React.FC<VipValueModalProps> = ({
     }
     onClose();
   };
-  
+
   return (
     <AnimatePresence>
       {isOpen && (

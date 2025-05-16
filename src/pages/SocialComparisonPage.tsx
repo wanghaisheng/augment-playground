@@ -52,14 +52,14 @@ const SocialComparisonPage: React.FC = () => {
   // 处理切换标签
   const handleTabChange = (tab: 'leaderboard' | 'friends') => {
     if (tab !== activeTab) {
-      playSound(SoundType.BUTTON_CLICK);
+      playSound(SoundType.CLICK);
       setActiveTab(tab);
     }
   };
   
   // 处理导航到VIP页面
   const handleNavigateToVip = () => {
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
     navigate('/vip-benefits');
   };
   

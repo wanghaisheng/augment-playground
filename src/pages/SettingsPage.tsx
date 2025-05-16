@@ -102,7 +102,7 @@ const SettingsPage: React.FC = () => {
                 variant="jade"
                 size="small"
                 onClick={() => {
-                  playSound(SoundType.BUTTON_CLICK);
+                  playSound(SoundType.CLICK);
                   window.location.href = '/sound-testing';
                 }}
               >

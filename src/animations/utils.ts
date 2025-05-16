@@ -67,10 +67,14 @@ export const randomDuration = (min: number, max: number): number => {
  * @returns 粒子动画变体
  */
 export const generateParticleVariants = (
-  index: number, 
+  index: number,
   type: 'confetti' | 'fireworks' | 'stars' = 'confetti'
 ): Variants => {
   // 根据粒子类型设置不同的动画参数
+  // 声明变量在switch外部
+  let angle: number;
+  let distance: number;
+
   const getTypeParams = () => {
     switch (type) {
       case 'confetti':
@@ -83,8 +87,8 @@ export const generateParticleVariants = (
         };
       case 'fireworks':
         // 计算随机角度和距离，模拟烟花爆炸效果
-        const angle = randomAngle(0, 360) * (Math.PI / 180);
-        const distance = randomPosition(50, 150);
+        angle = randomAngle(0, 360) * (Math.PI / 180);
+        distance = randomPosition(50, 150);
         return {
           x: Math.cos(angle) * distance,
           y: Math.sin(angle) * distance,
@@ -105,25 +109,25 @@ export const generateParticleVariants = (
   const params = getTypeParams();
 
   return {
-    hidden: { 
+    hidden: {
       opacity: 0,
       x: 0,
       y: 0,
       scale: 0
     },
-    visible: { 
+    visible: {
       opacity: [0, 1, 0],
       x: params.x,
       y: params.y,
       scale: params.scale,
       rotate: params.rotate,
-      transition: { 
+      transition: {
         duration: params.duration,
         delay: index * 0.02,
         ease: 'easeOut'
       }
     },
-    exit: { 
+    exit: {
       opacity: 0,
       scale: 0,
       transition: { duration: 0.3 }
@@ -138,7 +142,7 @@ export const generateParticleVariants = (
  * @returns 水墨滴动画变体
  */
 export const generateInkDropVariants = (
-  index: number, 
+  index: number,
   direction: 'down' | 'up' | 'left' | 'right' = 'down'
 ): Variants => {
   // 根据方向设置不同的动画参数
@@ -159,24 +163,24 @@ export const generateInkDropVariants = (
   const params = getDirectionParams();
 
   return {
-    hidden: { 
+    hidden: {
       opacity: 0,
       scale: 0,
       filter: 'blur(0px)'
     },
-    visible: { 
+    visible: {
       opacity: [0, 0.7, 0],
       scale: [0, 1, 1.2],
       x: params.x,
       y: params.y,
       filter: ['blur(0px)', 'blur(2px)', 'blur(5px)'],
-      transition: { 
+      transition: {
         duration: randomDuration(1.5, 2.5),
         delay: index * 0.1 + randomDelay(0, 0.5),
         ease: 'easeOut'
       }
     },
-    exit: { 
+    exit: {
       opacity: 0,
       scale: 0,
       transition: { duration: 0.3 }
@@ -196,19 +200,19 @@ export const generateGlowVariants = (
   const getIntensityParams = () => {
     switch (intensity) {
       case 'low':
-        return { 
+        return {
           brightness: [1, 1.1, 1],
           saturate: [1, 1.1, 1],
           duration: 2
         };
       case 'medium':
-        return { 
+        return {
           brightness: [1, 1.2, 1],
           saturate: [1, 1.2, 1],
           duration: 1.5
         };
       case 'high':
-        return { 
+        return {
           brightness: [1, 1.3, 1],
           saturate: [1, 1.3, 1],
           duration: 1
@@ -219,24 +223,24 @@ export const generateGlowVariants = (
   const params = getIntensityParams();
 
   return {
-    hidden: { 
+    hidden: {
       opacity: 0,
       filter: `brightness(${params.brightness[0]}) saturate(${params.saturate[0]})`
     },
-    visible: { 
+    visible: {
       opacity: 1,
       filter: [
         `brightness(${params.brightness[0]}) saturate(${params.saturate[0]})`,
         `brightness(${params.brightness[1]}) saturate(${params.saturate[1]})`,
         `brightness(${params.brightness[0]}) saturate(${params.saturate[0]})`
       ],
-      transition: { 
+      transition: {
         duration: params.duration,
         repeat: Infinity,
         ease: 'easeInOut'
       }
     },
-    exit: { 
+    exit: {
       opacity: 0,
       transition: { duration: 0.3 }
     }

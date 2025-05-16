@@ -19,7 +19,7 @@ import CustomGoalCard from '@/components/goals/CustomGoalCard';
 import CustomGoalForm from '@/components/goals/CustomGoalForm';
 import Header from '@/components/layout/Header'; 
 import ConfirmationDialog from '@/components/common/ConfirmationDialog'; 
-import VipModal from '@/components/vip/VipValueModal'; 
+import VipModal from '@/components/vip/VipValueModal';
 import { playSound, SoundType } from '@/utils/sound';
 import { GoalStatus } from '@/types/goals'; // Ensure GoalStatus is imported correctly
 // import { useQueryClientContext } from '@/contexts/QueryClientContext'; // REMOVE THIS - not used and path is incorrect
@@ -73,13 +73,13 @@ const CustomGoalsPage: React.FC = () => {
     }
     setEditingGoal(null);
     setShowGoalForm(true);
-    playSound(SoundType.TASK_CREATED); 
+    playSound(SoundType.CREATE); 
   };
 
   const handleEditGoal = (goalToEdit: CustomGoalViewModel) => {
     setEditingGoal(goalToEdit);
     setShowGoalForm(true);
-    playSound(SoundType.BUTTON_CLICK); 
+    playSound(SoundType.CLICK); 
   };
   
   const handleSaveGoal = () => { 
@@ -112,7 +112,7 @@ const CustomGoalsPage: React.FC = () => {
   
   const handleToggleComplete = async (goalToToggle: CustomGoalViewModel) => {
     if (!goalToToggle || !goalToToggle.id) return;
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
 
     const newStatus = goalToToggle.status === GoalStatus.COMPLETED ? GoalStatus.ACTIVE : GoalStatus.COMPLETED;
 
@@ -122,7 +122,7 @@ const CustomGoalsPage: React.FC = () => {
       
       alert(`Goal "${goalToToggle.title}" status set to ${newStatus} (mocked)`);
       refetch();
-      playSound(newStatus === GoalStatus.COMPLETED ? SoundType.TASK_COMPLETE_HIGH : SoundType.BUTTON_CLICK);
+      playSound(newStatus === GoalStatus.COMPLETED ? SoundType.TASK_COMPLETE_HIGH : SoundType.CLICK);
 
     } catch (err) {
       console.error("Failed to toggle goal completion:", err);
@@ -135,7 +135,7 @@ const CustomGoalsPage: React.FC = () => {
   };
   
   const handleNavigateToVipPage = () => {
-    playSound(SoundType.BUTTON_CLICK);
+    playSound(SoundType.CLICK);
     navigate('/vip-benefits');
     setShowVipModal(false);
   };

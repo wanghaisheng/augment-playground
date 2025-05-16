@@ -76,7 +76,7 @@ function buildLabelsObject<TLabelsBundle>(records: UILabelRecord[], baseScope: s
 }
 
 async function getScopedLabels<TLabelsBundle>(
-  baseScopeKey: string, 
+  baseScopeKey: string,
   lang: Language
 ): Promise<TLabelsBundle | undefined> {
   let labelRecords = await db.uiLabels
@@ -225,6 +225,19 @@ export async function fetchProfilePageView(lang: Language): Promise<FetchProfile
   return { labels, data: null }; // Data is fetched separately in the component for profile page
 }
 
+/**
+ * Fetches localized content for the VIP value view
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized VIP value content
+ */
+export async function fetchVipValueView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching VIP VALUE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('vipValue', lang);
+  return { labels, data: null };
+}
+
 // --- Bamboo Planting Page Service ---
 export async function fetchBambooPlantingPageView(lang: Language): Promise<FetchBambooPlantingPageViewResult> {
   console.log(`SVC_DEXIE: Fetching BAMBOO PLANTING PAGE VIEW for lang: ${lang}`);
@@ -259,7 +272,7 @@ export async function fetchBambooCollectionPageView(lang: Language): Promise<Fet
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
   const labels = await getScopedLabels<BambooCollectionPageViewLabelsBundle>('bambooCollectionView', lang);
   const data: BambooCollectionPageViewDataPayload = {
-    totalBambooCollected: 0, 
+    totalBambooCollected: 0,
   };
   return { labels, data };
 }
@@ -270,7 +283,7 @@ export async function fetchBambooDashboardPageView(lang: Language): Promise<Fetc
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS)); // Simulate slightly longer delay for dashboard data
 
   const labels = await getScopedLabels<BambooDashboardPageViewLabelsBundle>('bambooDashboardView', lang);
-  
+
   // Simulate fetching some dashboard data
   const data: BambooDashboardPageViewDataPayload = {
     totalBamboo: Math.floor(Math.random() * 10000),
@@ -313,13 +326,13 @@ export async function fetchCustomGoalsPageView(lang: Language): Promise<FetchCus
   let viewModalGoals: CustomGoalRecord[] = [];
   try {
     const dbGoals: DbCustomGoalRecord[] = await db.customGoals.toArray();
-    
+
     viewModalGoals = dbGoals.map(dbGoal => {
       // Assertions to ensure dbGoal.id, targetValue, and currentValue are numbers
       const id = dbGoal.id?.toString() || Math.random().toString(36).substring(2); // Ensure ID is a string
       const targetValue = typeof dbGoal.targetValue === 'number' ? dbGoal.targetValue : 0;
       const currentValue = typeof dbGoal.currentValue === 'number' ? dbGoal.currentValue : 0;
-      
+
       return {
         ...dbGoal,
         id: id, // Convert number id to string for ViewModel
@@ -333,7 +346,7 @@ export async function fetchCustomGoalsPageView(lang: Language): Promise<FetchCus
         // unit, description, type, isPublic, reminderFrequency, lastReminderSentAt will be mapped if they exist on DbCustomGoalRecord
         // and are compatible or transformed as needed for CustomGoalRecord (ViewModel)
         // CustomGoalRecord (ViewModel) definition:
-        // id: string; title: string; description?: string; targetValue: number; currentValue: number; unit?: string; 
+        // id: string; title: string; description?: string; targetValue: number; currentValue: number; unit?: string;
         // createdAt: string; deadline?: string; isAchieved: boolean; (status is not directly on VM record but handled by page logic)
         // The `status` from dbGoal is used, but the ViewModel in index.ts doesn't explicitly list it currently
         // It would be good if CustomGoalRecord in index.ts also had `status: GoalStatus` for clarity.
@@ -345,12 +358,12 @@ export async function fetchCustomGoalsPageView(lang: Language): Promise<FetchCus
 
   const pageViewData: CustomGoalsPageViewDataPayload = {
     username: "User123",
-    goals: viewModalGoals, 
+    goals: viewModalGoals,
     isVipUser: false, // Mock data
     currentGoalCount: viewModalGoals.length,
     goalLimit: 5, // Mock data for non-VIP users
   };
-  
+
   return { labels, data: pageViewData };
 }
 

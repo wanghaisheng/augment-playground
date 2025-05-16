@@ -146,7 +146,7 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
             x: [0, -2, 2, -2, 0],
             transition: {
               duration: 0.4,
-              repeat: Infinity
+              repeat: Infinity as number
             }
           },
           whileTap: { scale: 0.95 }

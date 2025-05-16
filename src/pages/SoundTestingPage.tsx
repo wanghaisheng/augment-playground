@@ -95,7 +95,7 @@ const SoundTestingPage: React.FC = () => {
       <div className="mb-6">
         <h4 className="text-md font-medium mb-2 text-jade-700">系统音效</h4>
         <div className="grid grid-cols-2 gap-2">
-          <Button variant="filled" size="small" onClick={() => handlePlaySound(SoundType.BUTTON_CLICK)}>
+          <Button variant="filled" size="small" onClick={() => handlePlaySound(SoundType.CLICK)}>
             按钮点击
           </Button>
           <Button variant="filled" size="small" onClick={() => handlePlaySound(SoundType.SUCCESS)}>
@@ -151,10 +151,10 @@ const SoundTestingPage: React.FC = () => {
           <Button variant="secondary" size="small" onClick={() => handlePlayTaskSound('main', 'low')}>
             主线任务完成
           </Button>
-          <Button variant="secondary" size="small" onClick={() => handlePlaySound(SoundType.TASK_FAILED)}>
+          <Button variant="secondary" size="small" onClick={() => handlePlaySound(SoundType.FAIL)}>
             任务失败
           </Button>
-          <Button variant="secondary" size="small" onClick={() => handlePlaySound(SoundType.TASK_CREATED)}>
+          <Button variant="secondary" size="small" onClick={() => handlePlaySound(SoundType.CREATE)}>
             任务创建
           </Button>
         </div>
@@ -176,7 +176,7 @@ const SoundTestingPage: React.FC = () => {
           <Button variant="filled" size="small" onClick={() => handlePlaySound(SoundType.CHALLENGE_FAILED)}>
             挑战失败
           </Button>
-          <Button variant="filled" size="small" onClick={() => handlePlaySound(SoundType.CHALLENGE_UNLOCKED)}>
+          <Button variant="filled" size="small" onClick={() => handlePlaySound(SoundType.UNLOCK)}>
             挑战解锁
           </Button>
         </div>
