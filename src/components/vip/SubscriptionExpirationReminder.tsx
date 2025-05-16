@@ -7,6 +7,8 @@ import Button from '@/components/common/Button';
 import { playSound, SoundType } from '@/utils/sound';
 import { VipSubscriptionRecord } from '@/services/storeService';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
+import { fetchSubscriptionExpirationView } from '@/services/localizedContentService';
+import { Language } from '@/types';
 
 interface SubscriptionExpirationReminderProps {
   isOpen: boolean;
@@ -17,7 +19,7 @@ interface SubscriptionExpirationReminderProps {
 
 /**
  * 订阅到期提醒组件
- * 
+ *
  * 在VIP订阅即将到期时显示，提醒用户续订
  */
 const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderProps> = ({
@@ -26,10 +28,25 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
   subscription,
   daysLeft
 }) => {
-  const [isClosing, setIsClosing] = useState(false);
+  // isClosing state is used to manage animation timing during dialog close
+  const [_isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
-  const { content } = useLocalizedView('subscriptionExpiration');
-  
+  // Function to fetch localized content for subscription expiration
+  const fetchSubscriptionExpirationViewFn = React.useCallback(async (lang: Language) => {
+    try {
+      return await fetchSubscriptionExpirationView(lang);
+    } catch (error) {
+      console.error('Error fetching subscription expiration view:', error);
+      throw error;
+    }
+  }, []);
+
+  // Fetch localized content for the subscription expiration
+  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('subscriptionExpiration', fetchSubscriptionExpirationViewFn);
+
+  // Get content from viewData
+  const content = viewData?.labels || {};
+
   // 处理关闭
   const handleClose = () => {
     playSound(SoundType.BUTTON_CLICK);
@@ -39,22 +56,22 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
       setIsClosing(false);
     }, 300);
   };
-  
+
   // 处理导航到VIP页面
   const handleNavigateToVip = () => {
     playSound(SoundType.BUTTON_CLICK);
     onClose();
     navigate('/vip-benefits');
   };
-  
+
   // 获取到期日期
   const getExpirationDate = () => {
     if (!subscription.endDate) return '';
-    
+
     const endDate = new Date(subscription.endDate);
     return endDate.toLocaleDateString();
   };
-  
+
   // 获取标题
   const getTitle = () => {
     if (daysLeft <= 0) {
@@ -62,11 +79,11 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
     } else if (daysLeft === 1) {
       return content.oneDayTitle || 'VIP会员即将到期';
     } else {
-      return content.reminderTitle?.replace('{days}', daysLeft.toString()) || 
+      return content.reminderTitle?.replace('{days}', daysLeft.toString()) ||
              `VIP会员将在${daysLeft}天后到期`;
     }
   };
-  
+
   // 获取描述
   const getDescription = () => {
     if (daysLeft <= 0) {
@@ -75,11 +92,11 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
       return content.oneDayDescription || '您的VIP会员将在明天到期，请及时续订以避免特权中断。';
     } else {
       return content.reminderDescription?.replace('{days}', daysLeft.toString())
-                                        .replace('{date}', getExpirationDate()) || 
+                                        .replace('{date}', getExpirationDate()) ||
              `您的VIP会员将在${daysLeft}天后（${getExpirationDate()}）到期，请及时续订以避免特权中断。`;
     }
   };
-  
+
   // 获取VIP特权列表
   const getVipBenefits = () => [
     {
@@ -103,7 +120,7 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
       icon: '💡'
     }
   ];
-  
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -112,7 +129,7 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
           onClose={handleClose}
           title={getTitle()}
           showCloseButton={true}
-          size="medium"
+          // size property is not supported by LatticeDialog
         >
           <div className="subscription-expiration-reminder p-4">
             <div className="text-center mb-6">
@@ -124,17 +141,17 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
               >
                 <span className="text-6xl">⏰</span>
               </motion.div>
-              
+
               <p className="text-gray-600">
                 {getDescription()}
               </p>
             </div>
-            
+
             <div className="benefits-section mb-6">
               <h3 className="font-bold text-gold-700 mb-3">
                 {content.benefitsTitle || '续订后继续享受这些特权：'}
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {getVipBenefits().map((benefit, index) => (
                   <motion.div
@@ -155,18 +172,18 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
                 ))}
               </div>
             </div>
-            
+
             <div className="action-buttons flex flex-col sm:flex-row gap-3">
               <Button
                 variant="gold"
                 onClick={handleNavigateToVip}
                 className="flex-1"
               >
-                {daysLeft <= 0 ? 
-                  (content.renewNowButton || '立即续订') : 
+                {daysLeft <= 0 ?
+                  (content.renewNowButton || '立即续订') :
                   (content.renewButton || '续订VIP')}
               </Button>
-              
+
               <Button
                 variant="secondary"
                 onClick={handleClose}

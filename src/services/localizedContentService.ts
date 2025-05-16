@@ -251,6 +251,45 @@ export async function fetchVipTrialValueReviewView(lang: Language): Promise<Loca
   return { labels, data: null };
 }
 
+/**
+ * Fetches localized content for the VIP trial guide
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized VIP trial guide content
+ */
+export async function fetchVipTrialGuideView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching VIP TRIAL GUIDE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('vipTrialGuide', lang);
+  return { labels, data: null };
+}
+
+/**
+ * Fetches localized content for the VIP boost prompt
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized VIP boost prompt content
+ */
+export async function fetchVipBoostPromptView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching VIP BOOST PROMPT VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('vipBoostPrompt', lang);
+  return { labels, data: null };
+}
+
+/**
+ * Fetches localized content for the subscription expiration reminder
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized subscription expiration reminder content
+ */
+export async function fetchSubscriptionExpirationView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching SUBSCRIPTION EXPIRATION VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('subscriptionExpiration', lang);
+  return { labels, data: null };
+}
+
 // --- Bamboo Planting Page Service ---
 export async function fetchBambooPlantingPageView(lang: Language): Promise<FetchBambooPlantingPageViewResult> {
   console.log(`SVC_DEXIE: Fetching BAMBOO PLANTING PAGE VIEW for lang: ${lang}`);

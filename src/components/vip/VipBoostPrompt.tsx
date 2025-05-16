@@ -7,6 +7,8 @@ import { RewardType, RewardRarity } from '@/services/rewardService';
 import { playSound, SoundType } from '@/utils/sound';
 import { usePandaState } from '@/context/PandaStateProvider';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
+import { fetchVipBoostPromptView } from '@/services/localizedContentService';
+import { Language } from '@/types';
 import { HighlightMomentType } from '@/services/highlightMomentService';
 import { generateSparkleParticles } from '@/utils/particleEffects.tsx';
 
@@ -46,12 +48,26 @@ const VipBoostPrompt: React.FC<VipBoostPromptProps> = ({
   const navigate = useNavigate();
   const { pandaState } = usePandaState();
   const isVip = pandaState?.isVip || false;
-  const [isClosing, setIsClosing] = useState(false);
+  // isClosing state is used to manage animation timing during dialog close
+  const [_isClosing, setIsClosing] = useState(false);
   const [particles, setParticles] = useState<React.ReactNode[]>([]);
   const [containerRef, setContainerRef] = useState<HTMLDivElement | null>(null);
 
-  // 获取本地化内容
-  const { content } = useLocalizedView('vipBoostPrompt');
+  // Function to fetch localized content for VIP boost prompt
+  const fetchVipBoostPromptViewFn = React.useCallback(async (lang: Language) => {
+    try {
+      return await fetchVipBoostPromptView(lang);
+    } catch (error) {
+      console.error('Error fetching VIP boost prompt view:', error);
+      throw error;
+    }
+  }, []);
+
+  // Fetch localized content for the VIP boost prompt
+  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipBoostPrompt', fetchVipBoostPromptViewFn);
+
+  // Get content from viewData
+  const content = viewData?.labels || {};
 
   // 处理导航到VIP页面
   const handleNavigateToVip = () => {

@@ -7,6 +7,8 @@ import Button from '@/components/common/Button';
 import { playSound, SoundType } from '@/utils/sound';
 import { VipTrialRecord, markVipTrialGuideAsShown } from '@/services/vipTrialService';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
+import { fetchVipTrialGuideView } from '@/services/localizedContentService';
+import { Language } from '@/types';
 
 interface VipTrialGuideProps {
   isOpen: boolean;
@@ -16,7 +18,7 @@ interface VipTrialGuideProps {
 
 /**
  * VIP试用指南组件
- * 
+ *
  * 在用户获得VIP试用资格后显示，介绍VIP特权并引导用户体验
  */
 const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
@@ -25,10 +27,25 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
   trial
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [isClosing, setIsClosing] = useState(false);
+  // isClosing state is used to manage animation timing during dialog close
+  const [_isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
-  const { content } = useLocalizedView('vipTrialGuide');
-  
+  // Function to fetch localized content for VIP trial guide
+  const fetchVipTrialGuideViewFn = React.useCallback(async (lang: Language) => {
+    try {
+      return await fetchVipTrialGuideView(lang);
+    } catch (error) {
+      console.error('Error fetching VIP trial guide view:', error);
+      throw error;
+    }
+  }, []);
+
+  // Fetch localized content for the VIP trial guide
+  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipTrialGuide', fetchVipTrialGuideViewFn);
+
+  // Get content from viewData
+  const content = viewData?.labels || {};
+
   // VIP特权列表
   const vipBenefits = [
     {
@@ -52,7 +69,7 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
       icon: '💡'
     }
   ];
-  
+
   // 处理下一步
   const handleNext = () => {
     playSound(SoundType.BUTTON_CLICK);
@@ -62,7 +79,7 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
       handleFinish();
     }
   };
-  
+
   // 处理上一步
   const handlePrevious = () => {
     playSound(SoundType.BUTTON_CLICK);
@@ -70,15 +87,15 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
       setCurrentStep(currentStep - 1);
     }
   };
-  
+
   // 处理完成
   const handleFinish = async () => {
     try {
       playSound(SoundType.SUCCESS);
-      
+
       // 标记为已显示
       await markVipTrialGuideAsShown(trial.id!);
-      
+
       // 关闭对话框
       setIsClosing(true);
       setTimeout(() => {
@@ -89,22 +106,22 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
       console.error('Failed to mark VIP trial guide as shown:', error);
     }
   };
-  
+
   // 处理导航到VIP页面
   const handleNavigateToVip = () => {
     playSound(SoundType.BUTTON_CLICK);
     onClose();
     navigate('/vip-benefits');
   };
-  
+
   // 计算试用结束日期
   const getTrialEndDate = () => {
     if (!trial.endDate) return '';
-    
+
     const endDate = new Date(trial.endDate);
     return endDate.toLocaleDateString();
   };
-  
+
   // 渲染欢迎步骤
   const renderWelcomeStep = () => (
     <div className="welcome-step text-center">
@@ -116,24 +133,24 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
       >
         <span className="text-6xl">✨</span>
       </motion.div>
-      
+
       <h2 className="text-2xl font-bold text-gold-700 mb-4">
         {content.welcomeTitle || '恭喜！您获得了7天VIP试用特权'}
       </h2>
-      
+
       <p className="text-gray-600 mb-6">
         {content.welcomeDescription || '感谢您使用熊猫习惯，我们很高兴为您提供7天的VIP会员试用期，让您体验所有高级功能。'}
       </p>
-      
+
       <div className="trial-info bg-gold-50 p-4 rounded-lg mb-6">
         <p className="text-sm text-gray-700">
-          {content.trialPeriodInfo?.replace('{endDate}', getTrialEndDate()) || 
+          {content.trialPeriodInfo?.replace('{endDate}', getTrialEndDate()) ||
            `您的VIP试用期将于 ${getTrialEndDate()} 结束。在此期间，您可以体验所有VIP特权。`}
         </p>
       </div>
     </div>
   );
-  
+
   // 渲染特权步骤
   const renderBenefitStep = (index: number) => {
     const benefit = vipBenefits[index];
@@ -148,16 +165,16 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
           <div className="benefit-icon text-4xl mb-4">
             {benefit.icon}
           </div>
-          
+
           <h3 className="text-xl font-bold text-gold-700 mb-2">
             {benefit.title}
           </h3>
-          
+
           <p className="text-gray-600 mb-6">
             {benefit.description}
           </p>
         </motion.div>
-        
+
         <div className="step-indicator flex justify-center mb-4">
           {vipBenefits.map((_, i) => (
             <div
@@ -171,7 +188,7 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
       </div>
     );
   };
-  
+
   // 渲染最终步骤
   const renderFinalStep = () => (
     <div className="final-step text-center">
@@ -183,15 +200,15 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
       >
         <span className="text-6xl">🎉</span>
       </motion.div>
-      
+
       <h2 className="text-2xl font-bold text-gold-700 mb-4">
         {content.finalTitle || '开始您的VIP之旅吧！'}
       </h2>
-      
+
       <p className="text-gray-600 mb-6">
         {content.finalDescription || '现在您可以享受所有VIP特权了。试用期结束前，我们会提醒您是否要继续订阅。'}
       </p>
-      
+
       <Button
         variant="gold"
         onClick={handleNavigateToVip}
@@ -201,7 +218,7 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
       </Button>
     </div>
   );
-  
+
   // 渲染当前步骤
   const renderCurrentStep = () => {
     if (currentStep === 0) {
@@ -212,7 +229,7 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
       return renderFinalStep();
     }
   };
-  
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -221,11 +238,11 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
           onClose={onClose}
           title={content.dialogTitle || 'VIP试用特权'}
           showCloseButton={true}
-          size="large"
+          // size property is not supported by LatticeDialog
         >
           <div className="vip-trial-guide p-4">
             {renderCurrentStep()}
-            
+
             <div className="navigation-buttons flex justify-between mt-6">
               {currentStep > 0 && currentStep <= vipBenefits.length && (
                 <Button
@@ -235,7 +252,7 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
                   {content.previousButton || '上一步'}
                 </Button>
               )}
-              
+
               {currentStep <= vipBenefits.length && (
                 <Button
                   variant="gold"
@@ -245,7 +262,7 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
                   {content.nextButton || '下一步'}
                 </Button>
               )}
-              
+
               {currentStep > vipBenefits.length && (
                 <Button
                   variant="jade"

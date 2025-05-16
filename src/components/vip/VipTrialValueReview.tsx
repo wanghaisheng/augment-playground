@@ -13,6 +13,7 @@ import { getPandaState } from '@/services/pandaService';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { fetchVipTrialValueReviewView } from '@/services/localizedContentService';
 import { Language } from '@/types';
+import { UserStatistics } from '@/types/user';
 
 interface VipTrialValueReviewProps {
   isOpen: boolean;
@@ -32,7 +33,23 @@ const VipTrialValueReview: React.FC<VipTrialValueReviewProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [valueStats, setValueStats] = useState<any>(null);
+  interface ValueStats {
+    resourcesGained: {
+      bamboo: number;
+      coins: number;
+      energy: number;
+    };
+    tasksCompleted: number;
+    pandaGrowth: {
+      level: number;
+      experience: number;
+    };
+    challengesCompleted: number;
+    streakDays: number;
+    daysLeft: number;
+  }
+
+  const [valueStats, setValueStats] = useState<ValueStats | null>(null);
   const navigate = useNavigate();
 
   // Function to fetch localized content for VIP trial value review
@@ -46,7 +63,7 @@ const VipTrialValueReview: React.FC<VipTrialValueReviewProps> = ({
   }, []);
 
   // Fetch localized content for the VIP trial value review
-  const { data: viewData } = useLocalizedView<null, any>('vipTrialValueReview', fetchVipTrialValueReviewViewFn);
+  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipTrialValueReview', fetchVipTrialValueReviewViewFn);
 
   // Get content from viewData
   const content = viewData?.labels || {};
@@ -69,20 +86,20 @@ const VipTrialValueReview: React.FC<VipTrialValueReviewProps> = ({
         // 获取熊猫状态
         const pandaState = await getPandaState();
 
-        // 计算试用期开始时间
-        const startDate = trial.startDate ? new Date(trial.startDate) : new Date();
+        // 计算试用期开始时间 - 暂时未使用，但保留以备将来需要
+        // const startDate = trial.startDate ? new Date(trial.startDate) : new Date();
 
         // 计算试用期间的价值
         const stats = {
           // 资源收益
           resourcesGained: {
-            bamboo: statistics?.resourcesGained?.bamboo || 0,
+            bamboo: statistics?.resources?.bamboo || 0,
             coins: currency?.coins || 0,
             energy: pandaState?.energy || 0
           },
 
           // 任务完成
-          tasksCompleted: statistics?.tasksCompleted || 0,
+          tasksCompleted: statistics?.tasks?.completed || 0,
 
           // 熊猫成长
           pandaGrowth: {
@@ -91,10 +108,10 @@ const VipTrialValueReview: React.FC<VipTrialValueReviewProps> = ({
           },
 
           // 挑战完成
-          challengesCompleted: statistics?.challengesCompleted || 0,
+          challengesCompleted: statistics?.challenges?.completed || 0,
 
           // 连续打卡
-          streakDays: statistics?.streakDays || 0,
+          streakDays: statistics?.tasks?.streak || 0,
 
           // 试用期剩余天数
           daysLeft: trial.endDate ?

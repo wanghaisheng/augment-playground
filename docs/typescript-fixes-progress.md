@@ -5,9 +5,9 @@
 ## 当前状态
 
 **总错误数:** 830 (Initial)
-**已修复错误数:** 340 (830 - 490)
-**剩余错误数:** 490
-**完成百分比:** 40.96%
+**已修复错误数:** 353 (830 - 477)
+**剩余错误数:** 477
+**完成百分比:** 42.53%
 
 **最新进展:**
 1. 创建了一套自动化脚本来修复常见的 lint 错误，包括：
@@ -24,6 +24,17 @@
    - ResourcesSection.tsx - 修复了未使用的导入和变量
    - TaskManager.tsx - 修复了未使用的导入
    - useAsyncEffect.ts - 修复了未使用的 mounted 变量
+   - VipTrialValueReview.tsx - 修复了类型问题和未使用的 startDate 变量
+   - VipTrialGuide.tsx - 修复了未使用的 isClosing 变量和 useLocalizedView 调用
+   - VipBoostPrompt.tsx - 修复了未使用的 isClosing 变量和 useLocalizedView 调用
+3. 添加了缺失的本地化内容服务函数：
+   - 添加了 fetchVipTrialGuideView 函数
+   - 添加了 fetchVipBoostPromptView 函数
+   - 添加了 fetchSubscriptionExpirationView 函数
+4. 修复了 SubscriptionExpirationReminder.tsx 中的错误：
+   - 修复了未使用的 isClosing 变量
+   - 修复了 useLocalizedView 调用
+   - 移除了不支持的 size 属性
 
 这些脚本位于 `scripts/` 目录下，可以通过运行 `node scripts/fix-lint-errors.js` 来执行所有修复。
 
