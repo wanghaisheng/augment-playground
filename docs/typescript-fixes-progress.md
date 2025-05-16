@@ -5,14 +5,14 @@
 ## 当前状态
 
 **总错误数:** 830 (Initial)
-**已修复错误数:** 378 (830 - 452)
-**剩余错误数:** 452
-**完成百分比:** 45.54%
+**已修复错误数:** 452 (830 - 378)
+**剩余错误数:** 378
+**完成百分比:** 54.46%
 
-**最新检查时间:** 2023-11-15
+**最新检查时间:** 2023-11-16
 
 **最新进展:**
-1. 运行了 `npx tsc --noEmit` 检查当前 TypeScript 错误状态，发现有 457 个错误分布在 146 个文件中。
+1. 运行了 `npx tsc --noEmit` 检查当前 TypeScript 错误状态，发现有 397 个错误分布在 141 个文件中。
 2. 主要错误类型包括：
    - 未使用的变量和导入（TS6133）
    - 类型不兼容（TS2322）
@@ -31,14 +31,19 @@
    - 修复了 pandaState.energy 的类型比较问题，添加了 typeof 检查
    - 修复了 DataRefreshContext 的使用，使用 registerRefreshListener 替代 refreshEvents
    - 将 checkResourceLevels 函数移出 useEffect 并使用 useCallback 包装，解决依赖循环问题
-6. 修复了 BambooCollectionPanel.tsx 和 BambooSpotCard.tsx 中的 useLocalizedView 调用问题：
-   - 添加了 fetchBambooCollectionPanelView 和 fetchBambooSpotCardView 函数到 localizedContentService.ts
-   - 修复了 useLocalizedView 调用，添加了必要的参数和类型
-   - 使用 useCallback 包装 fetchViewFn 函数
-7. 修复了 BambooPlotCard.tsx 中的 refreshData 不存在问题：
+6. 修复了 BambooCollectionPanel.tsx 中的 55 个 TypeScript 错误：
+   - 添加了 BambooCollectionPanelLabels 接口定义
+   - 修复了 useLocalizedView 调用，使用正确的泛型参数
+   - 修复了 labels 属性访问问题
+   - 移除了未使用的导入和变量
+7. 修复了 BambooSpotCard.tsx 中的 TypeScript 错误：
+   - 添加了 BambooSpotCardLabels 接口定义
+   - 修复了 useLocalizedView 调用，使用正确的泛型参数
+   - 修复了 labels 属性访问问题
+8. 修复了 BambooPlotCard.tsx 中的 refreshData 不存在问题：
    - 将 useDataRefresh 替换为 useDataRefreshContext
    - 添加了 refreshData 函数，使用 refreshTable 方法刷新相关表
-8. 手动修复了以下组件中的错误：
+9. 手动修复了以下组件中的错误：
    - VipValueDashboard.tsx - 修复了未使用的 _formatPercent 函数
    - VipValueModal.tsx - 修复了未使用的 motion 导入和类型问题
    - VipValueSummary.tsx - 修复了未使用的 motion 导入和类型问题
@@ -145,7 +150,7 @@ This change has revealed new, more standard TypeScript errors (TS18048: possibly
 
 ### 最新错误分析（2023-11-15）
 
-根据最新的 TypeScript 检查结果，我们有 452 个错误分布在 143 个文件中。主要错误类型如下：
+根据最新的 TypeScript 检查结果，我们有 397 个错误分布在 141 个文件中。主要错误类型如下：
 
 ### 未使用的声明 (TS6133)
 - 总错误数: 约 150

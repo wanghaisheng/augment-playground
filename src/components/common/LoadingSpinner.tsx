@@ -4,7 +4,7 @@ import { useComponentLabels } from '@/hooks/useComponentLabels';
 
 interface LoadingSpinnerProps {
   text?: string;
-  variant?: 'default' | 'jade' | 'bamboo' | 'gold';
+  variant?: 'default' | 'jade' | 'bamboo' | 'gold' | 'white';
   type?: 'generic' | 'data' | 'content' | 'saving' | 'processing';
   size?: 'small' | 'medium' | 'large' | string;
   className?: string;
@@ -33,6 +33,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   if (variant === 'jade') spinnerClass = 'jade-spinner';
   if (variant === 'bamboo') spinnerClass = 'bamboo-spinner';
   if (variant === 'gold') spinnerClass = 'gold-spinner';
+  if (variant === 'white') spinnerClass = 'white-spinner';
 
   // Determine size class
   let sizeClass = '';

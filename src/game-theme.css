@@ -2815,6 +2815,18 @@ main {
   box-shadow: 0 0 15px rgba(26, 95, 74, 0.3);
 }
 
+/* Loading Spinner - White */
+.white-spinner {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-round);
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  animation: spin 1s infinite linear;
+  margin: var(--spacing-lg) auto;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

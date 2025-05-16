@@ -12,7 +12,7 @@ import VipBoostPrompt from '@/components/vip/VipBoostPrompt';
 import { RewardType } from '@/services/rewardService';
 import { initializeVipBoostPromptLabels } from '@/data/vipBoostPromptLabels';
 import { fetchBambooSpotCardView } from '@/services/localizedContentService';
-import { Language } from '@/types';
+import { Language, LocalizedContent } from '@/types';
 
 interface BambooSpotCardProps {
   spot: BambooSpotRecord;
@@ -31,6 +31,28 @@ const BambooSpotCard: React.FC<BambooSpotCardProps> = ({ spot, onCollect, classN
   const [showVipPrompt, setShowVipPrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // 定义标签类型
+  interface BambooSpotCardLabels {
+    available: string;
+    cooldown: string;
+    depleted: string;
+    commonBamboo: string;
+    goldenBamboo: string;
+    ancientBamboo: string;
+    magicalBamboo: string;
+    homeGarden: string;
+    forestEdge: string;
+    mountainPath: string;
+    sacredGrove: string;
+    enchantedValley: string;
+    baseAmount: string;
+    status: string;
+    collections: string;
+    collecting: string;
+    collect: string;
+    unknownError: string;
+  }
+
   // 获取本地化内容
   // 创建一个函数来获取本地化内容
   const fetchBambooSpotCardViewFn = useCallback(async (lang: Language) => {
@@ -43,10 +65,13 @@ const BambooSpotCard: React.FC<BambooSpotCardProps> = ({ spot, onCollect, classN
   }, []);
 
   // 使用 useLocalizedView 钩子获取本地化内容
-  const { data: viewData } = useLocalizedView<null, any>('bambooSpotCard', fetchBambooSpotCardViewFn);
+  const { labels } = useLocalizedView<null, BambooSpotCardLabels>(
+    'bambooSpotCard',
+    fetchBambooSpotCardViewFn
+  );
 
   // 为了兼容现有代码，创建content和currentLanguage
-  const content = viewData?.labels || {
+  const content = labels || {
     available: '可收集',
     cooldown: '冷却中',
     depleted: '已耗尽',

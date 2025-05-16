@@ -18,7 +18,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 // import { zhCN, enUS } from 'date-fns/locale';
 import { BambooSpotCardSkeleton } from '@/components/skeleton';
 import { fetchBambooCollectionPanelView } from '@/services/localizedContentService';
-import { Language } from '@/types';
+import { Language, LocalizedContent } from '@/types';
 
 interface BambooCollectionPanelProps {
   isOpen: boolean;
@@ -41,6 +41,30 @@ const BambooCollectionPanel: React.FC<BambooCollectionPanelProps> = ({
   const [stats, setStats] = useState<{ total: number; today: number; bySource: Record<BambooSource, number> } | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
+  // 定义标签类型
+  interface BambooCollectionPanelLabels {
+    title: string;
+    spotsTab: string;
+    statsTab: string;
+    noSpotsFound: string;
+    noStatsFound: string;
+    totalCollected: string;
+    todayCollected: string;
+    collectionBySource: string;
+    source: string;
+    amount: string;
+    noCollectionData: string;
+    taskSource: string;
+    dailySource: string;
+    collectionSource: string;
+    giftSource: string;
+    purchaseSource: string;
+    challengeSource: string;
+    battlePassSource: string;
+    vipSource: string;
+    unknownError: string;
+  }
+
   // 获取本地化内容
   // 创建一个函数来获取本地化内容
   const fetchBambooCollectionPanelViewFn = useCallback(async (lang: Language) => {
@@ -53,10 +77,13 @@ const BambooCollectionPanel: React.FC<BambooCollectionPanelProps> = ({
   }, []);
 
   // 使用 useLocalizedView 钩子获取本地化内容
-  const { data: viewData } = useLocalizedView<null, any>('bambooCollectionPanel', fetchBambooCollectionPanelViewFn);
+  const { labels } = useLocalizedView<null, BambooCollectionPanelLabels>(
+    'bambooCollectionPanel',
+    fetchBambooCollectionPanelViewFn
+  );
 
   // 为了兼容现有代码，创建一个content对象
-  const content = viewData?.labels || {
+  const content = labels || {
     title: '竹子收集',
     spotsTab: '收集点',
     statsTab: '统计',
