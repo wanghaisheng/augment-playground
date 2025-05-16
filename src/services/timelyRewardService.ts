@@ -1,8 +1,15 @@
 // src/services/timelyRewardService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { addSyncItem } from './dataSyncService';
 import { generateRewards, RewardRecord, RewardRarity } from './rewardService';
 import { TaskRecord, TaskStatus } from './taskService';
+import {
+  canUserDrawToday,
+  incrementUserTodayDrawCount,
+  getUserTodayRemainingDraws,
+  getUserDailyDrawLimit,
+  initializeLuckyDrawLimits
+} from './luckyDrawLimitService';
 
 // 及时奖励状态枚举
 export enum TimelyRewardStatus {
@@ -89,6 +96,24 @@ const PRIZE_LEVEL_TO_RARITY: Record<PrizeLevel, string> = {
 };
 
 /**
+ * 获取用户今天剩余的抽奖次数和总限制
+ * @returns 包含剩余次数和总限制的对象
+ */
+export async function getUserDrawLimitInfo(): Promise<{ remaining: number; total: number }> {
+  const userId = 'current-user'; // 在实际应用中，这应该是当前用户的ID
+
+  try {
+    const remaining = await getUserTodayRemainingDraws(userId);
+    const total = await getUserDailyDrawLimit(userId);
+
+    return { remaining, total };
+  } catch (error) {
+    console.error('Failed to get user draw limit info:', error);
+    return { remaining: 0, total: 0 };
+  }
+}
+
+/**
  * 初始化及时奖励系统
  */
 export async function initializeTimelyRewards(): Promise<void> {
@@ -100,6 +125,9 @@ export async function initializeTimelyRewards(): Promise<void> {
     await createDailyTimelyReward();
     await createMorningTimelyReward();
   }
+
+  // 初始化抽奖次数限制
+  await initializeLuckyDrawLimits();
 }
 
 /**
@@ -346,10 +374,19 @@ export async function getLuckyPointsTotal(): Promise<number> {
  * @param pointsToSpend 要使用的点数
  */
 export async function performLuckyDraw(pointsToSpend: number): Promise<LuckyDrawRecord> {
+  const userId = 'current-user'; // 在实际应用中，这应该是当前用户的ID
+
   // 检查用户是否有足够的点数
   const totalPoints = await getLuckyPointsTotal();
   if (totalPoints < pointsToSpend) {
     throw new Error(`Not enough lucky points. Required: ${pointsToSpend}, Available: ${totalPoints}`);
+  }
+
+  // 检查用户今天是否还有抽奖次数
+  const canDraw = await canUserDrawToday(userId);
+  if (!canDraw) {
+    const limit = await getUserDailyDrawLimit(userId);
+    throw new Error(`You have reached your daily draw limit of ${limit} draws. Please come back tomorrow.`);
   }
 
   // 确定奖品层级
@@ -363,9 +400,12 @@ export async function performLuckyDraw(pointsToSpend: number): Promise<LuckyDraw
   // 使用幸运点
   await spendLuckyPoints(pointsToSpend);
 
+  // 增加用户今天的抽奖次数
+  await incrementUserTodayDrawCount(userId);
+
   const now = new Date();
   const luckyDraw: LuckyDrawRecord = {
-    userId: 'current-user',
+    userId,
     pointsSpent: pointsToSpend,
     rewards,
     timestamp: now,

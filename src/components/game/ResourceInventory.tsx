@@ -5,6 +5,7 @@ import ResourceList from './ResourceList';
 import ResourceDisplay from './ResourceDisplay';
 import { RewardType, RewardRarity, getPlayerCoins } from '@/services/rewardService';
 import { getPandaExperience } from '@/services/pandaStateService';
+import { getResourceMultiplier } from '@/services/resourceMultiplierService';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
@@ -33,6 +34,10 @@ const ResourceInventory: React.FC<ResourceInventoryProps> = ({
 }) => {
   const [experience, setExperience] = useState<number>(0);
   const [coins, setCoins] = useState<number>(0);
+  const [expMultiplier, setExpMultiplier] = useState<number>(1);
+  const [coinMultiplier, setCoinMultiplier] = useState<number>(1);
+  const [baseExperience, setBaseExperience] = useState<number>(0);
+  const [baseCoins, setBaseCoins] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,12 +50,18 @@ const ResourceInventory: React.FC<ResourceInventoryProps> = ({
       // 获取经验值
       if (showExperience) {
         const exp = await getPandaExperience();
+        const expMult = await getResourceMultiplier(RewardType.EXPERIENCE);
+        setBaseExperience(exp);
+        setExpMultiplier(expMult);
         setExperience(exp);
       }
 
       // 获取金币
       if (showCoins) {
         const playerCoins = await getPlayerCoins();
+        const coinMult = await getResourceMultiplier(RewardType.COIN);
+        setBaseCoins(playerCoins);
+        setCoinMultiplier(coinMult);
         setCoins(playerCoins);
       }
 
@@ -90,7 +101,9 @@ const ResourceInventory: React.FC<ResourceInventoryProps> = ({
       amount: experience,
       rarity: RewardRarity.COMMON,
       iconPath: '/assets/rewards/experience.svg',
-      name: '经验值'
+      name: '经验值',
+      baseAmount: baseExperience,
+      multiplier: expMultiplier
     });
   }
 
@@ -101,7 +114,9 @@ const ResourceInventory: React.FC<ResourceInventoryProps> = ({
       amount: coins,
       rarity: RewardRarity.COMMON,
       iconPath: '/assets/rewards/coin.svg',
-      name: '竹币'
+      name: '竹币',
+      baseAmount: baseCoins,
+      multiplier: coinMultiplier
     });
   }
 

@@ -49,7 +49,19 @@ export function useComponentLabels() {
       details: 'Details: {message}',
       networkError: 'Network error',
       serverError: 'Server error',
-      unknownError: 'Unknown error'
+      unknownError: 'Unknown error',
+      loadingError: 'Error loading data',
+      taskNotFound: 'Task not found',
+      completeTaskError: 'Error completing task',
+      deleteTaskError: 'Error deleting task',
+      createTaskError: 'Error creating task',
+      updateTaskError: 'Error updating task',
+      loadingDataError: 'Error loading data',
+      savingDataError: 'Error saving data',
+      processingError: 'Error processing request',
+      validationError: 'Validation error',
+      authenticationError: 'Authentication error',
+      permissionError: 'Permission denied'
     },
     emptyState: {
       generic: 'No data available',
@@ -102,6 +114,43 @@ export function useComponentLabels() {
         recommended: 'RECOMMENDED',
         bestValue: 'BEST VALUE'
       }
+    },
+    taskCard: {
+      subtasksIndicator: 'Contains subtasks',
+      completeButton: 'Complete',
+      editButton: 'Edit',
+      deleteButton: 'Delete',
+      viewDetailsButton: 'View details',
+      priority: {
+        high: 'High',
+        medium: 'Medium',
+        low: 'Low',
+        unknown: 'Unknown'
+      },
+      status: {
+        overdue: 'Overdue',
+        completed: 'Completed',
+        inProgress: 'In Progress',
+        todo: 'To Do'
+      },
+      dates: {
+        dueDate: 'Due date',
+        createdDate: 'Created',
+        completedDate: 'Completed'
+      }
+    },
+    deleteConfirmation: {
+      title: 'Confirm Deletion',
+      message: 'Are you sure you want to delete this item?',
+      confirmButton: 'Delete',
+      cancelButton: 'Cancel'
+    },
+    timelyRewardCongrats: {
+      title: 'Congratulations!',
+      message: 'You have earned a reward!',
+      rewardAmount: 'Reward: {amount}',
+      closeButton: 'Close',
+      claimButton: 'Claim'
     }
   } as ComponentsLabelsBundle;
 
@@ -114,7 +163,10 @@ export function useComponentLabels() {
         emptyState: { ...fallbackLabels.emptyState, ...componentLabels.emptyState },
         modal: { ...fallbackLabels.modal, ...componentLabels.modal },
         taskReminder: { ...fallbackLabels.taskReminder, ...componentLabels.taskReminder },
-        vipSubscription: { ...fallbackLabels.vipSubscription, ...componentLabels.vipSubscription }
+        vipSubscription: { ...fallbackLabels.vipSubscription, ...componentLabels.vipSubscription },
+        taskCard: { ...fallbackLabels.taskCard, ...componentLabels.taskCard },
+        deleteConfirmation: { ...fallbackLabels.deleteConfirmation, ...componentLabels.deleteConfirmation },
+        timelyRewardCongrats: { ...fallbackLabels.timelyRewardCongrats, ...componentLabels.timelyRewardCongrats }
       }
     : fallbackLabels;
 

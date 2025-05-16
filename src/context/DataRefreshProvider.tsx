@@ -120,3 +120,10 @@ export const useDataRefreshContext = (): DataRefreshContextType => {
   }
   return context;
 };
+
+/**
+ * 使用数据刷新的Hook (别名)
+ * 提供与useDataRefreshContext相同的功能，但名称更简洁
+ * @returns 数据刷新上下文
+ */
+export const useDataRefresh = useDataRefreshContext;

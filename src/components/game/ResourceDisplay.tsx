@@ -14,6 +14,8 @@ interface ResourceDisplayProps {
   showAnimation?: boolean;
   onClick?: () => void;
   className?: string;
+  baseAmount?: number;      // 基础数量（未加倍前）
+  multiplier?: number;      // 倍数值
 }
 
 /**
@@ -29,7 +31,9 @@ const ResourceDisplay: React.FC<ResourceDisplayProps> = ({
   showLabel = true,
   showAnimation = false,
   onClick,
-  className = ''
+  className = '',
+  baseAmount,
+  multiplier
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [displayAmount, setDisplayAmount] = useState(amount);
@@ -49,29 +53,29 @@ const ResourceDisplay: React.FC<ResourceDisplayProps> = ({
 
       // 触发动画
       setIsAnimating(true);
-      
+
       // 更新显示金额
       const diff = amount - prevAmount;
       const duration = 1000; // 动画持续时间（毫秒）
       const steps = 20; // 动画步数
       const stepTime = duration / steps;
       const stepAmount = diff / steps;
-      
+
       let currentStep = 0;
       const interval = setInterval(() => {
         currentStep++;
         setDisplayAmount(prevAmount + stepAmount * currentStep);
-        
+
         if (currentStep >= steps) {
           clearInterval(interval);
           setDisplayAmount(amount);
           setIsAnimating(false);
         }
       }, stepTime);
-      
+
       // 更新前一个金额
       setPrevAmount(amount);
-      
+
       // 清理函数
       return () => {
         clearInterval(interval);
@@ -214,11 +218,18 @@ const ResourceDisplay: React.FC<ResourceDisplayProps> = ({
             {Math.round(displayAmount)}
           </motion.div>
         </AnimatePresence>
-        
+
         {/* 资源类型标签 */}
         {showLabel && (
           <div className={`resource-label text-xs text-gray-500 text-center`}>
             {getTypeName()}
+          </div>
+        )}
+
+        {/* 资源加倍提示 */}
+        {baseAmount && multiplier && multiplier > 1 && (
+          <div className="resource-multiplier absolute -top-2 -right-2 bg-gold text-white text-xs px-1 rounded-full shadow-md">
+            x{multiplier.toFixed(1)}
           </div>
         )}
       </div>

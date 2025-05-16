@@ -1,13 +1,22 @@
 // src/components/game/LuckyPointsDisplay.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getLuckyPointsTotal } from '@/services/timelyRewardService';
-import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
-import { getLocalizedLabel } from '@/utils/localization';
+import { useOptimizedDataRefresh } from '@/hooks/useOptimizedDataRefresh';
+import { useComponentLabels } from '@/hooks/useComponentLabels';
+import { useStableCallback } from '@/hooks/useStableCallback';
+import { useAsyncEffectOnce } from '@/hooks/useAsyncEffect';
+import { mergeLabelBundles } from '@/types';
+
+interface LuckyPointsDisplayLabels {
+  label: string;
+  loadingText: string;
+}
 
 interface LuckyPointsDisplayProps {
   onClick?: () => void;
   variant?: 'default' | 'compact' | 'large';
+  labels?: Partial<LuckyPointsDisplayLabels>;
 }
 
 /**
@@ -16,21 +25,30 @@ interface LuckyPointsDisplayProps {
  */
 const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
   onClick,
-  variant = 'default'
+  variant = 'default',
+  labels: propLabels
 }) => {
   const [points, setPoints] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [labels, setLabels] = useState<{
-    label: string;
-    loadingText: string;
-  }>({
+
+  // 使用组件标签钩子获取标签
+  const { componentLabels } = useComponentLabels('luckyPointsDisplay');
+
+  // 合并标签，优先使用props传入的标签，然后是组件标签，最后是默认标签
+  const defaultLabels: LuckyPointsDisplayLabels = {
     label: 'Lucky Points',
     loadingText: 'Loading...'
-  });
+  };
 
-  // 加载幸运点数量
-  const loadPoints = async () => {
+  // 使用mergeLabelBundles合并标签
+  const mergedLabels = mergeLabelBundles<LuckyPointsDisplayLabels>(
+    propLabels,
+    mergeLabelBundles(componentLabels as Partial<LuckyPointsDisplayLabels>, defaultLabels)
+  );
+
+  // 加载幸运点数量 - 使用useStableCallback确保函数引用稳定
+  const loadPoints = useStableCallback(async () => {
     try {
       setIsLoading(true);
       const total = await getLuckyPointsTotal();
@@ -40,31 +58,15 @@ const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  });
 
-  // 加载本地化标签
-  useEffect(() => {
-    const loadLabels = async () => {
-      const languageCode = localStorage.getItem('language') || 'en';
-      const labelText = await getLocalizedLabel('luckyPointsDisplay', 'label', languageCode);
-      const loadingText = await getLocalizedLabel('luckyPointsDisplay', 'loadingText', languageCode);
+  // 初始加载 - 使用useAsyncEffectOnce替代useEffect
+  useAsyncEffectOnce(async () => {
+    await loadPoints();
+  });
 
-      setLabels({
-        label: labelText || 'Lucky Points',
-        loadingText: loadingText || 'Loading...'
-      });
-    };
-
-    loadLabels();
-  }, []);
-
-  // 初始加载
-  useEffect(() => {
-    loadPoints();
-  }, []);
-
-  // 定义幸运点数据更新处理函数
-  const handleLuckyPointsUpdate = useCallback(() => {
+  // 定义幸运点数据更新处理函数 - 使用useStableCallback确保函数引用稳定
+  const handleLuckyPointsUpdate = useStableCallback(() => {
     loadPoints();
     setIsAnimating(true);
 
@@ -72,17 +74,17 @@ const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
     setTimeout(() => {
       setIsAnimating(false);
     }, 1000);
-  }, [loadPoints]);
+  });
 
-  // 使用 useRegisterTableRefresh hook 监听幸运点表的变化
-  useRegisterTableRefresh('luckyPoints', handleLuckyPointsUpdate);
+  // 使用优化的数据刷新钩子替代直接的useRegisterTableRefresh
+  useOptimizedDataRefresh(['luckyPoints'], loadPoints, 200);
 
-  // 处理点击事件
-  const handleClick = () => {
+  // 处理点击事件 - 使用useStableCallback确保函数引用稳定
+  const handleClick = useStableCallback(() => {
     if (onClick) {
       onClick();
     }
-  };
+  });
 
   // 获取变体类名
   const getVariantClass = () => {
@@ -114,13 +116,13 @@ const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
           transition={{ duration: 0.3 }}
         >
           {isLoading ? (
-            <span className="loading-dots">{labels.loadingText}</span>
+            <span className="loading-dots">{mergedLabels.loadingText}</span>
           ) : (
             <span>{points}</span>
           )}
         </motion.div>
       </AnimatePresence>
-      <div className="lucky-points-label">{labels.label}</div>
+      <div className="lucky-points-label">{mergedLabels.label}</div>
     </motion.div>
   );
 };

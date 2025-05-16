@@ -5,6 +5,7 @@ import AbilityCard from './AbilityCard';
 import { PandaAbilityRecord, AbilityType } from '@/services/pandaAbilityService';
 import ScrollDialog from './ScrollDialog';
 import { AbilityCardLabels, AbilityDetailLabels, AbilityFilterLabels } from '@/types';
+import { AbilityCardSkeleton } from '@/components/skeleton';
 
 interface AbilityListProps {
   abilities: PandaAbilityRecord[];
@@ -17,6 +18,7 @@ interface AbilityListProps {
     detail?: AbilityDetailLabels;
     noAbilitiesMessage?: string;
   };
+  isLoading?: boolean;
 }
 
 /**
@@ -34,7 +36,8 @@ const AbilityList: React.FC<AbilityListProps> = ({
   unlockedAbilities,
   onActivateAbility,
   pandaLevel,
-  labels
+  labels,
+  isLoading = false
 }) => {
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [selectedAbility, setSelectedAbility] = useState<PandaAbilityRecord | null>(null);
@@ -130,33 +133,44 @@ const AbilityList: React.FC<AbilityListProps> = ({
       </div>
 
       <div className="abilities-grid">
-        <AnimatePresence>
-          {filteredAbilities.map(ability => (
-            <motion.div
-              key={ability.id}
-              layout
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => openAbilityDetail(ability)}
-            >
-              <AbilityCard
-                ability={ability}
-                isUnlocked={isAbilityUnlocked(ability)}
-                onActivate={() => ability.id && handleActivateAbility(ability.id)}
-                labels={labels?.card}
-              />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
+        {isLoading ? (
+          <div className="ability-list-skeleton grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <AbilityCardSkeleton variant="jade" />
+            <AbilityCardSkeleton variant="jade" isUnlocked={true} />
+            <AbilityCardSkeleton variant="jade" />
+            <AbilityCardSkeleton variant="jade" isUnlocked={true} />
+          </div>
+        ) : (
+          <>
+            <AnimatePresence>
+              {filteredAbilities.map(ability => (
+                <motion.div
+                  key={ability.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.3 }}
+                  onClick={() => openAbilityDetail(ability)}
+                >
+                  <AbilityCard
+                    ability={ability}
+                    isUnlocked={isAbilityUnlocked(ability)}
+                    onActivate={() => ability.id && handleActivateAbility(ability.id)}
+                    labels={labels?.card}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
 
-      {filteredAbilities.length === 0 && (
-        <div className="no-abilities">
-          <p>{labels?.noAbilitiesMessage || 'No abilities match the current filter'}</p>
-        </div>
-      )}
+            {filteredAbilities.length === 0 && !isLoading && (
+              <div className="no-abilities">
+                <p>{labels?.noAbilitiesMessage || 'No abilities match the current filter'}</p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
       {/* Ability detail modal */}
       <ScrollDialog

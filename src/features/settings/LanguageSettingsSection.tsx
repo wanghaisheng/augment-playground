@@ -32,7 +32,8 @@ const LanguageSettingsSection: React.FC<LanguageSettingsSectionProps> = ({ label
     }
   };
 
-  const currentLangDisplay = labels.currentLanguageIs.replace('{lang}', language.toUpperCase());
+  // Use optional chaining and provide a fallback
+  const currentLangDisplay = labels?.currentLanguageIs?.replace('{lang}', language.toUpperCase()) || `Current: ${language.toUpperCase()}`;
 
   return (
     <section className="task-item"> {/* Apply task-item style for a game-themed look */}

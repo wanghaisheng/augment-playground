@@ -1,7 +1,14 @@
 // src/services/pandaStateService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { addSyncItem } from './dataSyncService';
 import type { PandaMood, EnergyLevel } from '@/components/game/PandaAvatar';
+import { applyGrowthBoost } from './growthBoostService';
+
+// 定义熊猫等级提升回调类型
+export type PandaLevelUpCallback = (previousLevel: number, newLevel: number, state: PandaStateRecord) => void;
+
+// 存储等级提升回调函数
+const levelUpCallbacks: PandaLevelUpCallback[] = [];
 
 // 熊猫状态记录类型
 export interface PandaStateRecord {
@@ -49,7 +56,7 @@ export async function getPandaState(): Promise<PandaStateRecord> {
   if (pandaState.length === 0) {
     // 如果没有记录，创建默认状态
     const id = await db.table('pandaState').add(DEFAULT_PANDA_STATE);
-    return { ...DEFAULT_PANDA_STATE, id };
+    return { ...DEFAULT_PANDA_STATE, id: id as number };
   }
 
   return pandaState[0];
@@ -98,15 +105,61 @@ export async function updatePandaEnergy(energy: EnergyLevel): Promise<PandaState
 }
 
 /**
+ * 注册熊猫等级提升回调函数
+ * @param callback 等级提升时调用的回调函数
+ * @returns 用于取消注册的函数
+ */
+export function onPandaLevelUp(callback: PandaLevelUpCallback): () => void {
+  levelUpCallbacks.push(callback);
+
+  // 返回取消注册的函数
+  return () => {
+    const index = levelUpCallbacks.indexOf(callback);
+    if (index !== -1) {
+      levelUpCallbacks.splice(index, 1);
+    }
+  };
+}
+
+/**
+ * 触发所有等级提升回调函数
+ * @param previousLevel 之前的等级
+ * @param newLevel 新的等级
+ * @param state 更新后的熊猫状态
+ */
+function triggerLevelUpCallbacks(previousLevel: number, newLevel: number, state: PandaStateRecord): void {
+  // 调用所有注册的回调函数
+  for (const callback of levelUpCallbacks) {
+    try {
+      callback(previousLevel, newLevel, state);
+    } catch (error) {
+      console.error('Error in panda level up callback:', error);
+    }
+  }
+}
+
+/**
  * 增加熊猫经验值
  * @param amount 增加的经验值数量
+ * @param applyBoost 是否应用成长速度加成，默认为true
  */
-export async function addPandaExperience(amount: number): Promise<PandaStateRecord> {
+export async function addPandaExperience(amount: number, applyBoost: boolean = true): Promise<PandaStateRecord> {
   const currentState = await getPandaState();
-  const newExperience = currentState.experience + amount;
+
+  // 应用成长速度加成
+  let boostedAmount = amount;
+  let growthMultiplier = 1.0;
+
+  if (applyBoost) {
+    boostedAmount = await applyGrowthBoost(amount);
+    growthMultiplier = boostedAmount / amount;
+  }
+
+  const newExperience = currentState.experience + boostedAmount;
 
   // 简单的等级计算逻辑：每100点经验升一级
   const newLevel = Math.floor(newExperience / 100) + 1;
+  const previousLevel = currentState.level;
 
   const updatedState = {
     ...currentState,
@@ -116,7 +169,7 @@ export async function addPandaExperience(amount: number): Promise<PandaStateReco
   };
 
   // 如果升级了，更新情绪为开心
-  if (newLevel > currentState.level) {
+  if (newLevel > previousLevel) {
     updatedState.mood = 'happy';
   }
 
@@ -125,6 +178,16 @@ export async function addPandaExperience(amount: number): Promise<PandaStateReco
 
   // 添加同步项目
   await addSyncItem('pandaState', 'update', updatedState);
+
+  // 记录成长速度加成信息到控制台
+  if (applyBoost && growthMultiplier > 1.0) {
+    console.log(`Applied growth boost: ${amount} -> ${boostedAmount} (x${growthMultiplier.toFixed(2)})`);
+  }
+
+  // 如果熊猫升级了，触发等级提升回调
+  if (newLevel > previousLevel) {
+    triggerLevelUpCallbacks(previousLevel, newLevel, updatedState);
+  }
 
   return updatedState;
 }

@@ -34,12 +34,12 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
   const { labels } = useComponentLabels();
 
   // Use provided values or fall back to localized labels
-  const displayTitle = title || labels.error.title;
-  const displayMessageTemplate = messageTemplate || labels.error.details;
-  const displayRetryButtonText = retryButtonText || labels.error.retry;
+  const displayTitle = title || labels?.error?.title || "Error";
+  const displayMessageTemplate = messageTemplate || labels?.error?.details || "Details: {message}";
+  const displayRetryButtonText = retryButtonText || labels?.error?.retry || "Try Again";
   if (!error) return null;
 
-  const errorMessage = error.message || labels.error.unknownError;
+  const errorMessage = error.message || labels?.error?.unknownError || "Unknown error";
   const finalMessage = displayMessageTemplate.replace('{message}', errorMessage);
   const errorCode = (error as ApiError)?.errorCode;
   const statusCode = (error as ApiError)?.statusCode;

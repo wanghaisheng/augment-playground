@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="150px" viewBox="0 0 200 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Feedback Offer</title>
+    <g id="Feedback-Offer" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Background" fill="#E8F5E9" cx="100" cy="75" r="70"></circle>
+        <g id="Feedback-Form" transform="translate(50.000000, 35.000000)">
+            <rect id="Paper" fill="#FFFFFF" x="0" y="0" width="80" height="80" rx="5"></rect>
+            <rect id="Header" fill="#4CAF50" x="0" y="0" width="80" height="15" rx="5"></rect>
+            <rect id="Line-1" fill="#E0E0E0" x="10" y="25" width="60" height="5" rx="2.5"></rect>
+            <rect id="Line-2" fill="#E0E0E0" x="10" y="35" width="60" height="5" rx="2.5"></rect>
+            <rect id="Line-3" fill="#E0E0E0" x="10" y="45" width="60" height="5" rx="2.5"></rect>
+            <rect id="Line-4" fill="#E0E0E0" x="10" y="55" width="40" height="5" rx="2.5"></rect>
+            <rect id="Submit-Button" fill="#4CAF50" x="45" y="65" width="25" height="10" rx="5"></rect>
+        </g>
+        <g id="Pencil" transform="translate(120.000000, 50.000000)">
+            <path d="M0,30 L20,10 L30,20 L10,40 L0,40 L0,30 Z" id="Pencil-Body" fill="#FFC107"></path>
+            <path d="M20,10 L30,0 L40,10 L30,20 L20,10 Z" id="Pencil-Tip" fill="#FF5722"></path>
+            <path d="M10,40 L0,30 L5,35 L10,40 Z" id="Pencil-Corner" fill="#FFA000"></path>
+        </g>
+        <g id="Stars" transform="translate(40.000000, 25.000000)">
+            <path d="M10,0 L12,5 L17,5 L13,8 L15,13 L10,10 L5,13 L7,8 L3,5 L8,5 L10,0 Z" id="Star-1" fill="#FFEB3B"></path>
+            <path d="M120,10 L122,15 L127,15 L123,18 L125,23 L120,20 L115,23 L117,18 L113,15 L118,15 L120,10 Z" id="Star-2" fill="#FFEB3B"></path>
+            <path d="M20,100 L22,105 L27,105 L23,108 L25,113 L20,110 L15,113 L17,108 L13,105 L18,105 L20,100 Z" id="Star-3" fill="#FFEB3B"></path>
+        </g>
+    </g>
+</svg>

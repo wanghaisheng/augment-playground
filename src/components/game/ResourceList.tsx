@@ -11,6 +11,8 @@ interface ResourceItem {
   rarity?: RewardRarity;
   iconPath?: string;
   name?: string;
+  baseAmount?: number;      // 基础数量（未加倍前）
+  multiplier?: number;      // 倍数值
 }
 
 interface ResourceListProps {
@@ -88,6 +90,8 @@ const ResourceList: React.FC<ResourceListProps> = ({
             showLabel={showLabels}
             showAnimation={showAnimation}
             onClick={() => handleResourceClick(resource)}
+            baseAmount={resource.baseAmount}
+            multiplier={resource.multiplier}
           />
         </motion.div>
       ))}

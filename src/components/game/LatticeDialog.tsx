@@ -18,7 +18,7 @@ interface LatticeDialogProps {
 /**
  * 窗棂风格对话框组件
  * 设计为中国传统窗棂样式，适合展示操作确认、设置或表单
- * 
+ *
  * @param isOpen - 控制对话框是否显示
  * @param onClose - 关闭对话框的回调函数
  * @param title - 对话框标题
@@ -53,6 +53,11 @@ const LatticeDialog: React.FC<LatticeDialogProps> = ({
       closeOnEsc={closeOnEsc}
       className="lattice-modal"
     >
+      {/* Corner decorations */}
+      <div className="lattice-modal-corner-tr" aria-hidden="true" />
+      <div className="lattice-modal-corner-bl" aria-hidden="true" />
+      <div className="lattice-modal-corner-br" aria-hidden="true" />
+
       <div className="lattice-modal-header">
         <h3 className="lattice-modal-title">{title}</h3>
         {showCloseButton && (

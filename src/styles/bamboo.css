@@ -1,0 +1,410 @@
+/* src/styles/bamboo.css */
+
+/* Bamboo Planting Page */
+.bamboo-planting-page {
+  padding: 16px;
+  background-color: #f8f5e6;
+  min-height: 100vh;
+}
+
+.bamboo-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  width: fit-content;
+}
+
+.bamboo-count img {
+  width: 24px;
+  height: 24px;
+}
+
+.bamboo-count span {
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.plots-section,
+.planting-section {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.plots-section h2,
+.planting-section h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #2E7D32;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #E8F5E9;
+  padding-bottom: 8px;
+}
+
+.plots-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Bamboo Plot Card */
+.bamboo-plot-card {
+  background-color: #f1f8e9;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.bamboo-plot-card.selected {
+  border: 2px solid #4CAF50;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.bamboo-plot-card.locked {
+  background-color: #f5f5f5;
+  opacity: 0.8;
+}
+
+.plot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.plot-header h3 {
+  margin: 0;
+  color: #2E7D32;
+  font-size: 1.2rem;
+}
+
+.plot-status {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.plot-image {
+  text-align: center;
+  margin: 12px 0;
+}
+
+.plot-image img {
+  max-width: 100%;
+  height: 120px;
+  object-fit: contain;
+}
+
+.plot-description {
+  margin-bottom: 16px;
+}
+
+.plot-description p {
+  margin: 8px 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.plot-attributes {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.plot-actions {
+  display: flex;
+  justify-content: center;
+}
+
+/* Bamboo Seed Selector */
+.bamboo-seed-selector {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.bamboo-seed-selector h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #2E7D32;
+  font-size: 1.2rem;
+}
+
+.seeds-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.seed-card {
+  background-color: #f1f8e9;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.seed-card.selected {
+  border: 2px solid #4CAF50;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.seed-card.locked {
+  background-color: #f5f5f5;
+  opacity: 0.8;
+}
+
+.seed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.seed-header h4 {
+  margin: 0;
+  color: #2E7D32;
+  font-size: 1.1rem;
+}
+
+.seed-rarity {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.seed-image {
+  text-align: center;
+  margin: 12px 0;
+}
+
+.seed-image img {
+  max-width: 100%;
+  height: 80px;
+  object-fit: contain;
+}
+
+.seed-details {
+  margin-top: 12px;
+}
+
+.seed-details p {
+  margin: 8px 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.seed-stats {
+  margin-top: 12px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+}
+
+.stat-label {
+  color: #777;
+}
+
+.stat-value {
+  color: #2E7D32;
+  font-weight: bold;
+}
+
+.seed-unlock-info {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.seed-unlock-info p {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* Plants Grid */
+.plants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.plant-item {
+  background-color: #f1f8e9;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.plant-item.selected {
+  border: 2px solid #4CAF50;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.plant-item img {
+  max-width: 100%;
+  height: 60px;
+  object-fit: contain;
+}
+
+.plant-progress {
+  width: 100%;
+  height: 4px;
+  background-color: #E0E0E0;
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.plant-item.empty {
+  background-color: #f5f5f5;
+  border: 2px dashed #BDBDBD;
+}
+
+.empty-slot {
+  font-size: 2rem;
+  color: #BDBDBD;
+}
+
+/* Plant Growth Indicator */
+.plant-growth-indicator {
+  background-color: #f1f8e9;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.growth-progress {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.growth-progress .progress-bar {
+  flex-grow: 1;
+  height: 8px;
+  background-color: #E0E0E0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 12px;
+}
+
+.growth-progress .progress-fill {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.growth-progress .progress-text {
+  font-weight: bold;
+  color: #2E7D32;
+  min-width: 50px;
+  text-align: right;
+}
+
+.growth-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.detail-label {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.detail-value {
+  color: #2E7D32;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.plant-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* Harvest Animation */
+.harvest-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.harvest-amount {
+  background-color: rgba(76, 175, 80, 0.9);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  animation: bounce 0.5s ease infinite alternate;
+  z-index: 11;
+}
+
+@keyframes bounce {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}

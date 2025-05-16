@@ -6,6 +6,7 @@ import { updatePandaVipStatus } from '@/services/pandaStateService';
 import { activateVipSubscription } from '@/services/storeService';
 import { usePandaState } from '@/context/PandaStateProvider';
 import { playSound, SoundType, enableSound } from '@/utils/sound';
+import SubscriptionRetentionFlow from './SubscriptionRetentionFlow';
 import '@/game-theme.css';
 
 interface VipSubscriptionOptionsProps {
@@ -36,6 +37,7 @@ const VipSubscriptionOptions: React.FC<VipSubscriptionOptionsProps> = ({ onClose
   const { pandaState, refreshState } = usePandaState();
   const [selectedPlan, setSelectedPlan] = useState<string>('seasonal');
   const [isSubscribing, setIsSubscribing] = useState<boolean>(false);
+  const [showRetentionFlow, setShowRetentionFlow] = useState<boolean>(false);
 
   // Default labels with fallbacks
   const subscriptionLabels = {
@@ -200,21 +202,40 @@ const VipSubscriptionOptions: React.FC<VipSubscriptionOptionsProps> = ({ onClose
 
   return (
     <AnimatePresence>
-      <motion.div
-        className="modal-overlay"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-      >
+      {showRetentionFlow ? (
         <motion.div
-          className="subscription-modal"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.3, ease: [0.19, 1.0, 0.22, 1.0] }}
-          onClick={(e) => e.stopPropagation()}
+          className="modal-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
+          <SubscriptionRetentionFlow
+            userId="current-user"
+            onComplete={(retained) => {
+              setShowRetentionFlow(false);
+              if (!retained) {
+                onClose();
+              }
+            }}
+            onClose={() => setShowRetentionFlow(false)}
+          />
+        </motion.div>
+      ) : (
+        <motion.div
+          className="modal-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <motion.div
+            className="subscription-modal"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.3, ease: [0.19, 1.0, 0.22, 1.0] }}
+            onClick={(e) => e.stopPropagation()}
+          >
           <button className="modal-close-button" onClick={onClose}>×</button>
 
           <div className="subscription-header">
@@ -304,7 +325,7 @@ const VipSubscriptionOptions: React.FC<VipSubscriptionOptionsProps> = ({ onClose
               </button>
               <button
                 className="text-button cancel-button"
-                onClick={onClose}
+                onClick={() => setShowRetentionFlow(true)}
                 disabled={isSubscribing}
               >
                 {subscriptionLabels.buttons.cancel}
@@ -313,6 +334,7 @@ const VipSubscriptionOptions: React.FC<VipSubscriptionOptionsProps> = ({ onClose
           </div>
         </motion.div>
       </motion.div>
+      )}
     </AnimatePresence>
   );
 };

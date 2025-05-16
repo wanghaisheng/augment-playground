@@ -1,13 +1,15 @@
 // src/services/gameInitService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { generateTestChallengeData } from './challengeService';
 import { initializeTimelyRewards, addLuckyPoints } from './timelyRewardService';
-import { recordMood, MoodType } from './reflectionService';
-import { createTask, TaskStatus, TaskPriority, TaskCategory, TaskType } from './taskService';
-import { updatePandaState, PandaState } from './pandaStateService';
-import { generateRewards, RewardRarity, RewardType } from './rewardService';
+import { recordMood } from './reflectionService';
+import { createTask, TaskStatus, TaskPriority, TaskType } from './taskService';
+import { updatePandaState } from './pandaStateService';
+import { generateRewards, RewardRarity } from './rewardService';
 import { unlockAbility } from './abilityService';
 import { AbilityType } from './pandaAbilityService';
+import { teaRoomLabels } from '@/data/teaRoomLabels';
+import { homeLabels } from '@/data/homeLabels';
 
 /**
  * Initialize game data
@@ -29,7 +31,7 @@ export async function initializeGameData(): Promise<void> {
     // Record initial mood
     await recordMood({
       userId: 'current-user',
-      mood: 'content',
+      mood: 'normal',
       intensity: 3,
       note: 'Starting my productivity journey'
     });
@@ -39,7 +41,7 @@ export async function initializeGameData(): Promise<void> {
 
     // Initialize panda state
     await updatePandaState({
-      mood: 'content',
+      mood: 'normal',
       energy: 80 as any, // Type assertion to handle number vs enum
       level: 1,
       experience: 0,
@@ -55,10 +57,62 @@ export async function initializeGameData(): Promise<void> {
     // Unlock initial abilities
     await unlockInitialAbilities();
 
+    // Initialize Tea Room labels
+    await initializeTeaRoomLabels();
+
+    // Initialize Home labels
+    await initializeHomeLabels();
+
     console.log('Game data initialization completed successfully');
   } catch (error) {
     console.error('Error initializing game data:', error);
   }
+}
+
+/**
+ * Initialize Tea Room labels
+ */
+async function initializeTeaRoomLabels(): Promise<void> {
+  console.log('Initializing Tea Room labels...');
+
+  // Check if labels already exist
+  const existingLabels = await db.uiLabels
+    .where('scopeKey').equals('teaRoomView')
+    .and(label => label.labelKey === 'enhancedReflectionModule.title')
+    .count();
+
+  if (existingLabels > 0) {
+    console.log('Tea Room labels already exist, skipping initialization');
+    return;
+  }
+
+  // Add all Tea Room labels
+  await db.uiLabels.bulkAdd(teaRoomLabels);
+
+  console.log('Tea Room labels initialized successfully');
+}
+
+/**
+ * Initialize Home labels
+ */
+async function initializeHomeLabels(): Promise<void> {
+  console.log('Initializing Home labels...');
+
+  // Check if labels already exist
+  const existingLabels = await db.uiLabels
+    .where('scopeKey').equals('homeView')
+    .and(label => label.labelKey === 'initializeGameText')
+    .count();
+
+  if (existingLabels > 0) {
+    console.log('Home labels already exist, skipping initialization');
+    return;
+  }
+
+  // Add all Home labels
+  await db.uiLabels.bulkAdd(homeLabels);
+
+  console.log('Home labels initialized successfully');
 }
 
 /**
@@ -136,10 +190,10 @@ async function createInitialTasks(): Promise<void> {
  */
 async function generateInitialRewards(): Promise<void> {
   // Generate some common rewards
-  await generateRewards(2, RewardRarity.COMMON, RewardType.ITEM);
+  await generateRewards(2, RewardRarity.COMMON);
 
   // Generate an uncommon reward
-  await generateRewards(1, RewardRarity.UNCOMMON, RewardType.CURRENCY);
+  await generateRewards(1, RewardRarity.UNCOMMON);
 }
 
 /**

@@ -4,8 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ScrollDialog from './ScrollDialog';
 import Button from '@/components/common/Button';
 import RewardAnimation from '@/components/animation/RewardAnimation';
-import { RewardRecord, markRewardsAsViewed } from '@/services/rewardService';
+import { RewardRecord, markRewardsAsViewed, RewardType } from '@/services/rewardService';
 import { useTableRefresh } from '@/hooks/useDataRefresh';
+import VipBoostPrompt from '@/components/vip/VipBoostPrompt';
+import { isUserVip } from '@/services/storeService';
+import { initializeVipBoostPromptLabels } from '@/data/vipBoostPromptLabels';
 
 interface RewardModalProps {
   isOpen: boolean;
@@ -29,6 +32,8 @@ const RewardModal: React.FC<RewardModalProps> = ({
   const [currentRewardIndex, setCurrentRewardIndex] = useState(0);
   const [showAll, setShowAll] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [showVipPrompt, setShowVipPrompt] = useState(false);
+  const [isVip, setIsVip] = useState(false);
 
   // 当前展示的奖励
   const currentReward = rewards[currentRewardIndex];
@@ -39,6 +44,17 @@ const RewardModal: React.FC<RewardModalProps> = ({
       setCurrentRewardIndex(0);
       setShowAll(false);
       setAnimationComplete(false);
+
+      // 初始化VIP助推提示标签
+      initializeVipBoostPromptLabels();
+
+      // 检查用户是否是VIP
+      const checkVipStatus = async () => {
+        const vipStatus = await isUserVip('current-user');
+        setIsVip(vipStatus);
+      };
+
+      checkVipStatus();
     }
   }, [isOpen]);
 
@@ -58,16 +74,36 @@ const RewardModal: React.FC<RewardModalProps> = ({
   // 处理动画完成
   const handleAnimationComplete = () => {
     setAnimationComplete(true);
+
+    // 如果是经验值或竹币奖励，并且有倍数信息，显示VIP助推提示
+    if (currentReward &&
+        (currentReward.type === RewardType.EXPERIENCE || currentReward.type === RewardType.COIN) &&
+        currentReward.baseAmount !== undefined &&
+        currentReward.multiplier !== undefined &&
+        currentReward.multiplier > 1) {
+      // 延迟显示VIP助推提示，让用户先看到奖励动画
+      setTimeout(() => {
+        setShowVipPrompt(true);
+      }, 1000);
+    }
   };
 
   // 显示下一个奖励
   const handleNextReward = () => {
+    // 关闭VIP助推提示
+    setShowVipPrompt(false);
+
     if (currentRewardIndex < rewards.length - 1) {
       setCurrentRewardIndex(prev => prev + 1);
       setAnimationComplete(false);
     } else {
       setShowAll(true);
     }
+  };
+
+  // 处理关闭VIP助推提示
+  const handleCloseVipPrompt = () => {
+    setShowVipPrompt(false);
   };
 
   // 获取奖励稀有度的名称
@@ -237,19 +273,34 @@ const RewardModal: React.FC<RewardModalProps> = ({
   };
 
   return (
-    <ScrollDialog
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Task Rewards"
-      closeOnOutsideClick={false}
-      closeOnEsc={false}
-      showCloseButton={showAll}
-      footer={null}
-    >
-      <div className="reward-modal-content">
-        {!showAll ? renderSingleReward() : renderAllRewards()}
-      </div>
-    </ScrollDialog>
+    <>
+      <ScrollDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Task Rewards"
+        closeOnOutsideClick={false}
+        closeOnEsc={false}
+        showCloseButton={showAll}
+        footer={null}
+      >
+        <div className="reward-modal-content">
+          {!showAll ? renderSingleReward() : renderAllRewards()}
+        </div>
+      </ScrollDialog>
+
+      {/* VIP助推提示 */}
+      {currentReward && currentReward.baseAmount !== undefined && (
+        <VipBoostPrompt
+          isOpen={showVipPrompt}
+          onClose={handleCloseVipPrompt}
+          rewardType={currentReward.type}
+          baseAmount={currentReward.baseAmount}
+          vipAmount={currentReward.amount}
+          rarity={currentReward.rarity}
+          promptType={currentReward.type === RewardType.EXPERIENCE ? 'task' : 'bamboo'}
+        />
+      )}
+    </>
   );
 };
 

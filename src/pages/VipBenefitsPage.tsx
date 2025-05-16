@@ -8,9 +8,18 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 import VipBenefitCard from '@/components/vip/VipBenefitCard';
 import VipSubscriptionOptions from '@/components/vip/VipSubscriptionOptions';
+import VipHighlightDemo from '@/components/vip/VipHighlightDemo';
+import PainPointDemo from '@/components/vip/PainPointDemo';
+import VipValueSummary from '@/components/vip/VipValueSummary';
+import VipValueModal from '@/components/vip/VipValueModal';
+import ResourceShortageDemo from '@/components/vip/ResourceShortageDemo';
+import PandaSkinDemo from '@/components/vip/PandaSkinDemo';
 import { usePandaState } from '@/context/PandaStateProvider';
 import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 import { playSound, SoundType, enableSound } from '@/utils/sound';
+import { initializeVipBenefitsLabels } from '@/data/vipBenefitsLabels';
+import { VipBenefitsPageSkeleton } from '@/components/skeleton';
+import { useAuth } from '@/context/AuthContext';
 import '@/game-theme.css';
 
 /**
@@ -23,8 +32,11 @@ import '@/game-theme.css';
 const VipBenefitsPage: React.FC = () => {
   const navigate = useNavigate();
   const { pandaState, refreshState } = usePandaState();
+  const { currentUser } = useAuth();
+  const userId = currentUser?.id;
   const { registerRefreshListener } = useDataRefreshContext();
   const [showSubscriptionOptions, setShowSubscriptionOptions] = useState<boolean>(false);
+  const [showVipValueModal, setShowVipValueModal] = useState<boolean>(false);
 
   // Function to fetch localized content for VIP benefits page
   const fetchVipBenefitsView = useCallback(async (lang: Language) => {
@@ -41,10 +53,13 @@ const VipBenefitsPage: React.FC = () => {
     isLoading,
     error,
     data: viewData
-  } = useLocalizedView<unknown, VipBenefitsPageViewLabelsBundle>('vipBenefits', fetchVipBenefitsView);
+  } = useLocalizedView<null, VipBenefitsPageViewLabelsBundle>('vipBenefits', fetchVipBenefitsView);
 
-  // Register refresh listener for pandaState
+  // Register refresh listener for pandaState and initialize labels
   useEffect(() => {
+    // 初始化VIP特权标签
+    initializeVipBenefitsLabels();
+
     const unregister = registerRefreshListener('pandaState', (updatedState) => {
       if (updatedState) {
         refreshState();
@@ -125,6 +140,8 @@ const VipBenefitsPage: React.FC = () => {
     }
   };
 
+  const safeLabels = labels; // Assuming 'labels' is already constructed with fallbacks
+
   // Handle subscription button click
   const handleSubscribeClick = useCallback(() => {
     // Enable sound on user interaction
@@ -144,12 +161,18 @@ const VipBenefitsPage: React.FC = () => {
     navigate(-1);
   }, [navigate]);
 
+  // Handle show VIP value modal
+  const handleShowVipValueModal = useCallback(() => {
+    playSound(SoundType.BUTTON_CLICK);
+    setShowVipValueModal(true);
+  }, []);
+
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <VipBenefitsPageSkeleton />;
   }
 
   if (error) {
-    return <ErrorDisplay error={error} errorType="generic" />;
+    return <ErrorDisplay error={error} title={safeLabels?.errorTitle || 'VIP Benefits Error'} onRetry={fetchVipBenefitsView.bind(null, 'en')} />;
   }
 
   return (
@@ -165,10 +188,10 @@ const VipBenefitsPage: React.FC = () => {
           className="back-button jade-button"
           onClick={handleBackClick}
         >
-          {labels.buttons.back}
+          {safeLabels.buttons?.back ?? 'Back'}
         </button>
         <h1 className="vip-title">
-          {labels.headerTitle}
+          {safeLabels.headerTitle ?? 'Become a Panda Guardian'}
           {pandaState?.isVip && (
             <motion.span
               className="vip-badge-header"
@@ -182,8 +205,8 @@ const VipBenefitsPage: React.FC = () => {
         </h1>
         <p className="vip-subtitle">
           {pandaState?.isVip
-            ? labels.alreadyVipMessage || 'You are already enjoying all the VIP benefits as a Panda Guardian!'
-            : labels.headerSubtitle}
+            ? (safeLabels.alreadyVipMessage ?? 'You are already enjoying all the VIP benefits as a Panda Guardian!')
+            : (safeLabels.headerSubtitle ?? 'Unlock exclusive benefits and accelerate your growth')}
         </p>
       </motion.div>
 
@@ -194,114 +217,211 @@ const VipBenefitsPage: React.FC = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <h2 className="compare-title">{labels.compareTitle}</h2>
+        <h2 className="compare-title">{safeLabels.compareTitle ?? 'Compare Benefits'}</h2>
 
         <div className="comparison-header">
           <div className="comparison-column-header free">
-            <h3>{labels.freeTitle}</h3>
+            <h3>{safeLabels.freeTitle ?? 'Free Panda Friend'}</h3>
           </div>
           <div className="comparison-column-header vip">
-            <h3>{labels.vipTitle}</h3>
+            <h3>{safeLabels.vipTitle ?? 'VIP Panda Guardian'}</h3>
           </div>
         </div>
 
         {/* Identity Benefits */}
         <div className="benefit-category">
-          <h4 className="category-title">{labels.benefitCategories.identity}</h4>
+          <h4 className="category-title">{safeLabels.benefitCategories?.identity ?? 'Identity'}</h4>
           <VipBenefitCard
-            title={labels.benefits.avatarFrame.title}
-            freeBenefit={labels.benefits.avatarFrame.free}
-            vipBenefit={labels.benefits.avatarFrame.vip}
+            title={safeLabels.benefits?.avatarFrame?.title ?? 'Avatar Frame'}
+            freeBenefit={safeLabels.benefits?.avatarFrame?.free ?? 'Basic frame'}
+            vipBenefit={safeLabels.benefits?.avatarFrame?.vip ?? 'Dynamic bamboo leaf frame'}
             isVip={pandaState?.isVip || false}
+            valueType="items"
+            showValueComparison={true}
+            valueMultiplier={1.5}
+            labels={safeLabels.benefitCardLabels}
           />
           <VipBenefitCard
-            title={labels.benefits.title.title}
-            freeBenefit={labels.benefits.title.free}
-            vipBenefit={labels.benefits.title.vip}
+            title={safeLabels.benefits?.title?.title ?? 'Title Display'}
+            freeBenefit={safeLabels.benefits?.title?.free ?? 'None'}
+            vipBenefit={safeLabels.benefits?.title?.vip ?? '"Guardian" title next to name'}
             isVip={pandaState?.isVip || false}
+            valueType="items"
+            showValueComparison={true}
+            valueMultiplier={2}
+            labels={safeLabels.benefitCardLabels}
           />
         </div>
 
         {/* Resources Benefits */}
         <div className="benefit-category">
-          <h4 className="category-title">{labels.benefitCategories.resources}</h4>
+          <h4 className="category-title">{safeLabels.benefitCategories?.resources ?? 'Resources'}</h4>
           <VipBenefitCard
-            title={labels.benefits.bambooReward.title}
-            freeBenefit={labels.benefits.bambooReward.free}
-            vipBenefit={labels.benefits.bambooReward.vip}
+            title={safeLabels.benefits?.bambooReward?.title ?? 'Bamboo Rewards'}
+            freeBenefit={safeLabels.benefits?.bambooReward?.free ?? 'Normal (x1)'}
+            vipBenefit={safeLabels.benefits?.bambooReward?.vip ?? 'Double (x2)'}
             isVip={pandaState?.isVip || false}
+            valueType="currency"
+            showValueComparison={true}
+            valueMultiplier={2}
+            labels={safeLabels.benefitCardLabels}
           />
           <VipBenefitCard
-            title={labels.benefits.growthSpeed.title}
-            freeBenefit={labels.benefits.growthSpeed.free}
-            vipBenefit={labels.benefits.growthSpeed.vip}
+            title={safeLabels.benefits?.growthSpeed?.title ?? 'Panda Growth Speed'}
+            freeBenefit={safeLabels.benefits?.growthSpeed?.free ?? 'Normal speed'}
+            vipBenefit={safeLabels.benefits?.growthSpeed?.vip ?? '+50% experience'}
             isVip={pandaState?.isVip || false}
+            valueType="percentage"
+            showValueComparison={true}
+            valueMultiplier={1.5}
+            labels={safeLabels.benefitCardLabels}
           />
         </div>
 
         {/* Features Benefits */}
         <div className="benefit-category">
-          <h4 className="category-title">{labels.benefitCategories.features}</h4>
+          <h4 className="category-title">{safeLabels.benefitCategories?.features ?? 'Features'}</h4>
           <VipBenefitCard
-            title={labels.benefits.luckyDraw.title}
-            freeBenefit={labels.benefits.luckyDraw.free}
-            vipBenefit={labels.benefits.luckyDraw.vip}
+            title={safeLabels.benefits?.luckyDraw?.title ?? 'Daily Lucky Draw'}
+            freeBenefit={safeLabels.benefits?.luckyDraw?.free ?? '1 time'}
+            vipBenefit={safeLabels.benefits?.luckyDraw?.vip ?? '3 times'}
             isVip={pandaState?.isVip || false}
+            valueType="multiplier"
+            showValueComparison={true}
+            valueMultiplier={3}
+            labels={safeLabels.benefitCardLabels}
           />
           <VipBenefitCard
-            title={labels.benefits.customGoals.title}
-            freeBenefit={labels.benefits.customGoals.free}
-            vipBenefit={labels.benefits.customGoals.vip}
+            title={safeLabels.benefits?.customGoals?.title ?? 'Custom Goals'}
+            freeBenefit={safeLabels.benefits?.customGoals?.free ?? '1 goal'}
+            vipBenefit={safeLabels.benefits?.customGoals?.vip ?? '5 goals'}
             isVip={pandaState?.isVip || false}
+            valueType="items"
+            showValueComparison={true}
+            valueMultiplier={5}
+            labels={safeLabels.benefitCardLabels}
           />
         </div>
 
         {/* Exclusive Content Benefits */}
         <div className="benefit-category">
-          <h4 className="category-title">{labels.benefitCategories.exclusive}</h4>
+          <h4 className="category-title">{safeLabels.benefitCategories?.exclusive ?? 'Exclusive Content'}</h4>
           <VipBenefitCard
-            title={labels.benefits.pandaSkins.title}
-            freeBenefit={labels.benefits.pandaSkins.free}
-            vipBenefit={labels.benefits.pandaSkins.vip}
+            title={safeLabels.benefits?.pandaSkins?.title ?? 'Panda Appearances'}
+            freeBenefit={safeLabels.benefits?.pandaSkins?.free ?? 'Basic skins'}
+            vipBenefit={safeLabels.benefits?.pandaSkins?.vip ?? 'Exclusive VIP skins'}
             isVip={pandaState?.isVip || false}
+            valueType="items"
+            showValueComparison={true}
+            valueMultiplier={10}
+            labels={safeLabels.benefitCardLabels}
           />
           <VipBenefitCard
-            title={labels.benefits.specialTasks.title}
-            freeBenefit={labels.benefits.specialTasks.free}
-            vipBenefit={labels.benefits.specialTasks.vip}
+            title={safeLabels.benefits?.specialTasks?.title ?? 'Special Quests'}
+            freeBenefit={safeLabels.benefits?.specialTasks?.free ?? 'None'}
+            vipBenefit={safeLabels.benefits?.specialTasks?.vip ?? 'Exclusive "Secret Garden" series'}
             isVip={pandaState?.isVip || false}
+            valueType="feature"
+            showValueComparison={false}
+            labels={safeLabels.benefitCardLabels}
           />
           <VipBenefitCard
-            title={labels.benefits.meditation.title}
-            freeBenefit={labels.benefits.meditation.free}
-            vipBenefit={labels.benefits.meditation.vip}
+            title={safeLabels.benefits?.meditation?.title ?? 'Meditation Courses'}
+            freeBenefit={safeLabels.benefits?.meditation?.free ?? 'Basic courses'}
+            vipBenefit={safeLabels.benefits?.meditation?.vip ?? 'All premium courses'}
             isVip={pandaState?.isVip || false}
+            valueType="feature"
+            showValueComparison={false}
+            labels={safeLabels.benefitCardLabels}
           />
         </div>
       </motion.div>
 
-      {/* Action Buttons */}
+      {/* VIP Value Summary */}
       <motion.div
-        className="vip-actions"
+        className="vip-value-section max-w-4xl mx-auto mb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gold-200 p-4">
+          <VipValueSummary
+            userId="current-user"
+            onViewDetails={handleShowVipValueModal}
+            className="mb-4"
+          />
+
+          <div className="text-center">
+            <button
+              className="text-gold-600 text-sm font-medium hover:text-gold-700 focus:outline-none"
+              onClick={handleShowVipValueModal}
+            >
+              查看详细价值分析
+            </button>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Call to Action / Subscription Options */}
+      {!pandaState?.isVip && !showSubscriptionOptions && (
+      <motion.div
+          className="cta-section"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
         <button
-          className="gold-button subscribe-button"
+            className="subscribe-button primary-button jade-variant-button"
           onClick={handleSubscribeClick}
-          disabled={pandaState?.isVip}
         >
-          {pandaState?.isVip ? 'Already a Guardian' : labels.buttons.subscribe}
+            {safeLabels.buttons?.subscribe ?? 'Become a Guardian'}
         </button>
       </motion.div>
+      )}
 
-      {/* Subscription Options Modal */}
       {showSubscriptionOptions && (
         <VipSubscriptionOptions
           onClose={() => setShowSubscriptionOptions(false)}
+          labels={safeLabels.vipSubscriptionOptionsLabels} // This label bundle needs to be defined in types
         />
       )}
+
+      {/* VIP高光时刻演示 - 仅在开发环境中显示 */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mt-8 max-w-4xl mx-auto">
+          <VipHighlightDemo />
+        </div>
+      )}
+
+      {/* 痛点解决方案演示 - 仅在开发环境中显示 */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mt-8 max-w-4xl mx-auto">
+          <PainPointDemo />
+        </div>
+      )}
+
+      {/* 资源不足提示演示 - 仅在开发环境中显示 */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mt-8 max-w-4xl mx-auto">
+          <ResourceShortageDemo />
+        </div>
+      )}
+
+      {/* 熊猫皮肤演示 - 仅在开发环境中显示 */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mt-8 max-w-4xl mx-auto">
+          <PandaSkinDemo />
+        </div>
+      )}
+
+      {/* VIP价值模态框 */}
+      <VipValueModal
+        isOpen={showVipValueModal}
+        onClose={() => setShowVipValueModal(false)}
+        userId={userId || ''}
+        isVip={pandaState?.isVip || false}
+        labels={safeLabels.vipValueModalLabels}
+      />
     </div>
   );
 };

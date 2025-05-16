@@ -1,929 +1,532 @@
 // src/db.ts
-import Dexie, { Table } from 'dexie';
-import type { UILabelRecord } from '@/types';
-import type { PandaStateRecord } from '@/services/pandaStateService';
+import Dexie, { type Table } from 'dexie';
+
+// -------------- START: TYPE IMPORTS --------------
+import type { SyncItem } from './services/dataSyncService';
+import type { UILabelRecord } from './types'; // Central type definition
+import type { PandaStateRecord } from './services/pandaStateService';
 import type {
-  TaskRecord,
-  TaskCategoryRecord,
-  TaskCompletionRecord
-} from '@/services/taskService';
-import type { RewardRecord, ItemRecord, BadgeRecord, AbilityRecord as RewardAbilityRecord } from '@/services/rewardService';
-import type { PandaAbilityRecord } from '@/services/pandaAbilityService';
-import type { SyncItem } from '@/services/dataSyncService';
-import type { ChallengeRecord, ChallengeCompletionRecord } from '@/services/challengeService';
-import type { TimelyRewardRecord, LuckyPointRecord, LuckyDrawRecord } from '@/services/timelyRewardService';
-import type { SubtaskRecord } from '@/services/subtaskService';
-import type { ChallengeDiscovery } from '@/services/challengeDiscoveryService';
-import type { SocialChallengeRecord, SocialChallengeParticipation, SocialChallengeMilestone } from '@/services/socialChallengeService';
-import type { ReflectionRecord, ReflectionTriggerRecord, MoodRecord } from '@/services/reflectionService';
-import type { TaskReminderRecord } from '@/services/taskReminderService';
-import type { StoreItemRecord, StoreCategoryRecord, PurchaseRecord, VipSubscriptionRecord, UserCurrencyRecord } from '@/services/storeService';
-import type { PandaAccessoryRecord, PandaEnvironmentRecord } from '@/services/pandaCustomizationService';
+  UserCurrencyRecord,
+  StoreItemRecord,
+  StoreCategoryRecord,
+  PurchaseRecord,
+} from './services/storeService';
+import type { InteractionRecord } from './types/pandaInteractionTypes';
+import type {
+  AbTestExperimentRecord,
+  AbTestVariantRecord,
+  UserAbTestAssignmentRecord,
+  // ExperimentEventRecord, // Defined locally below, or imported from abTestingService
+} from './types/ab-testing';
+// Import ExperimentEventRecord from where it's robustly defined.
+// Assuming it's defined in abTestingService as per previous attempts
+import type { ExperimentEventRecord } from './services/abTestingService';
+
+import type { TaskRecord, TaskCategoryRecord, TaskCompletionRecord } from './services/taskService';
+import type { SubtaskRecord } from './services/subtaskService';
+import type { TaskReminderRecord } from './services/taskReminderService';
+import type { RewardRecord, ItemRecord, BadgeRecord, AbilityRecord as PandaAbilityRecordForTable, AbilityRecord as RewardAbilityRecordImport } from './services/rewardService';
+import type { PandaAccessoryRecord, PandaEnvironmentRecord } from './services/pandaCustomizationService';
+import type { ChallengeCategoryRecord, ChallengeRecord as ChallengeRecordType, ChallengeCompletionRecord as ChallengeCompletionRecordType } from '@/types/challenges';
+import type { ChallengeDiscovery } from './services/challengeDiscoveryService';
+import type { SocialChallengeRecord, SocialChallengeParticipation, SocialChallengeMilestone } from './services/socialChallengeService';
+import type { ReflectionRecord, ReflectionTriggerRecord, MoodRecord } from './services/reflectionService';
+import type { UserTitleRecord } from './services/userTitleService';
+import type { TimelyRewardRecord, LuckyPointRecord, LuckyDrawRecord } from './services/timelyRewardService';
+import type { ResourceMultiplierRecord } from './services/resourceMultiplierService';
+import type { GrowthBoostRecord } from './services/growthBoostService';
+import type { MilestoneRecord } from './services/milestoneService';
+import type { LuckyDrawLimitRecord } from './services/luckyDrawLimitService';
+import type { OfflineStateRecord, OfflineActionRecord } from '@/types/offline';
+import type { MeditationCourseRecord, MeditationSessionRecord } from '@/types/meditation';
+import type { PainPointSolutionRecord, PainPointTriggerRecord } from '@/types/painpoints';
+import type { PandaSkinRecord } from '@/types/skins';
+import type { VipTaskSeriesRecord, VipTrialRecord, VipSubscriptionRecord as VipSubscriptionRecordTypeFromVipFile } from '@/types/vip';
+import type { CustomGoalRecord, CustomGoalProgressRecord } from '@/types/goals';
+import type {
+  BattlePassRecord,
+  BattlePassLevelRecord,
+  BattlePassTaskRecord,
+  UserBattlePassOwnershipRecord,
+  UserBattlePassProgressRecord
+} from '@/types/battle-pass';
+// -------------- END: TYPE IMPORTS --------------
+
+// -------------- START: LOCAL RECORD TYPE DEFINITIONS (if not imported) --------------
+export interface BambooPlotRecord {
+  id?: number;
+  userId: string;
+  name: string;
+  level: number;
+  size: number;
+  fertility: number;
+  moisture: number;
+  sunlight: number;
+  isUnlocked: boolean;
+  unlockCost: number;
+  upgradeCost: number;
+  maxPlants: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BambooSeedRecord {
+  id?: number;
+  name: string;
+  description: string;
+  rarity: string;
+  growthTime: number; // in hours
+  waterNeeds: number;
+  sunlightNeeds: number;
+  fertilityNeeds: number;
+  yieldMin: number;
+  yieldMax: number;
+  imageUrl: string;
+  isUnlocked: boolean;
+  unlockCost: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BambooPlantRecord {
+  id?: number;
+  userId: string;
+  plotId: number;
+  seedId: number;
+  plantedAt: Date;
+  growthStage: number; // Consider using a specific enum or string literal type if stages are fixed
+  growthProgress: number; // Percentage or absolute value
+  health: number; // Percentage or absolute value
+  fertility: number; // Added based on previous fixes in bambooPlantingService
+  isWatered: boolean;
+  lastWateredAt: Date | null;
+  isFertilized: boolean;
+  lastFertilizedAt: Date | null;
+  isHarvestable: boolean;
+  harvestedAt: Date | null;
+  expectedYield: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BambooTradeRecord {
+  id?: number;
+  userId: string;
+  resourceId: number; // Could link to a general 'GameResourceRecord' if exists
+  bambooAmount: number;
+  resourceAmount: number;
+  tradeDirection: 'bamboo_to_resource' | 'resource_to_bamboo';
+  tradeRate: number;
+  tradeDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TradeableResourceRecord { // Could be a generic GameResourceRecord
+  id?: number;
+  name: string;
+  description: string;
+  type: string; // e.g., 'currency', 'material', 'consumable'
+  rarity: string; // e.g., 'common', 'rare', 'epic'
+  imageUrl: string;
+  isAvailable: boolean; // For trading
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TradeRateRecord {
+  id?: number;
+  resourceId: number; // FK to TradeableResourceRecord
+  bambooToResourceRate: number;
+  resourceToBambooRate: number;
+  minTradeAmount: number;
+  maxTradeAmount: number;
+  dailyLimit?: number; // Optional daily trade limit for this rate
+  isActive: boolean;
+  startDate: Date | null;
+  endDate: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BambooCollectionRecord {
+    id?: number;
+    userId: string;
+    source: string; // e.g., 'spot_harvest', 'daily_gift', 'event_reward'
+    amount: number;
+    timestamp: Date;
+    isProcessed?: boolean; // e.g., if it needs to be claimed or acknowledged
+    relatedSpotId?: number; // Optional, if collected from a specific spot
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+export interface BambooSpotRecord {
+    id?: number;
+    name: string;
+    type: string; // e.g., 'common_grove', 'rare_spring', 'event_location'
+    status: 'available' | 'depleted' | 'regenerating';
+    locationDescription: string; // Text description or coordinates
+    lastHarvestedAt: Date | null;
+    nextAvailableAt: Date | null;
+    yieldMin: number;
+    yieldMax: number;
+    regenerationTimeMinutes: number; // Time in minutes to become available again
+    unlockRequirement?: string; // e.g., 'level_5', 'vip_only'
+    isUnlocked?: boolean; // default true, or based on requirement
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+// -------------- END: LOCAL RECORD TYPE DEFINITIONS --------------
+
 
 export class AppDB extends Dexie {
+  // Standard Tables
   uiLabels!: Table<UILabelRecord, number>;
   pandaState!: Table<PandaStateRecord, number>;
+  syncQueue!: Table<SyncItem, string>; // 'id' is string for SyncItem
+
+  // Task System
   tasks!: Table<TaskRecord, number>;
   taskCategories!: Table<TaskCategoryRecord, number>;
   taskCompletions!: Table<TaskCompletionRecord, number>;
   subtasks!: Table<SubtaskRecord, number>;
   taskReminders!: Table<TaskReminderRecord, number>;
+
+  // Rewards & Items System
   rewards!: Table<RewardRecord, number>;
-  items!: Table<ItemRecord, number>;
+  items!: Table<ItemRecord, number>; // Generic items
   badges!: Table<BadgeRecord, number>;
-  abilities!: Table<PandaAbilityRecord, number>;
-  rewardAbilities!: Table<RewardAbilityRecord, number>;
+  abilities!: Table<PandaAbilityRecordForTable, number>;
+  rewardAbilities!: Table<RewardAbilityRecordImport, number>;
   pandaAccessories!: Table<PandaAccessoryRecord, number>;
   pandaEnvironments!: Table<PandaEnvironmentRecord, number>;
-  syncQueue!: Table<SyncItem, string>;
-  challenges!: Table<ChallengeRecord, number>;
-  challengeCategories!: Table<any, number>;
-  challengeCompletions!: Table<ChallengeCompletionRecord, number>;
+
+  // Challenges System
+  challenges!: Table<ChallengeRecordType, number>;
+  challengeCategories!: Table<ChallengeCategoryRecord, number>;
+  challengeCompletions!: Table<ChallengeCompletionRecordType, number>;
   challengeDiscoveries!: Table<ChallengeDiscovery, number>;
   socialChallenges!: Table<SocialChallengeRecord, number>;
   socialChallengeParticipations!: Table<SocialChallengeParticipation, number>;
   socialChallengeMilestones!: Table<SocialChallengeMilestone, number>;
+
+  // Reflections & Moods
   reflections!: Table<ReflectionRecord, number>;
   reflectionTriggers!: Table<ReflectionTriggerRecord, number>;
   moods!: Table<MoodRecord, number>;
+
+  // Store & Currency System
   storeItems!: Table<StoreItemRecord, number>;
   storeCategories!: Table<StoreCategoryRecord, number>;
   purchases!: Table<PurchaseRecord, number>;
-  vipSubscriptions!: Table<VipSubscriptionRecord, number>;
-  userCurrencies!: Table<UserCurrencyRecord, number>;
+  userCurrencies!: Table<UserCurrencyRecord, number>; // Assuming 'id' is primary key
+
+  // User Profile & Titles
+  userTitles!: Table<UserTitleRecord, number>;
+
+  // Timely Events & Luck System
   timelyRewards!: Table<TimelyRewardRecord, number>;
   luckyPoints!: Table<LuckyPointRecord, number>;
   luckyDraws!: Table<LuckyDrawRecord, number>;
+  resourceMultipliers!: Table<ResourceMultiplierRecord, number>;
+  growthBoosts!: Table<GrowthBoostRecord, number>;
+  milestones!: Table<MilestoneRecord, number>;
+  luckyDrawLimits!: Table<LuckyDrawLimitRecord, number>;
+
+  // Offline System
+  offlineState!: Table<OfflineStateRecord, number>; // Assuming 'id' for primary key
+  offlineActions!: Table<OfflineActionRecord, number>;
+
+  // Panda Interaction
+  pandaInteractions!: Table<InteractionRecord, number>;
+
+  // Bamboo System
+  bambooPlots!: Table<BambooPlotRecord, number>;
+  bambooSeeds!: Table<BambooSeedRecord, number>;
+  bambooPlants!: Table<BambooPlantRecord, number>;
+  bambooTrades!: Table<BambooTradeRecord, number>;
+  tradeableResources!: Table<TradeableResourceRecord, number>;
+  tradeRates!: Table<TradeRateRecord, number>;
+  bambooCollections!: Table<BambooCollectionRecord, number>;
+  bambooSpots!: Table<BambooSpotRecord, number>;
+
+  // Meditation System
+  meditationCourses!: Table<MeditationCourseRecord, number>;
+  meditationSessions!: Table<MeditationSessionRecord, number>;
+
+  // VIP System & Related
+  painPointSolutions!: Table<PainPointSolutionRecord, number>;
+  painPointTriggers!: Table<PainPointTriggerRecord, number>;
+  pandaSkins!: Table<PandaSkinRecord, number>;
+  vipTaskSeries!: Table<VipTaskSeriesRecord, number>;
+  vipSubscriptions!: Table<VipSubscriptionRecordTypeFromVipFile, number>;
+  vipTrials!: Table<VipTrialRecord, number>;
+
+  // Custom Goals
+  customGoals!: Table<CustomGoalRecord, number>;
+  customGoalProgress!: Table<CustomGoalProgressRecord, number>;
+
+  // Battle Pass System
+  battlePasses!: Table<BattlePassRecord, number>;
+  battlePassLevels!: Table<BattlePassLevelRecord, number>;
+  battlePassTasks!: Table<BattlePassTaskRecord, number>;
+  userBattlePassOwnerships!: Table<UserBattlePassOwnershipRecord, number>; // Assuming 'id' is primary key
+  userBattlePassProgress!: Table<UserBattlePassProgressRecord, number>; // Assuming 'id' is primary key
+
+  // A/B Testing System
+  abTestExperiments!: Table<AbTestExperimentRecord, number>;
+  abTestVariants!: Table<AbTestVariantRecord, number>;
+  userAbTestAssignments!: Table<UserAbTestAssignmentRecord, number>; // Assuming 'id' is primary key
+  abTestEvents!: Table<ExperimentEventRecord, number>;
+
 
   constructor() {
-    super('PandaHabitDB_V13'); // 更新数据库版本
-    this.version(13).stores({
-      uiLabels: '++id, scopeKey, labelKey, languageCode, &[scopeKey+labelKey+languageCode]',
-      pandaState: '++id, mood, energy, lastUpdated, level',
-      tasks: '++id, title, categoryId, priority, status, dueDate, createdAt',
-      taskCategories: '++id, name, color, icon, isDefault',
-      taskCompletions: '++id, taskId, completedAt, experienceGained',
-      subtasks: '++id, parentTaskId, title, status, order, createdAt',
-      taskReminders: '++id, taskId, userId, reminderTime, isViewed, isCompleted, createdAt',
-      rewards: '++id, type, rarity, taskId, obtainedAt, isViewed',
-      items: '++id, type, rarity, quantity, obtainedAt',
-      badges: '++id, rarity, obtainedAt, isEquipped',
-      abilities: '++id, name, type, effectType, requiredLevel, isUnlocked, isActive',
-      rewardAbilities: '++id, rarity, obtainedAt, isUnlocked, isActive',
-      pandaAccessories: '++id, name, type, isEquipped, isOwned, obtainedAt, rarity, themeType',
-      pandaEnvironments: '++id, name, isActive, isOwned, obtainedAt, rarity, themeType',
-      syncQueue: 'id, table, action, timestamp, status',
-      challenges: '++id, title, type, difficulty, status, progress, startDate, endDate, createdAt',
-      challengeCategories: '++id, name, description, iconPath',
-      challengeCompletions: '++id, challengeId, userId, completedDate, createdAt',
-      challengeDiscoveries: '++id, userId, challengeId, discoveredAt, isViewed, isAccepted, expiresAt',
-      socialChallenges: '++id, title, type, difficulty, status, creatorId, isPublic, inviteCode, createdAt',
-      socialChallengeParticipations: '++id, challengeId, userId, joinedAt, status, contribution',
-      socialChallengeMilestones: '++id, challengeId, title, targetValue, currentValue, isCompleted, order',
-      reflections: '++id, userId, taskId, mood, reflection, action, createdAt, isCompleted',
-      reflectionTriggers: '++id, userId, type, createdAt, isViewed, isCompleted',
-      moods: '++id, userId, mood, intensity, createdAt',
-      storeItems: '++id, name, type, rarity, price, priceType, isAvailable, isFeatured, isOnSale, categoryId, createdAt',
-      storeCategories: '++id, name, order, isVisible, createdAt',
-      purchases: '++id, userId, storeItemId, price, priceType, purchaseDate, isRefunded',
-      vipSubscriptions: '++id, userId, tier, startDate, endDate, isActive, createdAt',
-      userCurrencies: '++id, userId, coins, jade, lastUpdated',
-      timelyRewards: '++id, title, type, status, startTime, endTime, createdAt',
-      luckyPoints: '++id, userId, amount, isSpent, expiryDate, createdAt',
-      luckyDraws: '++id, userId, pointsSpent, timestamp, createdAt'
+    super('PandaHabitDB_V19'); // Use a clear, consistent DB name. Increment if schema *actually* changes.
+    this.version(19).stores({
+      // Standard Schemas
+      uiLabels: '++id, &[scopeKey+labelKey+languageCode], scopeKey, labelKey, languageCode',
+      pandaState: '++id, userId, lastLogin, consecutiveDays, totalPandaXP, currentMood, currentEnergy, accessory1Id, accessory2Id, environmentId, lastInteractionTime, lastFedTime, lastPlayedTime, lastMeditatedTime, lastReflectedTime, pandaName, pandaColor, hatId, glassesId, scarfId, createdAt, updatedAt',
+      syncQueue: 'id, table, action, data, timestamp, status, attempts, lastAttemptAt, error', // 'id' is string
+
+      // Task System Schemas
+      tasks: '++id, userId, title, categoryId, status, priority, dueDate, &compoundKey, *tags, parentTaskId, reminderId, isRecurring, effort, energyRequired, experienceReward, reflectionPromptId, createdAt, updatedAt, completedAt',
+      taskCategories: '++id, name, userId, color, icon, isDefault, order',
+      taskCompletions: '++id, taskId, userId, completedAt, experienceGained, notes',
+      subtasks: '++id, parentTaskId, title, status, order, createdAt, updatedAt',
+      taskReminders: '++id, taskId, userId, reminderTime, isViewed, isCompleted, createdAt, notificationId',
+
+      // Rewards & Items System Schemas
+      rewards: '++id, userId, type, rarity, name, description, icon, quantity, obtainedAt, isViewed, relatedEntityId, relatedEntityType',
+      items: '++id, name, description, type, rarity, icon, quantity, obtainedAt, isStackable, maxStack, sellPrice, buyPrice, effect', // Assuming generic items table
+      badges: '++id, userId, name, description, icon, rarity, obtainedAt, isEquipped, progression, criteria',
+      abilities: '++id, name, description, type, effectType, requiredLevel, icon, isUnlocked, isActive, cooldown, duration, cost',
+      rewardAbilities: '++id, rewardId, abilityId, unlockCondition', // This seems like a join table. `RewardAbilityRecordImport` might be complex.
+      pandaAccessories: '++id, name, type, description, imagePath, overlayPath, isEquipped, isOwned, obtainedAt, storeItemId, rarity, themeType, unlockCondition, statBoosts',
+      pandaEnvironments: '++id, name, description, backgroundPath, foregroundPath, ambientSound, isActive, isOwned, obtainedAt, storeItemId, rarity, themeType, interactiveElements, unlockCondition',
+
+      // Challenges System Schemas
+      challenges: '++id, title, description, type, difficulty, status, progress, startDate, endDate, rewardIds, categoryId, icon, tags, isRecurring, parentChallengeId, unlockCondition, createdAt, updatedAt',
+      challengeCategories: '++id, name, description, iconPath, order',
+      challengeCompletions: '++id, challengeId, userId, completedDate, score, notes, createdAt',
+      challengeDiscoveries: '++id, userId, challengeId, discoveredAt, isViewed, isAccepted, expiresAt, notificationStatus',
+      socialChallenges: '++id, title, description, type, difficulty, status, creatorId, isPublic, inviteCode, participantCount, maxParticipants, startDate, endDate, rewardPool, rules, theme, createdAt, updatedAt',
+      socialChallengeParticipations: '++id, challengeId, userId, joinedAt, status, contribution, rank, lastActivityAt',
+      socialChallengeMilestones: '++id, challengeId, title, description, targetValue, currentValue, rewardId, isCompleted, order',
+
+      // Reflections & Moods Schemas
+      reflections: '++id, userId, taskId, moodBefore, moodAfter, reflectionText, actionItems, createdAt, isCompleted, triggerType, relatedEntryId',
+      reflectionTriggers: '++id, userId, type, condition, createdAt, isViewed, isCompleted, relatedEntryId',
+      moods: '++id, userId, mood, intensity, note, location, activities, createdAt',
+
+      // Store & Currency System Schemas
+      storeItems: '++id, name, description, type, rarity, price, priceType, currencyId, isAvailable, isFeatured, isOnSale, salePrice, saleEndDate, stock, purchaseLimit, categoryId, icon, previewAsset, unlockRequirement, createdAt, updatedAt',
+      storeCategories: '++id, name, description, order, icon, isVisible, parentCategoryId, createdAt, updatedAt',
+      purchases: '++id, userId, storeItemId, quantity, price, priceType, currencyId, purchaseDate, transactionId, status, isRefunded, platform',
+      userCurrencies: '++id, userId, currencyType, balance, lastUpdated', // Changed to support multiple currency types per user. Original: '++id, userId, coins, jade, gem, lastUpdated'
+
+      // User Profile & Titles Schemas
+      userTitles: '++id, userId, titleType, titleText, isActive, isVipExclusive, unlockDate, expiryDate, customText, icon, color, unlockCondition, createdAt, updatedAt',
+
+      // Timely Events & Luck System Schemas
+      timelyRewards: '++id, title, description, type, status, startTime, endTime, rewardId, unlockCondition, icon, displayPriority, notificationSent, createdAt, updatedAt',
+      luckyPoints: '++id, userId, amount, source, isSpent, expiryDate, createdAt, updatedAt',
+      luckyDraws: '++id, userId, pointsSpent, rewardId, timestamp, drawType, createdAt',
+      resourceMultipliers: '++id, userId, multiplierType, resourceType, multiplierValue, startTime, endTime, isActive, source, icon, createdAt, updatedAt',
+      growthBoosts: '++id, userId, boostType, boostValue, startTime, endTime, isActive, source, icon, description, createdAt, updatedAt',
+      milestones: '++id, userId, type, name, description, targetValue, currentValue, isCompleted, rewardId, icon, displayOrder, [userId+type], [userId+isCompleted], createdAt, updatedAt',
+      luckyDrawLimits: '++id, userId, date, count, &[userId+date]',
+
+      // Offline System Schemas
+      offlineState: '++id, userId, isOnline, lastSyncTimestamp, pendingSyncCount, errorCount, updatedAt',
+      offlineActions: '++id, userId, tableName, actionType, payload, status, attempts, lastAttemptAt, createdAt, isError, errorMessage',
+
+      // Panda Interaction Schema
+      pandaInteractions: '++id, userId, type, timestamp, moodBefore, moodAfter, energyBefore, energyAfter, experienceGained, itemUsedId, notes, location, duration',
+
+      // Bamboo System Schemas
+      bambooPlots: '++id, userId, name, level, size, fertility, moisture, sunlight, isUnlocked, unlockCost, upgradeCost, maxPlants, lastHarvested, createdAt, updatedAt',
+      bambooSeeds: '++id, name, description, rarity, growthTime, waterNeeds, sunlightNeeds, fertilityNeeds, yieldMin, yieldMax, imageUrl, isUnlocked, unlockCost, storeItemId, createdAt, updatedAt',
+      bambooPlants: '++id, userId, plotId, seedId, plantedAt, growthStage, growthProgress, health, fertility, isWatered, lastWateredAt, isFertilized, lastFertilizedAt, isHarvestable, harvestedAt, expectedYield, createdAt, updatedAt',
+      bambooTrades: '++id, userId, resourceId, bambooAmount, resourceAmount, tradeDirection, tradeRate, tradeDate, status, platformFee, createdAt, updatedAt',
+      tradeableResources: '++id, name, description, type, rarity, imageUrl, isAvailable, baseValue, volatility, source, createdAt, updatedAt',
+      tradeRates: '++id, resourceId, bambooToResourceRate, resourceToBambooRate, minTradeAmount, maxTradeAmount, dailyLimit, currentVolume, isActive, startDate, endDate, lastUpdated, createdAt, updatedAt',
+      bambooCollections: '++id, userId, source, amount, timestamp, isProcessed, relatedSpotId, quality, notes, createdAt, updatedAt',
+      bambooSpots: '++id, name, type, status, locationDescription, lastHarvestedAt, nextAvailableAt, yieldMin, yieldMax, regenerationTimeMinutes, unlockRequirement, isUnlocked, icon, coordinates, createdAt, updatedAt',
+
+      // Meditation System Schemas
+      meditationCourses: '++id, title, description, type, difficulty, durationMinutes, instructor, audioUrl, coverImageUrl, tags, benefits, requiredLevel, isVipExclusive, completionCount, averageRating, isActive, createdAt, updatedAt',
+      meditationSessions: '++id, userId, courseId, startTime, endTime, durationMinutes, isCompleted, rating, notes, moodBefore, moodAfter, location, device, createdAt, updatedAt',
+
+      // VIP System & Related Schemas
+      painPointSolutions: '++id, type, title, description, isActive, lastTriggeredAt, triggerCondition, solutionAction, icon, category, cooldownMinutes, unlockRequirement, createdAt, updatedAt',
+      painPointTriggers: '++id, userId, solutionId, triggerContext, isViewed, isResolved, resolutionDetails, timestamp, feedback, createdAt, updatedAt',
+      pandaSkins: '++id, name, description, type, rarity, assetKey, icon, isEquipped, isOwned, isVipExclusive, themeType, unlockCondition, storeItemId, obtainedAt, createdAt, updatedAt',
+      vipTaskSeries: '++id, type, title, description, iconPath, isActive, isCompleted, startDate, endDate, completedAt, taskIds, rewardId, unlockCondition, displayOrder, createdAt, updatedAt', // taskIds likely string array
+      vipSubscriptions: '++id, userId, tier, type, startDate, endDate, isActive, autoRenew, platform, transactionId, purchaseDate, price, currency, createdAt, updatedAt',
+      vipTrials: '++id, userId, status, startDate, endDate, hasShownGuide, hasShownValueReview, hasShownExpirationReminder, source, conversionDate, trialType, createdAt, updatedAt',
+
+      // Custom Goals Schemas
+      customGoals: '++id, userId, title, description, type, category, status, targetValue, currentValue, unit, startDate, targetDate, reminderEnabled, isPublic, icon, color, createdAt, updatedAt',
+      customGoalProgress: '++id, goalId, value, date, notes, mood, location, imageEvidenceUrl, createdAt, updatedAt',
+
+      // Battle Pass System Schemas
+      battlePasses: '++id, seasonName, seasonDescription, isActive, startDate, endDate, themeVisualAssetKey, seasonTheme, standardPassProductId, premiumPassProductId, levelPurchaseDiamondCost, maxLevel, version',
+      battlePassLevels: '++id, passId, levelNumber, freeRewardItemId, freeRewardQuantity, paidRewardItemId, paidRewardQuantity, requiredExp, visualAssetKey, levelName',
+      battlePassTasks: '++id, passId, taskName, description, taskType, targetValue, expReward, relatedGameActionKey, isRepeatable, icon, difficulty, timeLimitMinutes, category',
+      userBattlePassOwnerships: '++id, &[userId+passId], purchaseDate, platformTransactionId, passType, status, purchasePrice, currency',
+      userBattlePassProgress: '++id, &[userId+passId], currentLevel, currentExp, claimedFreeLevels, claimedPaidLevels, lastTaskCompletedDate, dailyCheckinStreak', // claimedFreeLevels and claimedPaidLevels are likely number[] or string for comma-separated
+
+      // A/B Testing System Schemas
+      abTestExperiments: '++id, name, description, status, startDate, endDate, targetAudience, sampleSizePercentage, variantType, goals, controlVariantId, createdAt, updatedAt',
+      abTestVariants: '++id, experimentId, name, description, isControl, allocationPercentage, details, createdAt, updatedAt', // details could be JSON string
+      userAbTestAssignments: '++id, &[userId+experimentId], variantId, assignedAt, lastViewedAt, conversionEvents, updatedAt', // lastViewedAt and updatedAt added
+      abTestEvents: '++id, userId, experimentId, variantId, eventType, eventValue, timestamp, metadata' // metadata could be JSON string
     });
   }
 }
+
 export const db = new AppDB();
 
-let hasAttemptedPopulation = false;
-
+// Populate DB function (can be extensive)
 export async function populateDB() {
-  if (hasAttemptedPopulation) return;
-  hasAttemptedPopulation = true;
-
   const count = await db.uiLabels.count();
-  if (count > 0) { /* console.log("DB V3 already populated."); */ return; }
-  console.log("Populating Final V3 Dexie DB...");
+  if (count > 0) {
+    // console.log("DB already has labels, skipping population.");
+    return;
+  }
+  console.log("Populating UI Labels in DB...");
 
   const labels: UILabelRecord[] = [
-    // GlobalLayout scope
-    { scopeKey: 'globalLayout', labelKey: 'appTitle', languageCode: 'en', translatedText: 'App V3 - Consistent' },
-    { scopeKey: 'globalLayout', labelKey: 'appTitle', languageCode: 'zh', translatedText: '应用 V3 - 一致性' },
+    // Minimal set for testing, expand as needed
+    { scopeKey: 'globalLayout', labelKey: 'appTitle', languageCode: 'en', translatedText: 'PandaHabit App' },
+    { scopeKey: 'globalLayout', labelKey: 'appTitle', languageCode: 'zh', translatedText: '熊猫习惯应用' },
     { scopeKey: 'globalLayout', labelKey: 'navHome', languageCode: 'en', translatedText: 'Home' },
-    { scopeKey: 'globalLayout', labelKey: 'navHome', languageCode: 'zh', translatedText: '主页' },
-    { scopeKey: 'globalLayout', labelKey: 'navTasks', languageCode: 'en', translatedText: 'Tasks' },
-    { scopeKey: 'globalLayout', labelKey: 'navTasks', languageCode: 'zh', translatedText: '任务' },
+    { scopeKey: 'globalLayout', labelKey: 'navHome', languageCode: 'zh', translatedText: '首页' },
     { scopeKey: 'globalLayout', labelKey: 'navSettings', languageCode: 'en', translatedText: 'Settings' },
-    { scopeKey: 'globalLayout', labelKey: 'navSettings', languageCode: 'zh', translatedText: '设定' },
-    { scopeKey: 'globalLayout', labelKey: 'footerText', languageCode: 'en', translatedText: '© 2024 Final Demo App' },
-    { scopeKey: 'globalLayout', labelKey: 'footerText', languageCode: 'zh', translatedText: '© 2024 最终演示应用' },
-    { scopeKey: 'globalLayout', labelKey: 'loadingGeneric', languageCode: 'en', translatedText: 'Loading, one moment...' },
-    { scopeKey: 'globalLayout', labelKey: 'loadingGeneric', languageCode: 'zh', translatedText: '加载中，请稍候...' },
-    { scopeKey: 'globalLayout', labelKey: 'errorGeneric', languageCode: 'en', translatedText: 'An unexpected error occurred.' },
-    { scopeKey: 'globalLayout', labelKey: 'errorGeneric', languageCode: 'zh', translatedText: '发生了一个意外错误。' },
+    { scopeKey: 'globalLayout', labelKey: 'navSettings', languageCode: 'zh', translatedText: '设置' },
+    { scopeKey: 'globalLayout', labelKey: 'loadingGeneric', languageCode: 'en', translatedText: 'Loading...' },
+    { scopeKey: 'globalLayout', labelKey: 'loadingGeneric', languageCode: 'zh', translatedText: '加载中...' },
+    { scopeKey: 'globalLayout', labelKey: 'errorGenericTitle', languageCode: 'en', translatedText: 'Error' },
+    { scopeKey: 'globalLayout', labelKey: 'errorGenericTitle', languageCode: 'zh', translatedText: '错误' },
+    { scopeKey: 'globalLayout', labelKey: 'errorGenericMessage', languageCode: 'en', translatedText: 'An unexpected error occurred. Please try again.' },
+    { scopeKey: 'globalLayout', labelKey: 'errorGenericMessage', languageCode: 'zh', translatedText: '发生未知错误，请重试。' },
+    { scopeKey: 'globalLayout', labelKey: 'errorRetryButton', languageCode: 'en', translatedText: 'Retry' },
+    { scopeKey: 'globalLayout', labelKey: 'errorRetryButton', languageCode: 'zh', translatedText: '重试' },
 
-    // homeView scope
-    { scopeKey: 'homeView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'My Dashboard' },
-    { scopeKey: 'homeView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '我的仪表板' },
-    { scopeKey: 'homeView.welcomeSection', labelKey: 'welcomeMessage', languageCode: 'en', translatedText: 'Greetings, {user}! Have a productive day.' },
-    { scopeKey: 'homeView.welcomeSection', labelKey: 'welcomeMessage', languageCode: 'zh', translatedText: '你好 {user}，祝你拥有高效的一天！' },
-    { scopeKey: 'homeView.moodsSection', labelKey: 'sectionTitle', languageCode: 'en', translatedText: 'Recent Mood Entries' },
-    { scopeKey: 'homeView.moodsSection', labelKey: 'sectionTitle', languageCode: 'zh', translatedText: '近期心情记录' },
-    { scopeKey: 'homeView.moodsSection', labelKey: 'noMoodsMessage', languageCode: 'en', translatedText: 'No moods logged. Why not add one?' },
-    { scopeKey: 'homeView.moodsSection', labelKey: 'noMoodsMessage', languageCode: 'zh', translatedText: '暂无心情记录。要不要添加一条？' },
-    { scopeKey: 'homeView.moodsSection', labelKey: 'refreshButtonText', languageCode: 'en', translatedText: 'Refresh Moods' },
-    { scopeKey: 'homeView.moodsSection', labelKey: 'refreshButtonText', languageCode: 'zh', translatedText: '刷新心情' },
+    // Home Page
+    { scopeKey: 'homeView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Dashboard' },
+    { scopeKey: 'homeView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '仪表盘' },
+    { scopeKey: 'homeView.welcomeSection', labelKey: 'greeting', languageCode: 'en', translatedText: 'Welcome, {userName}!' },
+    { scopeKey: 'homeView.welcomeSection', labelKey: 'greeting', languageCode: 'zh', translatedText: '欢迎，{userName}！' },
 
-    // 熊猫区域标签
-    { scopeKey: 'homeView.pandaSection', labelKey: 'sectionTitle', languageCode: 'en', translatedText: 'Panda Companion' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'sectionTitle', languageCode: 'zh', translatedText: '熊猫伙伴' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'levelLabel', languageCode: 'en', translatedText: 'Level' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'levelLabel', languageCode: 'zh', translatedText: '等级' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'experienceLabel', languageCode: 'en', translatedText: 'Experience' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'experienceLabel', languageCode: 'zh', translatedText: '经验' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'interactButtonText', languageCode: 'en', translatedText: 'Interact' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'interactButtonText', languageCode: 'zh', translatedText: '互动' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'feedButtonText', languageCode: 'en', translatedText: 'Feed' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'feedButtonText', languageCode: 'zh', translatedText: '喂食' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'playButtonText', languageCode: 'en', translatedText: 'Play' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'playButtonText', languageCode: 'zh', translatedText: '玩耍' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'trainButtonText', languageCode: 'en', translatedText: 'Train' },
-    { scopeKey: 'homeView.pandaSection', labelKey: 'trainButtonText', languageCode: 'zh', translatedText: '训练' },
+    // Settings Page
+    { scopeKey: 'settingsView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Settings' },
+    { scopeKey: 'settingsView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '设置' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'title', languageCode: 'en', translatedText: 'Language' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'title', languageCode: 'zh', translatedText: '语言' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'selectPrompt', languageCode: 'en', translatedText: 'Select Language:' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'selectPrompt', languageCode: 'zh', translatedText: '选择语言：' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'currentLanguage', languageCode: 'en', translatedText: 'Current: {lang}' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'currentLanguage', languageCode: 'zh', translatedText: '当前：{lang}' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'saveButton', languageCode: 'en', translatedText: 'Save' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'saveButton', languageCode: 'zh', translatedText: '保存' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'langNameEn', languageCode: 'en', translatedText: 'English' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'langNameEn', languageCode: 'zh', translatedText: '英语' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'langNameZh', languageCode: 'en', translatedText: 'Chinese' },
+    { scopeKey: 'settingsView.languageSection', labelKey: 'langNameZh', languageCode: 'zh', translatedText: '中文' },
 
-    { scopeKey: 'homeView', labelKey: 'someActionText', languageCode: 'en', translatedText: 'Perform Action' },
-    { scopeKey: 'homeView', labelKey: 'someActionText', languageCode: 'zh', translatedText: '执行操作' },
+    // Panda Interaction Showcase Labels
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Panda Interactions' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '熊猫互动' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'feedButton', languageCode: 'en', translatedText: 'Feed Panda' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'feedButton', languageCode: 'zh', translatedText: '喂食熊猫' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'playButton', languageCode: 'en', translatedText: 'Play with Panda' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'playButton', languageCode: 'zh', translatedText: '与熊猫玩耍' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'meditateButton', languageCode: 'en', translatedText: 'Meditate with Panda' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'meditateButton', languageCode: 'zh', translatedText: '与熊猫冥想' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'reflectButton', languageCode: 'en', translatedText: 'Reflect with Panda' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'reflectButton', languageCode: 'zh', translatedText: '与熊猫反思' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'interactionResultTitle', languageCode: 'en', translatedText: 'Interaction Result' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'interactionResultTitle', languageCode: 'zh', translatedText: '互动结果' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'moodChangeLabel', languageCode: 'en', translatedText: 'Mood changed from {prevMood} to {newMood}' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'moodChangeLabel', languageCode: 'zh', translatedText: '心情从 {prevMood} 变为 {newMood}' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'energyChangeLabel', languageCode: 'en', translatedText: 'Energy changed by {energyChange}' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'energyChangeLabel', languageCode: 'zh', translatedText: '精力变化 {energyChange}' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'experienceGainedLabel', languageCode: 'en', translatedText: 'Gained {xp} XP' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'experienceGainedLabel', languageCode: 'zh', translatedText: '获得 {xp} 经验' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'itemUsedLabel', languageCode: 'en', translatedText: 'Used: {itemName}' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'itemUsedLabel', languageCode: 'zh', translatedText: '已使用：{itemName}' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'errorNoPandaState', languageCode: 'en', translatedText: 'Could not load panda state.' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'errorNoPandaState', languageCode: 'zh', translatedText: '无法加载熊猫状态。' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'errorInteractionFailed', languageCode: 'en', translatedText: 'Interaction failed.' },
+    { scopeKey: 'pandaInteractionShowcase', labelKey: 'errorInteractionFailed', languageCode: 'zh', translatedText: '互动失败。' },
 
-    // settingsView scope
-    { scopeKey: 'settingsView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Configuration Panel' },
-    { scopeKey: 'settingsView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '配置面板' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'sectionTitle', languageCode: 'en', translatedText: 'Display Language' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'sectionTitle', languageCode: 'zh', translatedText: '显示语言' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'selectLanguagePrompt', languageCode: 'en', translatedText: 'Select your preferred language:' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'selectLanguagePrompt', languageCode: 'zh', translatedText: '请选择您的偏好语言：' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'currentLanguageIs', languageCode: 'en', translatedText: 'Currently using: {lang}' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'currentLanguageIs', languageCode: 'zh', translatedText: '当前使用：{lang}' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'langNameEn', languageCode: 'en', translatedText: 'English (US)' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'langNameEn', languageCode: 'zh', translatedText: '美式英语' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'langNameZh', languageCode: 'en', translatedText: 'Chinese (Simplified)' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'langNameZh', languageCode: 'zh', translatedText: '简体中文' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'saveButtonText', languageCode: 'en', translatedText: 'Save Preferences' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'saveButtonText', languageCode: 'zh', translatedText: '保存偏好' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'successMessage', languageCode: 'en', translatedText: 'Preferences have been updated!' },
-    { scopeKey: 'settingsView.languageSection', labelKey: 'successMessage', languageCode: 'zh', translatedText: '偏好设置已更新！' },
+    // Bamboo Planting Page Labels
+    { scopeKey: 'bambooPlantingPage', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Bamboo Garden' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '竹园' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'selectPlotPrompt', languageCode: 'en', translatedText: 'Select a Plot' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'selectPlotPrompt', languageCode: 'zh', translatedText: '选择地块' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'plantSeedButton', languageCode: 'en', translatedText: 'Plant Seed' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'plantSeedButton', languageCode: 'zh', translatedText: '种植种子' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'waterPlantButton', languageCode: 'en', translatedText: 'Water Plant' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'waterPlantButton', languageCode: 'zh', translatedText: '浇水' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'fertilizePlantButton', languageCode: 'en', translatedText: 'Fertilize' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'fertilizePlantButton', languageCode: 'zh', translatedText: '施肥' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'harvestPlantButton', languageCode: 'en', translatedText: 'Harvest' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'harvestPlantButton', languageCode: 'zh', translatedText: '收获' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'growthStageLabel', languageCode: 'en', translatedText: 'Growth Stage: {stage}' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'growthStageLabel', languageCode: 'zh', translatedText: '生长阶段：{stage}' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'healthLabel', languageCode: 'en', translatedText: 'Health: {health}%' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'healthLabel', languageCode: 'zh', translatedText: '健康：{health}%' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'readyToHarvest', languageCode: 'en', translatedText: 'Ready to Harvest!' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'readyToHarvest', languageCode: 'zh', translatedText: '可以收获了！' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'needsWater', languageCode: 'en', translatedText: 'Needs Water' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'needsWater', languageCode: 'zh', translatedText: '需要浇水' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'needsFertilizer', languageCode: 'en', translatedText: 'Needs Fertilizer' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'needsFertilizer', languageCode: 'zh', translatedText: '需要施肥' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'noSeedsAvailable', languageCode: 'en', translatedText: 'No seeds available to plant.' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'noSeedsAvailable', languageCode: 'zh', translatedText: '没有可种植的种子。' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'selectSeedModalTitle', languageCode: 'en', translatedText: 'Select a Seed' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'selectSeedModalTitle', languageCode: 'zh', translatedText: '选择种子' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'confirmPlantButton', languageCode: 'en', translatedText: 'Plant this Seed' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'confirmPlantButton', languageCode: 'zh', translatedText: '种植此种子' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'selectFertilizerModalTitle', languageCode: 'en', translatedText: 'Select Fertilizer' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'selectFertilizerModalTitle', languageCode: 'zh', translatedText: '选择肥料' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'confirmFertilizeButton', languageCode: 'en', translatedText: 'Use Fertilizer' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'confirmFertilizeButton', languageCode: 'zh', translatedText: '使用肥料' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'harvestSuccessMessage', languageCode: 'en', translatedText: 'Successfully harvested {yieldAmount} bamboo!' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'harvestSuccessMessage', languageCode: 'zh', translatedText: '成功收获 {yieldAmount} 竹子！' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'errorNoPlotSelected', languageCode: 'en', translatedText: 'Please select a plot first.' },
+    { scopeKey: 'bambooPlantingPage', labelKey: 'errorNoPlotSelected', languageCode: 'zh', translatedText: '请先选择一个地块。' },
 
-    // tasksView scope
-    { scopeKey: 'tasksView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Task Management' },
-    { scopeKey: 'tasksView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '任务管理' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'sectionTitle', languageCode: 'en', translatedText: 'My Tasks' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'sectionTitle', languageCode: 'zh', translatedText: '我的任务' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'createTaskButton', languageCode: 'en', translatedText: 'Create New Task' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'createTaskButton', languageCode: 'zh', translatedText: '创建新任务' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'filterAllLabel', languageCode: 'en', translatedText: 'All' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'filterAllLabel', languageCode: 'zh', translatedText: '全部' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'filterTodoLabel', languageCode: 'en', translatedText: 'To Do' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'filterTodoLabel', languageCode: 'zh', translatedText: '待办' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'filterInProgressLabel', languageCode: 'en', translatedText: 'In Progress' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'filterInProgressLabel', languageCode: 'zh', translatedText: '进行中' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'filterCompletedLabel', languageCode: 'en', translatedText: 'Completed' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'filterCompletedLabel', languageCode: 'zh', translatedText: '已完成' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'noTasksMessage', languageCode: 'en', translatedText: 'No tasks found' },
-    { scopeKey: 'tasksView.taskManager', labelKey: 'noTasksMessage', languageCode: 'zh', translatedText: '暂无任务' },
+    // Bamboo Collection View Labels
+    { scopeKey: 'bambooCollectionView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Bamboo Collection' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '竹子收集' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'availableSpotsTitle', languageCode: 'en', translatedText: 'Available Bamboo Spots' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'availableSpotsTitle', languageCode: 'zh', translatedText: '可收集的竹林点' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'collectButton', languageCode: 'en', translatedText: 'Collect' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'collectButton', languageCode: 'zh', translatedText: '收集' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'spotStatusAvailable', languageCode: 'en', translatedText: 'Available' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'spotStatusAvailable', languageCode: 'zh', translatedText: '可收集' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'spotStatusDepleted', languageCode: 'en', translatedText: 'Depleted (regenerates in {time})' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'spotStatusDepleted', languageCode: 'zh', translatedText: '已耗尽 (再生于 {time})' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'collectionSuccessMessage', languageCode: 'en', translatedText: 'Collected {amount} bamboo from {spotName}!' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'collectionSuccessMessage', languageCode: 'zh', translatedText: '从 {spotName} 收集了 {amount} 竹子！' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'noSpotsAvailable', languageCode: 'en', translatedText: 'No bamboo spots available right now. Check back later!' },
+    { scopeKey: 'bambooCollectionView', labelKey: 'noSpotsAvailable', languageCode: 'zh', translatedText: '目前没有可收集的竹林点，请稍后再来！' },
 
-    // challengesView scope
-    { scopeKey: 'challengesView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Challenges' },
-    { scopeKey: 'challengesView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '挑战' },
-    { scopeKey: 'challengesView', labelKey: 'statusFilterLabel', languageCode: 'en', translatedText: 'Status' },
-    { scopeKey: 'challengesView', labelKey: 'statusFilterLabel', languageCode: 'zh', translatedText: '状态' },
-    { scopeKey: 'challengesView', labelKey: 'typeFilterLabel', languageCode: 'en', translatedText: 'Type' },
-    { scopeKey: 'challengesView', labelKey: 'typeFilterLabel', languageCode: 'zh', translatedText: '类型' },
-    { scopeKey: 'challengesView', labelKey: 'difficultyFilterLabel', languageCode: 'en', translatedText: 'Difficulty' },
-    { scopeKey: 'challengesView', labelKey: 'difficultyFilterLabel', languageCode: 'zh', translatedText: '难度' },
-    { scopeKey: 'challengesView', labelKey: 'filterAllLabel', languageCode: 'en', translatedText: 'All' },
-    { scopeKey: 'challengesView', labelKey: 'filterAllLabel', languageCode: 'zh', translatedText: '全部' },
-    { scopeKey: 'challengesView', labelKey: 'filterActiveLabel', languageCode: 'en', translatedText: 'Active' },
-    { scopeKey: 'challengesView', labelKey: 'filterActiveLabel', languageCode: 'zh', translatedText: '进行中' },
-    { scopeKey: 'challengesView', labelKey: 'filterCompletedLabel', languageCode: 'en', translatedText: 'Completed' },
-    { scopeKey: 'challengesView', labelKey: 'filterCompletedLabel', languageCode: 'zh', translatedText: '已完成' },
-    { scopeKey: 'challengesView', labelKey: 'filterUpcomingLabel', languageCode: 'en', translatedText: 'Upcoming' },
-    { scopeKey: 'challengesView', labelKey: 'filterUpcomingLabel', languageCode: 'zh', translatedText: '即将开始' },
-    { scopeKey: 'challengesView', labelKey: 'clearFiltersButton', languageCode: 'en', translatedText: 'Clear All Filters' },
-    { scopeKey: 'challengesView', labelKey: 'clearFiltersButton', languageCode: 'zh', translatedText: '清除所有过滤器' },
-    { scopeKey: 'challengesView', labelKey: 'noChallengesMessage', languageCode: 'en', translatedText: 'No challenges found' },
-    { scopeKey: 'challengesView', labelKey: 'noChallengesMessage', languageCode: 'zh', translatedText: '暂无挑战' },
-
-    // 挑战页面过滤器标签 - 类型
-    { scopeKey: 'challengesView.filters', labelKey: 'typeAllLabel', languageCode: 'en', translatedText: 'All' },
-    { scopeKey: 'challengesView.filters', labelKey: 'typeAllLabel', languageCode: 'zh', translatedText: '全部' },
-    { scopeKey: 'challengesView.filters', labelKey: 'typeDailyLabel', languageCode: 'en', translatedText: 'Daily' },
-    { scopeKey: 'challengesView.filters', labelKey: 'typeDailyLabel', languageCode: 'zh', translatedText: '每日' },
-    { scopeKey: 'challengesView.filters', labelKey: 'typeWeeklyLabel', languageCode: 'en', translatedText: 'Weekly' },
-    { scopeKey: 'challengesView.filters', labelKey: 'typeWeeklyLabel', languageCode: 'zh', translatedText: '每周' },
-    { scopeKey: 'challengesView.filters', labelKey: 'typeEventLabel', languageCode: 'en', translatedText: 'Event' },
-    { scopeKey: 'challengesView.filters', labelKey: 'typeEventLabel', languageCode: 'zh', translatedText: '活动' },
-    { scopeKey: 'challengesView.filters', labelKey: 'typeOngoingLabel', languageCode: 'en', translatedText: 'Ongoing' },
-    { scopeKey: 'challengesView.filters', labelKey: 'typeOngoingLabel', languageCode: 'zh', translatedText: '持续' },
-
-    // 挑战页面过滤器标签 - 难度
-    { scopeKey: 'challengesView.filters', labelKey: 'difficultyAllLabel', languageCode: 'en', translatedText: 'All' },
-    { scopeKey: 'challengesView.filters', labelKey: 'difficultyAllLabel', languageCode: 'zh', translatedText: '全部' },
-    { scopeKey: 'challengesView.filters', labelKey: 'difficultyEasyLabel', languageCode: 'en', translatedText: 'Easy' },
-    { scopeKey: 'challengesView.filters', labelKey: 'difficultyEasyLabel', languageCode: 'zh', translatedText: '简单' },
-    { scopeKey: 'challengesView.filters', labelKey: 'difficultyMediumLabel', languageCode: 'en', translatedText: 'Medium' },
-    { scopeKey: 'challengesView.filters', labelKey: 'difficultyMediumLabel', languageCode: 'zh', translatedText: '中等' },
-    { scopeKey: 'challengesView.filters', labelKey: 'difficultyHardLabel', languageCode: 'en', translatedText: 'Hard' },
-    { scopeKey: 'challengesView.filters', labelKey: 'difficultyHardLabel', languageCode: 'zh', translatedText: '困难' },
-    { scopeKey: 'challengesView.filters', labelKey: 'difficultyExpertLabel', languageCode: 'en', translatedText: 'Expert' },
-    { scopeKey: 'challengesView.filters', labelKey: 'difficultyExpertLabel', languageCode: 'zh', translatedText: '专家' },
-
-    // 挑战页面错误和加载消息
-    { scopeKey: 'challengesView', labelKey: 'loadingMessage', languageCode: 'en', translatedText: 'Loading challenges...' },
-    { scopeKey: 'challengesView', labelKey: 'loadingMessage', languageCode: 'zh', translatedText: '加载挑战中...' },
-    { scopeKey: 'challengesView', labelKey: 'errorTitle', languageCode: 'en', translatedText: 'Challenge Page Error' },
-    { scopeKey: 'challengesView', labelKey: 'errorTitle', languageCode: 'zh', translatedText: '挑战页面错误' },
-    { scopeKey: 'challengesView', labelKey: 'errorMessage', languageCode: 'en', translatedText: 'Failed to load challenges: {message}' },
-    { scopeKey: 'challengesView', labelKey: 'errorMessage', languageCode: 'zh', translatedText: '加载挑战失败: {message}' },
-    { scopeKey: 'challengesView', labelKey: 'retryButtonText', languageCode: 'en', translatedText: 'Retry' },
-    { scopeKey: 'challengesView', labelKey: 'retryButtonText', languageCode: 'zh', translatedText: '重试' },
-
-    // 及时奖励页面标签
-    { scopeKey: 'timelyRewardsPageView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Timely Rewards' },
-    { scopeKey: 'timelyRewardsPageView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '及时奖励' },
-    { scopeKey: 'timelyRewardsPageView', labelKey: 'loadingMessage', languageCode: 'en', translatedText: 'Loading rewards...' },
-    { scopeKey: 'timelyRewardsPageView', labelKey: 'loadingMessage', languageCode: 'zh', translatedText: '加载奖励中...' },
-    { scopeKey: 'timelyRewardsPageView', labelKey: 'errorTitle', languageCode: 'en', translatedText: 'Timely Rewards Page Error' },
-    { scopeKey: 'timelyRewardsPageView', labelKey: 'errorTitle', languageCode: 'zh', translatedText: '及时奖励页面错误' },
-
-    // 及时奖励页面过滤器标签
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'statusLabel', languageCode: 'en', translatedText: 'Status' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'statusLabel', languageCode: 'zh', translatedText: '状态' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'allLabel', languageCode: 'en', translatedText: 'All' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'allLabel', languageCode: 'zh', translatedText: '全部' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'activeLabel', languageCode: 'en', translatedText: 'Active' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'activeLabel', languageCode: 'zh', translatedText: '进行中' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'completedLabel', languageCode: 'en', translatedText: 'Completed' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'completedLabel', languageCode: 'zh', translatedText: '已完成' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'upcomingLabel', languageCode: 'en', translatedText: 'Upcoming' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'upcomingLabel', languageCode: 'zh', translatedText: '即将开始' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeLabel', languageCode: 'en', translatedText: 'Type' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeLabel', languageCode: 'zh', translatedText: '类型' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeAllLabel', languageCode: 'en', translatedText: 'All' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeAllLabel', languageCode: 'zh', translatedText: '全部' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeDailyLabel', languageCode: 'en', translatedText: 'Daily Reward' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeDailyLabel', languageCode: 'zh', translatedText: '每日奖励' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeMorningLabel', languageCode: 'en', translatedText: 'Early Bird Reward' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeMorningLabel', languageCode: 'zh', translatedText: '早起鸟奖励' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeStreakLabel', languageCode: 'en', translatedText: 'Streak Reward' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeStreakLabel', languageCode: 'zh', translatedText: '连续完成奖励' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeSpecialLabel', languageCode: 'en', translatedText: 'Special Reward' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'typeSpecialLabel', languageCode: 'zh', translatedText: '特殊奖励' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'clearFiltersLabel', languageCode: 'en', translatedText: 'Clear All Filters' },
-    { scopeKey: 'timelyRewardsPageView.filters', labelKey: 'clearFiltersLabel', languageCode: 'zh', translatedText: '清除所有过滤器' },
-
-    // 及时奖励卡片标签
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'typeDaily', languageCode: 'en', translatedText: 'Daily Reward' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'typeDaily', languageCode: 'zh', translatedText: '每日奖励' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'typeMorning', languageCode: 'en', translatedText: 'Early Bird Reward' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'typeMorning', languageCode: 'zh', translatedText: '早起鸟奖励' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'typeStreak', languageCode: 'en', translatedText: 'Streak Reward' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'typeStreak', languageCode: 'zh', translatedText: '连续完成奖励' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'typeSpecial', languageCode: 'en', translatedText: 'Special Reward' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'typeSpecial', languageCode: 'zh', translatedText: '特殊奖励' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'statusActive', languageCode: 'en', translatedText: 'Active' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'statusActive', languageCode: 'zh', translatedText: '进行中' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'statusCompleted', languageCode: 'en', translatedText: 'Completed' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'statusCompleted', languageCode: 'zh', translatedText: '已完成' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'statusExpired', languageCode: 'en', translatedText: 'Expired' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'statusExpired', languageCode: 'zh', translatedText: '已过期' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'statusUpcoming', languageCode: 'en', translatedText: 'Upcoming' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'statusUpcoming', languageCode: 'zh', translatedText: '即将开始' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'timeEnded', languageCode: 'en', translatedText: 'Ended' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'timeEnded', languageCode: 'zh', translatedText: '已结束' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'hourUnit', languageCode: 'en', translatedText: 'h' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'hourUnit', languageCode: 'zh', translatedText: '小时' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'minuteUnit', languageCode: 'en', translatedText: 'm' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'minuteUnit', languageCode: 'zh', translatedText: '分钟' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'remainingTimeLabel', languageCode: 'en', translatedText: 'Remaining time' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'remainingTimeLabel', languageCode: 'zh', translatedText: '剩余时间' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'luckyPointsLabel', languageCode: 'en', translatedText: 'Lucky Points' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'luckyPointsLabel', languageCode: 'zh', translatedText: '幸运点' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'claimRewardButton', languageCode: 'en', translatedText: 'Claim Reward' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'claimRewardButton', languageCode: 'zh', translatedText: '领取奖励' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'inProgressButton', languageCode: 'en', translatedText: 'In Progress...' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'inProgressButton', languageCode: 'zh', translatedText: '进行中...' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'completedOnLabel', languageCode: 'en', translatedText: 'Completed on' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'completedOnLabel', languageCode: 'zh', translatedText: '完成于' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'noRewardsMessage', languageCode: 'en', translatedText: 'No timely rewards available' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'noRewardsMessage', languageCode: 'zh', translatedText: '暂无及时奖励' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'typeLabel', languageCode: 'en', translatedText: 'Type' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'typeLabel', languageCode: 'zh', translatedText: '类型' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'statusLabel', languageCode: 'en', translatedText: 'Status' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'statusLabel', languageCode: 'zh', translatedText: '状态' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'progressLabel', languageCode: 'en', translatedText: 'Progress' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'progressLabel', languageCode: 'zh', translatedText: '进度' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'startTimeLabel', languageCode: 'en', translatedText: 'Start Time' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'startTimeLabel', languageCode: 'zh', translatedText: '开始时间' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'endTimeLabel', languageCode: 'en', translatedText: 'End Time' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'endTimeLabel', languageCode: 'zh', translatedText: '结束时间' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'completedTimeLabel', languageCode: 'en', translatedText: 'Completed Time' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'completedTimeLabel', languageCode: 'zh', translatedText: '完成时间' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'continueEffortButton', languageCode: 'en', translatedText: 'Keep Going' },
-    { scopeKey: 'timelyRewardsPageView.rewardCard', labelKey: 'continueEffortButton', languageCode: 'zh', translatedText: '继续努力' },
-
-    // 幸运抽奖标签
-    { scopeKey: 'timelyRewardsPageView.luckyDraw', labelKey: 'title', languageCode: 'en', translatedText: 'Lucky Draw' },
-    { scopeKey: 'timelyRewardsPageView.luckyDraw', labelKey: 'title', languageCode: 'zh', translatedText: '幸运抽奖' },
-    { scopeKey: 'timelyRewardsPageView.luckyDraw', labelKey: 'buttonText', languageCode: 'en', translatedText: 'Lucky Draw' },
-    { scopeKey: 'timelyRewardsPageView.luckyDraw', labelKey: 'buttonText', languageCode: 'zh', translatedText: '幸运抽奖' },
-
-    // 幸运点显示组件标签
-    { scopeKey: 'luckyPointsDisplay', labelKey: 'label', languageCode: 'en', translatedText: 'Lucky Points' },
-    { scopeKey: 'luckyPointsDisplay', labelKey: 'label', languageCode: 'zh', translatedText: '幸运点' },
-    { scopeKey: 'luckyPointsDisplay', labelKey: 'loadingText', languageCode: 'en', translatedText: 'Loading...' },
-    { scopeKey: 'luckyPointsDisplay', labelKey: 'loadingText', languageCode: 'zh', translatedText: '加载中...' },
-
-    // 幸运抽奖组件标签
-    { scopeKey: 'luckyDraw', labelKey: 'title', languageCode: 'en', translatedText: 'Lucky Draw' },
-    { scopeKey: 'luckyDraw', labelKey: 'title', languageCode: 'zh', translatedText: '幸运抽奖' },
-    { scopeKey: 'luckyDraw', labelKey: 'basicDrawLabel', languageCode: 'en', translatedText: 'Basic Draw' },
-    { scopeKey: 'luckyDraw', labelKey: 'basicDrawLabel', languageCode: 'zh', translatedText: '基础抽奖' },
-    { scopeKey: 'luckyDraw', labelKey: 'basicDrawDescription', languageCode: 'en', translatedText: 'Chance to get common rewards' },
-    { scopeKey: 'luckyDraw', labelKey: 'basicDrawDescription', languageCode: 'zh', translatedText: '获得普通奖励的机会' },
-    { scopeKey: 'luckyDraw', labelKey: 'premiumDrawLabel', languageCode: 'en', translatedText: 'Premium Draw' },
-    { scopeKey: 'luckyDraw', labelKey: 'premiumDrawLabel', languageCode: 'zh', translatedText: '高级抽奖' },
-    { scopeKey: 'luckyDraw', labelKey: 'premiumDrawDescription', languageCode: 'en', translatedText: 'Higher chance to get rare rewards' },
-    { scopeKey: 'luckyDraw', labelKey: 'premiumDrawDescription', languageCode: 'zh', translatedText: '获得稀有奖励的更高机会' },
-    { scopeKey: 'luckyDraw', labelKey: 'deluxeDrawLabel', languageCode: 'en', translatedText: 'Deluxe Draw' },
-    { scopeKey: 'luckyDraw', labelKey: 'deluxeDrawLabel', languageCode: 'zh', translatedText: '豪华抽奖' },
-    { scopeKey: 'luckyDraw', labelKey: 'deluxeDrawDescription', languageCode: 'en', translatedText: 'Highest chance to get epic and legendary rewards' },
-    { scopeKey: 'luckyDraw', labelKey: 'deluxeDrawDescription', languageCode: 'zh', translatedText: '获得史诗和传说奖励的最高机会' },
-    { scopeKey: 'luckyDraw', labelKey: 'notEnoughPointsError', languageCode: 'en', translatedText: 'Not enough lucky points' },
-    { scopeKey: 'luckyDraw', labelKey: 'notEnoughPointsError', languageCode: 'zh', translatedText: '幸运点不足' },
-    { scopeKey: 'luckyDraw', labelKey: 'loadPointsError', languageCode: 'en', translatedText: 'Failed to load lucky points, please try again' },
-    { scopeKey: 'luckyDraw', labelKey: 'loadPointsError', languageCode: 'zh', translatedText: '加载幸运点失败，请重试' },
-    { scopeKey: 'luckyDraw', labelKey: 'drawError', languageCode: 'en', translatedText: 'Failed to perform lucky draw, please try again' },
-    { scopeKey: 'luckyDraw', labelKey: 'drawError', languageCode: 'zh', translatedText: '抽奖失败，请重试' },
-    { scopeKey: 'luckyDraw', labelKey: 'continueDrawingButton', languageCode: 'en', translatedText: 'Continue Drawing' },
-    { scopeKey: 'luckyDraw', labelKey: 'continueDrawingButton', languageCode: 'zh', translatedText: '继续抽奖' },
-    { scopeKey: 'luckyDraw', labelKey: 'closeButton', languageCode: 'en', translatedText: 'Close' },
-    { scopeKey: 'luckyDraw', labelKey: 'closeButton', languageCode: 'zh', translatedText: '关闭' },
-    { scopeKey: 'luckyDraw', labelKey: 'drawingButton', languageCode: 'en', translatedText: 'Drawing...' },
-    { scopeKey: 'luckyDraw', labelKey: 'drawingButton', languageCode: 'zh', translatedText: '抽奖中...' },
-    { scopeKey: 'luckyDraw', labelKey: 'drawButton', languageCode: 'en', translatedText: 'Draw' },
-    { scopeKey: 'luckyDraw', labelKey: 'drawButton', languageCode: 'zh', translatedText: '抽奖' },
-
-    // Challenge Discovery Card Labels
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'closeButtonAriaLabel', languageCode: 'en', translatedText: 'Close' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'closeButtonAriaLabel', languageCode: 'zh', translatedText: '关闭' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'loadingMessage', languageCode: 'en', translatedText: 'Loading challenge...' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'loadingMessage', languageCode: 'zh', translatedText: '加载挑战中...' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'errorLoadingChallenge', languageCode: 'en', translatedText: 'Failed to load challenge, please try again' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'errorLoadingChallenge', languageCode: 'zh', translatedText: '加载挑战失败，请重试' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'cannotLoadChallenge', languageCode: 'en', translatedText: 'Unable to load challenge data' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'cannotLoadChallenge', languageCode: 'zh', translatedText: '无法加载挑战数据' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'startDateLabel', languageCode: 'en', translatedText: 'Start Date' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'startDateLabel', languageCode: 'zh', translatedText: '开始日期' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'endDateLabel', languageCode: 'en', translatedText: 'End Date' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'endDateLabel', languageCode: 'zh', translatedText: '结束日期' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'laterButton', languageCode: 'en', translatedText: 'Maybe Later' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'laterButton', languageCode: 'zh', translatedText: '稍后再说' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'acceptButton', languageCode: 'en', translatedText: 'Accept Challenge' },
-    { scopeKey: 'challengesView.challengeDiscoveryCard', labelKey: 'acceptButton', languageCode: 'zh', translatedText: '接受挑战' },
-
-    // Challenge Recommendation Card Labels
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'matchScoreLabel', languageCode: 'en', translatedText: 'Match Score' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'matchScoreLabel', languageCode: 'zh', translatedText: '匹配度' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'difficultyEasy', languageCode: 'en', translatedText: 'Easy' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'difficultyEasy', languageCode: 'zh', translatedText: '简单' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'difficultyMedium', languageCode: 'en', translatedText: 'Medium' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'difficultyMedium', languageCode: 'zh', translatedText: '中等' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'difficultyHard', languageCode: 'en', translatedText: 'Hard' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'difficultyHard', languageCode: 'zh', translatedText: '困难' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'difficultyExpert', languageCode: 'en', translatedText: 'Expert' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'difficultyExpert', languageCode: 'zh', translatedText: '专家' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'difficultyUnknown', languageCode: 'en', translatedText: 'Unknown' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'difficultyUnknown', languageCode: 'zh', translatedText: '未知' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'startDateLabel', languageCode: 'en', translatedText: 'Start Date' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'startDateLabel', languageCode: 'zh', translatedText: '开始日期' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'endDateLabel', languageCode: 'en', translatedText: 'End Date' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'endDateLabel', languageCode: 'zh', translatedText: '结束日期' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'viewDetailsButton', languageCode: 'en', translatedText: 'View Details' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'viewDetailsButton', languageCode: 'zh', translatedText: '查看详情' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'acceptButton', languageCode: 'en', translatedText: 'Accept Challenge' },
-    { scopeKey: 'challengesView.challengeRecommendationCard', labelKey: 'acceptButton', languageCode: 'zh', translatedText: '接受挑战' },
-
-    // VIP Benefits Page Labels
-    { scopeKey: 'vipBenefits', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'VIP Benefits' },
-    { scopeKey: 'vipBenefits', labelKey: 'pageTitle', languageCode: 'zh', translatedText: 'VIP特权' },
-    { scopeKey: 'vipBenefits', labelKey: 'headerTitle', languageCode: 'en', translatedText: 'Become a Panda Guardian' },
-    { scopeKey: 'vipBenefits', labelKey: 'headerTitle', languageCode: 'zh', translatedText: '成为熊猫守护者' },
-    { scopeKey: 'vipBenefits', labelKey: 'headerSubtitle', languageCode: 'en', translatedText: 'Unlock exclusive benefits and accelerate your growth' },
-    { scopeKey: 'vipBenefits', labelKey: 'headerSubtitle', languageCode: 'zh', translatedText: '解锁专属特权，加速你的成长' },
-    { scopeKey: 'vipBenefits', labelKey: 'alreadyVipMessage', languageCode: 'en', translatedText: 'You are already enjoying all the VIP benefits as a Panda Guardian!' },
-    { scopeKey: 'vipBenefits', labelKey: 'alreadyVipMessage', languageCode: 'zh', translatedText: '你已经是熊猫守护者，正在享受所有VIP特权！' },
-    { scopeKey: 'vipBenefits', labelKey: 'compareTitle', languageCode: 'en', translatedText: 'Compare Benefits' },
-    { scopeKey: 'vipBenefits', labelKey: 'compareTitle', languageCode: 'zh', translatedText: '特权对比' },
-    { scopeKey: 'vipBenefits', labelKey: 'freeTitle', languageCode: 'en', translatedText: 'Free Panda Friend' },
-    { scopeKey: 'vipBenefits', labelKey: 'freeTitle', languageCode: 'zh', translatedText: '免费熊猫好友' },
-    { scopeKey: 'vipBenefits', labelKey: 'vipTitle', languageCode: 'en', translatedText: 'VIP Panda Guardian' },
-    { scopeKey: 'vipBenefits', labelKey: 'vipTitle', languageCode: 'zh', translatedText: 'VIP熊猫守护者' },
-
-    // VIP Benefits Categories
-    { scopeKey: 'vipBenefits.benefitCategories', labelKey: 'identity', languageCode: 'en', translatedText: 'Identity' },
-    { scopeKey: 'vipBenefits.benefitCategories', labelKey: 'identity', languageCode: 'zh', translatedText: '身份标识' },
-    { scopeKey: 'vipBenefits.benefitCategories', labelKey: 'resources', languageCode: 'en', translatedText: 'Resources' },
-    { scopeKey: 'vipBenefits.benefitCategories', labelKey: 'resources', languageCode: 'zh', translatedText: '资源加成' },
-    { scopeKey: 'vipBenefits.benefitCategories', labelKey: 'features', languageCode: 'en', translatedText: 'Features' },
-    { scopeKey: 'vipBenefits.benefitCategories', labelKey: 'features', languageCode: 'zh', translatedText: '功能特权' },
-    { scopeKey: 'vipBenefits.benefitCategories', labelKey: 'exclusive', languageCode: 'en', translatedText: 'Exclusive Content' },
-    { scopeKey: 'vipBenefits.benefitCategories', labelKey: 'exclusive', languageCode: 'zh', translatedText: '专属内容' },
-
-    // VIP Benefits Buttons
-    { scopeKey: 'vipBenefits.buttons', labelKey: 'subscribe', languageCode: 'en', translatedText: 'Become a Guardian' },
-    { scopeKey: 'vipBenefits.buttons', labelKey: 'subscribe', languageCode: 'zh', translatedText: '成为守护者' },
-    { scopeKey: 'vipBenefits.buttons', labelKey: 'viewOptions', languageCode: 'en', translatedText: 'View Subscription Options' },
-    { scopeKey: 'vipBenefits.buttons', labelKey: 'viewOptions', languageCode: 'zh', translatedText: '查看订阅选项' },
-    { scopeKey: 'vipBenefits.buttons', labelKey: 'back', languageCode: 'en', translatedText: 'Back' },
-    { scopeKey: 'vipBenefits.buttons', labelKey: 'back', languageCode: 'zh', translatedText: '返回' },
-
-    // VIP Benefits Details - Avatar Frame
-    { scopeKey: 'vipBenefits.benefits.avatarFrame', labelKey: 'title', languageCode: 'en', translatedText: 'Avatar Frame' },
-    { scopeKey: 'vipBenefits.benefits.avatarFrame', labelKey: 'title', languageCode: 'zh', translatedText: '头像框' },
-    { scopeKey: 'vipBenefits.benefits.avatarFrame', labelKey: 'free', languageCode: 'en', translatedText: 'Basic frame' },
-    { scopeKey: 'vipBenefits.benefits.avatarFrame', labelKey: 'free', languageCode: 'zh', translatedText: '基础框架' },
-    { scopeKey: 'vipBenefits.benefits.avatarFrame', labelKey: 'vip', languageCode: 'en', translatedText: 'Dynamic bamboo leaf frame' },
-    { scopeKey: 'vipBenefits.benefits.avatarFrame', labelKey: 'vip', languageCode: 'zh', translatedText: '动态竹叶框架' },
-
-    // VIP Benefits Details - Title
-    { scopeKey: 'vipBenefits.benefits.title', labelKey: 'title', languageCode: 'en', translatedText: 'Title Display' },
-    { scopeKey: 'vipBenefits.benefits.title', labelKey: 'title', languageCode: 'zh', translatedText: '称号显示' },
-    { scopeKey: 'vipBenefits.benefits.title', labelKey: 'free', languageCode: 'en', translatedText: 'None' },
-    { scopeKey: 'vipBenefits.benefits.title', labelKey: 'free', languageCode: 'zh', translatedText: '无' },
-    { scopeKey: 'vipBenefits.benefits.title', labelKey: 'vip', languageCode: 'en', translatedText: '"Guardian" title next to name' },
-    { scopeKey: 'vipBenefits.benefits.title', labelKey: 'vip', languageCode: 'zh', translatedText: '名字旁显示"守护者"称号' },
-
-    // VIP Benefits Details - Bamboo Reward
-    { scopeKey: 'vipBenefits.benefits.bambooReward', labelKey: 'title', languageCode: 'en', translatedText: 'Bamboo Rewards' },
-    { scopeKey: 'vipBenefits.benefits.bambooReward', labelKey: 'title', languageCode: 'zh', translatedText: '竹子奖励' },
-    { scopeKey: 'vipBenefits.benefits.bambooReward', labelKey: 'free', languageCode: 'en', translatedText: 'Normal (x1)' },
-    { scopeKey: 'vipBenefits.benefits.bambooReward', labelKey: 'free', languageCode: 'zh', translatedText: '普通 (x1)' },
-    { scopeKey: 'vipBenefits.benefits.bambooReward', labelKey: 'vip', languageCode: 'en', translatedText: 'Double (x2)' },
-    { scopeKey: 'vipBenefits.benefits.bambooReward', labelKey: 'vip', languageCode: 'zh', translatedText: '双倍 (x2)' },
-
-    // VIP Benefits Details - Growth Speed
-    { scopeKey: 'vipBenefits.benefits.growthSpeed', labelKey: 'title', languageCode: 'en', translatedText: 'Panda Growth Speed' },
-    { scopeKey: 'vipBenefits.benefits.growthSpeed', labelKey: 'title', languageCode: 'zh', translatedText: '熊猫成长速度' },
-    { scopeKey: 'vipBenefits.benefits.growthSpeed', labelKey: 'free', languageCode: 'en', translatedText: 'Normal speed' },
-    { scopeKey: 'vipBenefits.benefits.growthSpeed', labelKey: 'free', languageCode: 'zh', translatedText: '正常速度' },
-    { scopeKey: 'vipBenefits.benefits.growthSpeed', labelKey: 'vip', languageCode: 'en', translatedText: '+50% experience' },
-    { scopeKey: 'vipBenefits.benefits.growthSpeed', labelKey: 'vip', languageCode: 'zh', translatedText: '+50% 经验值' },
-
-    // VIP Benefits Details - Lucky Draw
-    { scopeKey: 'vipBenefits.benefits.luckyDraw', labelKey: 'title', languageCode: 'en', translatedText: 'Daily Lucky Draw' },
-    { scopeKey: 'vipBenefits.benefits.luckyDraw', labelKey: 'title', languageCode: 'zh', translatedText: '每日幸运抽奖' },
-    { scopeKey: 'vipBenefits.benefits.luckyDraw', labelKey: 'free', languageCode: 'en', translatedText: '1 time' },
-    { scopeKey: 'vipBenefits.benefits.luckyDraw', labelKey: 'free', languageCode: 'zh', translatedText: '1 次' },
-    { scopeKey: 'vipBenefits.benefits.luckyDraw', labelKey: 'vip', languageCode: 'en', translatedText: '3 times' },
-    { scopeKey: 'vipBenefits.benefits.luckyDraw', labelKey: 'vip', languageCode: 'zh', translatedText: '3 次' },
-
-    // VIP Benefits Details - Custom Goals
-    { scopeKey: 'vipBenefits.benefits.customGoals', labelKey: 'title', languageCode: 'en', translatedText: 'Custom Goals' },
-    { scopeKey: 'vipBenefits.benefits.customGoals', labelKey: 'title', languageCode: 'zh', translatedText: '自定义目标' },
-    { scopeKey: 'vipBenefits.benefits.customGoals', labelKey: 'free', languageCode: 'en', translatedText: '1 goal' },
-    { scopeKey: 'vipBenefits.benefits.customGoals', labelKey: 'free', languageCode: 'zh', translatedText: '1 个目标' },
-    { scopeKey: 'vipBenefits.benefits.customGoals', labelKey: 'vip', languageCode: 'en', translatedText: '5 goals' },
-    { scopeKey: 'vipBenefits.benefits.customGoals', labelKey: 'vip', languageCode: 'zh', translatedText: '5 个目标' },
-
-    // VIP Benefits Details - Panda Skins
-    { scopeKey: 'vipBenefits.benefits.pandaSkins', labelKey: 'title', languageCode: 'en', translatedText: 'Panda Appearances' },
-    { scopeKey: 'vipBenefits.benefits.pandaSkins', labelKey: 'title', languageCode: 'zh', translatedText: '熊猫外观' },
-    { scopeKey: 'vipBenefits.benefits.pandaSkins', labelKey: 'free', languageCode: 'en', translatedText: 'Basic skins' },
-    { scopeKey: 'vipBenefits.benefits.pandaSkins', labelKey: 'free', languageCode: 'zh', translatedText: '基础外观' },
-    { scopeKey: 'vipBenefits.benefits.pandaSkins', labelKey: 'vip', languageCode: 'en', translatedText: 'Exclusive VIP skins' },
-    { scopeKey: 'vipBenefits.benefits.pandaSkins', labelKey: 'vip', languageCode: 'zh', translatedText: '专属VIP外观' },
-
-    // VIP Benefits Details - Special Tasks
-    { scopeKey: 'vipBenefits.benefits.specialTasks', labelKey: 'title', languageCode: 'en', translatedText: 'Special Quests' },
-    { scopeKey: 'vipBenefits.benefits.specialTasks', labelKey: 'title', languageCode: 'zh', translatedText: '特殊任务' },
-    { scopeKey: 'vipBenefits.benefits.specialTasks', labelKey: 'free', languageCode: 'en', translatedText: 'None' },
-    { scopeKey: 'vipBenefits.benefits.specialTasks', labelKey: 'free', languageCode: 'zh', translatedText: '无' },
-    { scopeKey: 'vipBenefits.benefits.specialTasks', labelKey: 'vip', languageCode: 'en', translatedText: 'Exclusive "Secret Garden" series' },
-    { scopeKey: 'vipBenefits.benefits.specialTasks', labelKey: 'vip', languageCode: 'zh', translatedText: '专属"秘密花园"系列' },
-
-    // VIP Benefits Details - Meditation
-    { scopeKey: 'vipBenefits.benefits.meditation', labelKey: 'title', languageCode: 'en', translatedText: 'Meditation Courses' },
-    { scopeKey: 'vipBenefits.benefits.meditation', labelKey: 'title', languageCode: 'zh', translatedText: '冥想课程' },
-    { scopeKey: 'vipBenefits.benefits.meditation', labelKey: 'free', languageCode: 'en', translatedText: 'Basic courses' },
-    { scopeKey: 'vipBenefits.benefits.meditation', labelKey: 'free', languageCode: 'zh', translatedText: '基础课程' },
-    { scopeKey: 'vipBenefits.benefits.meditation', labelKey: 'vip', languageCode: 'en', translatedText: 'All premium courses' },
-    { scopeKey: 'vipBenefits.benefits.meditation', labelKey: 'vip', languageCode: 'zh', translatedText: '所有高级课程' },
-
-    // 商店页面标签
-    { scopeKey: 'storeView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Store' },
-    { scopeKey: 'storeView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '商店' },
-    { scopeKey: 'storeView', labelKey: 'loadingMessage', languageCode: 'en', translatedText: 'Loading store content...' },
-    { scopeKey: 'storeView', labelKey: 'loadingMessage', languageCode: 'zh', translatedText: '加载商店内容...' },
-    { scopeKey: 'storeView', labelKey: 'errorTitle', languageCode: 'en', translatedText: 'Store Page Error' },
-    { scopeKey: 'storeView', labelKey: 'errorTitle', languageCode: 'zh', translatedText: '商店页面错误' },
-    { scopeKey: 'storeView', labelKey: 'retryButtonText', languageCode: 'en', translatedText: 'Retry' },
-    { scopeKey: 'storeView', labelKey: 'retryButtonText', languageCode: 'zh', translatedText: '重试' },
-    { scopeKey: 'storeView.vipToggleButton', labelKey: 'showVip', languageCode: 'en', translatedText: 'View VIP Membership' },
-    { scopeKey: 'storeView.vipToggleButton', labelKey: 'showVip', languageCode: 'zh', translatedText: '查看VIP会员' },
-    { scopeKey: 'storeView.vipToggleButton', labelKey: 'backToStore', languageCode: 'en', translatedText: 'Back to Store' },
-    { scopeKey: 'storeView.vipToggleButton', labelKey: 'backToStore', languageCode: 'zh', translatedText: '返回商店' },
-    { scopeKey: 'storeView', labelKey: 'featuredItemsTitle', languageCode: 'en', translatedText: 'Featured Items' },
-    { scopeKey: 'storeView', labelKey: 'featuredItemsTitle', languageCode: 'zh', translatedText: '特色物品' },
-    { scopeKey: 'storeView', labelKey: 'saleItemsTitle', languageCode: 'en', translatedText: 'Sale Items' },
-    { scopeKey: 'storeView', labelKey: 'saleItemsTitle', languageCode: 'zh', translatedText: '促销物品' },
-    { scopeKey: 'storeView', labelKey: 'categoryItemsTitle', languageCode: 'en', translatedText: 'Category Items' },
-    { scopeKey: 'storeView', labelKey: 'categoryItemsTitle', languageCode: 'zh', translatedText: '分类物品' },
-    { scopeKey: 'storeView', labelKey: 'noItemsMessage', languageCode: 'en', translatedText: 'No items in this category' },
-    { scopeKey: 'storeView', labelKey: 'noItemsMessage', languageCode: 'zh', translatedText: '该类别暂无物品' },
-
-    // 茶室页面标签
-    { scopeKey: 'teaRoomView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Tea Room' },
-    { scopeKey: 'teaRoomView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '静心茶室' },
-    { scopeKey: 'teaRoomView', labelKey: 'loadingMessage', languageCode: 'en', translatedText: 'Loading tea room content...' },
-    { scopeKey: 'teaRoomView', labelKey: 'loadingMessage', languageCode: 'zh', translatedText: '加载茶室内容...' },
-    { scopeKey: 'teaRoomView', labelKey: 'errorTitle', languageCode: 'en', translatedText: 'Tea Room Page Error' },
-    { scopeKey: 'teaRoomView', labelKey: 'errorTitle', languageCode: 'zh', translatedText: '茶室页面错误' },
-    { scopeKey: 'teaRoomView', labelKey: 'retryButtonText', languageCode: 'en', translatedText: 'Retry' },
-    { scopeKey: 'teaRoomView', labelKey: 'retryButtonText', languageCode: 'zh', translatedText: '重试' },
-    { scopeKey: 'teaRoomView.moodTrackingSection', labelKey: 'title', languageCode: 'en', translatedText: 'Mood Tracking' },
-    { scopeKey: 'teaRoomView.moodTrackingSection', labelKey: 'title', languageCode: 'zh', translatedText: '情绪追踪' },
-    { scopeKey: 'teaRoomView.reflectionSection', labelKey: 'title', languageCode: 'en', translatedText: 'Reflection' },
-    { scopeKey: 'teaRoomView.reflectionSection', labelKey: 'title', languageCode: 'zh', translatedText: '反思' },
-    { scopeKey: 'teaRoomView.reflectionSection', labelKey: 'description', languageCode: 'en', translatedText: 'Take some time to reflect on your experiences, feelings, and thoughts to better understand yourself and find direction.' },
-    { scopeKey: 'teaRoomView.reflectionSection', labelKey: 'description', languageCode: 'zh', translatedText: '花点时间反思你的经历、感受和想法，可以帮助你更好地了解自己，并找到前进的方向。' },
-    { scopeKey: 'teaRoomView.reflectionSection', labelKey: 'startReflectionButton', languageCode: 'en', translatedText: 'Start Reflection' },
-    { scopeKey: 'teaRoomView.reflectionSection', labelKey: 'startReflectionButton', languageCode: 'zh', translatedText: '开始反思' },
-    { scopeKey: 'teaRoomView.reflectionSection', labelKey: 'viewHistoryButton', languageCode: 'en', translatedText: 'View Reflection History' },
-    { scopeKey: 'teaRoomView.reflectionSection', labelKey: 'viewHistoryButton', languageCode: 'zh', translatedText: '查看历史反思' },
-    { scopeKey: 'teaRoomView.dailyTipSection', labelKey: 'title', languageCode: 'en', translatedText: 'Daily Wisdom' },
-    { scopeKey: 'teaRoomView.dailyTipSection', labelKey: 'title', languageCode: 'zh', translatedText: '每日智慧' },
-    { scopeKey: 'teaRoomView.dailyTipSection', labelKey: 'content', languageCode: 'en', translatedText: 'Self-compassion is an essential part of mental health. When facing difficulties, try to treat yourself as you would a good friend, with understanding and kindness.' },
-    { scopeKey: 'teaRoomView.dailyTipSection', labelKey: 'content', languageCode: 'zh', translatedText: '自我关怀是心理健康的重要组成部分。面对困难时，试着像对待好朋友一样对待自己，给予理解和善意。' },
-
-    // 能力页面标签
-    { scopeKey: 'abilitiesView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Panda Abilities' },
-    { scopeKey: 'abilitiesView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '熊猫能力' },
-    { scopeKey: 'abilitiesView', labelKey: 'loadingMessage', languageCode: 'en', translatedText: 'Loading abilities...' },
-    { scopeKey: 'abilitiesView', labelKey: 'loadingMessage', languageCode: 'zh', translatedText: '加载能力中...' },
-    { scopeKey: 'abilitiesView', labelKey: 'errorTitle', languageCode: 'en', translatedText: 'Abilities Page Error' },
-    { scopeKey: 'abilitiesView', labelKey: 'errorTitle', languageCode: 'zh', translatedText: '能力页面错误' },
-    { scopeKey: 'abilitiesView', labelKey: 'errorMessage', languageCode: 'en', translatedText: 'Failed to load abilities' },
-    { scopeKey: 'abilitiesView', labelKey: 'errorMessage', languageCode: 'zh', translatedText: '加载能力失败' },
-    { scopeKey: 'abilitiesView', labelKey: 'retryButtonText', languageCode: 'en', translatedText: 'Retry' },
-    { scopeKey: 'abilitiesView', labelKey: 'retryButtonText', languageCode: 'zh', translatedText: '重试' },
-    { scopeKey: 'abilitiesView', labelKey: 'pandaLevelLabel', languageCode: 'en', translatedText: 'Panda Level' },
-    { scopeKey: 'abilitiesView', labelKey: 'pandaLevelLabel', languageCode: 'zh', translatedText: '熊猫等级' },
-    { scopeKey: 'abilitiesView', labelKey: 'unlockedAbilitiesLabel', languageCode: 'en', translatedText: 'Unlocked Abilities' },
-    { scopeKey: 'abilitiesView', labelKey: 'unlockedAbilitiesLabel', languageCode: 'zh', translatedText: '已解锁能力' },
-    { scopeKey: 'abilitiesView', labelKey: 'abilitiesDescription', languageCode: 'en', translatedText: 'Abilities are special powers that your panda can use to help you in your tasks.' },
-    { scopeKey: 'abilitiesView', labelKey: 'abilitiesDescription', languageCode: 'zh', translatedText: '能力是熊猫可以使用的特殊力量，可以帮助你完成任务。' },
-    { scopeKey: 'abilitiesView', labelKey: 'noAbilitiesMessage', languageCode: 'en', translatedText: 'No abilities found' },
-    { scopeKey: 'abilitiesView', labelKey: 'noAbilitiesMessage', languageCode: 'zh', translatedText: '暂无能力' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'statusLabel', languageCode: 'en', translatedText: 'Status' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'statusLabel', languageCode: 'zh', translatedText: '状态' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'typeLabel', languageCode: 'en', translatedText: 'Type' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'typeLabel', languageCode: 'zh', translatedText: '类型' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'allLabel', languageCode: 'en', translatedText: 'All' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'allLabel', languageCode: 'zh', translatedText: '全部' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'unlockedLabel', languageCode: 'en', translatedText: 'Unlocked' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'unlockedLabel', languageCode: 'zh', translatedText: '已解锁' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'activeLabel', languageCode: 'en', translatedText: 'Active' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'activeLabel', languageCode: 'zh', translatedText: '已激活' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'lockedLabel', languageCode: 'en', translatedText: 'Locked' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'lockedLabel', languageCode: 'zh', translatedText: '已锁定' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'passiveLabel', languageCode: 'en', translatedText: 'Passive' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'passiveLabel', languageCode: 'zh', translatedText: '被动' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'ultimateLabel', languageCode: 'en', translatedText: 'Ultimate' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'ultimateLabel', languageCode: 'zh', translatedText: '终极' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'clearFiltersLabel', languageCode: 'en', translatedText: 'Clear All Filters' },
-    { scopeKey: 'abilitiesView.filters', labelKey: 'clearFiltersLabel', languageCode: 'zh', translatedText: '清除所有过滤器' },
-
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'typePassive', languageCode: 'en', translatedText: 'Passive' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'typePassive', languageCode: 'zh', translatedText: '被动' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'typeActive', languageCode: 'en', translatedText: 'Active' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'typeActive', languageCode: 'zh', translatedText: '主动' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'typeUltimate', languageCode: 'en', translatedText: 'Ultimate' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'typeUltimate', languageCode: 'zh', translatedText: '终极' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'typeUnknown', languageCode: 'en', translatedText: 'Unknown' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'typeUnknown', languageCode: 'zh', translatedText: '未知' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'rarityCommon', languageCode: 'en', translatedText: 'Common' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'rarityCommon', languageCode: 'zh', translatedText: '普通' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'rarityUncommon', languageCode: 'en', translatedText: 'Uncommon' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'rarityUncommon', languageCode: 'zh', translatedText: '不常见' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'rarityRare', languageCode: 'en', translatedText: 'Rare' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'rarityRare', languageCode: 'zh', translatedText: '稀有' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'rarityEpic', languageCode: 'en', translatedText: 'Epic' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'rarityEpic', languageCode: 'zh', translatedText: '史诗' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'rarityLegendary', languageCode: 'en', translatedText: 'Legendary' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'rarityLegendary', languageCode: 'zh', translatedText: '传说' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'requiredLevelLabel', languageCode: 'en', translatedText: 'Required Level' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'requiredLevelLabel', languageCode: 'zh', translatedText: '需要等级' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'cooldownLabel', languageCode: 'en', translatedText: 'Cooldown' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'cooldownLabel', languageCode: 'zh', translatedText: '冷却时间' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'cooldownRemainingLabel', languageCode: 'en', translatedText: 'Cooling down' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'cooldownRemainingLabel', languageCode: 'zh', translatedText: '冷却中' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'activateButtonText', languageCode: 'en', translatedText: 'Activate Ability' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'activateButtonText', languageCode: 'zh', translatedText: '激活能力' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'alreadyActivatedText', languageCode: 'en', translatedText: 'Already Activated' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'alreadyActivatedText', languageCode: 'zh', translatedText: '已激活' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'minutesUnit', languageCode: 'en', translatedText: 'min' },
-    { scopeKey: 'abilitiesView.abilityCard', labelKey: 'minutesUnit', languageCode: 'zh', translatedText: '分钟' },
-
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'title', languageCode: 'en', translatedText: 'Ability Details' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'title', languageCode: 'zh', translatedText: '能力详情' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'requiredLevelLabel', languageCode: 'en', translatedText: 'Required Level' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'requiredLevelLabel', languageCode: 'zh', translatedText: '解锁等级' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'levelsNeededText', languageCode: 'en', translatedText: 'Need' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'levelsNeededText', languageCode: 'zh', translatedText: '还需' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'cooldownLabel', languageCode: 'en', translatedText: 'Cooldown' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'cooldownLabel', languageCode: 'zh', translatedText: '冷却时间' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'rarityLabel', languageCode: 'en', translatedText: 'Rarity' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'rarityLabel', languageCode: 'zh', translatedText: '稀有度' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'typeLabel', languageCode: 'en', translatedText: 'Type' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'typeLabel', languageCode: 'zh', translatedText: '类型' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'effectLabel', languageCode: 'en', translatedText: 'Effect Value' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'effectLabel', languageCode: 'zh', translatedText: '效果值' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'activateButtonText', languageCode: 'en', translatedText: 'Activate Ability' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'activateButtonText', languageCode: 'zh', translatedText: '激活能力' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'alreadyActivatedText', languageCode: 'en', translatedText: 'Already Activated' },
-    { scopeKey: 'abilitiesView.abilityDetail', labelKey: 'alreadyActivatedText', languageCode: 'zh', translatedText: '已激活' },
-
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'title', languageCode: 'en', translatedText: 'Ability Unlocked' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'title', languageCode: 'zh', translatedText: '能力解锁' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'newAbilityTitle', languageCode: 'en', translatedText: 'New Ability Unlocked!' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'newAbilityTitle', languageCode: 'zh', translatedText: '解锁新能力！' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'nextButtonText', languageCode: 'en', translatedText: 'Next Ability' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'nextButtonText', languageCode: 'zh', translatedText: '下一个能力' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'viewAllButtonText', languageCode: 'en', translatedText: 'View All Abilities' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'viewAllButtonText', languageCode: 'zh', translatedText: '查看所有能力' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'allUnlockedTitle', languageCode: 'en', translatedText: 'Newly Unlocked Abilities' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'allUnlockedTitle', languageCode: 'zh', translatedText: '新解锁的能力' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'closeButtonText', languageCode: 'en', translatedText: 'Close' },
-    { scopeKey: 'abilitiesView.abilityUnlockNotification', labelKey: 'closeButtonText', languageCode: 'zh', translatedText: '关闭' },
-
-    // Ability names and descriptions
-    { scopeKey: 'abilities', labelKey: 'bambooHeart.name', languageCode: 'en', translatedText: 'Bamboo Heart' },
-    { scopeKey: 'abilities', labelKey: 'bambooHeart.name', languageCode: 'zh', translatedText: '竹林之心' },
-    { scopeKey: 'abilities', labelKey: 'bambooHeart.description', languageCode: 'en', translatedText: 'Passive: Increases experience gained from completing tasks by 10%' },
-    { scopeKey: 'abilities', labelKey: 'bambooHeart.description', languageCode: 'zh', translatedText: '被动：完成任务时获得的经验值增加10%' },
-
-    { scopeKey: 'abilities', labelKey: 'pandaVitality.name', languageCode: 'en', translatedText: 'Panda Vitality' },
-    { scopeKey: 'abilities', labelKey: 'pandaVitality.name', languageCode: 'zh', translatedText: '熊猫活力' },
-    { scopeKey: 'abilities', labelKey: 'pandaVitality.description', languageCode: 'en', translatedText: 'Passive: Increases panda energy recovery rate by 15%' },
-    { scopeKey: 'abilities', labelKey: 'pandaVitality.description', languageCode: 'zh', translatedText: '被动：熊猫能量恢复速度提高15%' },
-
-    { scopeKey: 'abilities', labelKey: 'bambooFocus.name', languageCode: 'en', translatedText: 'Bamboo Focus' },
-    { scopeKey: 'abilities', labelKey: 'bambooFocus.name', languageCode: 'zh', translatedText: '竹影专注' },
-    { scopeKey: 'abilities', labelKey: 'bambooFocus.description', languageCode: 'en', translatedText: 'Active: When activated, increases experience gained from completing tasks by 25% for 1 hour' },
-    { scopeKey: 'abilities', labelKey: 'bambooFocus.description', languageCode: 'zh', translatedText: '主动：激活后，1小时内完成任务获得的经验值增加25%' },
-
-    { scopeKey: 'abilities', labelKey: 'pandaWisdom.name', languageCode: 'en', translatedText: 'Panda Wisdom' },
-    { scopeKey: 'abilities', labelKey: 'pandaWisdom.name', languageCode: 'zh', translatedText: '熊猫智慧' },
-    { scopeKey: 'abilities', labelKey: 'pandaWisdom.description', languageCode: 'en', translatedText: 'Active: When activated, increases rewards from completed tasks by 20% for 2 hours' },
-    { scopeKey: 'abilities', labelKey: 'pandaWisdom.description', languageCode: 'zh', translatedText: '主动：激活后，2小时内任务完成奖励数量增加20%' },
-
-    { scopeKey: 'abilities', labelKey: 'bambooMaster.name', languageCode: 'en', translatedText: 'Bamboo Master' },
-    { scopeKey: 'abilities', labelKey: 'bambooMaster.name', languageCode: 'zh', translatedText: '竹林大师' },
-    { scopeKey: 'abilities', labelKey: 'bambooMaster.description', languageCode: 'en', translatedText: 'Ultimate: When activated, increases all ability effects by 50% for 4 hours' },
-    { scopeKey: 'abilities', labelKey: 'bambooMaster.description', languageCode: 'zh', translatedText: '终极：激活后，4小时内所有能力效果提升50%' },
-
-    // 及时奖励页面标签
-    { scopeKey: 'timelyRewardsView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Timely Rewards' },
-    { scopeKey: 'timelyRewardsView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '及时奖励' },
-    { scopeKey: 'timelyRewardsView', labelKey: 'loadingMessage', languageCode: 'en', translatedText: 'Loading rewards...' },
-    { scopeKey: 'timelyRewardsView', labelKey: 'loadingMessage', languageCode: 'zh', translatedText: '加载奖励中...' },
-    { scopeKey: 'timelyRewardsView', labelKey: 'errorTitle', languageCode: 'en', translatedText: 'Timely Rewards Page Error' },
-    { scopeKey: 'timelyRewardsView', labelKey: 'errorTitle', languageCode: 'zh', translatedText: '及时奖励页面错误' },
-    { scopeKey: 'timelyRewardsView', labelKey: 'noRewardsMessage', languageCode: 'en', translatedText: 'No rewards found' },
-    { scopeKey: 'timelyRewardsView', labelKey: 'noRewardsMessage', languageCode: 'zh', translatedText: '暂无奖励' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'statusLabel', languageCode: 'en', translatedText: 'Status' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'statusLabel', languageCode: 'zh', translatedText: '状态' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'allLabel', languageCode: 'en', translatedText: 'All' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'allLabel', languageCode: 'zh', translatedText: '全部' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'statusActiveLabel', languageCode: 'en', translatedText: 'Active' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'statusActiveLabel', languageCode: 'zh', translatedText: '进行中' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'statusCompletedLabel', languageCode: 'en', translatedText: 'Completed' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'statusCompletedLabel', languageCode: 'zh', translatedText: '已完成' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'statusExpiredLabel', languageCode: 'en', translatedText: 'Expired' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'statusExpiredLabel', languageCode: 'zh', translatedText: '已过期' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'typeLabel', languageCode: 'en', translatedText: 'Type' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'typeLabel', languageCode: 'zh', translatedText: '类型' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'typeDailyLabel', languageCode: 'en', translatedText: 'Daily' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'typeDailyLabel', languageCode: 'zh', translatedText: '每日' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'typeWeeklyLabel', languageCode: 'en', translatedText: 'Weekly' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'typeWeeklyLabel', languageCode: 'zh', translatedText: '每周' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'typeStreakLabel', languageCode: 'en', translatedText: 'Streak' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'typeStreakLabel', languageCode: 'zh', translatedText: '连续完成' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'typeSpecialLabel', languageCode: 'en', translatedText: 'Special' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'typeSpecialLabel', languageCode: 'zh', translatedText: '特殊' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'clearFiltersLabel', languageCode: 'en', translatedText: 'Clear All Filters' },
-    { scopeKey: 'timelyRewardsView.filters', labelKey: 'clearFiltersLabel', languageCode: 'zh', translatedText: '清除所有过滤器' },
-    { scopeKey: 'timelyRewardsView.luckyDraw', labelKey: 'buttonText', languageCode: 'en', translatedText: 'Lucky Draw' },
-    { scopeKey: 'timelyRewardsView.luckyDraw', labelKey: 'buttonText', languageCode: 'zh', translatedText: '幸运抽奖' },
-    { scopeKey: 'timelyRewardsView.luckyDraw', labelKey: 'title', languageCode: 'en', translatedText: 'Lucky Draw' },
-    { scopeKey: 'timelyRewardsView.luckyDraw', labelKey: 'title', languageCode: 'zh', translatedText: '幸运抽奖' },
-
-    // TimelyRewardCard 组件标签
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeLabel', languageCode: 'en', translatedText: 'Type' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeLabel', languageCode: 'zh', translatedText: '类型' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeDaily', languageCode: 'en', translatedText: 'Daily Reward' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeDaily', languageCode: 'zh', translatedText: '每日奖励' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeMorning', languageCode: 'en', translatedText: 'Early Bird Reward' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeMorning', languageCode: 'zh', translatedText: '早起鸟奖励' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeStreak', languageCode: 'en', translatedText: 'Streak Reward' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeStreak', languageCode: 'zh', translatedText: '连续完成奖励' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeSpecial', languageCode: 'en', translatedText: 'Special Reward' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeSpecial', languageCode: 'zh', translatedText: '特殊奖励' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusLabel', languageCode: 'en', translatedText: 'Status' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusLabel', languageCode: 'zh', translatedText: '状态' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusActive', languageCode: 'en', translatedText: 'Active' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusActive', languageCode: 'zh', translatedText: '进行中' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusCompleted', languageCode: 'en', translatedText: 'Completed' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusCompleted', languageCode: 'zh', translatedText: '已完成' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusExpired', languageCode: 'en', translatedText: 'Expired' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusExpired', languageCode: 'zh', translatedText: '已过期' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusUpcoming', languageCode: 'en', translatedText: 'Upcoming' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusUpcoming', languageCode: 'zh', translatedText: '即将开始' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'remainingTimeLabel', languageCode: 'en', translatedText: 'Remaining time' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'remainingTimeLabel', languageCode: 'zh', translatedText: '剩余时间' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'timeEnded', languageCode: 'en', translatedText: 'Ended' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'timeEnded', languageCode: 'zh', translatedText: '已结束' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'hourUnit', languageCode: 'en', translatedText: 'h' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'hourUnit', languageCode: 'zh', translatedText: '小时' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'minuteUnit', languageCode: 'en', translatedText: 'm' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'minuteUnit', languageCode: 'zh', translatedText: '分钟' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'luckyPointsLabel', languageCode: 'en', translatedText: 'Lucky Points' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'luckyPointsLabel', languageCode: 'zh', translatedText: '幸运点' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'claimRewardButton', languageCode: 'en', translatedText: 'Claim Reward' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'claimRewardButton', languageCode: 'zh', translatedText: '领取奖励' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'inProgressButton', languageCode: 'en', translatedText: 'In Progress...' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'inProgressButton', languageCode: 'zh', translatedText: '进行中...' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'completedOnLabel', languageCode: 'en', translatedText: 'Completed on' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'completedOnLabel', languageCode: 'zh', translatedText: '完成于' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'progressLabel', languageCode: 'en', translatedText: 'Progress' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'progressLabel', languageCode: 'zh', translatedText: '进度' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'startTimeLabel', languageCode: 'en', translatedText: 'Start Time' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'startTimeLabel', languageCode: 'zh', translatedText: '开始时间' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'endTimeLabel', languageCode: 'en', translatedText: 'End Time' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'endTimeLabel', languageCode: 'zh', translatedText: '结束时间' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'completedTimeLabel', languageCode: 'en', translatedText: 'Completed Time' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'completedTimeLabel', languageCode: 'zh', translatedText: '完成时间' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'continueEffortButton', languageCode: 'en', translatedText: 'Keep Going' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'continueEffortButton', languageCode: 'zh', translatedText: '继续努力' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'noRewardsMessage', languageCode: 'en', translatedText: 'No timely rewards available' },
-    { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'noRewardsMessage', languageCode: 'zh', translatedText: '暂无及时奖励' },
-
-    // VIP Benefits Page
-    { scopeKey: 'vipBenefitsView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'VIP Benefits' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: 'VIP特权' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'headerTitle', languageCode: 'en', translatedText: 'Become a Panda Guardian' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'headerTitle', languageCode: 'zh', translatedText: '成为熊猫守护者' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'headerSubtitle', languageCode: 'en', translatedText: 'Unlock exclusive benefits and accelerate your growth' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'headerSubtitle', languageCode: 'zh', translatedText: '解锁专属特权，加速您的成长' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'compareTitle', languageCode: 'en', translatedText: 'Compare Benefits' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'compareTitle', languageCode: 'zh', translatedText: '特权对比' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'freeTitle', languageCode: 'en', translatedText: 'Free Panda Friend' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'freeTitle', languageCode: 'zh', translatedText: '免费熊猫好友' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'vipTitle', languageCode: 'en', translatedText: 'VIP Panda Guardian' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'vipTitle', languageCode: 'zh', translatedText: 'VIP熊猫守护者' },
-
-    { scopeKey: 'vipBenefitsView.benefitCategories', labelKey: 'identity', languageCode: 'en', translatedText: 'Identity' },
-    { scopeKey: 'vipBenefitsView.benefitCategories', labelKey: 'identity', languageCode: 'zh', translatedText: '身份标识' },
-    { scopeKey: 'vipBenefitsView.benefitCategories', labelKey: 'resources', languageCode: 'en', translatedText: 'Resources' },
-    { scopeKey: 'vipBenefitsView.benefitCategories', labelKey: 'resources', languageCode: 'zh', translatedText: '资源获取' },
-    { scopeKey: 'vipBenefitsView.benefitCategories', labelKey: 'features', languageCode: 'en', translatedText: 'Features' },
-    { scopeKey: 'vipBenefitsView.benefitCategories', labelKey: 'features', languageCode: 'zh', translatedText: '功能特权' },
-    { scopeKey: 'vipBenefitsView.benefitCategories', labelKey: 'exclusive', languageCode: 'en', translatedText: 'Exclusive Content' },
-    { scopeKey: 'vipBenefitsView.benefitCategories', labelKey: 'exclusive', languageCode: 'zh', translatedText: '专属内容' },
-
-    { scopeKey: 'vipBenefitsView.benefits.avatarFrame', labelKey: 'title', languageCode: 'en', translatedText: 'Avatar Frame' },
-    { scopeKey: 'vipBenefitsView.benefits.avatarFrame', labelKey: 'title', languageCode: 'zh', translatedText: '头像框' },
-    { scopeKey: 'vipBenefitsView.benefits.avatarFrame', labelKey: 'free', languageCode: 'en', translatedText: 'Basic frame' },
-    { scopeKey: 'vipBenefitsView.benefits.avatarFrame', labelKey: 'free', languageCode: 'zh', translatedText: '基础头像框' },
-    { scopeKey: 'vipBenefitsView.benefits.avatarFrame', labelKey: 'vip', languageCode: 'en', translatedText: 'Dynamic bamboo leaf frame' },
-    { scopeKey: 'vipBenefitsView.benefits.avatarFrame', labelKey: 'vip', languageCode: 'zh', translatedText: '动态竹叶头像框' },
-
-    { scopeKey: 'vipBenefitsView.benefits.title', labelKey: 'title', languageCode: 'en', translatedText: 'Title Display' },
-    { scopeKey: 'vipBenefitsView.benefits.title', labelKey: 'title', languageCode: 'zh', translatedText: '称号显示' },
-    { scopeKey: 'vipBenefitsView.benefits.title', labelKey: 'free', languageCode: 'en', translatedText: 'None' },
-    { scopeKey: 'vipBenefitsView.benefits.title', labelKey: 'free', languageCode: 'zh', translatedText: '无' },
-    { scopeKey: 'vipBenefitsView.benefits.title', labelKey: 'vip', languageCode: 'en', translatedText: '"Guardian" title next to name' },
-    { scopeKey: 'vipBenefitsView.benefits.title', labelKey: 'vip', languageCode: 'zh', translatedText: '名字旁显示"守护者"称号' },
-
-    { scopeKey: 'vipBenefitsView.benefits.bambooReward', labelKey: 'title', languageCode: 'en', translatedText: 'Bamboo Rewards' },
-    { scopeKey: 'vipBenefitsView.benefits.bambooReward', labelKey: 'title', languageCode: 'zh', translatedText: '竹子奖励' },
-    { scopeKey: 'vipBenefitsView.benefits.bambooReward', labelKey: 'free', languageCode: 'en', translatedText: 'Normal (x1)' },
-    { scopeKey: 'vipBenefitsView.benefits.bambooReward', labelKey: 'free', languageCode: 'zh', translatedText: '正常 (x1)' },
-    { scopeKey: 'vipBenefitsView.benefits.bambooReward', labelKey: 'vip', languageCode: 'en', translatedText: 'Double (x2)' },
-    { scopeKey: 'vipBenefitsView.benefits.bambooReward', labelKey: 'vip', languageCode: 'zh', translatedText: '双倍 (x2)' },
-
-    { scopeKey: 'vipBenefitsView.benefits.growthSpeed', labelKey: 'title', languageCode: 'en', translatedText: 'Panda Growth Speed' },
-    { scopeKey: 'vipBenefitsView.benefits.growthSpeed', labelKey: 'title', languageCode: 'zh', translatedText: '熊猫成长速度' },
-    { scopeKey: 'vipBenefitsView.benefits.growthSpeed', labelKey: 'free', languageCode: 'en', translatedText: 'Normal speed' },
-    { scopeKey: 'vipBenefitsView.benefits.growthSpeed', labelKey: 'free', languageCode: 'zh', translatedText: '正常速度' },
-    { scopeKey: 'vipBenefitsView.benefits.growthSpeed', labelKey: 'vip', languageCode: 'en', translatedText: '+50% experience' },
-    { scopeKey: 'vipBenefitsView.benefits.growthSpeed', labelKey: 'vip', languageCode: 'zh', translatedText: '经验值+50%' },
-
-    { scopeKey: 'vipBenefitsView.benefits.luckyDraw', labelKey: 'title', languageCode: 'en', translatedText: 'Daily Lucky Draw' },
-    { scopeKey: 'vipBenefitsView.benefits.luckyDraw', labelKey: 'title', languageCode: 'zh', translatedText: '每日幸运抽奖' },
-    { scopeKey: 'vipBenefitsView.benefits.luckyDraw', labelKey: 'free', languageCode: 'en', translatedText: '1 time' },
-    { scopeKey: 'vipBenefitsView.benefits.luckyDraw', labelKey: 'free', languageCode: 'zh', translatedText: '1次' },
-    { scopeKey: 'vipBenefitsView.benefits.luckyDraw', labelKey: 'vip', languageCode: 'en', translatedText: '3 times' },
-    { scopeKey: 'vipBenefitsView.benefits.luckyDraw', labelKey: 'vip', languageCode: 'zh', translatedText: '3次' },
-
-    { scopeKey: 'vipBenefitsView.benefits.customGoals', labelKey: 'title', languageCode: 'en', translatedText: 'Custom Goals' },
-    { scopeKey: 'vipBenefitsView.benefits.customGoals', labelKey: 'title', languageCode: 'zh', translatedText: '自定义目标' },
-    { scopeKey: 'vipBenefitsView.benefits.customGoals', labelKey: 'free', languageCode: 'en', translatedText: '1 goal' },
-    { scopeKey: 'vipBenefitsView.benefits.customGoals', labelKey: 'free', languageCode: 'zh', translatedText: '1个目标' },
-    { scopeKey: 'vipBenefitsView.benefits.customGoals', labelKey: 'vip', languageCode: 'en', translatedText: '5 goals' },
-    { scopeKey: 'vipBenefitsView.benefits.customGoals', labelKey: 'vip', languageCode: 'zh', translatedText: '5个目标' },
-
-    { scopeKey: 'vipBenefitsView.benefits.pandaSkins', labelKey: 'title', languageCode: 'en', translatedText: 'Panda Appearances' },
-    { scopeKey: 'vipBenefitsView.benefits.pandaSkins', labelKey: 'title', languageCode: 'zh', translatedText: '熊猫外观' },
-    { scopeKey: 'vipBenefitsView.benefits.pandaSkins', labelKey: 'free', languageCode: 'en', translatedText: 'Basic skins' },
-    { scopeKey: 'vipBenefitsView.benefits.pandaSkins', labelKey: 'free', languageCode: 'zh', translatedText: '基础外观' },
-    { scopeKey: 'vipBenefitsView.benefits.pandaSkins', labelKey: 'vip', languageCode: 'en', translatedText: 'Exclusive VIP skins' },
-    { scopeKey: 'vipBenefitsView.benefits.pandaSkins', labelKey: 'vip', languageCode: 'zh', translatedText: 'VIP专属外观' },
-
-    { scopeKey: 'vipBenefitsView.benefits.specialTasks', labelKey: 'title', languageCode: 'en', translatedText: 'Special Quests' },
-    { scopeKey: 'vipBenefitsView.benefits.specialTasks', labelKey: 'title', languageCode: 'zh', translatedText: '特殊任务' },
-    { scopeKey: 'vipBenefitsView.benefits.specialTasks', labelKey: 'free', languageCode: 'en', translatedText: 'None' },
-    { scopeKey: 'vipBenefitsView.benefits.specialTasks', labelKey: 'free', languageCode: 'zh', translatedText: '无' },
-    { scopeKey: 'vipBenefitsView.benefits.specialTasks', labelKey: 'vip', languageCode: 'en', translatedText: 'Exclusive "Secret Garden" series' },
-    { scopeKey: 'vipBenefitsView.benefits.specialTasks', labelKey: 'vip', languageCode: 'zh', translatedText: '专属"秘密花园"系列任务' },
-
-    { scopeKey: 'vipBenefitsView.benefits.meditation', labelKey: 'title', languageCode: 'en', translatedText: 'Meditation Courses' },
-    { scopeKey: 'vipBenefitsView.benefits.meditation', labelKey: 'title', languageCode: 'zh', translatedText: '冥想课程' },
-    { scopeKey: 'vipBenefitsView.benefits.meditation', labelKey: 'free', languageCode: 'en', translatedText: 'Basic courses' },
-    { scopeKey: 'vipBenefitsView.benefits.meditation', labelKey: 'free', languageCode: 'zh', translatedText: '基础课程' },
-    { scopeKey: 'vipBenefitsView.benefits.meditation', labelKey: 'vip', languageCode: 'en', translatedText: 'All premium courses' },
-    { scopeKey: 'vipBenefitsView.benefits.meditation', labelKey: 'vip', languageCode: 'zh', translatedText: '所有高级课程' },
-
-    { scopeKey: 'vipBenefitsView.buttons', labelKey: 'subscribe', languageCode: 'en', translatedText: 'Become a Guardian' },
-    { scopeKey: 'vipBenefitsView.buttons', labelKey: 'subscribe', languageCode: 'zh', translatedText: '成为守护者' },
-    { scopeKey: 'vipBenefitsView.buttons', labelKey: 'viewOptions', languageCode: 'en', translatedText: 'View Subscription Options' },
-    { scopeKey: 'vipBenefitsView.buttons', labelKey: 'viewOptions', languageCode: 'zh', translatedText: '查看订阅选项' },
-    { scopeKey: 'vipBenefitsView.buttons', labelKey: 'back', languageCode: 'en', translatedText: 'Back' },
-    { scopeKey: 'vipBenefitsView.buttons', labelKey: 'back', languageCode: 'zh', translatedText: '返回' },
-
-    { scopeKey: 'vipBenefitsView', labelKey: 'loadingMessage', languageCode: 'en', translatedText: 'Loading VIP benefits...' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'loadingMessage', languageCode: 'zh', translatedText: '加载VIP特权...' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'errorTitle', languageCode: 'en', translatedText: 'Error Loading VIP Benefits' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'errorTitle', languageCode: 'zh', translatedText: '加载VIP特权时出错' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'errorMessage', languageCode: 'en', translatedText: 'Failed to load VIP benefits. Please try again.' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'errorMessage', languageCode: 'zh', translatedText: '无法加载VIP特权。请重试。' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'retryButtonText', languageCode: 'en', translatedText: 'Retry' },
-    { scopeKey: 'vipBenefitsView', labelKey: 'retryButtonText', languageCode: 'zh', translatedText: '重试' },
-
-    // VIP Subscription Component
-    { scopeKey: 'vipSubscription', labelKey: 'title', languageCode: 'en', translatedText: 'Choose Your Guardian Plan' },
-    { scopeKey: 'vipSubscription', labelKey: 'title', languageCode: 'zh', translatedText: '选择您的守护者计划' },
-    { scopeKey: 'vipSubscription', labelKey: 'subtitle', languageCode: 'en', translatedText: 'Select the plan that suits you best' },
-    { scopeKey: 'vipSubscription', labelKey: 'subtitle', languageCode: 'zh', translatedText: '选择最适合您的计划' },
-
-    { scopeKey: 'vipSubscription.monthly', labelKey: 'title', languageCode: 'en', translatedText: 'Monthly Guardian' },
-    { scopeKey: 'vipSubscription.monthly', labelKey: 'title', languageCode: 'zh', translatedText: '月度守护者' },
-    { scopeKey: 'vipSubscription.monthly', labelKey: 'price', languageCode: 'en', translatedText: '$9.99' },
-    { scopeKey: 'vipSubscription.monthly', labelKey: 'price', languageCode: 'zh', translatedText: '¥69.99' },
-    { scopeKey: 'vipSubscription.monthly', labelKey: 'monthlyPrice', languageCode: 'en', translatedText: '$9.99/month' },
-    { scopeKey: 'vipSubscription.monthly', labelKey: 'monthlyPrice', languageCode: 'zh', translatedText: '¥69.99/月' },
-    { scopeKey: 'vipSubscription.monthly', labelKey: 'benefits', languageCode: 'en', translatedText: 'All Guardian benefits,Monthly exclusive gift,Cancel anytime' },
-    { scopeKey: 'vipSubscription.monthly', labelKey: 'benefits', languageCode: 'zh', translatedText: '所有守护者特权,月度专属礼物,随时可取消' },
-
-    { scopeKey: 'vipSubscription.seasonal', labelKey: 'title', languageCode: 'en', translatedText: 'Seasonal Guardian' },
-    { scopeKey: 'vipSubscription.seasonal', labelKey: 'title', languageCode: 'zh', translatedText: '季度守护者' },
-    { scopeKey: 'vipSubscription.seasonal', labelKey: 'price', languageCode: 'en', translatedText: '$24.99' },
-    { scopeKey: 'vipSubscription.seasonal', labelKey: 'price', languageCode: 'zh', translatedText: '¥169.99' },
-    { scopeKey: 'vipSubscription.seasonal', labelKey: 'monthlyPrice', languageCode: 'en', translatedText: '$8.33/month' },
-    { scopeKey: 'vipSubscription.seasonal', labelKey: 'monthlyPrice', languageCode: 'zh', translatedText: '¥56.66/月' },
-    { scopeKey: 'vipSubscription.seasonal', labelKey: 'benefits', languageCode: 'en', translatedText: 'All Guardian benefits,Seasonal exclusive gift,Priority support,10% bonus on all rewards' },
-    { scopeKey: 'vipSubscription.seasonal', labelKey: 'benefits', languageCode: 'zh', translatedText: '所有守护者特权,季度专属礼物,优先支持,所有奖励10%加成' },
-
-    { scopeKey: 'vipSubscription.annual', labelKey: 'title', languageCode: 'en', translatedText: 'Annual Guardian' },
-    { scopeKey: 'vipSubscription.annual', labelKey: 'title', languageCode: 'zh', translatedText: '年度守护者' },
-    { scopeKey: 'vipSubscription.annual', labelKey: 'price', languageCode: 'en', translatedText: '$79.99' },
-    { scopeKey: 'vipSubscription.annual', labelKey: 'price', languageCode: 'zh', translatedText: '¥549.99' },
-    { scopeKey: 'vipSubscription.annual', labelKey: 'monthlyPrice', languageCode: 'en', translatedText: '$6.67/month' },
-    { scopeKey: 'vipSubscription.annual', labelKey: 'monthlyPrice', languageCode: 'zh', translatedText: '¥45.83/月' },
-    { scopeKey: 'vipSubscription.annual', labelKey: 'benefits', languageCode: 'en', translatedText: 'All Guardian benefits,Annual exclusive gift,VIP exclusive panda skin,Priority support,20% bonus on all rewards,Exclusive seasonal events' },
-    { scopeKey: 'vipSubscription.annual', labelKey: 'benefits', languageCode: 'zh', translatedText: '所有守护者特权,年度专属礼物,VIP专属熊猫皮肤,优先支持,所有奖励20%加成,专属季节活动' },
-
-    { scopeKey: 'vipSubscription.buttons', labelKey: 'subscribe', languageCode: 'en', translatedText: 'Subscribe' },
-    { scopeKey: 'vipSubscription.buttons', labelKey: 'subscribe', languageCode: 'zh', translatedText: '订阅' },
-    { scopeKey: 'vipSubscription.buttons', labelKey: 'restore', languageCode: 'en', translatedText: 'Restore Purchase' },
-    { scopeKey: 'vipSubscription.buttons', labelKey: 'restore', languageCode: 'zh', translatedText: '恢复购买' },
-    { scopeKey: 'vipSubscription.buttons', labelKey: 'cancel', languageCode: 'en', translatedText: 'Cancel' },
-    { scopeKey: 'vipSubscription.buttons', labelKey: 'cancel', languageCode: 'zh', translatedText: '取消' },
-
-    { scopeKey: 'vipSubscription.badges', labelKey: 'recommended', languageCode: 'en', translatedText: 'RECOMMENDED' },
-    { scopeKey: 'vipSubscription.badges', labelKey: 'recommended', languageCode: 'zh', translatedText: '推荐' },
-    { scopeKey: 'vipSubscription.badges', labelKey: 'bestValue', languageCode: 'en', translatedText: 'BEST VALUE' },
-    { scopeKey: 'vipSubscription.badges', labelKey: 'bestValue', languageCode: 'zh', translatedText: '最优惠' },
+    // Add more labels for other sections as needed
   ];
-  await db.uiLabels.bulkAdd(labels);
-  console.log("Final V3 DB populated.");
+
+  try {
+    await db.uiLabels.bulkAdd(labels);
+    console.log("Successfully populated UI labels.");
+  } catch (e) {
+    if (e instanceof Dexie.BulkError) {
+      console.warn(`Some UI labels failed to add during population. Failures: ${e.failures.length}`);
+    } else {
+      console.error("Error populating UI labels:", e);
+    }
+  }
 }

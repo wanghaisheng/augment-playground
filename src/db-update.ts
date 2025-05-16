@@ -1,5 +1,5 @@
 // src/db-update.ts
-import { db } from './db';
+import { db } from './db-old';
 
 /**
  * Add VIP navigation labels to the database
@@ -36,16 +36,34 @@ export async function addVipNavigationLabels(): Promise<void> {
 
     if (existingBattlePassLabel) {
       console.log('Battle Pass navigation labels already exist');
+    } else {
+      // Add Battle Pass navigation labels
+      await db.uiLabels.bulkAdd([
+        { scopeKey: 'globalLayout', labelKey: 'navBattlePass', languageCode: 'en', translatedText: 'Battle Pass' },
+        { scopeKey: 'globalLayout', labelKey: 'navBattlePass', languageCode: 'zh', translatedText: '通行证' },
+      ]);
+      console.log('Added Battle Pass navigation labels');
+    }
+
+    // Check if Avatar Frames navigation labels already exist
+    const existingAvatarFramesLabel = await db.uiLabels.where({
+      scopeKey: 'globalLayout',
+      labelKey: 'navAvatarFrames',
+      languageCode: 'en'
+    }).first();
+
+    if (existingAvatarFramesLabel) {
+      console.log('Avatar Frames navigation labels already exist');
       return;
     }
 
-    // Add Battle Pass navigation labels
+    // Add Avatar Frames navigation labels
     await db.uiLabels.bulkAdd([
-      { scopeKey: 'globalLayout', labelKey: 'navBattlePass', languageCode: 'en', translatedText: 'Battle Pass' },
-      { scopeKey: 'globalLayout', labelKey: 'navBattlePass', languageCode: 'zh', translatedText: '通行证' },
+      { scopeKey: 'globalLayout', labelKey: 'navAvatarFrames', languageCode: 'en', translatedText: 'Avatar Frames' },
+      { scopeKey: 'globalLayout', labelKey: 'navAvatarFrames', languageCode: 'zh', translatedText: '头像框' },
     ]);
 
-    console.log('Added Battle Pass navigation labels');
+    console.log('Added Avatar Frames navigation labels');
   } catch (error) {
     console.error('Failed to add navigation labels:', error);
   }
@@ -57,6 +75,55 @@ export async function addVipNavigationLabels(): Promise<void> {
  *
  * @returns A promise that resolves when the labels are added
  */
+/**
+ * Add Growth Boost Indicator labels to the database
+ * This function adds all the labels needed for the Growth Boost Indicator component
+ *
+ * @returns A promise that resolves when the labels are added
+ */
+export async function addGrowthBoostIndicatorLabels(): Promise<void> {
+  try {
+    // Check if Growth Boost Indicator labels already exist
+    const existingLabel = await db.uiLabels.where({
+      scopeKey: 'growthBoostIndicator',
+      labelKey: 'growthBoostLabel',
+      languageCode: 'en'
+    }).first();
+
+    if (existingLabel) {
+      console.log('Growth Boost Indicator labels already exist');
+      return;
+    }
+
+    // Add Growth Boost Indicator labels
+    await db.uiLabels.bulkAdd([
+      // Main labels
+      { scopeKey: 'growthBoostIndicator', labelKey: 'growthBoostLabel', languageCode: 'en', translatedText: 'Growth Speed' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'growthBoostLabel', languageCode: 'zh', translatedText: '成长速度' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'activeBoostsTitle', languageCode: 'en', translatedText: 'Active Growth Boosts' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'activeBoostsTitle', languageCode: 'zh', translatedText: '激活的成长加成' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'noActiveBoostsMessage', languageCode: 'en', translatedText: 'No active growth boosts' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'noActiveBoostsMessage', languageCode: 'zh', translatedText: '没有激活的成长加成' },
+
+      // Source labels
+      { scopeKey: 'growthBoostIndicator', labelKey: 'sourceVip', languageCode: 'en', translatedText: 'VIP Benefit' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'sourceVip', languageCode: 'zh', translatedText: 'VIP特权' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'sourceEvent', languageCode: 'en', translatedText: 'Event Boost' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'sourceEvent', languageCode: 'zh', translatedText: '活动加成' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'sourceItem', languageCode: 'en', translatedText: 'Item Effect' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'sourceItem', languageCode: 'zh', translatedText: '道具效果' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'sourceAbility', languageCode: 'en', translatedText: 'Panda Ability' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'sourceAbility', languageCode: 'zh', translatedText: '熊猫能力' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'sourceBattlepass', languageCode: 'en', translatedText: 'Battle Pass Perk' },
+      { scopeKey: 'growthBoostIndicator', labelKey: 'sourceBattlepass', languageCode: 'zh', translatedText: '通行证特权' },
+    ]);
+
+    console.log('Added Growth Boost Indicator labels');
+  } catch (error) {
+    console.error('Failed to add Growth Boost Indicator labels:', error);
+  }
+}
+
 export async function addBattlePassPageViewLabels(): Promise<void> {
   try {
     // Check if Battle Pass page view labels already exist
@@ -380,6 +447,66 @@ export async function addBattlePassPageViewLabels(): Promise<void> {
       { scopeKey: 'battlePassPageView', labelKey: 'achievementUnlockedLabel', languageCode: 'zh', translatedText: '成就已解锁！' },
       { scopeKey: 'battlePassPageView', labelKey: 'copiedLabel', languageCode: 'en', translatedText: 'Copied!' },
       { scopeKey: 'battlePassPageView', labelKey: 'copiedLabel', languageCode: 'zh', translatedText: '已复制！' },
+
+      // Avatar Frame Showcase labels
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'pageTitle', languageCode: 'en', translatedText: 'Avatar Frame Showcase' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'pageTitle', languageCode: 'zh', translatedText: '头像框展示' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'pageDescription', languageCode: 'en', translatedText: 'Explore different avatar frames available in PandaHabit' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'pageDescription', languageCode: 'zh', translatedText: '探索PandaHabit中可用的各种头像框' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'animationToggleLabel', languageCode: 'en', translatedText: 'Enable Animation' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'animationToggleLabel', languageCode: 'zh', translatedText: '启用动画' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'vipBadgeToggleLabel', languageCode: 'en', translatedText: 'Show VIP Badge' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'vipBadgeToggleLabel', languageCode: 'zh', translatedText: '显示VIP徽章' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'onlineStatusToggleLabel', languageCode: 'en', translatedText: 'Show Online Status' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'onlineStatusToggleLabel', languageCode: 'zh', translatedText: '显示在线状态' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeSectionTitle', languageCode: 'en', translatedText: 'Frame Types' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeSectionTitle', languageCode: 'zh', translatedText: '框架类型' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptionSectionTitle', languageCode: 'en', translatedText: 'Frame Description' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptionSectionTitle', languageCode: 'zh', translatedText: '框架描述' },
+
+      // Frame type labels
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.none', languageCode: 'en', translatedText: 'No Frame' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.none', languageCode: 'zh', translatedText: '无框架' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.basic', languageCode: 'en', translatedText: 'Basic Frame' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.basic', languageCode: 'zh', translatedText: '基础框架' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.bronze', languageCode: 'en', translatedText: 'Bronze Frame' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.bronze', languageCode: 'zh', translatedText: '青铜框架' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.silver', languageCode: 'en', translatedText: 'Silver Frame' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.silver', languageCode: 'zh', translatedText: '白银框架' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.gold', languageCode: 'en', translatedText: 'Gold Frame' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.gold', languageCode: 'zh', translatedText: '黄金框架' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.jade', languageCode: 'en', translatedText: 'Jade Frame (VIP)' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.jade', languageCode: 'zh', translatedText: '翡翠框架 (VIP)' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.bamboo', languageCode: 'en', translatedText: 'Bamboo Frame (VIP)' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.bamboo', languageCode: 'zh', translatedText: '竹子框架 (VIP)' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.dragon', languageCode: 'en', translatedText: 'Dragon Frame (VIP)' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.dragon', languageCode: 'zh', translatedText: '龙框架 (VIP)' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.phoenix', languageCode: 'en', translatedText: 'Phoenix Frame (VIP)' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.phoenix', languageCode: 'zh', translatedText: '凤凰框架 (VIP)' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.custom', languageCode: 'en', translatedText: 'Custom Frame' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameTypeLabels.custom', languageCode: 'zh', translatedText: '自定义框架' },
+
+      // Frame descriptions
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.none', languageCode: 'en', translatedText: 'No frame, just the avatar image.' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.none', languageCode: 'zh', translatedText: '没有框架，只有头像图片。' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.basic', languageCode: 'en', translatedText: 'A simple frame available to all users.' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.basic', languageCode: 'zh', translatedText: '所有用户都可以使用的简单框架。' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.bronze', languageCode: 'en', translatedText: 'A bronze frame for active users who have completed at least 10 tasks.' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.bronze', languageCode: 'zh', translatedText: '为完成至少10个任务的活跃用户提供的青铜框架。' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.silver', languageCode: 'en', translatedText: 'A silver frame for dedicated users who have been using the app for at least 30 days.' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.silver', languageCode: 'zh', translatedText: '为使用应用至少30天的专注用户提供的白银框架。' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.gold', languageCode: 'en', translatedText: 'A gold frame for premium users who have purchased any premium feature.' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.gold', languageCode: 'zh', translatedText: '为购买任何高级功能的高级用户提供的黄金框架。' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.jade', languageCode: 'en', translatedText: 'A jade frame exclusive to VIP users. Features a rotating animation with jade particles.' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.jade', languageCode: 'zh', translatedText: 'VIP用户专属的翡翠框架。具有旋转动画和翡翠粒子效果。' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.bamboo', languageCode: 'en', translatedText: 'A bamboo frame exclusive to VIP users. Features a pulsing animation with bamboo particles.' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.bamboo', languageCode: 'zh', translatedText: 'VIP用户专属的竹子框架。具有脉动动画和竹子粒子效果。' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.dragon', languageCode: 'en', translatedText: 'A dragon frame exclusive to VIP users. Features a color-shifting animation with dragon particles.' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.dragon', languageCode: 'zh', translatedText: 'VIP用户专属的龙框架。具有颜色变换动画和龙粒子效果。' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.phoenix', languageCode: 'en', translatedText: 'A phoenix frame exclusive to VIP users. Features a glowing animation with phoenix particles.' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.phoenix', languageCode: 'zh', translatedText: 'VIP用户专属的凤凰框架。具有发光动画和凤凰粒子效果。' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.custom', languageCode: 'en', translatedText: 'A custom frame that can be used for special events or promotions.' },
+      { scopeKey: 'avatarFrameShowcaseView', labelKey: 'frameDescriptions.custom', languageCode: 'zh', translatedText: '可用于特殊活动或促销的自定义框架。' },
 
       // Tasks section
       { scopeKey: 'battlePassPageView', labelKey: 'tasksTitle', languageCode: 'en', translatedText: 'Battle Pass Tasks' },

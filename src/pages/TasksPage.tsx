@@ -10,6 +10,7 @@ import { pageTransition } from '@/utils/animation';
 import type { TasksPageViewLabelsBundle } from '@/types';
 import TaskReminderNotification from '@/components/task/TaskReminderNotification';
 import { checkDueSoonTasks, checkOverdueTasks } from '@/services/taskReminderService';
+import { TasksPageSkeleton } from '@/components/skeleton';
 
 const TasksPage: React.FC = () => {
   const {
@@ -46,7 +47,13 @@ const TasksPage: React.FC = () => {
   }, []);
 
   if (isPending) { // 完整页面初始加载
-    return <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "加载任务页面内容..."} />;
+    return (
+      <div className="page-container">
+        <div className="bamboo-frame">
+          <TasksPageSkeleton />
+        </div>
+      </div>
+    );
   }
 
   if (isError) { // 关键错误：页面标签加载失败
@@ -65,19 +72,13 @@ const TasksPage: React.FC = () => {
 
   return (
     <>
-      <motion.div
-        className="page-container"
-        variants={pageTransition}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-      >
+      <div className="page-container">
         <div className="bamboo-frame">
           <h2>{pageLabels?.pageTitle || "任务管理"}</h2>
 
           <TaskManager labels={pageLabels?.taskManager} />
         </div>
-      </motion.div>
+      </div>
 
       {/* 任务提醒通知 */}
       <TaskReminderNotification

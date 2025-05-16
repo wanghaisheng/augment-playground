@@ -1,5 +1,5 @@
 // src/utils/localization.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 
 /**
  * Get a localized label from the database

@@ -1,0 +1,104 @@
+{
+  "en": {
+    "labels": {
+      "title": "Bamboo Trading",
+      "subtitle": "Exchange bamboo for valuable resources",
+      "tradingSection": {
+        "title": "Trading Center",
+        "tradeButton": "Trade",
+        "switchDirectionButton": "Switch Direction",
+        "bambooToResource": "Bamboo → Resource",
+        "resourceToBamboo": "Resource → Bamboo",
+        "bambooAmount": "Bamboo Amount",
+        "resourceAmount": "Resource Amount",
+        "tradePreview": "Trade Preview",
+        "tradeRateInfo": {
+          "title": "Trade Rate",
+          "bambooToResource": "Bamboo → Resource",
+          "resourceToBamboo": "Resource → Bamboo",
+          "minTrade": "Min Trade",
+          "maxTrade": "Max Trade",
+          "dailyLimit": "Daily Limit"
+        }
+      },
+      "resourceTypes": {
+        "currency": "Currency",
+        "experience": "Experience",
+        "item": "Item"
+      },
+      "rarityLabels": {
+        "common": "Common",
+        "uncommon": "Uncommon",
+        "rare": "Rare",
+        "epic": "Epic",
+        "legendary": "Legendary"
+      },
+      "historySection": {
+        "title": "Trade History",
+        "emptyHistory": "No trade records yet"
+      },
+      "errors": {
+        "failedToLoadResources": "Failed to load tradeable resources",
+        "failedToLoadRates": "Failed to load trade rates",
+        "failedToLoadHistory": "Failed to load trade history",
+        "failedToTrade": "Failed to complete trade",
+        "notEnoughBamboo": "Not enough bamboo",
+        "notEnoughResource": "Not enough resource",
+        "minTradeAmount": "Minimum trade amount is",
+        "maxTradeAmount": "Maximum trade amount is",
+        "dailyLimitReached": "Daily trade limit reached"
+      }
+    }
+  },
+  "zh": {
+    "labels": {
+      "title": "竹子交易",
+      "subtitle": "用竹子兑换有价值的资源",
+      "tradingSection": {
+        "title": "交易中心",
+        "tradeButton": "交易",
+        "switchDirectionButton": "切换方向",
+        "bambooToResource": "竹子 → 资源",
+        "resourceToBamboo": "资源 → 竹子",
+        "bambooAmount": "竹子数量",
+        "resourceAmount": "资源数量",
+        "tradePreview": "交易预览",
+        "tradeRateInfo": {
+          "title": "交易汇率",
+          "bambooToResource": "竹子 → 资源",
+          "resourceToBamboo": "资源 → 竹子",
+          "minTrade": "最小交易量",
+          "maxTrade": "最大交易量",
+          "dailyLimit": "每日限额"
+        }
+      },
+      "resourceTypes": {
+        "currency": "货币",
+        "experience": "经验值",
+        "item": "物品"
+      },
+      "rarityLabels": {
+        "common": "普通",
+        "uncommon": "优质",
+        "rare": "稀有",
+        "epic": "史诗",
+        "legendary": "传说"
+      },
+      "historySection": {
+        "title": "交易历史",
+        "emptyHistory": "暂无交易记录"
+      },
+      "errors": {
+        "failedToLoadResources": "加载可交易资源失败",
+        "failedToLoadRates": "加载交易汇率失败",
+        "failedToLoadHistory": "加载交易历史失败",
+        "failedToTrade": "完成交易失败",
+        "notEnoughBamboo": "竹子不足",
+        "notEnoughResource": "资源不足",
+        "minTradeAmount": "最小交易量为",
+        "maxTradeAmount": "最大交易量为",
+        "dailyLimitReached": "已达每日交易限额"
+      }
+    }
+  }
+}

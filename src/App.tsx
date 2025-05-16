@@ -6,15 +6,39 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { LanguageProvider } from '@/context/LanguageProvider';
 import { PandaStateProvider } from '@/context/PandaStateProvider';
 import { DataRefreshProvider } from '@/context/DataRefreshProvider';
-import { populateDB, db } from '@/db';
-import { addVipNavigationLabels, addBattlePassPageViewLabels } from '@/db-update';
+import { SkeletonProvider } from '@/context/SkeletonProvider';
+import { AnimationPerformanceProvider } from '@/context/AnimationPerformanceProvider';
+import { BackgroundMusicProvider } from '@/context/BackgroundMusicProvider';
+import { NotificationProvider } from '@/context/NotificationProvider';
+import { OfflineStatusProvider } from '@/context/OfflineStatusProvider';
+import { populateDB, db } from '@/db-old';
+import { addVipNavigationLabels, addBattlePassPageViewLabels, addGrowthBoostIndicatorLabels } from '@/db-update';
+import { addPandaEvolutionLabels } from '@/db-panda-evolution';
 import { initializeBattlePassDatabase } from '@/db-battle-pass';
 import { populateBattlePassSampleData } from '@/db-battle-pass-sample';
 import { initializeBattlePassTaskTracking } from '@/services/battlePassTaskTrackingService';
 import AppShell from '@/components/layout/AppShell';
 import AppRouter from '@/router';
-import { initializeDataSync } from '@/services/dataSyncService';
+import PandaEvolutionManager from '@/components/game/PandaEvolutionManager';
+import HighlightMomentManager from '@/components/vip/HighlightMomentManager';
+import PainPointManager from '@/components/vip/PainPointManager';
+import ResourceShortageManager from '@/components/vip/ResourceShortageManager';
+import VipTrialManager from '@/components/vip/VipTrialManager';
+import SubscriptionManager from '@/components/vip/SubscriptionManager';
+import SoundManager from '@/components/sound/SoundManager';
+import NotificationManager from '@/components/notification/NotificationManager';
+import { initializeSyncServices, applyUserSyncPreferences } from '@/services/syncInitializer';
 import { initializeTimelyRewards, updateTimelyRewardsStatus } from '@/services/timelyRewardService';
+import { initializeResourceMultipliers } from '@/services/resourceMultiplierService';
+import { initializeGrowthBoosts } from '@/services/growthBoostService';
+import { initializeUserTitles } from '@/services/userTitleService';
+import { initializePainPointSolutions } from '@/services/painPointService';
+import { initializePandaSkins } from '@/services/pandaSkinService';
+import { initializeVipTaskSeries } from '@/services/vipTaskService';
+import { initializeMeditationCourses } from '@/services/meditationInitService';
+import { initializeBambooPlanting } from '@/services/bambooPlantingService';
+import { initializeBambooTrading } from '@/services/bambooTradingService';
+import { initializeOfflineSupport } from '@/services/offlineService';
 import { queryClient } from '@/services/queryClient';
 
 const App: React.FC = () => {
@@ -32,6 +56,12 @@ const App: React.FC = () => {
           // Add Battle Pass page view labels
           await addBattlePassPageViewLabels();
 
+          // Add Growth Boost Indicator labels
+          await addGrowthBoostIndicatorLabels();
+
+          // Add Panda Evolution labels
+          await addPandaEvolutionLabels();
+
           // Initialize Battle Pass database
           await initializeBattlePassDatabase();
 
@@ -45,11 +75,11 @@ const App: React.FC = () => {
         // 初始化数据同步服务
         setTimeout(() => {
           try {
-            initializeDataSync({
-              autoSyncInterval: 30000, // 30秒
-              maxRetryCount: 5,
-              batchSize: 20
-            });
+            // 初始化同步服务
+            initializeSyncServices();
+
+            // 应用用户同步偏好
+            applyUserSyncPreferences();
 
             // 确保数据库表已创建
             try {
@@ -69,6 +99,76 @@ const App: React.FC = () => {
                   });
                 }).catch(err => {
                   console.error("Failed to initialize timely rewards:", err);
+                });
+
+                // 初始化资源加倍系统
+                initializeResourceMultipliers().then(() => {
+                  console.log("Resource multipliers initialized successfully");
+                }).catch(err => {
+                  console.error("Failed to initialize resource multipliers:", err);
+                });
+
+                // 初始化成长速度加成系统
+                initializeGrowthBoosts().then(() => {
+                  console.log("Growth boosts initialized successfully");
+                }).catch(err => {
+                  console.error("Failed to initialize growth boosts:", err);
+                });
+
+                // 初始化用户称号系统
+                initializeUserTitles().then(() => {
+                  console.log("User titles initialized successfully");
+                }).catch(err => {
+                  console.error("Failed to initialize user titles:", err);
+                });
+
+                // 初始化痛点解决方案系统
+                initializePainPointSolutions().then(() => {
+                  console.log("Pain point solutions initialized successfully");
+                }).catch(err => {
+                  console.error("Failed to initialize pain point solutions:", err);
+                });
+
+                // 初始化熊猫皮肤系统
+                initializePandaSkins().then(() => {
+                  console.log("Panda skins initialized successfully");
+                }).catch(err => {
+                  console.error("Failed to initialize panda skins:", err);
+                });
+
+                // 初始化VIP任务系列
+                initializeVipTaskSeries().then(() => {
+                  console.log("VIP task series initialized successfully");
+                }).catch(err => {
+                  console.error("Failed to initialize VIP task series:", err);
+                });
+
+                // 初始化冥想课程
+                initializeMeditationCourses().then(() => {
+                  console.log("Meditation courses initialized successfully");
+                }).catch(err => {
+                  console.error("Failed to initialize meditation courses:", err);
+                });
+
+                // 初始化竹子种植系统
+                initializeBambooPlanting().then(() => {
+                  console.log("Bamboo planting system initialized successfully");
+                }).catch(err => {
+                  console.error("Failed to initialize bamboo planting system:", err);
+                });
+
+                // 初始化竹子交易系统
+                initializeBambooTrading().then(() => {
+                  console.log("Bamboo trading system initialized successfully");
+                }).catch(err => {
+                  console.error("Failed to initialize bamboo trading system:", err);
+                });
+
+                // 初始化离线支持
+                initializeOfflineSupport().then(() => {
+                  console.log("Offline support initialized successfully");
+                }).catch(err => {
+                  console.error("Failed to initialize offline support:", err);
                 });
               }).catch(err => {
                 console.error("Failed to access timelyRewards table:", err);
@@ -90,12 +190,21 @@ const App: React.FC = () => {
     // 监听在线状态变化
     const handleOnline = () => {
       console.log('App is online, triggering sync');
-      import('@/services/dataSyncService').then(({ syncPendingItems }) => {
+      // 使用优化的同步服务
+      import('@/services/optimizedSyncService').then(({ syncPendingItems }) => {
         syncPendingItems().catch(err => {
-          console.error('Sync failed:', err);
+          console.error('Optimized sync failed:', err);
         });
       }).catch(err => {
-        console.error('Failed to import dataSyncService:', err);
+        console.error('Failed to import optimizedSyncService:', err);
+        // 回退到传统同步服务
+        import('@/services/dataSyncService').then(({ syncPendingItems }) => {
+          syncPendingItems().catch(err => {
+            console.error('Traditional sync failed:', err);
+          });
+        }).catch(err => {
+          console.error('Failed to import dataSyncService:', err);
+        });
       });
     };
 
@@ -105,10 +214,16 @@ const App: React.FC = () => {
       window.removeEventListener('online', handleOnline);
 
       // 停止自动同步
-      import('@/services/dataSyncService').then(({ stopAutoSync }) => {
+      import('@/services/optimizedSyncService').then(({ stopAutoSync }) => {
         stopAutoSync();
       }).catch(err => {
-        console.error('Failed to import dataSyncService for cleanup:', err);
+        console.error('Failed to import optimizedSyncService for cleanup:', err);
+        // 回退到传统同步服务
+        import('@/services/dataSyncService').then(({ stopAutoSync }) => {
+          stopAutoSync();
+        }).catch(err => {
+          console.error('Failed to import dataSyncService for cleanup:', err);
+        });
       });
     };
   }, []);
@@ -118,11 +233,29 @@ const App: React.FC = () => {
       <LanguageProvider>
         <DataRefreshProvider>
           <PandaStateProvider>
-            <BrowserRouter>
-              <AppShell> {/* AppShell fetches global layout labels and provides overall structure */}
-                <AppRouter /> {/* AppRouter handles page-specific content and routing */}
-              </AppShell>
-            </BrowserRouter>
+            <AnimationPerformanceProvider>
+              <BackgroundMusicProvider>
+                <NotificationProvider>
+                  <OfflineStatusProvider>
+                    <SkeletonProvider>
+                    <BrowserRouter>
+                      <AppShell> {/* AppShell fetches global layout labels and provides overall structure */}
+                        <AppRouter /> {/* AppRouter handles page-specific content and routing */}
+                        <PandaEvolutionManager /> {/* Manages panda evolution animations */}
+                        <HighlightMomentManager /> {/* Manages high-light moment VIP promotions */}
+                        <PainPointManager /> {/* Manages pain point solution prompts */}
+                        <ResourceShortageManager /> {/* Manages resource shortage prompts */}
+                        <VipTrialManager /> {/* Manages VIP trial experience */}
+                        <SubscriptionManager /> {/* Manages subscription expiration reminders */}
+                        <SoundManager /> {/* Manages sound effects and background music */}
+                        <NotificationManager /> {/* Manages notifications */}
+                      </AppShell>
+                    </BrowserRouter>
+                  </SkeletonProvider>
+                  </OfflineStatusProvider>
+                </NotificationProvider>
+              </BackgroundMusicProvider>
+            </AnimationPerformanceProvider>
           </PandaStateProvider>
         </DataRefreshProvider>
       </LanguageProvider>

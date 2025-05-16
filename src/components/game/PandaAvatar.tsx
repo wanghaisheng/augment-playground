@@ -8,6 +8,10 @@ import {
   getActiveEnvironment,
   PandaEnvironmentRecord
 } from '@/services/pandaCustomizationService';
+import {
+  getEquippedSkin,
+  PandaSkinRecord
+} from '@/services/pandaSkinService';
 
 // 熊猫状态类型
 export type PandaMood = 'normal' | 'happy' | 'focused' | 'tired';
@@ -51,6 +55,7 @@ const PandaAvatar: React.FC<PandaAvatarProps> = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const [accessories, setAccessories] = useState<PandaAccessoryRecord[]>([]);
   const [environment, setEnvironment] = useState<PandaEnvironmentRecord | null>(null);
+  const [skin, setSkin] = useState<PandaSkinRecord | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // 加载装饰和环境
@@ -71,6 +76,10 @@ const PandaAvatar: React.FC<PandaAvatarProps> = ({
           setEnvironment(activeEnvironment);
         }
       }
+
+      // 加载皮肤
+      const equippedSkin = await getEquippedSkin();
+      setSkin(equippedSkin);
     } catch (err) {
       console.error('Failed to load customizations:', err);
     } finally {
@@ -86,9 +95,26 @@ const PandaAvatar: React.FC<PandaAvatarProps> = ({
   // 注册数据刷新监听
   useRegisterTableRefresh('pandaAccessories', loadCustomizations);
   useRegisterTableRefresh('pandaEnvironments', loadCustomizations);
+  useRegisterTableRefresh('pandaSkins', loadCustomizations);
 
   // 根据情绪状态获取对应的SVG图像路径
   const getPandaImage = (pandaMood: PandaMood) => {
+    // 如果有皮肤，使用皮肤的图像
+    if (skin) {
+      switch (pandaMood) {
+        case 'happy':
+          return skin.imagePath.happy;
+        case 'focused':
+          return skin.imagePath.focused;
+        case 'tired':
+          return skin.imagePath.tired;
+        case 'normal':
+        default:
+          return skin.imagePath.normal;
+      }
+    }
+
+    // 默认图像
     switch (pandaMood) {
       case 'happy':
         return '/assets/panda-happy.svg';

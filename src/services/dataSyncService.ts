@@ -1,5 +1,5 @@
 // src/services/dataSyncService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { queryClient } from '@/services/queryClient';
 
 // 同步状态枚举

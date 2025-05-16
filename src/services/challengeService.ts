@@ -1,5 +1,5 @@
 // src/services/challengeService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { addSyncItem } from './dataSyncService';
 import { generateRewardsForChallenge, RewardRecord } from './rewardService';
 import { TaskRecord, TaskStatus } from './taskService';
@@ -368,9 +368,113 @@ export async function updateChallengeProgressFromTasks(challengeId: number): Pro
 }
 
 /**
- * Generate test challenge data
- * Creates sample challenges for testing
+ * 获取用户挑战统计数据
+ * @param userId 用户ID
+ * @returns 用户挑战统计数据
  */
+export async function getUserChallengeStats(userId: string) {
+  try {
+    // 获取所有挑战
+    const challenges = await getAllChallenges();
+
+    // 获取用户完成的挑战记录
+    const completions = await db.table('challengeCompletions')
+      .where('userId')
+      .equals(userId)
+      .toArray();
+
+    // 计算统计数据
+    const completedChallenges = challenges.filter(challenge =>
+      challenge.status === ChallengeStatus.COMPLETED
+    ).length;
+
+    const activeChallenges = challenges.filter(challenge =>
+      challenge.status === ChallengeStatus.ACTIVE
+    ).length;
+
+    // 计算总积分（根据完成的挑战难度）
+    const totalPoints = completions.reduce((total, completion) => {
+      const challenge = challenges.find(c => c.id === completion.challengeId);
+      if (!challenge) return total;
+
+      // 根据难度分配积分
+      switch (challenge.difficulty) {
+        case ChallengeDifficulty.EASY:
+          return total + 10;
+        case ChallengeDifficulty.MEDIUM:
+          return total + 20;
+        case ChallengeDifficulty.HARD:
+          return total + 30;
+        case ChallengeDifficulty.EXPERT:
+          return total + 50;
+        default:
+          return total;
+      }
+    }, 0);
+
+    // 计算每种类型的挑战完成数量
+    const completedByType = {
+      [ChallengeType.DAILY]: 0,
+      [ChallengeType.WEEKLY]: 0,
+      [ChallengeType.EVENT]: 0,
+      [ChallengeType.ONGOING]: 0
+    };
+
+    challenges.forEach(challenge => {
+      if (challenge.status === ChallengeStatus.COMPLETED) {
+        completedByType[challenge.type]++;
+      }
+    });
+
+    // 计算每种难度的挑战完成数量
+    const completedByDifficulty = {
+      [ChallengeDifficulty.EASY]: 0,
+      [ChallengeDifficulty.MEDIUM]: 0,
+      [ChallengeDifficulty.HARD]: 0,
+      [ChallengeDifficulty.EXPERT]: 0
+    };
+
+    challenges.forEach(challenge => {
+      if (challenge.status === ChallengeStatus.COMPLETED) {
+        completedByDifficulty[challenge.difficulty]++;
+      }
+    });
+
+    return {
+      completedChallenges,
+      activeChallenges,
+      totalPoints,
+      completedByType,
+      completedByDifficulty,
+      // 添加其他可能有用的统计数据
+      upcomingChallenges: challenges.filter(challenge =>
+        challenge.status === ChallengeStatus.UPCOMING
+      ).length,
+      expiredChallenges: challenges.filter(challenge =>
+        challenge.status === ChallengeStatus.EXPIRED
+      ).length,
+      totalChallenges: challenges.length,
+      completionRate: challenges.length > 0
+        ? (completedChallenges / challenges.length) * 100
+        : 0
+    };
+  } catch (error) {
+    console.error('Error getting user challenge stats:', error);
+    // 返回默认值
+    return {
+      completedChallenges: 0,
+      activeChallenges: 0,
+      totalPoints: 0,
+      completedByType: {},
+      completedByDifficulty: {},
+      upcomingChallenges: 0,
+      expiredChallenges: 0,
+      totalChallenges: 0,
+      completionRate: 0
+    };
+  }
+}
+
 export async function generateTestChallengeData(): Promise<void> {
   try {
     // Check if challenges already exist
@@ -493,4 +597,21 @@ export async function generateTestChallengeData(): Promise<void> {
   } catch (error) {
     console.error('Error generating test challenge data:', error);
   }
+}
+
+/**
+ * 获取用户已完成的挑战列表 (Placeholder)
+ * @param userId 用户ID
+ * @returns 已完成的挑战记录数组
+ */
+export async function getUserCompletedChallenges(userId: string): Promise<ChallengeRecord[]> {
+  console.warn(`getUserCompletedChallenges for user ${userId} is a placeholder and returns empty array.`);
+  // In a real implementation, this would fetch ChallengeCompletionRecord for the user
+  // and then fetch the corresponding ChallengeRecord items.
+  // For example:
+  // const completions = await db.challengeCompletions.where({ userId }).toArray();
+  // const challengeIds = completions.map(c => c.challengeId);
+  // if (challengeIds.length === 0) return [];
+  // return db.challenges.where('id').anyOf(challengeIds).toArray();
+  return [];
 }

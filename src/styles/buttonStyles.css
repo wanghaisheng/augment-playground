@@ -1,0 +1,392 @@
+/* src/styles/buttonStyles.css */
+
+/* 基础按钮样式 */
+.button-base {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-main);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--timing-quick) ease;
+  overflow: hidden;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 按钮大小 */
+.button-size-small {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.875rem;
+  min-height: 32px;
+  min-width: 64px;
+}
+
+.button-size-medium {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 1rem;
+  min-height: 40px;
+  min-width: 80px;
+}
+
+.button-size-large {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: 1.125rem;
+  min-height: 48px;
+  min-width: 96px;
+}
+
+/* 按钮变体 */
+
+/* 翡翠按钮 - 主要操作 */
+.button-jade {
+  background: var(--jade-gradient);
+  color: var(--text-on-accent);
+  box-shadow: 0 4px 8px rgba(26, 95, 74, 0.3);
+}
+
+.button-jade:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(26, 95, 74, 0.4);
+  filter: brightness(1.05);
+}
+
+.button-jade:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(26, 95, 74, 0.3);
+  filter: brightness(0.95);
+}
+
+/* 黄金按钮 - 高级操作 */
+.button-gold {
+  background: var(--gold-gradient);
+  color: var(--deep-night);
+  box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
+}
+
+.button-gold:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(212, 175, 55, 0.4), 0 0 15px rgba(255, 215, 0, 0.2);
+  filter: brightness(1.05);
+}
+
+.button-gold:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
+  filter: brightness(0.95);
+}
+
+/* 丝绸按钮 - 次要操作 */
+.button-silk {
+  background: var(--silk-gradient);
+  color: var(--ink-dark);
+  box-shadow: 0 4px 8px rgba(248, 200, 220, 0.3);
+}
+
+.button-silk:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(248, 200, 220, 0.4);
+  filter: brightness(1.05);
+}
+
+.button-silk:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(248, 200, 220, 0.3);
+  filter: brightness(0.95);
+}
+
+/* 朱砂按钮 - 警告操作 */
+.button-cinnabar {
+  background: var(--red-gradient);
+  color: var(--text-on-accent);
+  box-shadow: 0 4px 8px rgba(215, 62, 53, 0.3);
+}
+
+.button-cinnabar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(215, 62, 53, 0.4);
+  filter: brightness(1.05);
+}
+
+.button-cinnabar:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(215, 62, 53, 0.3);
+  filter: brightness(0.95);
+}
+
+/* 青花按钮 - 信息操作 */
+.button-blue {
+  background: linear-gradient(145deg, var(--imperial-blue), #0D47A1);
+  color: var(--text-on-accent);
+  box-shadow: 0 4px 8px rgba(26, 109, 176, 0.3);
+}
+
+.button-blue:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(26, 109, 176, 0.4);
+  filter: brightness(1.05);
+}
+
+.button-blue:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(26, 109, 176, 0.3);
+  filter: brightness(0.95);
+}
+
+/* 紫檀按钮 - 特殊操作 */
+.button-purple {
+  background: linear-gradient(145deg, var(--rosewood-purple), #3A1F33);
+  color: var(--text-on-accent);
+  box-shadow: 0 4px 8px rgba(93, 57, 84, 0.3);
+}
+
+.button-purple:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(93, 57, 84, 0.4);
+  filter: brightness(1.05);
+}
+
+.button-purple:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(93, 57, 84, 0.3);
+  filter: brightness(0.95);
+}
+
+/* 墨灰按钮 - 禁用状态 */
+.button-disabled {
+  background: var(--ink-gray);
+  color: var(--text-on-accent);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  filter: none;
+}
+
+/* 按钮形状 */
+.button-shape-rounded {
+  border-radius: var(--radius-md);
+}
+
+.button-shape-pill {
+  border-radius: var(--radius-full);
+}
+
+.button-shape-square {
+  border-radius: var(--radius-sm);
+}
+
+.button-shape-circle {
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 按钮变种 */
+.button-variant-outlined {
+  background: transparent;
+  box-shadow: none;
+}
+
+.button-variant-outlined.button-jade {
+  border: 2px solid var(--royal-jade);
+  color: var(--royal-jade);
+}
+
+.button-variant-outlined.button-gold {
+  border: 2px solid var(--imperial-gold);
+  color: var(--imperial-gold);
+}
+
+.button-variant-outlined.button-silk {
+  border: 2px solid var(--peony-pink);
+  color: var(--ink-dark);
+}
+
+.button-variant-outlined.button-cinnabar {
+  border: 2px solid var(--cinnabar-red);
+  color: var(--cinnabar-red);
+}
+
+.button-variant-outlined.button-blue {
+  border: 2px solid var(--imperial-blue);
+  color: var(--imperial-blue);
+}
+
+.button-variant-outlined.button-purple {
+  border: 2px solid var(--rosewood-purple);
+  color: var(--rosewood-purple);
+}
+
+.button-variant-outlined:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.button-variant-outlined:active:not(:disabled) {
+  background: rgba(0, 0, 0, 0.1);
+  transform: translateY(1px);
+}
+
+.button-variant-text {
+  background: transparent;
+  box-shadow: none;
+}
+
+.button-variant-text.button-jade {
+  color: var(--royal-jade);
+}
+
+.button-variant-text.button-gold {
+  color: var(--imperial-gold);
+}
+
+.button-variant-text.button-silk {
+  color: var(--ink-dark);
+}
+
+.button-variant-text.button-cinnabar {
+  color: var(--cinnabar-red);
+}
+
+.button-variant-text.button-blue {
+  color: var(--imperial-blue);
+}
+
+.button-variant-text.button-purple {
+  color: var(--rosewood-purple);
+}
+
+.button-variant-text:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.button-variant-text:active:not(:disabled) {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* 按钮图标 */
+.button-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.button-icon-left {
+  margin-right: var(--spacing-xs);
+}
+
+.button-icon-right {
+  margin-left: var(--spacing-xs);
+}
+
+.button-icon-only {
+  padding: var(--spacing-xs);
+}
+
+/* 按钮加载状态 */
+.button-loading {
+  position: relative;
+  cursor: wait;
+}
+
+.button-loading-spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  border-right-color: transparent;
+  animation: button-spinner 0.75s linear infinite;
+  margin-right: var(--spacing-xs);
+}
+
+@keyframes button-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 按钮光效 */
+.button-base::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transition: left 0.8s ease;
+}
+
+.button-base:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+/* 按钮组 */
+.button-group {
+  display: inline-flex;
+}
+
+.button-group .button-base:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.button-group .button-base:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .button-size-small {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.75rem;
+    min-height: 28px;
+  }
+
+  .button-size-medium {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.875rem;
+    min-height: 36px;
+  }
+
+  .button-size-large {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 1rem;
+    min-height: 44px;
+  }
+}
+
+/* 减少动画 */
+@media (prefers-reduced-motion: reduce) {
+  .button-base {
+    transition: none !important;
+  }
+  
+  .button-base:hover:not(:disabled),
+  .button-base:active:not(:disabled) {
+    transform: none !important;
+  }
+  
+  .button-base::before {
+    display: none;
+  }
+  
+  .button-loading-spinner {
+    animation-duration: 2s;
+  }
+}

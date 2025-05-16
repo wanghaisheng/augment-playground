@@ -5,5 +5,5 @@
  */
 export interface DataRefreshEvent {
   table: string;
-  data?: any;
+  data?: unknown;
 }

@@ -6,15 +6,25 @@ import { fetchHomePageView } from '@/services';
 import WelcomeSection from '@/features/home/WelcomeSection';
 import MoodsSection from '@/features/home/MoodsSection';
 import PandaSection from '@/features/home/PandaSection';
+import ResourcesSection from '@/features/home/ResourcesSection';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 import AnimatedButton from '@/components/animation/AnimatedButton';
+import GrowthBoostIndicator from '@/components/game/GrowthBoostIndicator';
+import VipValueSummary from '@/components/vip/VipValueSummary';
+import VipValueModal from '@/components/vip/VipValueModal';
+import BambooFeatureWidget from '@/components/bamboo/BambooFeatureWidget';
 import { pageTransition } from '@/utils/animation';
 import { initializeGameData } from '@/services/gameInitService';
+import { HomePageSkeleton } from '@/components/skeleton';
 import type { HomePageViewDataPayload, HomePageViewLabelsBundle, ApiError } from '@/types';
+import { triggerDataRefresh } from '@/hooks/useDataRefresh';
+import { usePandaState } from '@/context/PandaStateProvider';
 
 const HomePage: React.FC = () => {
   const [isInitializing, setIsInitializing] = useState(false);
+  const [showVipValueModal, setShowVipValueModal] = useState(false);
+  const { pandaState } = usePandaState();
 
   const {
     data: pageData, labels: pageLabels, isPending, isError, error, refetch, isFetching
@@ -27,8 +37,18 @@ const HomePage: React.FC = () => {
     try {
       setIsInitializing(true);
       await initializeGameData();
-      // Refresh the page to show new data
-      window.location.reload();
+
+      // Trigger data refresh for relevant tables instead of full page reload
+      triggerDataRefresh('uiLabels');
+      triggerDataRefresh('tasks');
+      triggerDataRefresh('challenges');
+      triggerDataRefresh('moods');
+      triggerDataRefresh('pandaState');
+      triggerDataRefresh('abilities');
+      triggerDataRefresh('rewards');
+
+      // Refresh the current view
+      refetch();
     } catch (error) {
       console.error('Error initializing game data:', error);
       alert('Failed to initialize game data. Please try again.');
@@ -37,8 +57,19 @@ const HomePage: React.FC = () => {
     }
   };
 
+  // Handle showing VIP value modal
+  const handleShowVipValueModal = () => {
+    setShowVipValueModal(true);
+  };
+
   if (isPending && !pageLabels) { // Full page initial load
-    return <LoadingSpinner variant="jade" text="Loading Home Page Content..." />;
+    return (
+      <div className="page-container">
+        <div className="bamboo-frame">
+          <HomePageSkeleton />
+        </div>
+      </div>
+    );
   }
 
   if (isError && !pageLabels) { // Critical: Page labels failed
@@ -54,19 +85,29 @@ const HomePage: React.FC = () => {
   const isLoadingData = isPending || (isFetching && !pageData); // True if data is still being fetched/refetched
 
   return (
-    <motion.div
-      className="page-container"
-      variants={pageTransition}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-    >
+    <div className="page-container">
       <div className="bamboo-frame"> {/* Wrap content in bamboo-frame */}
-        <h2>{pageLabels?.pageTitle || "Dashboard"}</h2>
+        <div className="flex justify-between items-center">
+          <h2>{pageLabels?.pageTitle || "Dashboard"}</h2>
+          <GrowthBoostIndicator size="medium" />
+        </div>
+
+        <PandaSection labels={pageLabels?.pandaSection} />
+
+        <ResourcesSection />
 
         <WelcomeSection labels={pageLabels?.welcomeSection} username={pageData?.username} />
 
-        <PandaSection labels={pageLabels?.pandaSection} />
+        {/* VIP Value Summary */}
+        {pandaState?.isVip && (
+          <div className="vip-value-container bg-white rounded-lg shadow-sm border border-gold-100 p-3 mb-4">
+            <VipValueSummary
+              userId="current-user"
+              onViewDetails={handleShowVipValueModal}
+              compact={true}
+            />
+          </div>
+        )}
 
         <MoodsSection
           labels={pageLabels?.moodsSection}
@@ -83,10 +124,10 @@ const HomePage: React.FC = () => {
             disabled={isInitializing}
             style={{marginTop: '20px'}}
           >
-            {isInitializing ? 'Initializing...' : 'Initialize Game Data'}
+            {isInitializing ? (pageLabels?.initializingText || 'Initializing...') : (pageLabels?.initializeGameText || 'Initialize Game Data')}
           </AnimatedButton>
           <p className="text-sm text-gray-500 mt-2">
-            This will create sample data for all game systems
+            {pageLabels?.initializeGameDescription || 'This will create sample data for all game systems'}
           </p>
         </div>
 
@@ -110,11 +151,19 @@ const HomePage: React.FC = () => {
               onRetry={refetch}
            />
          )}
-         {isLoadingData && pageLabels && ( // Show spinner for data if labels are present
-             <LoadingSpinner variant="jade" text="Fetching latest data..." />
+         {isLoadingData && pageLabels && ( // Show skeleton for data if labels are present
+             <HomePageSkeleton />
          )}
+
+         {/* VIP Value Modal */}
+         <VipValueModal
+           isOpen={showVipValueModal}
+           onClose={() => setShowVipValueModal(false)}
+           userId="current-user"
+           isVip={pandaState?.isVip || false}
+         />
       </div>
-    </motion.div>
+    </div>
   );
 };
 export default HomePage;

@@ -122,7 +122,7 @@ const Modal: React.FC<ModalProps> = ({
           onClick={handleOverlayClick}
           role="dialog"
           aria-modal="true"
-          aria-label={title || labels.modal.close}
+          aria-label={title || labels?.modal?.close || "Close"}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
         >

@@ -1,5 +1,5 @@
 // src/components/animation/AnimatedTaskList.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import {
   TaskRecord,
@@ -29,6 +29,7 @@ import TimelyRewardCard from '@/components/game/TimelyRewardCard';
 import { useComponentLabels } from '@/hooks/useComponentLabels';
 import TaskCompletionAnimation from './TaskCompletionAnimation';
 import { createContainerVariants } from '@/utils/animation';
+import { TaskCardSkeleton } from '@/components/skeleton';
 
 interface AnimatedTaskListProps {
   onEditTask: (taskId: number) => void;
@@ -88,11 +89,11 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
   }, [loadTasks, refreshTrigger]);
 
   // 定义任务数据更新处理函数 - 使用 useRef 来避免依赖变化
-  const filterRef = React.useRef(filter);
-  const loadTasksRef = React.useRef(loadTasks);
+  const filterRef = useRef(filter);
+  const loadTasksRef = useRef(loadTasks);
 
   // 更新 refs 当依赖变化时
-  React.useEffect(() => {
+  useEffect(() => {
     filterRef.current = filter;
     loadTasksRef.current = loadTasks;
   }, [filter, loadTasks]);
@@ -250,7 +251,13 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
   });
 
   if (isLoading && tasks.length === 0) {
-    return <LoadingSpinner variant="jade" text={labels?.loading?.data || "Loading tasks..."} />;
+    return (
+      <div className="task-list-skeleton">
+        <TaskCardSkeleton variant="jade" />
+        <TaskCardSkeleton variant="jade" />
+        <TaskCardSkeleton variant="jade" />
+      </div>
+    );
   }
 
   if (error) {

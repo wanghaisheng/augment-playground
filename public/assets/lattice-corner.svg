@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+  <!-- Corner decoration for traditional Chinese window lattice -->
+  <g fill="#D4AF37">
+    <!-- Main corner piece -->
+    <path d="M0,0 L50,0 L50,5 C25,5 5,25 5,50 L0,50 Z" fill="#D4AF37" opacity="0.8" />
+    
+    <!-- Decorative elements -->
+    <circle cx="15" cy="15" r="3" fill="#D4AF37" />
+    <circle cx="35" cy="15" r="3" fill="#D4AF37" />
+    <circle cx="15" cy="35" r="3" fill="#D4AF37" />
+    
+    <!-- Decorative lines -->
+    <line x1="5" y1="5" x2="45" y2="5" stroke="#D4AF37" stroke-width="2" />
+    <line x1="5" y1="5" x2="5" y2="45" stroke="#D4AF37" stroke-width="2" />
+    
+    <!-- Diagonal decorative line -->
+    <line x1="5" y1="5" x2="25" y2="25" stroke="#D4AF37" stroke-width="1.5" />
+  </g>
+</svg>

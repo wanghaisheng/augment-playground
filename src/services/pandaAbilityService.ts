@@ -1,5 +1,5 @@
 // src/services/pandaAbilityService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { RewardRarity } from './rewardService';
 
 // Panda ability type enum

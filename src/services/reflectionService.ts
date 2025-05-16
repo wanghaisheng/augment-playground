@@ -1,9 +1,9 @@
 // src/services/reflectionService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { addSyncItem } from './dataSyncService';
 import { TaskRecord, TaskStatus } from './taskService';
-import { getPandaMood, updatePandaMood } from './pandaStateService';
-import type { PandaMood, EnergyLevel } from '@/components/game/PandaAvatar';
+import { updatePandaMood } from './pandaStateService';
+import type { PandaMood } from '@/components/game/PandaAvatar';
 
 // 反思记录类型
 export interface ReflectionRecord {

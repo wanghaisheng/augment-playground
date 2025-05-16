@@ -1,5 +1,5 @@
 // src/db-battle-pass-sample.ts
-import { db } from './db';
+import { db } from './db-old';
 import { tursoClient } from './db-turso';
 import {
   BattlePassRecord,
@@ -20,7 +20,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
     const existingPasses = await db.table('battlePasses').count();
     if (existingPasses > 0) {
       console.log('Battle Pass sample data already exists');
-      return;
+      return true;
     }
 
     console.log('Populating Battle Pass sample data...');
@@ -32,12 +32,14 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
     endDate.setDate(endDate.getDate() + 30); // 30-day season
 
     const battlePass: BattlePassRecord = {
+      id: 0,
       seasonName: 'Bamboo Forest Season',
       seasonDescription: 'Explore the mystical bamboo forest and discover ancient secrets',
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
+      startDate: startDate,
+      endDate: endDate,
       maxLevel: 30,
       themeVisualAssetKey: 'bamboo-forest-theme',
+      seasonTheme: 'bamboo_season_1',
       standardPassProductId: 'com.pandahabit.battlepass.standard',
       premiumPassProductId: 'com.pandahabit.battlepass.premium',
       levelPurchaseDiamondCost: 100,
@@ -52,6 +54,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
     const levels: BattlePassLevelRecord[] = [];
     for (let i = 1; i <= 30; i++) {
       const level: BattlePassLevelRecord = {
+        id: i,
         passId: passId as number,
         levelNumber: i,
         requiredExp: i * 100, // Increasing XP requirements per level
@@ -71,6 +74,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
     const tasks: BattlePassTaskRecord[] = [
       // Daily tasks
       {
+        id: 1,
         passId: passId as number,
         taskName: 'Complete 3 daily tasks',
         taskType: BattlePassTaskType.DAILY,
@@ -80,6 +84,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
         isRepeatable: true
       },
       {
+        id: 2,
         passId: passId as number,
         taskName: 'Log your mood',
         taskType: BattlePassTaskType.DAILY,
@@ -89,6 +94,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
         isRepeatable: true
       },
       {
+        id: 3,
         passId: passId as number,
         taskName: 'Feed your panda',
         taskType: BattlePassTaskType.DAILY,
@@ -100,6 +106,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
 
       // Weekly tasks
       {
+        id: 4,
         passId: passId as number,
         taskName: 'Complete 15 tasks',
         taskType: BattlePassTaskType.WEEKLY,
@@ -109,6 +116,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
         isRepeatable: true
       },
       {
+        id: 5,
         passId: passId as number,
         taskName: 'Complete 3 challenges',
         taskType: BattlePassTaskType.WEEKLY,
@@ -118,6 +126,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
         isRepeatable: true
       },
       {
+        id: 6,
         passId: passId as number,
         taskName: 'Claim 7 daily rewards',
         taskType: BattlePassTaskType.WEEKLY,
@@ -129,6 +138,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
 
       // Seasonal tasks
       {
+        id: 7,
         passId: passId as number,
         taskName: 'Reach level 10 with your panda',
         taskType: BattlePassTaskType.SEASONAL,
@@ -138,6 +148,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
         isRepeatable: false
       },
       {
+        id: 8,
         passId: passId as number,
         taskName: 'Complete 50 tasks',
         taskType: BattlePassTaskType.SEASONAL,
@@ -147,6 +158,7 @@ export async function populateBattlePassSampleData(): Promise<boolean> {
         isRepeatable: false
       },
       {
+        id: 9,
         passId: passId as number,
         taskName: 'Unlock 5 abilities',
         taskType: BattlePassTaskType.SEASONAL,

@@ -1,20 +1,21 @@
 // src/services/challengeDiscoveryService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
+import { addSyncItem } from './dataSyncService';
 import { 
   ChallengeRecord, 
+  ChallengeStatus, 
   ChallengeType, 
-  ChallengeDifficulty, 
-  ChallengeStatus,
-  getAllChallenges
+  ChallengeDifficulty,
+  getAllChallenges,
+  getUserCompletedChallenges
 } from './challengeService';
 import { 
-  TaskRecord, 
-  TaskStatus, 
-  TaskType, 
-  TaskPriority,
+  TaskRecord,
+  TaskStatus,
   getAllTasks
 } from './taskService';
-import { getPandaLevel } from './pandaStateService';
+import { getPandaState } from './pandaStateService';
+import { playSound, SoundType } from '@/utils/sound';
 
 /**
  * 挑战推荐记录类型
@@ -43,26 +44,23 @@ export interface ChallengeDiscovery {
  * 根据用户的任务完成情况、熊猫等级和偏好推荐挑战
  */
 export async function getRecommendedChallenges(
-  limit: number = 3
-): Promise<ChallengeRecommendation[]> {
+  userId: string,
+  count: number = 5
+): Promise<ChallengeRecord[]> {
   try {
-    // 获取用户的熊猫等级
-    const pandaLevel = await getPandaLevel();
+    const allChallenges = await getAllChallenges();
+    const completedChallenges = await getUserCompletedChallenges(userId);
+    const { level: pandaLevel } = await getPandaState();
     
-    // 获取所有活跃和即将开始的挑战
-    const challenges = await getAllChallenges({
-      status: ChallengeStatus.ACTIVE
-    });
-    
-    // 获取用户已完成的任务
-    const completedTasks = await getAllTasks({
-      status: TaskStatus.COMPLETED
-    });
+    // Filter out completed challenges
+    const availableChallenges = allChallenges.filter(
+      challenge => !completedChallenges.some((c: ChallengeRecord) => c.id === challenge.id)
+    );
     
     // 计算每个挑战的推荐分数
     const recommendations: ChallengeRecommendation[] = [];
     
-    for (const challenge of challenges) {
+    for (const challenge of availableChallenges) {
       let score = 0;
       let reason = '';
       
@@ -94,7 +92,7 @@ export async function getRecommendedChallenges(
       }
       
       // 根据已完成任务的相关性计算分数
-      const relatedTaskCount = completedTasks.filter(task => {
+      const relatedTaskCount = completedChallenges.filter((task: ChallengeRecord) => {
         // 检查任务标题或描述是否与挑战相关
         const taskTitle = task.title.toLowerCase();
         const taskDesc = task.description?.toLowerCase() || '';
@@ -126,7 +124,8 @@ export async function getRecommendedChallenges(
     // 按分数排序并限制数量
     return recommendations
       .sort((a, b) => b.score - a.score)
-      .slice(0, limit);
+      .slice(0, count)
+      .map(recommendation => recommendation.challenge);
   } catch (err) {
     console.error('Failed to get recommended challenges:', err);
     return [];
@@ -140,7 +139,7 @@ export async function getRecommendedChallenges(
 export async function discoverNewChallenges(): Promise<ChallengeDiscovery[]> {
   try {
     // 获取用户的熊猫等级
-    const pandaLevel = await getPandaLevel();
+    const { level: pandaLevel } = await getPandaState();
     
     // 获取所有即将开始的挑战
     const upcomingChallenges = await getAllChallenges({
@@ -183,7 +182,7 @@ export async function discoverNewChallenges(): Promise<ChallengeDiscovery[]> {
       }
       
       // 条件2：完成了相关任务
-      const relatedTaskCount = completedTasks.filter(task => {
+      const relatedTaskCount = completedTasks.filter((task: TaskRecord) => {
         const taskTitle = task.title.toLowerCase();
         const taskDesc = task.description?.toLowerCase() || '';
         const challengeTitle = challenge.title.toLowerCase();

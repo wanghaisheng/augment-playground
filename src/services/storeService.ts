@@ -1,7 +1,11 @@
 // src/services/storeService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { addSyncItem } from './dataSyncService';
-import { ItemRecord, addItem } from './rewardService';
+import { /* ItemRecord, */ addItem, RewardRarity, ItemType } from './rewardService';
+import { updateVipTitleStatus } from './userTitleService';
+
+// Re-export RewardRarity so other modules can import it via storeService
+export { RewardRarity };
 
 // 商店物品类型
 export enum StoreItemType {
@@ -12,15 +16,6 @@ export enum StoreItemType {
   ABILITY = 'ability',         // 能力
   CONSUMABLE = 'consumable',   // 消耗品
   VIP = 'vip'                  // VIP会员
-}
-
-// 商店物品稀有度
-export enum StoreItemRarity {
-  COMMON = 'common',
-  UNCOMMON = 'uncommon',
-  RARE = 'rare',
-  EPIC = 'epic',
-  LEGENDARY = 'legendary'
 }
 
 // 商店物品价格类型
@@ -36,7 +31,7 @@ export interface StoreItemRecord {
   name: string;
   description: string;
   type: StoreItemType;
-  rarity: StoreItemRarity;
+  rarity: RewardRarity;
   price: number;
   priceType: PriceType;
   imagePath: string;
@@ -100,6 +95,8 @@ export interface UserCurrencyRecord {
   userId: string;
   coins: number;
   jade: number;
+  gem: number;
+  bamboo: number;
   lastUpdated: Date;
 }
 
@@ -188,6 +185,8 @@ export async function getUserCurrency(userId: string): Promise<UserCurrencyRecor
       userId,
       coins: 0,
       jade: 0,
+      gem: 0,
+      bamboo: 0,
       lastUpdated: new Date()
     };
 
@@ -203,11 +202,13 @@ export async function getUserCurrency(userId: string): Promise<UserCurrencyRecor
  * @param userId 用户ID
  * @param coins 金币数量变化（可以是正数或负数）
  * @param jade 玉石数量变化（可以是正数或负数）
+ * @param bamboo 竹子数量变化（可以是正数或负数）
  */
 export async function updateUserCurrency(
   userId: string,
   coins: number = 0,
-  jade: number = 0
+  jade: number = 0,
+  bamboo: number = 0
 ): Promise<UserCurrencyRecord> {
   const currency = await getUserCurrency(userId);
   if (!currency) {
@@ -218,6 +219,8 @@ export async function updateUserCurrency(
     ...currency,
     coins: Math.max(0, currency.coins + coins),
     jade: Math.max(0, currency.jade + jade),
+    gem: Math.max(0, currency.gem + 0),
+    bamboo: Math.max(0, currency.bamboo + bamboo),
     lastUpdated: new Date()
   };
 
@@ -247,17 +250,17 @@ export async function purchaseStoreItem(
 
   // 检查物品是否可用
   if (!storeItem.isAvailable) {
-    throw new Error(`Store item with id ${storeItemId} is not available`);
+    throw new Error(`Store item ${storeItem.name} is not available for purchase`);
   }
 
-  // 检查是否有足够的库存
-  if (storeItem.limitedQuantity && storeItem.remainingQuantity !== undefined && storeItem.remainingQuantity <= 0) {
-    throw new Error(`Store item with id ${storeItemId} is out of stock`);
+  // 检查是否有足够数量（如果有限量）
+  if (storeItem.limitedQuantity && (storeItem.remainingQuantity || 0) <= 0) {
+    throw new Error(`Store item ${storeItem.name} is out of stock`);
   }
 
   // 获取用户货币
-  const currency = await getUserCurrency(userId);
-  if (!currency) {
+  const userCurrency = await getUserCurrency(userId);
+  if (!userCurrency) {
     throw new Error(`User currency not found for user ${userId}`);
   }
 
@@ -265,56 +268,84 @@ export async function purchaseStoreItem(
   const price = storeItem.isOnSale && storeItem.salePrice !== undefined ? storeItem.salePrice : storeItem.price;
 
   // 检查用户是否有足够的货币
-  if (storeItem.priceType === PriceType.COINS && currency.coins < price) {
-    throw new Error('Not enough coins');
+  if (storeItem.priceType === PriceType.COINS && userCurrency.coins < price) {
+    throw new Error('Insufficient coins');
+  } else if (storeItem.priceType === PriceType.JADE && userCurrency.jade < price) {
+    throw new Error('Insufficient jade');
   }
-
-  if (storeItem.priceType === PriceType.JADE && currency.jade < price) {
-    throw new Error('Not enough jade');
-  }
+  // TODO: Handle PriceType.REAL_MONEY
 
   // 扣除货币
   if (storeItem.priceType === PriceType.COINS) {
-    await updateUserCurrency(userId, -price, 0);
+    await updateUserCurrency(userId, -price, 0, 0);
   } else if (storeItem.priceType === PriceType.JADE) {
-    await updateUserCurrency(userId, 0, -price);
+    await updateUserCurrency(userId, 0, -price, 0);
   }
 
-  // 更新库存
+  // 更新物品剩余数量（如果有限量）
   if (storeItem.limitedQuantity && storeItem.remainingQuantity !== undefined) {
-    await db.table('storeItems').update(storeItemId, {
-      ...storeItem,
-      remainingQuantity: storeItem.remainingQuantity - 1,
-      updatedAt: new Date()
-    });
+    const updatedStoreItem = { ...storeItem, remainingQuantity: storeItem.remainingQuantity - 1 };
+    await db.table('storeItems').update(storeItem.id!, updatedStoreItem);
+    await addSyncItem('storeItems', 'update', updatedStoreItem);
+  }
+
+  // 根据物品类型执行操作
+  switch (storeItem.type) {
+    case StoreItemType.VIP:
+      // 假设VIP购买会激活一个特定等级和时长的订阅
+      // TODO: 需要从storeItem中获取tier和durationDays，或者有默认值
+      await activateVipSubscription(userId, 1, 30, 'store_purchase', `vip-purchase-${Date.now()}`);
+      break;
+    case StoreItemType.ABILITY:
+      // TODO: 实现激活能力的逻辑
+      // Example: await unlockAbility(userId, storeItem.relatedAbilityId);
+      console.log(`Ability ${storeItem.name} purchased, activation logic TBD.`);
+      break;
+    case StoreItemType.AVATAR:
+    case StoreItemType.ACCESSORY:
+    case StoreItemType.BACKGROUND:
+    case StoreItemType.THEME:
+      // TODO: 实现应用皮肤/主题的逻辑
+      // Example: await applyCosmetic(userId, storeItem.id, storeItem.type);
+      console.log(`Cosmetic item ${storeItem.name} purchased, application logic TBD.`);
+      break;
+    case StoreItemType.CONSUMABLE:
+      // 将消耗品添加到用户物品列表
+      // TODO: 需要一个正确的映射 StoreItemType.CONSUMABLE -> ItemType
+      // 以及确定消耗品的具体效果描述等。
+      // 使用 ItemType.FOOD 作为临时占位符以通过类型检查。
+      // 同样，name, description, iconPath, isUsable 应该从 storeItem 传递。
+      await addItem({
+        type: ItemType.FOOD, // Placeholder: Needs mapping from StoreItemType
+        name: storeItem.name,
+        description: storeItem.description,
+        rarity: storeItem.rarity, // Now using RewardRarity, should be compatible
+        iconPath: storeItem.imagePath,
+        quantity: 1, // Assuming 1 item purchased, might need quantity from storeItem
+        isUsable: true, // Assuming consumables are usable, might depend on item
+        // effectDescription: storeItem.effectDescription, // If storeItem has this
+        obtainedAt: new Date(),
+      });
+      break;
   }
 
   // 创建购买记录
-  const purchase: PurchaseRecord = {
+  const purchaseRecord: Omit<PurchaseRecord, 'id'> = {
     userId,
-    storeItemId,
+    storeItemId: storeItem.id!,
     price,
     priceType: storeItem.priceType,
     purchaseDate: new Date(),
     isRefunded: false
   };
 
-  // 添加到数据库
-  const id = await db.table('purchases').add(purchase);
-  const createdPurchase = { ...purchase, id: id as number };
+  const id = await db.table('purchases').add(purchaseRecord);
+  const createdPurchaseRecord = { ...purchaseRecord, id: id as number };
 
   // 添加到同步队列
-  await addSyncItem('purchases', 'create', createdPurchase);
+  await addSyncItem('purchases', 'create', createdPurchaseRecord);
 
-  // 添加物品到用户库存
-  await addItem({
-    type: storeItem.type,
-    rarity: storeItem.rarity,
-    quantity: 1,
-    obtainedAt: new Date()
-  });
-
-  return createdPurchase;
+  return createdPurchaseRecord;
 }
 
 /**
@@ -367,6 +398,18 @@ export async function isUserVip(userId: string): Promise<boolean> {
   }
 
   return true;
+}
+
+/**
+ * 激活VIP试用
+ * @param userId 用户ID
+ * @param durationDays 试用时长（天）
+ */
+export async function activateVipTrial(
+  userId: string,
+  durationDays: number
+): Promise<VipSubscriptionRecord> {
+  return activateVipSubscription(userId, 1, durationDays, 'trial', `trial-${Date.now()}`);
 }
 
 /**
@@ -426,6 +469,9 @@ export async function activateVipSubscription(
       });
     }
 
+    // Update VIP title status
+    await updateVipTitleStatus(userId, true);
+
     return updatedSubscription;
   } else {
     // 创建新的订阅
@@ -466,6 +512,57 @@ export async function activateVipSubscription(
       });
     }
 
+    // Update VIP title status
+    await updateVipTitleStatus(userId, true);
+
     return createdSubscription;
   }
+}
+
+/**
+ * 更新VIP订阅详情
+ * @param userId 用户ID
+ * @param subscriptionId 订阅ID
+ * @param updates 要更新的字段
+ */
+export async function updateVipSubscriptionDetails(
+  subscriptionId: number,
+  updates: Partial<Omit<VipSubscriptionRecord, 'id' | 'userId' | 'createdAt'>>
+): Promise<VipSubscriptionRecord | null> {
+  const subscription = await db.table('vipSubscriptions').get(subscriptionId);
+  if (!subscription) {
+    console.error(`VipSubscriptionRecord with id ${subscriptionId} not found.`);
+    return null;
+  }
+
+  const now = new Date();
+  const updatedSubscription: VipSubscriptionRecord = {
+    ...subscription,
+    ...updates,
+    updatedAt: now,
+  };
+
+  await db.table('vipSubscriptions').update(subscriptionId, updatedSubscription);
+  await addSyncItem('vipSubscriptions', 'update', updatedSubscription);
+
+  // If isActive state changed, update panda state and VIP title
+  if (updates.isActive !== undefined && updates.isActive !== subscription.isActive) {
+    const pandaStateArray = await db.table('pandaState').where('userId').equals(subscription.userId).toArray();
+    if (pandaStateArray.length > 0) {
+      const pandaState = pandaStateArray[0];
+      await db.table('pandaState').update(pandaState.id!, {
+        ...pandaState,
+        isVip: updatedSubscription.isActive,
+        lastUpdated: now,
+      });
+      await addSyncItem('pandaState', 'update', {
+        ...pandaState,
+        isVip: updatedSubscription.isActive,
+        lastUpdated: now,
+      });
+    }
+    await updateVipTitleStatus(subscription.userId, updatedSubscription.isActive);
+  }
+
+  return updatedSubscription;
 }

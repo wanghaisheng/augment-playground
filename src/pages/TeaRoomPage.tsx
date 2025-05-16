@@ -21,6 +21,8 @@ import type { TeaRoomPageViewLabelsBundle } from '@/types';
 import { pageTransition } from '@/utils/animation';
 import ReflectionTriggerNotification from '@/components/reflection/ReflectionTriggerNotification';
 import { playSound, SoundType } from '@/utils/sound';
+import { TeaRoomPageSkeleton } from '@/components/skeleton';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Tea Room Page
@@ -32,6 +34,7 @@ const TeaRoomPage: React.FC = () => {
   const [showReflectionModule, setShowReflectionModule] = useState(false);
   const [showReflectionHistory, setShowReflectionHistory] = useState(false);
   const [selectedTrigger, setSelectedTrigger] = useState<ReflectionTriggerRecord | null>(null);
+  const navigate = useNavigate();
 
   // Current user ID (in a real application, this should be retrieved from the user session)
   const userId = 'current-user';
@@ -96,6 +99,15 @@ const TeaRoomPage: React.FC = () => {
 
     // Show reflection history
     setShowReflectionHistory(true);
+  };
+
+  // Handle navigate to meditation page
+  const handleNavigateToMeditation = () => {
+    // Play click sound
+    playSound(SoundType.BUTTON_CLICK, 0.5);
+
+    // Navigate to meditation page
+    navigate('/meditation');
   };
 
   // Handle trigger accepted
@@ -163,6 +175,37 @@ const TeaRoomPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Meditation Section - Commenting out due to incorrect label structure */}
+          {/*
+          <CollapsibleSection 
+            title={pageLabels?.meditationSection?.title || "Meditation"}
+            defaultOpen={true}
+          >
+            <p className="text-gray-600 mb-4">
+              {pageLabels?.meditationSection?.description || "Explore our collection of guided meditations to help you relax, focus, and find inner peace."}
+            </p>
+            <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+              <div className="p-3 bg-jade-50 rounded-lg">
+                <p className="text-gray-500">
+                  <span className="font-medium">🔄 {pageLabels?.meditationSection?.currentStreak || "Current Streak"}:</span> {mockMeditationStats.currentStreak} {pageLabels?.meditationSection?.days || "days"}
+                </p>
+              </div>
+              <div className="p-3 bg-jade-50 rounded-lg">
+                <p className="text-gray-500">
+                  <span className="font-medium">⏱️ {pageLabels?.meditationSection?.totalTime || "Total Time"}:</span> {mockMeditationStats.totalTime} {pageLabels?.meditationSection?.minutes || "minutes"}
+                </p>
+              </div>
+            </div>
+            <AnimatedButton 
+              variant="outline"
+              color="jade"
+              onClick={() => navigate('/meditation')}
+            >
+              {pageLabels?.meditationSection?.exploreButton || "Explore Meditations"}
+            </AnimatedButton>
+          </CollapsibleSection>
+          */}
+
           {/* Daily Tips Section */}
           <div className="daily-tips-section bg-white p-4 rounded-lg shadow-md mt-6 border border-amber-200">
             <h2 className="text-xl font-bold text-amber-700 mb-4">
@@ -191,6 +234,7 @@ const TeaRoomPage: React.FC = () => {
             onClose={() => setShowReflectionModule(false)}
             trigger={selectedTrigger || undefined}
             onReflectionComplete={handleReflectionComplete}
+            labels={pageLabels?.enhancedReflectionModule}
           />
         )}
 
@@ -221,8 +265,8 @@ const TeaRoomPage: React.FC = () => {
         animate="visible"
         exit="exit"
       >
-        <div className="loading-container flex justify-center items-center h-64">
-          <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "Loading tea room content..."} />
+        <div className="bamboo-frame">
+          <TeaRoomPageSkeleton />
         </div>
       </motion.div>
     );
@@ -250,17 +294,9 @@ const TeaRoomPage: React.FC = () => {
   }
 
   return (
-    <motion.div
-      className="page-container"
-      variants={pageTransition}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-    >
+    <div className="page-container">
       {isLoading ? (
-        <div className="loading-container flex justify-center items-center h-64">
-          <LoadingSpinner variant="jade" size="large" text={pageLabels?.loadingMessage || "Loading tea room content..."} />
-        </div>
+        <TeaRoomPageSkeleton />
       ) : error ? (
         <div className="error-container text-center p-4">
           <div className="error-message text-red-500 mb-4">{error}</div>
@@ -280,7 +316,7 @@ const TeaRoomPage: React.FC = () => {
           </motion.div>
         </AnimatePresence>
       )}
-    </motion.div>
+    </div>
   );
 };
 

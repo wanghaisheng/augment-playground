@@ -1,5 +1,5 @@
 // src/services/taskService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { addPandaExperience, updatePandaMood } from './pandaStateService';
 import { generateRewardsForTask, RewardRecord } from './rewardService';
 import { addSyncItem } from './dataSyncService';
@@ -24,7 +24,8 @@ export enum TaskPriority {
 export enum TaskType {
   DAILY = 'daily',    // 日常任务
   MAIN = 'main',      // 主线任务
-  SIDE = 'side'       // 支线任务
+  SIDE = 'side',      // 支线任务
+  VIP = 'vip'         // VIP专属任务
 }
 
 // 任务类别枚举
@@ -264,6 +265,9 @@ export async function completeTask(id: number, notes?: string): Promise<{
       break;
     case TaskType.SIDE:
       experienceGained += 10;
+      break;
+    case TaskType.VIP:
+      experienceGained += 30; // VIP任务提供更多经验值
       break;
   }
 

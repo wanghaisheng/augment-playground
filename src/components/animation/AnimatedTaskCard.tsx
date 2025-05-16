@@ -1,5 +1,5 @@
 // src/components/animation/AnimatedTaskCard.tsx
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import TaskCard from '@/components/game/TaskCard';
 import { TaskRecord } from '@/services/taskService';

@@ -1,5 +1,5 @@
 // src/db-battle-pass.ts
-import { db } from './db';
+import { db } from './db-old';
 import { tursoClient } from './db-turso';
 
 /**

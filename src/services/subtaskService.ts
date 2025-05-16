@@ -1,7 +1,7 @@
 // src/services/subtaskService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { addSyncItem } from './dataSyncService';
-import { TaskRecord, TaskStatus, updateTask } from './taskService';
+import { /* TaskRecord, */ TaskStatus, updateTask } from './taskService'; // Removed TaskRecord
 
 // 子任务记录类型
 export interface SubtaskRecord {
@@ -191,9 +191,6 @@ export async function updateParentTaskProgress(parentTaskId: number): Promise<vo
   const completedCount = subtasks.filter(
     subtask => subtask.status === TaskStatus.COMPLETED
   ).length;
-
-  // 计算进度百分比
-  const progressPercentage = Math.round((completedCount / subtasks.length) * 100);
 
   // 如果所有子任务都完成，将父任务标记为已完成
   if (completedCount === subtasks.length) {

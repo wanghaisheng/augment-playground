@@ -28,6 +28,7 @@ import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import { pageTransition } from '@/utils/animation';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { fetchStorePageView } from '@/services';
+import { StorePageSkeleton } from '@/components/skeleton';
 import type { StorePageViewLabelsBundle } from '@/types';
 
 /**
@@ -47,20 +48,22 @@ const StorePage: React.FC = () => {
   const [userCurrency, setUserCurrency] = useState<UserCurrencyRecord | null>(null);
   const [vipSubscription, setVipSubscription] = useState<VipSubscriptionRecord | null>(null);
   const [isVip, setIsVip] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [dataError, setDataError] = useState<string | null>(null);
 
   // 获取本地化标签
   const {
     labels: pageLabels,
     isPending: isLabelsPending,
     isError: isLabelsError,
-    error: labelsError,
+    error: labelsErrorInfo,
     refetch: refetchLabels
   } = useLocalizedView<null, StorePageViewLabelsBundle>(
     'storePageViewContent',
     fetchStorePageView
   );
+
+  const safePageLabels = (pageLabels || {}) as any;
 
   // 当前用户ID（在实际应用中，这应该从用户会话中获取）
   const userId = 'current-user';
@@ -68,8 +71,8 @@ const StorePage: React.FC = () => {
   // 加载商店数据
   const loadStoreData = async () => {
     try {
-      setIsLoading(true);
-      setError(null);
+      setIsLoadingData(true);
+      setDataError(null);
 
       // 获取商店类别
       const storeCategories = await getStoreCategories();
@@ -105,9 +108,9 @@ const StorePage: React.FC = () => {
       setIsVip(userIsVip);
     } catch (err) {
       console.error('Failed to load store data:', err);
-      setError('加载商店数据失败，请重试');
+      setDataError(safePageLabels.errorLoadingData ?? '加载商店数据失败，请重试');
     } finally {
-      setIsLoading(false);
+      setIsLoadingData(false);
     }
   };
 
@@ -132,7 +135,7 @@ const StorePage: React.FC = () => {
       setItems(categoryItems);
     } catch (err) {
       console.error('Failed to load category items:', err);
-      setError('加载类别物品失败，请重试');
+      setDataError('加载类别物品失败，请重试');
     }
   };
 
@@ -196,7 +199,8 @@ const StorePage: React.FC = () => {
       benefits: [
         '解锁VIP专属物品',
         '每日额外10金币',
-        '商店9折优惠'
+        '商店9折优惠',
+        '每日抽奖次数增加至5次'
       ],
       imagePath: '/assets/store/vip-basic.png'
     },
@@ -210,7 +214,8 @@ const StorePage: React.FC = () => {
         '包含基础VIP所有特权',
         '每日额外20金币',
         '每周赠送1玉石',
-        '商店8折优惠'
+        '商店8折优惠',
+        '每日抽奖次数增加至7次'
       ],
       imagePath: '/assets/store/vip-premium.png'
     },
@@ -225,13 +230,14 @@ const StorePage: React.FC = () => {
         '每日额外30金币',
         '每周赠送3玉石',
         '商店7折优惠',
-        '专属熊猫头像和背景'
+        '专属熊猫头像和背景',
+        '每日抽奖次数增加至10次'
       ],
       imagePath: '/assets/store/vip-deluxe.png'
     }
   ];
 
-  // 显示加载状态
+  // 显示加载状态 (优先显示骨架屏如果标签未加载)
   if (isLabelsPending && !pageLabels) {
     return (
       <motion.div
@@ -241,15 +247,30 @@ const StorePage: React.FC = () => {
         animate="visible"
         exit="exit"
       >
-        <div className="loading-container flex justify-center items-center h-64">
-          <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "加载商店内容..."} />
+        <div className="bamboo-frame">
+          <StorePageSkeleton />
         </div>
       </motion.div>
     );
   }
 
-  // 显示错误状态
+  // 显示标签加载错误
   if (isLabelsError && !pageLabels) {
+    return (
+      <div className="p-4">
+        <ErrorDisplay 
+          error={labelsErrorInfo} 
+          title={safePageLabels.errorLoadingLabelsTitle ?? 'Error Loading Interface'}
+          messageTemplate={safePageLabels.errorLoadingLabelsMessage ?? 'Could not load store interface: {message}'}
+          onRetry={refetchLabels} 
+          retryButtonText={safePageLabels.retryButtonText ?? 'Try Again'}
+        />
+      </div>
+    );
+  }
+
+  // 如果标签加载成功，但数据仍在加载 (secondary loading state)
+  if (isLoadingData && pageLabels) {
     return (
       <motion.div
         className="page-container"
@@ -258,17 +279,38 @@ const StorePage: React.FC = () => {
         animate="visible"
         exit="exit"
       >
-        <div className="error-container text-center p-4">
-          <ErrorDisplay
-            error={labelsError}
-            title={pageLabels?.errorTitle || "商店页面错误"}
-            onRetry={refetchLabels}
-          />
+        <div className="bamboo-frame">
+          <StorePageSkeleton />
         </div>
       </motion.div>
     );
   }
 
+  // 如果标签加载成功，但数据加载出错
+  if (dataError && pageLabels) {
+    return (
+      <div className="p-4">
+        <ErrorDisplay 
+          error={{ name: 'StoreDataError', message: dataError }}
+          title={safePageLabels.errorLoadingDataTitle ?? 'Store Error'}
+          messageTemplate='{message}'
+          onRetry={loadStoreData}
+          retryButtonText={safePageLabels.retryButtonText ?? 'Try Again'}
+        />
+      </div>
+    );
+  }
+  
+  // Ensure pageLabels are available before rendering the main content (even if empty object from safePageLabels)
+  if (!pageLabels && !isLabelsPending) {
+      return (
+          <div className="p-4">
+             <p>{safePageLabels.unexpectedError ?? "An unexpected error occurred. Please try refreshing."}</p>
+          </div>
+      );
+  }
+
+  // 主渲染逻辑
   return (
     <motion.div
       className="page-container"
@@ -278,237 +320,143 @@ const StorePage: React.FC = () => {
       exit="exit"
     >
       <div className="bamboo-frame">
-        <h2>{pageLabels?.pageTitle || "商店"}</h2>
-
-        {isLoading ? (
-          <div className="loading-container flex justify-center items-center h-64">
-            <LoadingSpinner variant="jade" size="large" />
-          </div>
-        ) : error ? (
-          <div className="error-container text-center p-4">
-            <div className="error-message text-red-500 mb-4">{error}</div>
-            <Button variant="jade" onClick={loadStoreData}>
-              {pageLabels?.retryButtonText || "重试"}
-            </Button>
-          </div>
-        ) : (
-          <div className="store-content">
-            {/* 用户货币显示和VIP切换 */}
-            <div className="store-header-section mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <header className="store-header">
+          <h1 className="store-title">{safePageLabels.pageTitle ?? 'Panda Store'}</h1>
               {userCurrency && (
-                <div className="currency-section flex-grow">
                   <CurrencyDisplay
                     currency={userCurrency}
-                    isVip={isVip}
-                    labels={pageLabels?.currencySection}
+              labels={safePageLabels.currencyDisplayLabels} 
                   />
-                </div>
               )}
+        </header>
 
-              {/* VIP切换按钮 */}
               <div className="vip-toggle-section">
-                <Button
-                  variant={showVipSection ? 'gold' : 'secondary'}
-                  onClick={handleToggleVipSection}
-                  className="px-6 py-2"
-                >
-                  {showVipSection
-                    ? (pageLabels?.vipToggleButton?.backToStore || 'Return to Store')
-                    : (pageLabels?.vipToggleButton?.showVip || 'View VIP Membership')}
+          <Button variant="gold" onClick={handleToggleVipSection}>
+            {showVipSection ? (safePageLabels.hideVipButton ?? 'Hide VIP') : (safePageLabels.showVipButton ?? 'VIP Membership')}
                 </Button>
-              </div>
             </div>
 
-            <AnimatePresence mode="wait">
-              {showVipSection ? (
-                <motion.div
-                  key="vip-section"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
+        <AnimatePresence>
+          {showVipSection && (
+            <motion.section 
+              className="vip-section"
+              initial={{ opacity: 0, height: 0 }} 
+              animate={{ opacity: 1, height: 'auto' }} 
+              exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="vip-section"
                 >
-                  <div className="vip-header mb-6 text-center">
-                    <h3 className="text-xl font-bold text-amber-700">
-                      <span className="mr-2">✨</span>
-                      {pageLabels?.vipToggleButton?.showVip || 'VIP Membership'}
-                      <span className="ml-2">✨</span>
-                    </h3>
-                    <p className="text-gray-600 mt-2">
-                      {pageLabels?.vipSection?.description || 'Unlock exclusive benefits and enhance your experience'}
-                    </p>
-                    <div className="mt-4">
-                      <Button
-                        variant="gold"
-                        onClick={() => navigate('/vip-benefits')}
-                        className="px-6 py-2"
-                      >
-                        View Detailed VIP Benefits
-                      </Button>
+              <h2 className="section-title">{safePageLabels.vipSectionTitle ?? 'VIP Membership'}</h2>
+              {isVip && vipSubscription ? (
+                <div className="vip-status">
+                  <p>{(safePageLabels.vipStatusActive ?? 'Your VIP is active until: {date}').replace('{date}', vipSubscription.endDate ? new Date(vipSubscription.endDate).toLocaleDateString() : (safePageLabels.vipStatusNoExpiry ?? 'N/A'))}</p>
                     </div>
-                  </div>
-
-                  <div className="vip-options-grid grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {vipOptions.map((option) => (
+              ) : (
+                <div className="vip-options-grid">
+                  {vipOptions.map(option => (
                       <VipSubscriptionCard
                         key={option.tier}
-                        tier={option.tier}
-                        title={option.title}
-                        description={option.description}
-                        price={option.price}
-                        duration={option.duration}
-                        benefits={option.benefits}
-                        imagePath={option.imagePath}
+                      {...option}
                         currentSubscription={vipSubscription}
                         onSubscribe={handleSubscribeVip}
                       />
                     ))}
                   </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="store-section"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="store-section"
-                >
-                  {/* 商店类别 */}
-                  {categories.length > 0 && (
-                    <div className="categories-section mb-6 bg-white p-3 rounded-lg shadow-sm border border-jade-200">
-                      <h3 className="text-lg font-bold mb-3 text-jade-700">
-                        <span className="mr-2">🏪</span>
-                        {pageLabels?.categoriesTitle || 'Categories'}
-                      </h3>
-                      <StoreCategoryList
-                        onCategorySelect={handleCategorySelect}
-                        selectedCategoryId={selectedCategory?.id}
-                      />
-                    </div>
-                  )}
+              )}
+            </motion.section>
+          )}
+        </AnimatePresence>
 
-                  {/* 特色物品 */}
                   {featuredItems.length > 0 && (
-                    <div className="featured-items-section mb-8">
-                      <div className="section-header flex items-center mb-4 border-b-2 border-amber-300 pb-2">
-                        <span className="text-2xl mr-2">✨</span>
-                        <h3 className="text-xl font-bold text-amber-700">{pageLabels?.featuredItemsTitle || 'Featured Items'}</h3>
-                      </div>
+          <section className="featured-items-section">
+            <h2 className="section-title">{safePageLabels.featuredItemsTitle ?? 'Featured Items'}</h2>
                       <motion.div
-                        className="featured-items-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="items-grid"
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
                       >
-                        {featuredItems.map((item) => (
-                          <motion.div
-                            key={item.id}
-                            variants={itemVariants}
-                          >
+              {featuredItems.map(item => (
+                <motion.div key={item.id} variants={itemVariants}>
                             <StoreItemCard
                               item={item}
+                    onPreview={handlePreviewItem} 
                               onPurchase={handlePurchaseItem}
-                              onPreview={handlePreviewItem}
-                              userCoins={userCurrency?.coins}
-                              userJade={userCurrency?.jade}
                               isVip={isVip}
                             />
                           </motion.div>
                         ))}
                       </motion.div>
-                    </div>
+          </section>
                   )}
 
-                  {/* 促销物品 */}
                   {saleItems.length > 0 && (
-                    <div className="sale-items-section mb-8">
-                      <div className="section-header flex items-center mb-4 border-b-2 border-cinnabar-red pb-2">
-                        <span className="text-2xl mr-2">🔥</span>
-                        <h3 className="text-xl font-bold text-cinnabar-red">{pageLabels?.saleItemsTitle || 'Sale Items'}</h3>
-                      </div>
+          <section className="sale-items-section">
+            <h2 className="section-title">{safePageLabels.saleItemsTitle ?? 'On Sale'}</h2>
                       <motion.div
-                        className="sale-items-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="items-grid"
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
                       >
-                        {saleItems.map((item) => (
-                          <motion.div
-                            key={item.id}
-                            variants={itemVariants}
-                          >
+              {saleItems.map(item => (
+                <motion.div key={item.id} variants={itemVariants}>
                             <StoreItemCard
                               item={item}
+                    onPreview={handlePreviewItem} 
                               onPurchase={handlePurchaseItem}
-                              onPreview={handlePreviewItem}
-                              userCoins={userCurrency?.coins}
-                              userJade={userCurrency?.jade}
                               isVip={isVip}
                             />
                           </motion.div>
                         ))}
                       </motion.div>
-                    </div>
+          </section>
                   )}
 
-                  {/* 类别物品 */}
+        <StoreCategoryList 
+          selectedCategoryId={selectedCategory?.id}
+          onCategorySelect={handleCategorySelect}
+        />
+
                   {selectedCategory && (
-                    <div className="category-items-section mb-6">
-                      <div className="section-header flex items-center mb-4 border-b-2 border-jade-500 pb-2">
-                        <span className="text-2xl mr-2">📦</span>
-                        <h3 className="text-xl font-bold text-jade-700">{selectedCategory.name || pageLabels?.categoryItemsTitle || 'Category Items'}</h3>
-                      </div>
+          <section className="category-items-section">
+            <h2 className="section-title">{selectedCategory.name}</h2>
                       {items.length > 0 ? (
                         <motion.div
-                          className="category-items-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="items-grid"
                           variants={containerVariants}
                           initial="hidden"
                           animate="visible"
                         >
-                          {items.map((item) => (
-                            <motion.div
-                              key={item.id}
-                              variants={itemVariants}
-                            >
+                {items.map(item => (
+                  <motion.div key={item.id} variants={itemVariants}>
                               <StoreItemCard
                                 item={item}
+                      onPreview={handlePreviewItem} 
                                 onPurchase={handlePurchaseItem}
-                                onPreview={handlePreviewItem}
-                                userCoins={userCurrency?.coins}
-                                userJade={userCurrency?.jade}
                                 isVip={isVip}
                               />
                             </motion.div>
                           ))}
                         </motion.div>
                       ) : (
-                        <div className="no-items text-center p-6 bg-gray-50 rounded-lg border border-gray-200">
-                          <p className="text-gray-500">{pageLabels?.noItemsMessage || 'No items available in this category'}</p>
-                        </div>
+              <p className="empty-category-message">{safePageLabels.emptyCategoryMessage ?? 'No items in this category.'}</p>
                       )}
-                    </div>
-                  )}
-                </motion.div>
+          </section>
               )}
-            </AnimatePresence>
-          </div>
-        )}
-      </div>
 
-      {/* 物品预览对话框 */}
-      {selectedItem && (
+        {showItemPreview && selectedItem && (
         <StoreItemPreview
           isOpen={showItemPreview}
+            item={selectedItem}
           onClose={() => setShowItemPreview(false)}
-          item={selectedItem}
           onPurchase={handlePurchaseItem}
-          userCoins={userCurrency?.coins}
-          userJade={userCurrency?.jade}
+            userCoins={userCurrency?.coins ?? 0}
+            userJade={userCurrency?.jade ?? 0}
           isVip={isVip}
+            labels={safePageLabels?.itemPreview}
         />
       )}
+      </div>
     </motion.div>
   );
 };

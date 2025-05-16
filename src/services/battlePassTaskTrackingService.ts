@@ -1,5 +1,5 @@
 // src/services/battlePassTaskTrackingService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import {
   getBattlePassViewData,
   addBattlePassExperience

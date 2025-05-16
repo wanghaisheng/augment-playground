@@ -1,5 +1,5 @@
 // src/services/socialChallengeService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { addSyncItem } from './dataSyncService';
 import { ChallengeDifficulty, ChallengeStatus } from './challengeService';
 

@@ -1,0 +1,130 @@
+/* src/styles/pageTransitions.css */
+
+/* 页面转场容器样式 */
+.enhanced-page-transition {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+/* 装饰元素容器样式 */
+.page-transition-decorations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* 飘落的竹叶样式 */
+.falling-leaf {
+  position: absolute;
+  z-index: -1;
+}
+
+.falling-leaf svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* 水墨滴落样式 */
+.ink-drop {
+  position: absolute;
+  z-index: -1;
+}
+
+/* 卷轴装饰样式 */
+.scroll-decoration-top,
+.scroll-decoration-bottom {
+  position: absolute;
+  z-index: -1;
+}
+
+/* 竹帘装饰样式 */
+.bamboo-slat {
+  position: absolute;
+  z-index: -1;
+}
+
+/* 金色粒子样式 */
+.golden-particle {
+  position: absolute;
+  z-index: -1;
+}
+
+/* 水波纹样式 */
+.ripple {
+  position: absolute;
+  z-index: -1;
+}
+
+/* 云雾样式 */
+.mist-cloud {
+  position: absolute;
+  z-index: -1;
+}
+
+/* 页面类型特定样式 */
+
+/* 水墨扩散页面 */
+.page-type-inkSpread {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* 卷轴展开页面 */
+.page-type-scrollUnroll {
+  border-top: 2px solid rgba(136, 176, 75, 0.3);
+  border-bottom: 2px solid rgba(136, 176, 75, 0.3);
+}
+
+/* 竹帘下降页面 */
+.page-type-bambooBlind {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(136, 176, 75, 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 100% 20px;
+}
+
+/* 金光闪耀页面 */
+.page-type-goldenGlow {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2) inset;
+}
+
+/* 飘落的竹叶页面 */
+.page-type-fallingLeaves {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* 水波纹页面 */
+.page-type-ripple {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* 云雾缭绕页面 */
+.page-type-misty {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .page-transition-decorations {
+    opacity: 0.5; /* 在移动设备上降低装饰元素的不透明度 */
+  }
+}
+
+/* 减少动画 */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-decorations {
+    display: none; /* 对于偏好减少动画的用户，隐藏装饰元素 */
+  }
+  
+  .enhanced-page-transition {
+    transition: opacity 0.3s ease !important; /* 简化过渡效果 */
+  }
+}

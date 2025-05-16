@@ -91,50 +91,43 @@ const AbilitiesPage: React.FC = () => {
         <div className="bamboo-frame">
           <h2>{pageLabels?.pageTitle || "Panda Abilities"}</h2>
 
-          {isLoading ? (
-            <div className="loading-container">
-              <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "Loading abilities..."} />
-            </div>
-          ) : (
-            <>
-              <div className="abilities-header">
-                <motion.div
-                  className="panda-level-info"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <h3>{pageLabels?.pandaLevelLabel || "Panda Level"}: {pandaState?.level || 1}</h3>
-                  <p>{pageLabels?.unlockedAbilitiesLabel || "Unlocked Abilities"}: {unlockedAbilities.length} / {abilities.length}</p>
-                </motion.div>
+          <div className="abilities-header">
+            <motion.div
+              className="panda-level-info"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h3>{pageLabels?.pandaLevelLabel || "Panda Level"}: {pandaState?.level || 1}</h3>
+              <p>{pageLabels?.unlockedAbilitiesLabel || "Unlocked Abilities"}: {unlockedAbilities.length} / {abilities.length}</p>
+            </motion.div>
 
-                <motion.div
-                  className="abilities-description"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                  <p>
-                    {pageLabels?.abilitiesDescription ||
-                      "Panda abilities help you complete tasks more efficiently and earn more rewards. As your panda levels up, you'll unlock more powerful abilities."}
-                  </p>
-                </motion.div>
-              </div>
+            <motion.div
+              className="abilities-description"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <p>
+                {pageLabels?.abilitiesDescription ||
+                  "Panda abilities help you complete tasks more efficiently and earn more rewards. As your panda levels up, you'll unlock more powerful abilities."}
+              </p>
+            </motion.div>
+          </div>
 
-              <AbilityList
-                abilities={abilities}
-                unlockedAbilities={unlockedAbilities}
-                onActivateAbility={handleActivateAbility}
-                pandaLevel={pandaState?.level || 1}
-                labels={{
-                  filters: pageLabels?.filters,
-                  card: pageLabels?.abilityCard,
-                  detail: pageLabels?.abilityDetail,
-                  noAbilitiesMessage: pageLabels?.noAbilitiesMessage
-                }}
-              />
-            </>
-          )}
+          <AbilityList
+            abilities={abilities}
+            unlockedAbilities={unlockedAbilities}
+            onActivateAbility={handleActivateAbility}
+            pandaLevel={pandaState?.level || 1}
+            isLoading={isLoading}
+            labels={{
+              filters: pageLabels?.filters,
+              card: pageLabels?.abilityCard,
+              detail: pageLabels?.abilityDetail,
+              noAbilitiesMessage: pageLabels?.noAbilitiesMessage
+            }}
+          />
         </div>
 
         {/* Ability unlock notification */}

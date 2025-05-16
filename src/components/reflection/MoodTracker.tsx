@@ -5,6 +5,8 @@ import { MoodType, MoodIntensity, recordMood, getUserMoods, MoodRecord } from '@
 import Button from '@/components/common/Button';
 import { playSound, SoundType } from '@/utils/sound';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
+import EnhancedTextArea from '@/components/common/EnhancedTextArea';
+import EnhancedInput from '@/components/common/EnhancedInput';
 
 interface MoodTrackerProps {
   onMoodRecorded?: (mood: MoodRecord) => void;
@@ -218,13 +220,13 @@ const MoodTracker: React.FC<MoodTrackerProps> = ({
       <div className="intensity-selector mt-4">
         <h3 className="text-lg font-bold mb-2">{labels?.intensityLabel || "How intense is this feeling?"}</h3>
         <div className="flex items-center">
-          <input
+          <EnhancedInput
             type="range"
             min="1"
             max="5"
-            value={intensity}
+            value={intensity.toString()}
             onChange={(e) => setIntensity(parseInt(e.target.value) as MoodIntensity)}
-            className="flex-grow h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            className="flex-grow"
           />
           <span className="ml-3 text-sm font-medium px-2 py-1 bg-jade-100 text-jade-800 rounded-md">
             {getIntensityLabel(intensity)}
@@ -239,11 +241,13 @@ const MoodTracker: React.FC<MoodTrackerProps> = ({
     return (
       <div className="note-input mt-4">
         <h3 className="text-lg font-bold mb-2">{labels?.noteLabel || "Anything you'd like to note? (optional)"}</h3>
-        <textarea
+        <EnhancedTextArea
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-md focus:ring-jade-500 focus:border-jade-500 h-24"
           placeholder={labels?.notePlaceholder || "Write down your thoughts..."}
+          minRows={3}
+          maxRows={6}
+          autoResize={true}
         />
       </div>
     );

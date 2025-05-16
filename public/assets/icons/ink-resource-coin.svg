@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Ink Resource - Coin</title>
+    <defs>
+        <!-- 墨水扩散滤镜 -->
+        <filter id="ink-diffuse" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" result="blur"/>
+            <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 15 -6" result="contrast"/>
+            <feComposite in="contrast" in2="SourceGraphic" operator="in" result="comp"/>
+        </filter>
+        
+        <!-- 墨水纹理滤镜 -->
+        <filter id="ink-texture" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="5" result="noise"/>
+            <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.1 0" result="coloredNoise"/>
+            <feComposite operator="in" in="coloredNoise" in2="SourceGraphic" result="texturedInk"/>
+        </filter>
+        
+        <!-- 金色渐变 -->
+        <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#D4AF37; stop-opacity:0.9"/>
+            <stop offset="70%" style="stop-color:#FFD700; stop-opacity:0.8"/>
+            <stop offset="100%" style="stop-color:#FFDF00; stop-opacity:0.7"/>
+        </linearGradient>
+    </defs>
+    
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- 硬币外圈 - 水墨笔触 -->
+        <circle cx="24" cy="24" r="16" 
+                stroke="url(#gold-gradient)" 
+                stroke-width="3" 
+                filter="url(#ink-diffuse)"></circle>
+        
+        <!-- 硬币内圈 - 水墨笔触 -->
+        <circle cx="24" cy="24" r="12" 
+                stroke="url(#gold-gradient)" 
+                stroke-width="1.5" 
+                stroke-dasharray="2,2"
+                filter="url(#ink-diffuse)"></circle>
+        
+        <!-- 方孔 - 水墨笔触 -->
+        <rect x="20" y="20" width="8" height="8" 
+              stroke="url(#gold-gradient)" 
+              stroke-width="2" 
+              filter="url(#ink-diffuse)"></rect>
+        
+        <!-- 墨水点装饰 -->
+        <g filter="url(#ink-texture)">
+            <circle cx="24" cy="12" r="1" fill="#D4AF37"></circle>
+            <circle cx="24" cy="36" r="1" fill="#FFD700"></circle>
+            <circle cx="12" cy="24" r="1" fill="#FFDF00"></circle>
+            <circle cx="36" cy="24" r="1" fill="#D4AF37"></circle>
+        </g>
+        
+        <!-- 墨水飞溅 -->
+        <g transform="translate(24, 24)" filter="url(#ink-texture)">
+            <circle cx="10" cy="-8" r="0.8" fill="#D4AF37"></circle>
+            <circle cx="-8" cy="10" r="0.6" fill="#FFD700"></circle>
+            <circle cx="-10" cy="-10" r="0.7" fill="#FFDF00"></circle>
+        </g>
+    </g>
+</svg>

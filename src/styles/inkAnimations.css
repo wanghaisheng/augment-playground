@@ -1,0 +1,236 @@
+/* src/styles/inkAnimations.css */
+
+/* 水墨动画容器 */
+.ink-animation-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 水墨扩散效果 */
+.ink-spread {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.8);
+  filter: blur(5px);
+  transform-origin: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 水墨笔触效果 */
+.ink-stroke {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  filter: blur(2px);
+  transform-origin: left center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 水墨流动效果 */
+.ink-flow {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.6);
+  filter: blur(3px);
+  border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 水墨滴落效果 */
+.ink-drop {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  filter: blur(1px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 水墨文字效果 */
+.ink-text {
+  position: relative;
+  display: inline-block;
+  color: #000;
+  font-family: var(--font-title);
+  z-index: 2;
+}
+
+.ink-text-character {
+  position: relative;
+  display: inline-block;
+  margin: 0 2px;
+}
+
+.ink-text-blob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.2);
+  filter: blur(2px);
+  z-index: -1;
+}
+
+/* 水墨边框效果 */
+.ink-border {
+  position: relative;
+  border: none;
+  padding: 1px;
+}
+
+.ink-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid rgba(0, 0, 0, 0.8);
+  border-radius: inherit;
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+/* 水墨按钮效果 */
+.ink-button {
+  position: relative;
+  overflow: hidden;
+  background-color: transparent;
+  border: none;
+  padding: 8px 16px;
+  color: #000;
+  font-family: var(--font-title);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ink-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: inherit;
+  z-index: -1;
+  transition: all 0.3s ease;
+}
+
+.ink-button:hover::before {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.ink-button:active::before {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.ink-button-splash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  filter: blur(2px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 水墨卡片效果 */
+.ink-card {
+  position: relative;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ink-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/assets/textures/paper-texture.png');
+  background-size: cover;
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.ink-card-splash {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.1);
+  filter: blur(3px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 水墨加载效果 */
+.ink-loading {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+.ink-loading-drop {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.8);
+  filter: blur(2px);
+}
+
+/* 水墨颜色变体 */
+.ink-black {
+  --ink-color: rgba(0, 0, 0, 0.8);
+  --ink-color-light: rgba(0, 0, 0, 0.4);
+  --ink-color-lighter: rgba(0, 0, 0, 0.2);
+}
+
+.ink-jade {
+  --ink-color: rgba(0, 100, 0, 0.8);
+  --ink-color-light: rgba(0, 100, 0, 0.4);
+  --ink-color-lighter: rgba(0, 100, 0, 0.2);
+}
+
+.ink-blue {
+  --ink-color: rgba(0, 0, 100, 0.8);
+  --ink-color-light: rgba(0, 0, 100, 0.4);
+  --ink-color-lighter: rgba(0, 0, 100, 0.2);
+}
+
+.ink-red {
+  --ink-color: rgba(100, 0, 0, 0.8);
+  --ink-color-light: rgba(100, 0, 0, 0.4);
+  --ink-color-lighter: rgba(100, 0, 0, 0.2);
+}
+
+.ink-gold {
+  --ink-color: rgba(212, 175, 55, 0.8);
+  --ink-color-light: rgba(212, 175, 55, 0.4);
+  --ink-color-lighter: rgba(212, 175, 55, 0.2);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .ink-animation-container {
+    transform: scale(0.8);
+  }
+}
+
+/* 减少动画 */
+@media (prefers-reduced-motion: reduce) {
+  .ink-animation-container * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}

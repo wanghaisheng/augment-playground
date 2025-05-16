@@ -6,9 +6,11 @@ import { RewardRecord, RewardRarity } from '@/services/rewardService';
 import { playSound, SoundType } from '@/utils/sound';
 import RewardAnimation from '@/components/animation/RewardAnimation';
 import ScrollDialog from './ScrollDialog';
-import { getLuckyPointsTotal, performLuckyDraw } from '@/services/timelyRewardService';
+import { getLuckyPointsTotal, performLuckyDraw, getUserDrawLimitInfo } from '@/services/timelyRewardService';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import LuckyPointsDisplay from './LuckyPointsDisplay';
+import { isUserVip } from '@/services/storeService';
+import { getVipDailyDrawLimits, getDefaultDailyDrawLimit } from '@/services/luckyDrawLimitService';
 
 interface LuckyDrawWheelProps {
   isOpen: boolean;
@@ -36,6 +38,9 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
   const wheelRef = useRef<HTMLDivElement>(null);
   const [wheelRotation, setWheelRotation] = useState(0);
   const [isWheelSpinning, setIsWheelSpinning] = useState(false);
+  const [drawLimits, setDrawLimits] = useState<{ remaining: number; total: number }>({ remaining: 0, total: 0 });
+  const [isVip, setIsVip] = useState<boolean>(false);
+  const [vipLimits, setVipLimits] = useState<Record<number, number>>({});
 
   // 抽奖选项
   const drawOptions = [
@@ -58,10 +63,29 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
     }
   };
 
+  // 加载抽奖次数限制
+  const loadDrawLimits = async () => {
+    try {
+      const limits = await getUserDrawLimitInfo();
+      setDrawLimits(limits);
+
+      // 检查用户是否是VIP
+      const userIsVip = await isUserVip('current-user');
+      setIsVip(userIsVip);
+
+      // 获取VIP抽奖次数限制
+      const vipDrawLimits = getVipDailyDrawLimits();
+      setVipLimits(vipDrawLimits);
+    } catch (err) {
+      console.error('Failed to load draw limits:', err);
+    }
+  };
+
   // 初始加载
   useEffect(() => {
     if (isOpen) {
       loadPoints();
+      loadDrawLimits();
     }
   }, [isOpen]);
 
@@ -73,6 +97,9 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
   // 使用 useRegisterTableRefresh hook 监听幸运点表的变化
   useRegisterTableRefresh('luckyPoints', handleLuckyPointsUpdate);
 
+  // 使用 useRegisterTableRefresh hook 监听抽奖次数限制表的变化
+  useRegisterTableRefresh('luckyDrawLimits', loadDrawLimits);
+
   // 处理抽奖
   const handleDraw = async () => {
     if (points < selectedPoints) {
@@ -80,37 +107,42 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
       return;
     }
 
+    if (drawLimits.remaining <= 0) {
+      setError(`今日抽奖次数已用完，每日限制${drawLimits.total}次`);
+      return;
+    }
+
     try {
       setIsDrawing(true);
       setError(null);
-      
+
       // 播放抽奖音效
       playSound(SoundType.BUTTON_CLICK, 0.5);
-      
+
       // 旋转抽奖轮盘
       setIsWheelSpinning(true);
       const randomRotation = 1080 + Math.random() * 360; // 至少旋转3圈
       setWheelRotation(prevRotation => prevRotation + randomRotation);
-      
+
       // 延迟获取奖励，模拟抽奖过程
       setTimeout(async () => {
         // 执行抽奖
         const result = await performLuckyDraw(selectedPoints);
-        
+
         // 更新幸运点
         setPoints(prev => prev - selectedPoints);
-        
+
         // 设置奖励
         setRewards(result.rewards);
-        
+
         // 停止轮盘旋转
         setIsWheelSpinning(false);
-        
+
         // 显示奖励
         setTimeout(() => {
           setShowReward(true);
           setCurrentRewardIndex(0);
-          
+
           // 播放奖励音效（根据稀有度）
           if (result.rewards.length > 0) {
             const rarity = result.rewards[0].rarity;
@@ -132,7 +164,7 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
                 break;
             }
           }
-          
+
           // 通知父组件
           if (onRewardEarned) {
             onRewardEarned(result.rewards);
@@ -152,7 +184,7 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
   const handleNextReward = () => {
     if (currentRewardIndex < rewards.length - 1) {
       setCurrentRewardIndex(prevIndex => prevIndex + 1);
-      
+
       // 播放奖励音效（根据稀有度）
       const rarity = rewards[currentRewardIndex + 1].rarity;
       switch (rarity) {
@@ -211,7 +243,7 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
             <polygon points="15,0 30,15 15,30 0,15" fill="#e53935" />
           </svg>
         </div>
-        
+
         {/* 轮盘 */}
         <motion.div
           ref={wheelRef}
@@ -268,7 +300,7 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
     return (
       <div className="lucky-draw-reward-display flex flex-col items-center justify-center p-4">
         <h3 className="text-xl font-bold mb-4">恭喜获得奖励！</h3>
-        
+
         <div className="reward-animation-container mb-4">
           <RewardAnimation
             type={currentReward.type}
@@ -285,7 +317,7 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
             playSound={false}
           />
         </div>
-        
+
         <div className="reward-details text-center mb-4">
           <h4 className="text-lg font-bold">{currentReward.name}</h4>
           <p className="text-sm text-gray-600">{currentReward.description}</p>
@@ -293,7 +325,7 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
             <p className="text-sm">数量: {currentReward.amount}</p>
           )}
         </div>
-        
+
         <div className="reward-navigation">
           {currentRewardIndex < rewards.length - 1 ? (
             <Button variant="jade" onClick={handleNextReward}>
@@ -331,10 +363,35 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
               <div className="lucky-points-display text-center mb-4">
                 <LuckyPointsDisplay variant="large" />
                 <p className="text-lg font-bold mt-2">当前幸运点数: <span className="text-gold">{points}</span></p>
+                <div className="draw-limits mt-2">
+                  <p className="text-md">
+                    今日剩余抽奖次数: <span className={drawLimits.remaining > 0 ? "text-jade font-bold" : "text-red-500 font-bold"}>
+                      {drawLimits.remaining}
+                    </span> / <span className="text-jade font-bold">{drawLimits.total}</span>
+                  </p>
+                  {!isVip && (
+                    <div className="vip-promotion mt-2 p-2 bg-gold bg-opacity-10 rounded-lg border border-gold">
+                      <p className="text-sm text-gold">
+                        <span className="font-bold">VIP特权:</span> 每日抽奖次数提升至
+                        <span className="font-bold ml-1">
+                          {getDefaultDailyDrawLimit()} → {vipLimits[1] || 5}/{vipLimits[2] || 7}/{vipLimits[3] || 10}次
+                        </span>
+                      </p>
+                      <Button
+                        variant="gold"
+                        size="small"
+                        className="mt-1"
+                        onClick={onClose}
+                      >
+                        了解VIP特权
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
-              
+
               {renderWheel()}
-              
+
               <div className="lucky-draw-options flex justify-center gap-4 mt-4">
                 {drawOptions.map(option => (
                   <motion.div
@@ -355,12 +412,12 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
                   </motion.div>
                 ))}
               </div>
-              
+
               <div className="lucky-draw-controls text-center mt-4">
                 {error && (
                   <p className="text-red-500 text-sm mb-2">{error}</p>
                 )}
-                
+
                 <Button
                   variant="gold"
                   onClick={handleDraw}

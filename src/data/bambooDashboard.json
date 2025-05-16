@@ -1,0 +1,80 @@
+{
+  "en": {
+    "labels": {
+      "title": "Bamboo Dashboard",
+      "subtitle": "Track your bamboo planting and trading progress",
+      "statisticsTab": {
+        "title": "Statistics",
+        "plantingStats": "Planting Stats",
+        "totalPlanted": "Total Planted",
+        "totalHarvested": "Total Harvested",
+        "totalYield": "Total Yield",
+        "averageYield": "Average Yield",
+        "tradingStats": "Trading Stats",
+        "totalTraded": "Total Traded",
+        "bambooToResources": "Bamboo → Resources",
+        "resourcesToBamboo": "Resources → Bamboo",
+        "netTradeBalance": "Net Trade Balance"
+      },
+      "achievementsTab": {
+        "title": "Achievements",
+        "achievementUnlocked": "Achievement Unlocked!",
+        "progress": "Progress"
+      },
+      "tipsTab": {
+        "title": "Tips",
+        "categories": {
+          "all": "All",
+          "planting": "Planting",
+          "harvesting": "Harvesting",
+          "trading": "Trading",
+          "general": "General"
+        }
+      },
+      "actions": {
+        "plant": "Plant",
+        "trade": "Trade",
+        "viewDetails": "View Details"
+      }
+    }
+  },
+  "zh": {
+    "labels": {
+      "title": "竹子仪表盘",
+      "subtitle": "跟踪你的竹子种植和交易进度",
+      "statisticsTab": {
+        "title": "统计数据",
+        "plantingStats": "种植统计",
+        "totalPlanted": "总种植数量",
+        "totalHarvested": "已收获数量",
+        "totalYield": "总产量",
+        "averageYield": "平均产量",
+        "tradingStats": "交易统计",
+        "totalTraded": "总交易量",
+        "bambooToResources": "竹子兑换资源",
+        "resourcesToBamboo": "资源兑换竹子",
+        "netTradeBalance": "净交易余额"
+      },
+      "achievementsTab": {
+        "title": "成就",
+        "achievementUnlocked": "成就解锁！",
+        "progress": "进度"
+      },
+      "tipsTab": {
+        "title": "小贴士",
+        "categories": {
+          "all": "全部",
+          "planting": "种植",
+          "harvesting": "收获",
+          "trading": "交易",
+          "general": "通用"
+        }
+      },
+      "actions": {
+        "plant": "种植",
+        "trade": "交易",
+        "viewDetails": "查看详情"
+      }
+    }
+  }
+}

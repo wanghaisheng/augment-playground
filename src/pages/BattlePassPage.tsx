@@ -58,23 +58,6 @@ interface BattlePassPageViewData {
 }
 
 /**
- * Interface for the Battle Pass page state
- */
-interface BattlePassPageState {
-  isLoading: boolean;
-  error: Error | null;
-  battlePassData: BattlePassPageViewData | null;
-  claimingReward: boolean;
-  completingTask: boolean;
-  purchasing: boolean;
-  showLevelUpModal: boolean;
-  newLevel: number;
-  previousLevel: number;
-  toastVisible: boolean;
-  completedTask: {name: string, expReward: number} | null;
-}
-
-/**
  * Battle Pass Page
  * Displays the current Battle Pass season, levels, rewards, and tasks
  */
@@ -87,8 +70,8 @@ const BattlePassPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [battlePassData, setBattlePassData] = useState<BattlePassPageViewData | null>(null);
-  const [claimingReward, setClaimingReward] = useState<boolean>(false);
-  const [completingTask, setCompletingTask] = useState<boolean>(false);
+  const [_claimingReward, setClaimingReward] = useState<boolean>(false);
+  const [_completingTask, setCompletingTask] = useState<boolean>(false);
   const [purchasing, setPurchasing] = useState<boolean>(false);
   const [purchasingLevel, setPurchasingLevel] = useState<boolean>(false);
   const [levelsToPurchase, setLevelsToPurchase] = useState<number>(1);
@@ -103,7 +86,7 @@ const BattlePassPage: React.FC = () => {
   const [completedTask, setCompletedTask] = useState<{name: string, expReward: number} | null>(null);
 
   // Mock data for leaderboard
-  const [leaderboardEntries, setLeaderboardEntries] = useState<Array<{
+  const [leaderboardEntries, _setLeaderboardEntries] = useState<Array<{
     userId: string;
     userName: string;
     avatarUrl?: string;
@@ -120,7 +103,7 @@ const BattlePassPage: React.FC = () => {
   ]);
 
   // Mock data for achievements
-  const [achievements, setAchievements] = useState<Array<{
+  const [achievements, _setAchievements] = useState<Array<{
     id: string;
     name: string;
     description: string;
@@ -180,7 +163,7 @@ const BattlePassPage: React.FC = () => {
   ]);
 
   // Mock data for history
-  const [historyEntries, setHistoryEntries] = useState<Array<{
+  const [historyEntries, _setHistoryEntries] = useState<Array<{
     seasonId: string;
     seasonName: string;
     seasonTheme: string;
@@ -254,7 +237,7 @@ const BattlePassPage: React.FC = () => {
   ]);
 
   // Mock data for friends
-  const [friends, setFriends] = useState<Array<{
+  const [friends, _setFriends] = useState<Array<{
     id: string;
     name: string;
     avatarUrl?: string;
@@ -401,7 +384,7 @@ const BattlePassPage: React.FC = () => {
   ]);
 
   // Mock data for daily check-in
-  const [dailyRewards, setDailyRewards] = useState<Array<{
+  const [dailyRewards, _setDailyRewards] = useState<Array<{
     day: number;
     rewardName: string;
     rewardIcon?: string;
@@ -424,7 +407,6 @@ const BattlePassPage: React.FC = () => {
     isPending: isLabelsPending,
     isError: isLabelsError,
     error: labelsError,
-    refetch: refetchLabels
   } = useLocalizedView<null, BattlePassPageViewLabelsBundle>(
     'battlePassPageViewContent',
     fetchBattlePassPageView
@@ -449,18 +431,6 @@ const BattlePassPage: React.FC = () => {
     newLevel: number;
   } | null>(null);
 
-  const [achievementToShare, setAchievementToShare] = useState<{
-    id: string;
-    name: string;
-    description: string;
-    icon?: string;
-    rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
-    unlockedAt: string;
-    userName: string;
-    userLevel: number;
-    seasonName: string;
-  } | null>(null);
-
   // Demo functions for animations
   const showReward = (reward: typeof rewardToShow) => {
     setRewardToShow(reward);
@@ -470,11 +440,6 @@ const BattlePassPage: React.FC = () => {
   const showLevelUp = (previousLevel: number, newLevel: number) => {
     setLevelUpData({ previousLevel, newLevel });
     setShowLevelUpEffect(true);
-  };
-
-  const showAchievementShare = (achievement: typeof achievementToShare) => {
-    setAchievementToShare(achievement);
-    setShowShareAchievement(true);
   };
 
   /**
@@ -651,7 +616,7 @@ const BattlePassPage: React.FC = () => {
     return (
       <PageTransition>
         <div className="battle-pass-page">
-          <LoadingSpinner message={labels?.loadingMessage || 'Loading Battle Pass...'} />
+          <LoadingSpinner text={labels.loadingMessage || 'Loading Battle Pass...'} />
         </div>
       </PageTransition>
     );
@@ -663,10 +628,11 @@ const BattlePassPage: React.FC = () => {
       <PageTransition>
         <div className="battle-pass-page">
           <ErrorDisplay
-            title={labels?.errorMessages?.failedToLoad || 'Error'}
-            message={(error?.message || labelsError?.message) || 'Failed to load Battle Pass data'}
+            error={error || labelsError}
+            title={labels.errorMessages?.failedToLoad || 'Error'}
+            messageTemplate={ (error?.message || labelsError?.message) ? 'Details: {message}' : (labels.errorMessages?.dataLoadFailedMessage || 'Failed to load Battle Pass data')}
             onRetry={handleRetry}
-            retryButtonText={labels?.buttons?.retry || 'Retry'}
+            retryButtonText={labels.buttons?.retry || 'Retry'}
           />
         </div>
       </PageTransition>
@@ -708,15 +674,15 @@ const BattlePassPage: React.FC = () => {
           onClose={() => setShowRewardAnimation(false)}
           labels={{
             rewardTitle: labels.rewardTitle || 'Reward Unlocked!',
-            closeButtonLabel: labels.closeButtonLabel || 'Close',
-            claimButtonLabel: labels.claimButtonLabel || 'Claim',
-            rarityLabel: labels.rarityLabel || 'Rarity',
+            closeButtonLabel: labels.buttons?.close || 'Close',
+            claimButtonLabel: labels.claimRewardButton || 'Claim',
+            rarityLabel: labels.rarityLabels?.common ? 'Rarity' : '',
             rarityLabels: {
-              common: labels.commonRarityLabel || 'Common',
-              uncommon: labels.uncommonRarityLabel || 'Uncommon',
-              rare: labels.rareRarityLabel || 'Rare',
-              epic: labels.epicRarityLabel || 'Epic',
-              legendary: labels.legendaryRarityLabel || 'Legendary'
+              common: labels.rarityLabels?.common || 'Common',
+              uncommon: labels.rarityLabels?.uncommon || 'Uncommon',
+              rare: labels.rarityLabels?.rare || 'Rare',
+              epic: labels.rarityLabels?.epic || 'Epic',
+              legendary: labels.rarityLabels?.legendary || 'Legendary'
             }
           }}
         />
@@ -732,37 +698,47 @@ const BattlePassPage: React.FC = () => {
           labels={{
             levelUpTitle: labels.levelUpTitle || 'Level Up!',
             levelUpMessage: labels.levelUpMessage || 'Congratulations! You\'ve reached a new level in the Battle Pass!',
-            continueButtonLabel: labels.continueButtonLabel || 'Continue',
+            continueButtonLabel: labels.buttons?.continue || 'Continue',
             levelLabel: labels.levelLabel || 'Level'
           }}
         />
       )}
 
       {/* Share Achievement */}
-      {achievementToShare && (
+      {showShareAchievement && (
         <BattlePassShareAchievement
-          achievement={achievementToShare}
+          achievement={{
+            id: 'placeholder-id',
+            name: 'Placeholder Achievement',
+            description: 'This is a placeholder description.',
+            rarity: 'common',
+            unlockedAt: new Date().toISOString(),
+            userName: 'Player',
+            userLevel: 1,
+            seasonName: battlePassData?.pass?.seasonName || 'Current Season',
+            // icon: 'placeholder-icon.png' // Optional icon
+          }}
           isVisible={showShareAchievement}
           onClose={() => setShowShareAchievement(false)}
           onShare={(platform) => console.log(`Sharing achievement to ${platform}`)}
           labels={{
             shareTitle: labels.shareTitle || 'Share Achievement',
-            closeButtonLabel: labels.closeButtonLabel || 'Close',
-            downloadButtonLabel: labels.downloadButtonLabel || 'Download',
-            copyButtonLabel: labels.copyButtonLabel || 'Copy',
+            closeButtonLabel: labels.buttons?.close || 'Close',
+            downloadButtonLabel: labels.buttons?.download || 'Download',
+            copyButtonLabel: labels.buttons?.copyLink || 'Copy',
             twitterButtonLabel: labels.twitterButtonLabel || 'Twitter',
             facebookButtonLabel: labels.facebookButtonLabel || 'Facebook',
             instagramButtonLabel: labels.instagramButtonLabel || 'Instagram',
             achievementUnlockedLabel: labels.achievementUnlockedLabel || 'Achievement Unlocked!',
             seasonLabel: labels.seasonLabel || 'Season',
             levelLabel: labels.levelLabel || 'Level',
-            rarityLabel: labels.rarityLabel || 'Rarity',
+            rarityLabel: labels.rarityLabels?.common ? 'Rarity' : '',
             rarityLabels: {
-              common: labels.commonRarityLabel || 'Common',
-              uncommon: labels.uncommonRarityLabel || 'Uncommon',
-              rare: labels.rareRarityLabel || 'Rare',
-              epic: labels.epicRarityLabel || 'Epic',
-              legendary: labels.legendaryRarityLabel || 'Legendary'
+              common: labels.rarityLabels?.common || 'Common',
+              uncommon: labels.rarityLabels?.uncommon || 'Uncommon',
+              rare: labels.rarityLabels?.rare || 'Rare',
+              epic: labels.rarityLabels?.epic || 'Epic',
+              legendary: labels.rarityLabels?.legendary || 'Legendary'
             },
             copiedLabel: labels.copiedLabel || 'Copied!'
           }}
@@ -781,9 +757,9 @@ const BattlePassPage: React.FC = () => {
             levelUpMessage: labels.levelUpMessage?.replace('{prevLevel}', previousLevel.toString()).replace('{newLevel}', newLevel.toString()) ||
                            `You have advanced from level ${previousLevel} to level ${newLevel}!`,
             closeButton: labels.buttons?.close || 'Continue',
-            rewardsTitle: labels.rewardsTitle || 'New Rewards Unlocked',
-            freeRewardLabel: labels.freeRewardLabel || 'Free Reward',
-            premiumRewardLabel: labels.premiumRewardLabel || 'Premium Reward',
+            rewardsTitle: labels.rewardTitle || 'New Rewards Unlocked',
+            freeRewardLabel: labels.freeRewardsLabel || 'Free Reward',
+            premiumRewardLabel: labels.premiumRewardsLabel || 'Premium Reward',
             premiumLockedLabel: labels.premiumLockedLabel || 'Premium Pass Required'
           }}
         />
@@ -792,7 +768,7 @@ const BattlePassPage: React.FC = () => {
         <BattlePassSeasonTheme
           themeKey={battlePassData?.pass?.seasonTheme || 'default'}
           seasonName={battlePassData?.pass?.seasonName || 'Current Season'}
-          endDate={battlePassData?.pass?.endDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()}
+          endDate={battlePassData?.pass?.endDate ? new Date(battlePassData.pass.endDate).toISOString() : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()}
           labels={{
             seasonEndsIn: labels.seasonEndsIn || 'Season ends in',
             days: labels.daysLabel || 'days',
@@ -899,7 +875,7 @@ const BattlePassPage: React.FC = () => {
                 }}
                 disabled={purchasing}
               >
-                {purchasing ? 'Processing...' : labels.purchaseStandardPassButton}
+                {purchasing ? (labels.buttons?.processing || 'Processing...') : labels.purchaseStandardPassButton}
               </button>
               <button
                 className="purchase-premium-button imperial-button"
@@ -934,7 +910,7 @@ const BattlePassPage: React.FC = () => {
                 }}
                 disabled={purchasing}
               >
-                {purchasing ? 'Processing...' : labels.purchasePremiumPassButton}
+                {purchasing ? (labels.buttons?.processing || 'Processing...') : labels.purchasePremiumPassButton}
               </button>
             </motion.div>
           )}
@@ -950,8 +926,8 @@ const BattlePassPage: React.FC = () => {
               totalExpEarned={battlePassData.userProgress.totalExpEarned || 0}
               completedTasks={battlePassData.activeTasks.filter(task => task.isCompleted).length}
               totalTasks={battlePassData.activeTasks.length}
-              claimedRewards={(battlePassData.userProgress.claimedFreeLevels?.split(',').filter(Boolean).length || 0) +
-                             (battlePassData.userProgress.claimedPaidLevels?.split(',').filter(Boolean).length || 0)}
+              claimedRewards={(battlePassData.userProgress.claimedFreeLevels?.filter(Boolean).length || 0) +
+                             (battlePassData.userProgress.claimedPaidLevels?.filter(Boolean).length || 0)}
               totalRewards={battlePassData.levels.length * 2} // Free + Premium rewards
               daysRemaining={Math.ceil((new Date(battlePassData.pass.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))}
               hasPremiumPass={battlePassData.userOwnership?.passType === BattlePassType.PREMIUM}
@@ -986,12 +962,12 @@ const BattlePassPage: React.FC = () => {
                 }}
                 labels={{
                   checkinTitle: labels.checkinTitle || 'Daily Check-in',
-                  claimButtonLabel: labels.claimButtonLabel || 'Claim',
-                  closeButtonLabel: labels.closeButtonLabel || 'Close',
+                  claimButtonLabel: labels.claimRewardButton || 'Claim',
+                  closeButtonLabel: labels.buttons?.close || 'Close',
                   streakLabel: labels.streakLabel || 'Current Streak',
-                  claimedLabel: labels.claimedLabel || 'Claimed',
+                  claimedLabel: labels.alreadyClaimedLabel || 'Claimed',
                   todayLabel: labels.todayLabel || 'Today',
-                  lockedLabel: labels.lockedLabel || 'Locked',
+                  lockedLabel: labels.lockedRewardLabel || 'Locked',
                   rewardClaimedLabel: labels.rewardClaimedLabel || 'Reward Claimed!',
                   dayLabel: labels.dayLabel || 'Day'
                 }}
@@ -1013,9 +989,9 @@ const BattlePassPage: React.FC = () => {
                 }}
                 labels={{
                   inviteTitle: labels.inviteTitle || 'Invite Friends',
-                  inviteButtonLabel: labels.inviteButtonLabel || 'Invite',
-                  copyLinkButtonLabel: labels.copyLinkButtonLabel || 'Copy Invite Link',
-                  closeButtonLabel: labels.closeButtonLabel || 'Close',
+                  inviteButtonLabel: labels.buttons?.invite || 'Invite',
+                  copyLinkButtonLabel: labels.buttons?.copyLink || 'Copy Invite Link',
+                  closeButtonLabel: labels.buttons?.close || 'Close',
                   noFriendsLabel: labels.noFriendsLabel || 'No friends to invite',
                   inviteMessageLabel: labels.inviteMessageLabel || 'Invite your friends to join the Battle Pass and earn rewards together!',
                   inviteRewardsLabel: labels.inviteRewardsLabel || 'You\'ll receive 50 diamonds for each friend who joins!',
@@ -1067,12 +1043,12 @@ const BattlePassPage: React.FC = () => {
                 }}
                 labels={{
                   eventsTitle: labels.eventsTitle || 'Special Events',
-                  joinButtonLabel: labels.joinButtonLabel || 'Join Event',
-                  claimRewardsButtonLabel: labels.claimRewardsButtonLabel || 'Claim Rewards',
-                  closeButtonLabel: labels.closeButtonLabel || 'Close',
+                  joinButtonLabel: labels.buttons?.participate || 'Join Event',
+                  claimRewardsButtonLabel: labels.buttons?.claimRewardsButtonLabel || 'Claim Rewards',
+                  closeButtonLabel: labels.buttons?.close || 'Close',
                   noEventsLabel: labels.noEventsLabel || 'No events available',
                   premiumOnlyLabel: labels.premiumOnlyLabel || 'Premium Only',
-                  eventDetailsButtonLabel: labels.eventDetailsButtonLabel || 'Details',
+                  eventDetailsButtonLabel: labels.buttons?.viewDetails || 'Details',
                   eventRewardsLabel: labels.eventRewardsLabel || 'Rewards',
                   eventRequirementsLabel: labels.eventRequirementsLabel || 'Requirements',
                   eventProgressLabel: labels.eventProgressLabel || 'Progress',
@@ -1126,12 +1102,12 @@ const BattlePassPage: React.FC = () => {
                 }}
                 labels={{
                   challengesTitle: labels.challengesTitle || 'Limited-Time Challenges',
-                  acceptButtonLabel: labels.acceptButtonLabel || 'Accept',
-                  claimRewardsButtonLabel: labels.claimRewardsButtonLabel || 'Claim Rewards',
-                  closeButtonLabel: labels.closeButtonLabel || 'Close',
+                  acceptButtonLabel: labels.buttons?.acceptChallenge || 'Accept',
+                  claimRewardsButtonLabel: labels.buttons?.claimRewardsButtonLabel || 'Claim Rewards',
+                  closeButtonLabel: labels.buttons?.close || 'Close',
                   noChallengesLabel: labels.noChallengesLabel || 'No challenges available',
                   premiumOnlyLabel: labels.premiumOnlyLabel || 'Premium Only',
-                  challengeDetailsButtonLabel: labels.challengeDetailsButtonLabel || 'Details',
+                  challengeDetailsButtonLabel: labels.buttons?.viewDetails || 'Details',
                   challengeRewardsLabel: labels.challengeRewardsLabel || 'Rewards',
                   challengeStepsLabel: labels.challengeStepsLabel || 'Steps',
                   challengeDifficultyLabel: labels.challengeDifficultyLabel || 'Difficulty',
@@ -1183,9 +1159,9 @@ const BattlePassPage: React.FC = () => {
                   freePassText: labels.freePassText || 'Free Pass',
                   notableRewardsLabel: labels.notableRewardsLabel || 'Notable Rewards',
                   achievementsLabel: labels.achievementsLabel || 'Achievements',
-                  closeButtonLabel: labels.closeButtonLabel || 'Close',
+                  closeButtonLabel: labels.buttons?.close || 'Close',
                   noHistoryLabel: labels.noHistoryLabel || 'No season history yet',
-                  viewDetailsButtonLabel: labels.viewDetailsButtonLabel || 'View Details',
+                  viewDetailsButtonLabel: labels.buttons?.viewDetails || 'View Details',
                   seasonDatesLabel: labels.seasonDatesLabel || 'Season Dates'
                 }}
               />
@@ -1210,37 +1186,20 @@ const BattlePassPage: React.FC = () => {
                   });
                 }
               }}
-              onShareAchievement={(achievementId) => {
-                // Show share achievement modal
-                const achievement = achievements.find(a => a.id === achievementId);
-                if (achievement) {
-                  showAchievementShare({
-                    id: achievement.id,
-                    name: achievement.name,
-                    description: achievement.description,
-                    icon: achievement.icon,
-                    rarity: achievement.rarity,
-                    unlockedAt: achievement.unlockedAt || new Date().toISOString(),
-                    userName: 'You',
-                    userLevel: battlePassData.userProgress?.currentLevel || 1,
-                    seasonName: battlePassData.pass?.seasonName || 'Current Season'
-                  });
-                }
-              }}
               labels={{
                 achievementsTitle: labels.achievementsTitle || 'Achievements',
                 progressLabel: labels.progressLabel || 'Progress',
-                claimButtonLabel: labels.claimButtonLabel || 'Claim',
-                lockedLabel: labels.lockedLabel || 'Locked',
+                claimButtonLabel: labels.claimRewardButton || 'Claim',
+                lockedLabel: labels.lockedRewardLabel || 'Locked',
                 unlockedLabel: labels.unlockedLabel || 'Unlocked',
-                closeButtonLabel: labels.closeButtonLabel || 'Close',
+                closeButtonLabel: labels.buttons?.close || 'Close',
                 noAchievementsLabel: labels.noAchievementsLabel || 'No achievements yet',
                 rarityLabels: {
-                  common: labels.commonRarityLabel || 'Common',
-                  uncommon: labels.uncommonRarityLabel || 'Uncommon',
-                  rare: labels.rareRarityLabel || 'Rare',
-                  epic: labels.epicRarityLabel || 'Epic',
-                  legendary: labels.legendaryRarityLabel || 'Legendary'
+                  common: labels.rarityLabels?.common || 'Common',
+                  uncommon: labels.rarityLabels?.uncommon || 'Uncommon',
+                  rare: labels.rarityLabels?.rare || 'Rare',
+                  epic: labels.rarityLabels?.epic || 'Epic',
+                  legendary: labels.rarityLabels?.legendary || 'Legendary'
                 }
               }}
             />
@@ -1261,7 +1220,7 @@ const BattlePassPage: React.FC = () => {
                 easyTasksLabel: labels.easyTasksLabel || 'Easy',
                 quickTasksLabel: labels.quickTasksLabel || 'Quick',
                 highRewardTasksLabel: labels.highRewardTasksLabel || 'High Reward',
-                startTaskButtonLabel: labels.startTaskButtonLabel || 'Start Task',
+                startTaskButtonLabel: labels.buttons?.startTask || 'Start Task',
                 noRecommendationsLabel: labels.noRecommendationsLabel || 'No recommendations available',
                 difficultyLabel: labels.difficultyLabel || 'Difficulty',
                 timeLabel: labels.timeLabel || 'Time',
@@ -1280,7 +1239,7 @@ const BattlePassPage: React.FC = () => {
               freeRewardsLabel: labels.freeRewardsLabel || 'Free Rewards',
               premiumRewardsLabel: labels.premiumRewardsLabel || 'Premium Rewards',
               premiumLockedLabel: labels.premiumLockedLabel || 'Premium Pass Required',
-              closeButtonLabel: labels.closeButtonLabel || 'Close'
+              closeButtonLabel: labels.buttons?.close || 'Close'
             }}
           />
 
@@ -1341,7 +1300,7 @@ const BattlePassPage: React.FC = () => {
 
                         if (result) {
                           // Play purchase sound
-                          playSound(SoundType.PURCHASE);
+                          playSound(SoundType.REWARD_EPIC);
                           // Refresh Battle Pass data
                           fetchBattlePassData();
                         } else {
@@ -1357,7 +1316,7 @@ const BattlePassPage: React.FC = () => {
                     }}
                     disabled={purchasingLevel}
                   >
-                    {purchasingLevel ? 'Processing...' : `${labels.levelPurchaseButton} (${levelsToPurchase * battlePassData.pass.levelPurchaseDiamondCost} 💎)`}
+                    {purchasingLevel ? (labels.buttons?.processing || 'Processing...') : `${labels.levelPurchaseButton} (${levelsToPurchase * battlePassData.pass.levelPurchaseDiamondCost} 💎)`}
                   </button>
                 </div>
               )}
@@ -1367,11 +1326,11 @@ const BattlePassPage: React.FC = () => {
               {battlePassData.levels && battlePassData.levels.map((level) => {
                 // Get claimed levels arrays
                 const claimedFreeLevels = battlePassData.userProgress?.claimedFreeLevels
-                  ? battlePassData.userProgress.claimedFreeLevels.split(',').filter(Boolean).map(Number)
+                  ? battlePassData.userProgress.claimedFreeLevels.filter(Boolean)
                   : [];
 
                 const claimedPaidLevels = battlePassData.userProgress?.claimedPaidLevels
-                  ? battlePassData.userProgress.claimedPaidLevels.split(',').filter(Boolean).map(Number)
+                  ? battlePassData.userProgress.claimedPaidLevels.filter(Boolean)
                   : [];
 
                 // Check if user has purchased the pass

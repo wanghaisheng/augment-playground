@@ -1,7 +1,7 @@
 // src/components/task/TaskReminderForm.tsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
+import {
   scheduleTaskReminder,
   createCustomReminder
 } from '@/services/taskReminderService';
@@ -10,6 +10,8 @@ import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { playSound, SoundType } from '@/utils/sound';
 import ScrollDialog from '@/components/game/ScrollDialog';
+import EnhancedTextArea from '@/components/common/EnhancedTextArea';
+import EnhancedInput from '@/components/common/EnhancedInput';
 
 interface TaskReminderFormProps {
   isOpen: boolean;
@@ -35,7 +37,7 @@ const TaskReminderForm: React.FC<TaskReminderFormProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [taskTitle, setTaskTitle] = useState<string>('');
-  
+
   // 加载任务标题
   React.useEffect(() => {
     const loadTaskTitle = async () => {
@@ -48,7 +50,7 @@ const TaskReminderForm: React.FC<TaskReminderFormProps> = ({
         console.error('Failed to load task:', err);
       }
     };
-    
+
     if (isOpen && taskId) {
       loadTaskTitle();
     }
@@ -57,20 +59,20 @@ const TaskReminderForm: React.FC<TaskReminderFormProps> = ({
   // 处理提交表单
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       setIsSubmitting(true);
       setError(null);
-      
+
       // 创建提醒时间
       const reminderDateTime = new Date(`${reminderDate}T${reminderTime}`);
-      
+
       // 检查提醒时间是否有效
       if (reminderDateTime < new Date()) {
         setError('提醒时间不能早于当前时间');
         return;
       }
-      
+
       // 创建提醒
       if (reminderType === 'scheduled') {
         await scheduleTaskReminder(taskId, reminderDateTime);
@@ -79,18 +81,18 @@ const TaskReminderForm: React.FC<TaskReminderFormProps> = ({
           setError('请输入自定义消息');
           return;
         }
-        
+
         await createCustomReminder(taskId, reminderDateTime, customMessage);
       }
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 通知父组件
       if (onReminderCreated) {
         onReminderCreated();
       }
-      
+
       // 关闭对话框
       onClose();
     } catch (err) {
@@ -117,85 +119,79 @@ const TaskReminderForm: React.FC<TaskReminderFormProps> = ({
               {error}
             </div>
           )}
-          
+
           {/* 任务信息 */}
           <div className="task-info mb-4 p-3 bg-gray-50 rounded-md">
             <h3 className="text-md font-bold mb-1">任务</h3>
             <p className="text-gray-700">{taskTitle}</p>
           </div>
-          
+
           {/* 提醒类型 */}
           <div className="reminder-type-selector mb-4">
             <h3 className="text-md font-bold mb-2">提醒类型</h3>
             <div className="flex gap-2">
-              <button
+              <Button
                 type="button"
-                className={`flex-1 p-2 rounded-md ${
-                  reminderType === 'scheduled' ? 'bg-jade-100 text-jade-800 border border-jade-300' : 'bg-gray-100 text-gray-800 border border-gray-300'
-                }`}
+                variant={reminderType === 'scheduled' ? 'jade' : 'secondary'}
                 onClick={() => setReminderType('scheduled')}
+                className="flex-1"
               >
                 计划提醒
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className={`flex-1 p-2 rounded-md ${
-                  reminderType === 'custom' ? 'bg-jade-100 text-jade-800 border border-jade-300' : 'bg-gray-100 text-gray-800 border border-gray-300'
-                }`}
+                variant={reminderType === 'custom' ? 'jade' : 'secondary'}
                 onClick={() => setReminderType('custom')}
+                className="flex-1"
               >
                 自定义提醒
-              </button>
+              </Button>
             </div>
           </div>
-          
+
           {/* 提醒时间 */}
           <div className="reminder-time-selector mb-4">
             <h3 className="text-md font-bold mb-2">提醒时间</h3>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label htmlFor="reminderDate" className="block text-sm text-gray-700 mb-1">
-                  日期
-                </label>
-                <input
+                <EnhancedInput
                   type="date"
                   id="reminderDate"
+                  label="日期"
                   value={reminderDate}
                   onChange={(e) => setReminderDate(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-jade-500 focus:border-jade-500"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="reminderTime" className="block text-sm text-gray-700 mb-1">
-                  时间
-                </label>
-                <input
+                <EnhancedInput
                   type="time"
                   id="reminderTime"
+                  label="时间"
                   value={reminderTime}
                   onChange={(e) => setReminderTime(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-jade-500 focus:border-jade-500"
                   required
                 />
               </div>
             </div>
           </div>
-          
+
           {/* 自定义消息 */}
           {reminderType === 'custom' && (
             <div className="custom-message-input mb-4">
               <h3 className="text-md font-bold mb-2">自定义消息</h3>
-              <textarea
+              <EnhancedTextArea
                 value={customMessage}
                 onChange={(e) => setCustomMessage(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-jade-500 focus:border-jade-500 h-24"
                 placeholder="输入自定义提醒消息..."
                 required={reminderType === 'custom'}
+                minRows={3}
+                maxRows={6}
+                autoResize={true}
               />
             </div>
           )}
-          
+
           {/* 提交按钮 */}
           <div className="form-actions flex justify-end gap-2 mt-4">
             <Button

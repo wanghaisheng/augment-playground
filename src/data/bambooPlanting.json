@@ -1,0 +1,172 @@
+{
+  "en": {
+    "labels": {
+      "title": "Bamboo Planting",
+      "subtitle": "Grow your own bamboo and harvest resources",
+      "plotsSection": {
+        "title": "Bamboo Plots",
+        "unlockPlotButton": "Unlock",
+        "upgradePlotButton": "Upgrade",
+        "plotStatus": {
+          "locked": "Locked",
+          "level": "Level"
+        },
+        "plotAttributes": {
+          "fertility": "Fertility",
+          "moisture": "Moisture",
+          "sunlight": "Sunlight"
+        }
+      },
+      "seedsSection": {
+        "title": "Select Seed",
+        "unlockSeedButton": "Unlock",
+        "rarityLabels": {
+          "common": "Common",
+          "uncommon": "Uncommon",
+          "rare": "Rare",
+          "epic": "Epic",
+          "legendary": "Legendary"
+        },
+        "growthTime": "Growth Time",
+        "yield": "Yield"
+      },
+      "plantingSection": {
+        "title": "Planting Area",
+        "plantButton": "Plant",
+        "waterButton": "Water",
+        "fertilizeButton": "Fertilize",
+        "harvestButton": "Harvest",
+        "plantDetails": "Plant Details",
+        "growthStages": {
+          "seed": "Seed Stage",
+          "sprout": "Sprout Stage",
+          "seedling": "Seedling Stage",
+          "growth": "Growth Stage",
+          "mature": "Mature Stage",
+          "harvested": "Harvested",
+          "readyToHarvest": "Ready to Harvest",
+          "unknown": "Unknown Stage"
+        },
+        "healthStatus": {
+          "healthy": "Healthy",
+          "good": "Good",
+          "fair": "Fair",
+          "poor": "Poor",
+          "unhealthy": "Unhealthy"
+        },
+        "wateringStatus": {
+          "watered": "Watered",
+          "needsWater": "Needs Water"
+        },
+        "fertilizingStatus": {
+          "fertilized": "Fertilized",
+          "notFertilized": "Not Fertilized",
+          "canFertilize": "Can Fertilize"
+        },
+        "lastWatered": "Last Watered",
+        "lastFertilized": "Last Fertilized",
+        "estimatedMaturity": "Estimated Maturity",
+        "expectedYield": "Expected Yield"
+      },
+      "emptyStates": {
+        "noPlots": "No bamboo plots available",
+        "noSeeds": "No bamboo seeds available",
+        "noPlants": "No plants in this plot"
+      },
+      "errors": {
+        "failedToLoadPlots": "Failed to load bamboo plots",
+        "failedToLoadSeeds": "Failed to load bamboo seeds",
+        "failedToLoadPlants": "Failed to load plants",
+        "failedToPlant": "Failed to plant bamboo",
+        "failedToWater": "Failed to water plant",
+        "failedToFertilize": "Failed to fertilize plant",
+        "failedToHarvest": "Failed to harvest bamboo"
+      }
+    }
+  },
+  "zh": {
+    "labels": {
+      "title": "竹子种植",
+      "subtitle": "种植自己的竹子并收获资源",
+      "plotsSection": {
+        "title": "竹子种植地块",
+        "unlockPlotButton": "解锁",
+        "upgradePlotButton": "升级",
+        "plotStatus": {
+          "locked": "未解锁",
+          "level": "等级"
+        },
+        "plotAttributes": {
+          "fertility": "肥力",
+          "moisture": "水分",
+          "sunlight": "光照"
+        }
+      },
+      "seedsSection": {
+        "title": "选择种子",
+        "unlockSeedButton": "解锁",
+        "rarityLabels": {
+          "common": "普通",
+          "uncommon": "优质",
+          "rare": "稀有",
+          "epic": "史诗",
+          "legendary": "传说"
+        },
+        "growthTime": "生长时间",
+        "yield": "产量"
+      },
+      "plantingSection": {
+        "title": "种植区域",
+        "plantButton": "种植",
+        "waterButton": "浇水",
+        "fertilizeButton": "施肥",
+        "harvestButton": "收获",
+        "plantDetails": "植物详情",
+        "growthStages": {
+          "seed": "种子期",
+          "sprout": "发芽期",
+          "seedling": "幼苗期",
+          "growth": "生长期",
+          "mature": "成熟期",
+          "harvested": "已收获",
+          "readyToHarvest": "可收获",
+          "unknown": "未知阶段"
+        },
+        "healthStatus": {
+          "healthy": "健康",
+          "good": "良好",
+          "fair": "一般",
+          "poor": "较差",
+          "unhealthy": "不健康"
+        },
+        "wateringStatus": {
+          "watered": "已浇水",
+          "needsWater": "需要浇水"
+        },
+        "fertilizingStatus": {
+          "fertilized": "已施肥",
+          "notFertilized": "未施肥",
+          "canFertilize": "可以施肥"
+        },
+        "lastWatered": "上次浇水",
+        "lastFertilized": "上次施肥",
+        "estimatedMaturity": "预计成熟",
+        "expectedYield": "预期产量"
+      },
+      "emptyStates": {
+        "noPlots": "没有可用的竹子种植地块",
+        "noSeeds": "没有可用的竹子种子",
+        "noPlants": "此地块中没有植物"
+      },
+      "errors": {
+        "failedToLoadPlots": "加载竹子种植地块失败",
+        "failedToLoadSeeds": "加载竹子种子失败",
+        "failedToLoadPlants": "加载植物失败",
+        "failedToPlant": "种植竹子失败",
+        "failedToWater": "浇水失败",
+        "failedToFertilize": "施肥失败",
+        "failedToHarvest": "收获竹子失败"
+      }
+    }
+  }
+}

@@ -1,7 +1,8 @@
 // src/services/rewardService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { TaskType, TaskPriority, TaskRecord } from './taskService';
 import { addSyncItem } from './dataSyncService';
+import { applyResourceMultiplier } from './resourceMultiplierService';
 
 // 奖励类型枚举
 export enum RewardType {
@@ -34,6 +35,8 @@ export interface RewardRecord {
   obtainedAt: Date;
   isNew: boolean;
   isViewed: boolean;
+  baseAmount?: number;      // 基础数量（未加倍前）
+  multiplier?: number;      // 倍数值
 }
 
 // 物品类型枚举
@@ -122,33 +125,45 @@ export async function generateRewardsForTask(task: TaskRecord): Promise<RewardRe
       break;
   }
 
+  // 应用资源加倍到经验值
+  const multipliedExperienceAmount = await applyResourceMultiplier(RewardType.EXPERIENCE, experienceAmount);
+
   // 添加经验值奖励
   rewards.push({
     type: RewardType.EXPERIENCE,
     rarity: RewardRarity.COMMON,
-    amount: experienceAmount,
+    amount: multipliedExperienceAmount,
     name: '经验值',
     description: '增加熊猫的经验值',
     iconPath: '/assets/rewards/experience.svg',
     taskId: task.id,
     obtainedAt: now,
     isNew: true,
-    isViewed: false
+    isViewed: false,
+    baseAmount: experienceAmount, // 记录基础数量，用于显示加成效果
+    multiplier: multipliedExperienceAmount / experienceAmount // 记录倍数
   });
 
-  // 添加金币奖励
+  // 计算金币奖励
   const coinAmount = calculateCoinReward(task);
+
+  // 应用资源加倍到金币
+  const multipliedCoinAmount = await applyResourceMultiplier(RewardType.COIN, coinAmount);
+
+  // 添加金币奖励
   rewards.push({
     type: RewardType.COIN,
     rarity: RewardRarity.COMMON,
-    amount: coinAmount,
+    amount: multipliedCoinAmount,
     name: '竹币',
     description: '可用于购买物品和升级',
     iconPath: '/assets/rewards/coin.svg',
     taskId: task.id,
     obtainedAt: now,
     isNew: true,
-    isViewed: false
+    isViewed: false,
+    baseAmount: coinAmount, // 记录基础数量，用于显示加成效果
+    multiplier: multipliedCoinAmount / coinAmount // 记录倍数
   });
 
   // 随机物品奖励（概率性）
@@ -243,8 +258,10 @@ function shouldGetItemReward(task: TaskRecord): boolean {
 
 /**
  * 生成随机物品奖励
+ * @param task 完成的任务 (当前未使用)
+ * @returns 物品奖励记录
  */
-function generateRandomItemReward(task: TaskRecord): RewardRecord {
+function generateRandomItemReward(_task: TaskRecord): RewardRecord {
   // 随机选择物品类型
   const itemTypes = [
     { type: ItemType.FOOD, weight: 0.4 },

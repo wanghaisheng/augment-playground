@@ -65,16 +65,16 @@ const DialogDemo: React.FC = () => {
   return (
     <div className="dialog-demo">
       <h2>对话框演示</h2>
-      
+
       <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
         <Button variant="jade" onClick={openScrollDialog}>
           打开卷轴对话框
         </Button>
-        
+
         <Button variant="gold" onClick={openLatticeDialog}>
           打开窗棂对话框
         </Button>
-        
+
         <Button variant="primary" onClick={openConfirmDialog}>
           打开确认对话框
         </Button>
@@ -116,31 +116,68 @@ const DialogDemo: React.FC = () => {
               type="text"
               placeholder="给你的熊猫伙伴起个名字"
               defaultValue="竹竹"
+              className="input-styled"
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="panda-color">熊猫颜色主题</label>
-            <select id="panda-color" defaultValue="classic">
+            <select id="panda-color" defaultValue="classic" className="select-styled">
               <option value="classic">经典黑白</option>
               <option value="golden">金色传说</option>
               <option value="jade">翡翠绿</option>
               <option value="blue">青花蓝</option>
             </select>
           </div>
-          
+
           <div className="form-group">
             <label>熊猫互动提醒</label>
-            <div style={{ display: 'flex', gap: '16px' }}>
-              <label>
-                <input type="checkbox" defaultChecked /> 喂食提醒
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+              <label className="checkbox-styled">
+                <input type="checkbox" defaultChecked />
+                <span>喂食提醒</span>
               </label>
-              <label>
-                <input type="checkbox" defaultChecked /> 玩耍提醒
+              <label className="checkbox-styled">
+                <input type="checkbox" defaultChecked />
+                <span>玩耍提醒</span>
               </label>
-              <label>
-                <input type="checkbox" defaultChecked /> 训练提醒
+              <label className="checkbox-styled">
+                <input type="checkbox" defaultChecked />
+                <span>训练提醒</span>
               </label>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="panda-personality">熊猫性格特点</label>
+            <textarea
+              id="panda-personality"
+              className="textarea-styled"
+              placeholder="描述你的熊猫伙伴的性格特点..."
+              defaultValue="活泼好动，喜欢竹子，爱睡觉"
+              rows={3}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>熊猫外观装饰</label>
+            <div className="option-grid">
+              <div className="option-item">
+                <input type="radio" name="decoration" id="dec-none" defaultChecked />
+                <label htmlFor="dec-none">无装饰</label>
+              </div>
+              <div className="option-item">
+                <input type="radio" name="decoration" id="dec-hat" />
+                <label htmlFor="dec-hat">竹编帽子</label>
+              </div>
+              <div className="option-item">
+                <input type="radio" name="decoration" id="dec-scarf" />
+                <label htmlFor="dec-scarf">丝绸围巾</label>
+              </div>
+              <div className="option-item">
+                <input type="radio" name="decoration" id="dec-glasses" />
+                <label htmlFor="dec-glasses">竹框眼镜</label>
+              </div>
             </div>
           </div>
         </div>

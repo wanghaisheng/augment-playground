@@ -370,3 +370,20 @@ interface DataRefreshEvent {
 Consistent type definitions are crucial for maintaining a robust and maintainable codebase. By following the guidelines in this document, you can ensure that the PandaHabit project maintains high type safety and consistency across all components and features.
 
 Remember to regularly review and update type definitions as the application evolves, and to ensure that all new components and features follow these guidelines.
+
+## 类型定义最佳实践补充
+
+### 1. any → unknown 的迁移原则
+- 尽量避免使用 any，优先用 unknown 替代。
+- unknown 更安全，使用时需类型断言或类型守卫。
+- 仅在类型完全不确定、且后续有类型判断时使用 unknown。
+
+### 2. 泛型约束最佳实践
+- 推荐用 T extends object 或 T extends Record<string, unknown> 约束递归类型合并等场景。
+- 如需兼容所有对象类型，可用 T extends object = Record<string, unknown>。
+- 泛型参数如为数组，推荐 T extends unknown[]。
+
+### 3. interface/union/unknown 的选择
+- 明确结构优先用 interface 或 type union。
+- 结构不确定但需类型安全时用 unknown。
+- 仅在极端灵活场景下才用 any，并在注释中说明原因。

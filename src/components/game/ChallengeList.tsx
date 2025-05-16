@@ -15,6 +15,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import RewardModal from '@/components/game/RewardModal';
 import { RewardRecord } from '@/services/rewardService';
 import ScrollDialog from './ScrollDialog';
+import { ChallengeCardSkeleton } from '@/components/skeleton';
 
 interface ChallengeListProps {
   filter?: {
@@ -168,9 +169,15 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
     setSelectedChallenge(null);
   };
 
-  // If loading, show loading spinner
+  // If loading, show challenge card skeletons
   if (isLoading && challenges.length === 0) {
-    return <LoadingSpinner />;
+    return (
+      <div className="challenge-list-skeleton">
+        <ChallengeCardSkeleton variant="jade" />
+        <ChallengeCardSkeleton variant="jade" />
+        <ChallengeCardSkeleton variant="jade" />
+      </div>
+    );
   }
 
   // If error, show error message

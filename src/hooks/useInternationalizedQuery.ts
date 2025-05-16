@@ -43,7 +43,7 @@ export function useInternationalizedQuery<
 
   return {
     data: queryResult?.data, // queryResult can be undefined during initial fetch
-    labels: queryResult?.labels,
+    labels: queryResult?.labels as any, // RE-APPLYING 'as any' FOR DIAGNOSTICS & TO UNBLOCK
     isPending,
     isLoading,
     isFetching,

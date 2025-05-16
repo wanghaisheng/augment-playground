@@ -1,5 +1,5 @@
 // src/services/pandaCustomizationService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { addSyncItem } from './dataSyncService';
 import { StoreItemType } from './storeService';
 

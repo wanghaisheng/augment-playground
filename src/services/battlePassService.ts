@@ -1,6 +1,6 @@
 // src/services/battlePassService.ts
-import { db } from '@/db';
-import { tursoClient } from '@/db-turso';
+import { db } from '@/db-old';
+// import { tursoClient } from '@/db-turso'; // Removed
 import { addSyncItem } from './dataSyncService';
 import { addItem } from './rewardService';
 import { getUserCurrency, updateUserCurrency } from './storeService';
@@ -13,15 +13,17 @@ import {
   UserBattlePassProgressRecord,
   BattlePassType,
   BattlePassLevelWithRewards,
-  BattlePassViewData
+  BattlePassViewData,
+  BattlePassLevelReward
 } from '@/types/battle-pass';
+import { triggerDataRefresh } from '@/hooks/useDataRefresh';
 
 /**
  * Get the active Battle Pass
  */
 export async function getActiveBattlePass(): Promise<BattlePassRecord | null> {
   try {
-    const now = new Date().toISOString();
+    // const now = new Date().toISOString(); // Removed
     const passes = await db.table('battlePasses')
       .where('isActive')
       .equals(1)
@@ -169,11 +171,11 @@ export async function purchaseBattlePass(
     }
 
     // Create new ownership record
-    const newOwnership: UserBattlePassOwnershipRecord = {
+    const newOwnership: Omit<UserBattlePassOwnershipRecord, 'id'> = {
       userId,
       passId,
-      purchaseDate: new Date().toISOString(),
-      platformTransactionId,
+      purchaseDate: new Date(),
+      platformTransactionId: platformTransactionId || '',
       passType
     };
 
@@ -185,7 +187,7 @@ export async function purchaseBattlePass(
     await addSyncItem('userBattlePassOwnership', 'create', createdOwnership);
 
     // Create progress record if it doesn't exist
-    let progress = await ensureUserBattlePassProgress(userId, passId);
+    const progress = await ensureUserBattlePassProgress(userId, passId);
 
     // If premium pass, automatically advance 10 levels
     if (passType === BattlePassType.PREMIUM) {
@@ -241,13 +243,13 @@ export async function ensureUserBattlePassProgress(
     }
 
     // Create new progress record
-    const newProgress: UserBattlePassProgressRecord = {
+    const newProgress: Omit<UserBattlePassProgressRecord, 'id'> = {
       userId,
       passId,
       currentLevel: 1,
       currentExp: 0,
-      claimedFreeLevels: '',
-      claimedPaidLevels: ''
+      claimedFreeLevels: [],
+      claimedPaidLevels: []
     };
 
     // Add to database
@@ -352,13 +354,16 @@ export async function claimBattlePassReward(
       throw new Error(`User ${userId} has not reached level ${levelNumber} yet`);
     }
 
-    // Check if reward has already been claimed
-    const claimedLevels = rewardType === 'free'
-      ? progress.claimedFreeLevels.split(',').filter(Boolean).map(Number)
-      : progress.claimedPaidLevels.split(',').filter(Boolean).map(Number);
+    // Get the claimed levels
+    const claimedFreeLevels = progress.claimedFreeLevels || [];
+    const claimedPaidLevels = progress.claimedPaidLevels || [];
 
-    if (claimedLevels.includes(levelNumber)) {
-      throw new Error(`User ${userId} has already claimed the ${rewardType} reward for level ${levelNumber}`);
+    // Check if level has already been claimed
+    if (rewardType === 'free' && claimedFreeLevels.includes(levelNumber)) {
+      throw new Error(`Free reward for level ${levelNumber} has already been claimed`);
+    }
+    if (rewardType === 'paid' && claimedPaidLevels.includes(levelNumber)) {
+      throw new Error(`Paid reward for level ${levelNumber} has already been claimed`);
     }
 
     // If claiming paid reward, check if user owns the pass
@@ -387,17 +392,16 @@ export async function claimBattlePassReward(
     // Add the reward to user's inventory
     await addItem(userId, rewardItemId, rewardQuantity);
 
-    // Mark the reward as claimed
-    const updatedProgress = { ...progress };
-    if (rewardType === 'free') {
-      updatedProgress.claimedFreeLevels = progress.claimedFreeLevels
-        ? `${progress.claimedFreeLevels},${levelNumber}`
-        : `${levelNumber}`;
-    } else {
-      updatedProgress.claimedPaidLevels = progress.claimedPaidLevels
-        ? `${progress.claimedPaidLevels},${levelNumber}`
-        : `${levelNumber}`;
-    }
+    // Update claimed levels
+    const updatedProgress = {
+      ...progress,
+      claimedFreeLevels: rewardType === 'free' 
+        ? [...claimedFreeLevels, levelNumber]
+        : claimedFreeLevels,
+      claimedPaidLevels: rewardType === 'paid'
+        ? [...claimedPaidLevels, levelNumber]
+        : claimedPaidLevels
+    };
 
     await db.table('userBattlePassProgress').update(progress.id!, updatedProgress);
     await addSyncItem('userBattlePassProgress', 'update', updatedProgress);
@@ -453,10 +457,10 @@ export async function getBattlePassViewData(
               itemId: level.freeRewardItemId,
               quantity: level.freeRewardQuantity,
               itemName: itemDetails.name,
-              itemDescription: itemDetails.description,
+              itemDescription: itemDetails.description || '',
               itemType: itemDetails.type,
               itemRarity: itemDetails.rarity,
-              iconAssetKey: itemDetails.iconAssetKey
+              iconAssetKey: itemDetails.iconAssetKey || ''
             };
           }
         }
@@ -470,12 +474,17 @@ export async function getBattlePassViewData(
               itemId: level.paidRewardItemId,
               quantity: level.paidRewardQuantity,
               itemName: itemDetails.name,
-              itemDescription: itemDetails.description,
+              itemDescription: itemDetails.description || '',
               itemType: itemDetails.type,
               itemRarity: itemDetails.rarity,
-              iconAssetKey: itemDetails.iconAssetKey
+              iconAssetKey: itemDetails.iconAssetKey || ''
             };
           }
+        }
+
+        // Ensure both rewards are defined
+        if (!freeReward || !paidReward) {
+          throw new Error(`Missing rewards for level ${level.levelNumber}`);
         }
 
         return {
@@ -489,8 +498,23 @@ export async function getBattlePassViewData(
     return {
       pass,
       levels: levelsWithRewards,
-      userProgress: userProgress || undefined,
-      userOwnership: userOwnership || undefined,
+      userProgress: userProgress || {
+        id: 0,
+        userId,
+        passId: pass.id!,
+        currentLevel: 1,
+        currentExp: 0,
+        claimedFreeLevels: [],
+        claimedPaidLevels: []
+      },
+      userOwnership: userOwnership || {
+        id: 0,
+        userId,
+        passId: pass.id!,
+        purchaseDate: new Date(),
+        platformTransactionId: '',
+        passType: BattlePassType.STANDARD
+      },
       activeTasks
     };
   } catch (error) {
@@ -536,14 +560,14 @@ export async function purchaseBattlePassLevels(
     // Calculate diamond cost
     const diamondCost = levelsToPurchase * pass.levelPurchaseDiamondCost;
 
-    // Check if user has enough diamonds
+    // Check if user has enough jade
     const userCurrency = await getUserCurrency(userId);
-    if (!userCurrency || userCurrency.diamonds < diamondCost) {
-      throw new Error(`User ${userId} does not have enough diamonds to purchase ${levelsToPurchase} levels`);
+    if (!userCurrency || userCurrency.jade < diamondCost) {
+      throw new Error('Insufficient jade');
     }
 
-    // Deduct diamonds from user's account
-    await updateUserCurrency(userId, { diamonds: userCurrency.diamonds - diamondCost });
+    // Deduct jade
+    await updateUserCurrency(userId, 0, -diamondCost, 0);
 
     // Get Battle Pass levels to determine required XP
     const levels = await getBattlePassLevels(passId);
@@ -563,7 +587,7 @@ export async function purchaseBattlePassLevels(
     }
 
     // Trigger data refresh
-    triggerRefresh('battlePass');
+    triggerDataRefresh('battlePass');
 
     return true;
   } catch (error) {

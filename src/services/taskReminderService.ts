@@ -1,7 +1,7 @@
 // src/services/taskReminderService.ts
-import { db } from '@/db';
+import { db } from '@/db-old';
 import { addSyncItem } from './dataSyncService';
-import { TaskRecord, getTask, getAllTasks, TaskStatus } from './taskService';
+import { /* TaskRecord, */ getTask, getAllTasks, TaskStatus } from './taskService';
 
 // 任务提醒记录类型
 export interface TaskReminderRecord {
@@ -167,7 +167,7 @@ export async function deleteReminder(id: number): Promise<void> {
  */
 export async function checkDueSoonTasks(): Promise<void> {
   // 获取当前用户ID（在实际应用中，这应该从用户会话中获取）
-  const userId = 'current-user';
+  // const userId = 'current-user'; // Unused variable
 
   // 获取所有未完成的任务
   const tasks = await getAllTasks({ status: TaskStatus.TODO });
@@ -208,7 +208,7 @@ export async function checkDueSoonTasks(): Promise<void> {
  */
 export async function checkOverdueTasks(): Promise<void> {
   // 获取当前用户ID（在实际应用中，这应该从用户会话中获取）
-  const userId = 'current-user';
+  // const userId = 'current-user'; // Unused variable
 
   // 获取所有未完成的任务
   const tasks = await getAllTasks({ status: TaskStatus.TODO });

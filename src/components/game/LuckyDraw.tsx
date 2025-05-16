@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   getLuckyPointsTotal,
   performLuckyDraw,
-  PrizeLevel
+  PrizeLevel,
+  getUserDrawLimitInfo
 } from '@/services/timelyRewardService';
 import { RewardRecord } from '@/services/rewardService';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
@@ -13,6 +14,8 @@ import RewardAnimation from '@/components/animation/RewardAnimation';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { getLocalizedLabel, getLocalizedLabels } from '@/utils/localization';
+import { isUserVip } from '@/services/storeService';
+import { getVipDailyDrawLimits, getDefaultDailyDrawLimit } from '@/services/luckyDrawLimitService';
 
 interface LuckyDrawProps {
   onClose?: () => void;
@@ -31,6 +34,9 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
   const [showRewards, setShowRewards] = useState(false);
   const [selectedPoints, setSelectedPoints] = useState(10); // 默认使用10点
   const [error, setError] = useState<string | null>(null);
+  const [drawLimits, setDrawLimits] = useState<{ remaining: number; total: number }>({ remaining: 0, total: 0 });
+  const [isVip, setIsVip] = useState<boolean>(false);
+  const [vipLimits, setVipLimits] = useState<Record<number, number>>({});
   const [labels, setLabels] = useState({
     title: 'Lucky Draw',
     basicDrawLabel: 'Basic Draw',
@@ -42,6 +48,9 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
     notEnoughPointsError: 'Not enough lucky points',
     loadPointsError: 'Failed to load lucky points, please try again',
     drawError: 'Failed to perform lucky draw, please try again',
+    drawLimitReachedError: 'You have reached your daily draw limit',
+    remainingDraws: 'Remaining draws today',
+    vipDrawBonus: 'Increase daily draws to',
     continueDrawingButton: 'Continue Drawing',
     closeButton: 'Close',
     drawingButton: 'Drawing...',
@@ -86,9 +95,28 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
     }
   };
 
+  // 加载抽奖次数限制
+  const loadDrawLimits = async () => {
+    try {
+      const limits = await getUserDrawLimitInfo();
+      setDrawLimits(limits);
+
+      // 检查用户是否是VIP
+      const userIsVip = await isUserVip('current-user');
+      setIsVip(userIsVip);
+
+      // 获取VIP抽奖次数限制
+      const vipDrawLimits = getVipDailyDrawLimits();
+      setVipLimits(vipDrawLimits);
+    } catch (err) {
+      console.error('Failed to load draw limits:', err);
+    }
+  };
+
   // 初始加载
   useEffect(() => {
     loadPoints();
+    loadDrawLimits();
   }, []);
 
   // 定义幸运点数据更新处理函数
@@ -99,10 +127,18 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
   // 使用 useRegisterTableRefresh hook 监听幸运点表的变化
   useRegisterTableRefresh('luckyPoints', handleLuckyPointsUpdate);
 
+  // 使用 useRegisterTableRefresh hook 监听抽奖次数限制表的变化
+  useRegisterTableRefresh('luckyDrawLimits', loadDrawLimits);
+
   // 处理抽奖
   const handleDraw = async () => {
     if (points < selectedPoints) {
       setError(labels.notEnoughPointsError);
+      return;
+    }
+
+    if (drawLimits.remaining <= 0) {
+      setError(`${labels.drawLimitReachedError || 'You have reached your daily draw limit'} (${drawLimits.total})`);
       return;
     }
 
@@ -159,6 +195,23 @@ const LuckyDraw: React.FC<LuckyDrawProps> = ({ onClose, onRewardEarned }) => {
       <div className="lucky-draw-header">
         <h2 className="lucky-draw-title">{labels.title}</h2>
         <LuckyPointsDisplay variant="large" />
+        <div className="mt-2">
+          <p className="text-md">
+            {labels.remainingDraws || 'Remaining draws today'}: <span className={drawLimits.remaining > 0 ? "text-jade font-bold" : "text-red-500 font-bold"}>
+              {drawLimits.remaining}
+            </span> / <span className="text-jade font-bold">{drawLimits.total}</span>
+          </p>
+          {!isVip && (
+            <div className="vip-promotion mt-2 p-2 bg-gold bg-opacity-10 rounded-lg border border-gold">
+              <p className="text-sm text-gold">
+                <span className="font-bold">VIP:</span> {labels.vipDrawBonus || 'Increase daily draws to'}
+                <span className="font-bold ml-1">
+                  {getDefaultDailyDrawLimit()} → {vipLimits[1] || 5}/{vipLimits[2] || 7}/{vipLimits[3] || 10}
+                </span>
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {isLoading ? (

@@ -321,7 +321,7 @@ const RewardAnimation: React.FC<RewardAnimationProps> = ({
   // 生成随机粒子
   const renderParticles = () => {
     const particleCount = getParticleCount(rarity);
-    const particles = [];
+    const particles: React.ReactNode[] = [];
 
     // 根据稀有度和动画样式调整粒子效果
     const getParticleStyle = () => {

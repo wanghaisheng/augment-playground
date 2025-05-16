@@ -15,6 +15,7 @@ import ScrollDialog from '@/components/game/ScrollDialog';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 import { fetchTimelyRewardsPageView } from '@/services';
+import { TimelyRewardsPageSkeleton } from '@/components/skeleton';
 import type { TimelyRewardsPageViewLabelsBundle } from '@/types';
 
 /**
@@ -72,7 +73,11 @@ const TimelyRewardsPage: React.FC = () => {
   };
 
   if (isPending && !pageLabels) { // Full page initial loading
-    return <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "Loading rewards..."} />;
+    return (
+      <PageTransition>
+        <TimelyRewardsPageSkeleton />
+      </PageTransition>
+    );
   }
 
   if (isError && !pageLabels) { // Critical error: page labels failed to load
@@ -103,7 +108,7 @@ const TimelyRewardsPage: React.FC = () => {
 
         <div className="filter-section">
           <div className="filter-group">
-            <h3 className="filter-title">{pageLabels?.filters?.statusLabel || 'Status'}</h3>
+            <h3 className="filter-title">{pageLabels?.filters?.statusSectionTitle || 'Status'}</h3>
             <div className="filter-buttons">
               <AnimatedButton
                 onClick={() => handleStatusFilter(undefined)}
@@ -133,7 +138,7 @@ const TimelyRewardsPage: React.FC = () => {
           </div>
 
           <div className="filter-group">
-            <h3 className="filter-title">{pageLabels?.filters?.typeLabel || 'Type'}</h3>
+            <h3 className="filter-title">{pageLabels?.filters?.typeAllLabel || 'Type'}</h3>
             <div className="filter-buttons">
               <AnimatedButton
                 onClick={() => handleTypeFilter(undefined)}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="150px" viewBox="0 0 200 150" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Discount Offer</title>
+    <g id="Discount-Offer" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Background" fill="#FFF8E1" cx="100" cy="75" r="70"></circle>
+        <g id="Discount-Tag" transform="translate(50.000000, 35.000000)">
+            <path d="M90,40 C90,62.09139 72.09139,80 50,80 C27.90861,80 10,62.09139 10,40 C10,17.90861 27.90861,0 50,0 C72.09139,0 90,17.90861 90,40 Z" id="Circle" fill="#FFA000"></path>
+            <text id="30%" font-family="Arial-BoldMT, Arial" font-size="36" font-weight="bold" fill="#FFFFFF">
+                <tspan x="23" y="52">30%</tspan>
+            </text>
+            <path d="M100,30 L100,50 C100,55.5228475 95.5228475,60 90,60 L10,60 C4.4771525,60 6.76353751e-16,55.5228475 0,50 L0,30 C-6.76353751e-16,24.4771525 4.4771525,20 10,20 L90,20 C95.5228475,20 100,24.4771525 100,30 Z" id="Tag" fill="#FF6F00"></path>
+            <text id="DISCOUNT" font-family="Arial-BoldMT, Arial" font-size="18" font-weight="bold" fill="#FFFFFF">
+                <tspan x="10" y="45">DISCOUNT</tspan>
+            </text>
+            <path d="M10,0 L20,0 L20,20 L10,20 C4.4771525,20 6.76353751e-16,15.5228475 0,10 L0,10 C-6.76353751e-16,4.4771525 4.4771525,1.01453063e-15 10,0 Z" id="Hole" fill="#FFC107"></path>
+        </g>
+    </g>
+</svg>

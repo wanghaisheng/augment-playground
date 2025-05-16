@@ -15,6 +15,7 @@ import AnimatedButton from '@/components/animation/AnimatedButton';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 import { fetchChallengesPageView } from '@/services';
+import { ChallengesPageSkeleton } from '@/components/skeleton';
 import type { ChallengesPageViewLabelsBundle } from '@/types';
 
 /**
@@ -87,7 +88,7 @@ const ChallengesPage: React.FC = () => {
     return (
       <PageTransition>
         <div className="challenges-page">
-          <LoadingSpinner variant="jade" text={pageLabels?.loadingMessage || "Loading challenges..."} />
+          <ChallengesPageSkeleton />
         </div>
       </PageTransition>
     );
