@@ -22,8 +22,8 @@ const VipTrialManager: React.FC = () => {
   const [showValueReview, setShowValueReview] = useState(false);
   const [trialData, setTrialData] = useState<any>(null);
   const [isChecking, setIsChecking] = useState(false);
-  const { refreshData } = useDataRefreshContext();
-  const { pandaState } = usePandaState();
+  const { refreshTable, registerRefreshListener } = useDataRefreshContext();
+  const { _pandaState } = usePandaState(); // Prefix with underscore to indicate it's not used
 
   // 检查VIP试用资格和状态
   useEffect(() => {
@@ -46,8 +46,8 @@ const VipTrialManager: React.FC = () => {
             trial = await createVipTrial(userId);
 
             // 刷新数据
-            refreshData('vipTrials');
-            refreshData('pandaState');
+            refreshTable('vipTrials');
+            refreshTable('pandaState');
           }
         } else {
           // 更新试用状态
@@ -98,7 +98,7 @@ const VipTrialManager: React.FC = () => {
     return () => {
       clearInterval(intervalId);
     };
-  }, [refreshData]);
+  }, [refreshTable]);
 
   // 监听数据刷新事件
   useEffect(() => {
@@ -155,21 +155,27 @@ const VipTrialManager: React.FC = () => {
     };
 
     // 注册刷新事件监听器
-    const { refreshEvents } = useDataRefreshContext();
-    refreshEvents.on('dataRefreshed', handleRefresh);
+    const unregisterVipTrials = registerRefreshListener('vipTrials', () => {
+      handleRefresh('vipTrials');
+    });
+
+    const unregisterPandaState = registerRefreshListener('pandaState', () => {
+      handleRefresh('pandaState');
+    });
 
     return () => {
-      refreshEvents.off('dataRefreshed', handleRefresh);
+      unregisterVipTrials();
+      unregisterPandaState();
     };
-  }, [useDataRefreshContext, isChecking]);
+  }, [isChecking, registerRefreshListener]);
 
   // 处理关闭试用指南
   const handleCloseTrialGuide = () => {
     setShowTrialGuide(false);
 
     // 刷新数据
-    refreshData('vipTrials');
-    refreshData('pandaState');
+    refreshTable('vipTrials');
+    refreshTable('pandaState');
   };
 
   // 处理关闭价值回顾
@@ -177,8 +183,8 @@ const VipTrialManager: React.FC = () => {
     setShowValueReview(false);
 
     // 刷新数据
-    refreshData('vipTrials');
-    refreshData('pandaState');
+    refreshTable('vipTrials');
+    refreshTable('pandaState');
   };
 
   // 如果没有试用数据，不渲染任何内容

@@ -66,8 +66,8 @@ const VipBoostPrompt: React.FC<VipBoostPromptProps> = ({
   // Fetch localized content for the VIP boost prompt
   const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipBoostPrompt', fetchVipBoostPromptViewFn);
 
-  // Get content from viewData
-  const content = viewData?.labels || {};
+  // Get content from viewData with type assertion to handle the 'never' type issue
+  const content = (viewData as any)?.labels || {};
 
   // 处理导航到VIP页面
   const handleNavigateToVip = () => {

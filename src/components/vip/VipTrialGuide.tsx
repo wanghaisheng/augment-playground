@@ -43,8 +43,8 @@ const VipTrialGuide: React.FC<VipTrialGuideProps> = ({
   // Fetch localized content for the VIP trial guide
   const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipTrialGuide', fetchVipTrialGuideViewFn);
 
-  // Get content from viewData
-  const content = viewData?.labels || {};
+  // Get content from viewData with type assertion to handle the 'never' type issue
+  const content = (viewData as any)?.labels || {};
 
   // VIP特权列表
   const vipBenefits = [

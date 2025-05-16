@@ -2,15 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageProvider';
 import { useDataRefresh } from '@/context/DataRefreshProvider';
-import { 
-  RetentionStep, 
-  getRetentionSteps, 
+import {
+  RetentionStep,
+  // getRetentionSteps, // Commented out as it's not used
   getNextRetentionStep,
   createRetentionOffer,
   acceptRetentionOffer,
   rejectRetentionOffer
 } from '@/services/subscriptionRetentionService';
-import { getUserVipStatus } from '@/services/vipService';
+// import { getUserVipStatus } from '@/services/vipService'; // Commented out as it's not used
 import { playSound, SoundType } from '@/utils/sound';
 import { generateSparkleParticles } from '@/utils/particleEffects';
 import Button from '@/components/common/Button';
@@ -35,8 +35,8 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
   onClose
 }) => {
   const { language } = useLanguage();
-  const { refreshData } = useDataRefresh();
-  
+  const { refreshTable } = useDataRefresh();
+
   // 状态
   const [currentStep, setCurrentStep] = useState<RetentionStep | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -48,7 +48,7 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [successParticles, setSuccessParticles] = useState<React.ReactNode[]>([]);
   const [isRetained, setIsRetained] = useState(false);
-  
+
   // 加载下一个挽留步骤
   useEffect(() => {
     const loadNextStep = async () => {
@@ -56,7 +56,7 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
       try {
         const nextStep = await getNextRetentionStep(userId);
         setCurrentStep(nextStep);
-        
+
         // 如果没有下一步，直接完成流程
         if (!nextStep) {
           onComplete(isRetained);
@@ -67,21 +67,21 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
         setIsLoading(false);
       }
     };
-    
+
     loadNextStep();
   }, [userId, currentStepIndex, isRetained, onComplete]);
-  
+
   // 创建优惠
   const handleCreateOffer = async () => {
     if (!currentStep) return;
-    
+
     setIsProcessing(true);
     try {
       const offer = await createRetentionOffer(userId, currentStep.id);
-      
+
       if (offer) {
-        setOfferId(offer.id);
-        
+        setOfferId(offer.id || null);
+
         // 如果是自定义反馈类型，显示反馈表单
         if (currentStep.type === 'custom') {
           setShowFeedbackForm(true);
@@ -93,33 +93,33 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
       setIsProcessing(false);
     }
   };
-  
+
   // 接受优惠
   const handleAcceptOffer = async () => {
     if (!offerId) return;
-    
+
     setIsProcessing(true);
     try {
       const success = await acceptRetentionOffer(userId, offerId);
-      
+
       if (success) {
         // 播放成功音效
         playSound(SoundType.SUCCESS);
-        
+
         // 显示成功动画
         setShowSuccessAnimation(true);
         setSuccessParticles(generateSparkleParticles({
           count: 50,
           colors: ['#FFD700', '#FFEB3B', '#FFC107', '#FFFDE7']
         }));
-        
+
         // 刷新数据
-        refreshData('vipSubscriptions');
-        refreshData('userCurrencies');
-        
+        refreshTable('vipSubscriptions');
+        refreshTable('userCurrencies');
+
         // 标记为已挽留
         setIsRetained(true);
-        
+
         // 3秒后隐藏动画并进入下一步
         setTimeout(() => {
           setShowSuccessAnimation(false);
@@ -132,15 +132,15 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
       setIsProcessing(false);
     }
   };
-  
+
   // 拒绝优惠
   const handleRejectOffer = async () => {
     if (!offerId) return;
-    
+
     setIsProcessing(true);
     try {
       await rejectRetentionOffer(userId, offerId);
-      
+
       // 进入下一步
       setCurrentStepIndex(prev => prev + 1);
     } catch (error) {
@@ -149,53 +149,53 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
       setIsProcessing(false);
     }
   };
-  
+
   // 处理反馈提交
   const handleFeedbackSubmit = async (feedback: string) => {
     // 这里可以保存用户反馈
     console.log('User feedback:', feedback);
-    
+
     // 隐藏反馈表单
     setShowFeedbackForm(false);
-    
+
     // 进入下一步
     setCurrentStepIndex(prev => prev + 1);
   };
-  
+
   // 确认取消订阅
   const handleConfirmCancel = () => {
     setShowConfirmation(true);
   };
-  
+
   // 最终取消订阅
   const handleFinalCancel = () => {
     // 关闭确认对话框
     setShowConfirmation(false);
-    
+
     // 完成流程，未挽留
     onComplete(false);
   };
-  
+
   // 获取标题
   const getTitle = () => {
     if (!currentStep) {
       return language === 'zh' ? '特别优惠' : 'Special Offer';
     }
-    
+
     return language === 'zh' ? currentStep.title.zh : currentStep.title.en;
   };
-  
+
   // 获取描述
   const getDescription = () => {
     if (!currentStep) {
-      return language === 'zh' 
-        ? '我们很遗憾看到您准备离开。在您做最终决定前，我们想为您提供一些特别优惠。' 
+      return language === 'zh'
+        ? '我们很遗憾看到您准备离开。在您做最终决定前，我们想为您提供一些特别优惠。'
         : 'We\'re sorry to see you go. Before you make your final decision, we\'d like to offer you something special.';
     }
-    
+
     return language === 'zh' ? currentStep.description.zh : currentStep.description.en;
   };
-  
+
   // 获取按钮文本
   const getButtonText = (type: 'accept' | 'reject') => {
     if (type === 'accept') {
@@ -204,14 +204,14 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
       return language === 'zh' ? '不，谢谢' : 'No, Thanks';
     }
   };
-  
+
   // 获取确认对话框文本
   const getConfirmationText = () => {
     return language === 'zh'
       ? '您确定要取消订阅吗？这将导致您失去所有VIP特权。'
       : 'Are you sure you want to cancel your subscription? This will result in the loss of all VIP privileges.';
   };
-  
+
   return (
     <div className="subscription-retention-flow bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto relative">
       {/* 关闭按钮 */}
@@ -221,7 +221,7 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
       >
         ✕
       </button>
-      
+
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <LoadingSpinner />
@@ -239,17 +239,17 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
               </div>
             </div>
           )}
-          
+
           {/* 标题 */}
           <h2 className="text-2xl font-bold text-center mb-4 text-amber-800">
             {getTitle()}
           </h2>
-          
+
           {/* 描述 */}
           <p className="text-gray-600 text-center mb-6">
             {getDescription()}
           </p>
-          
+
           {/* 优惠卡片 */}
           {currentStep && !showFeedbackForm && (
             <RetentionOfferCard
@@ -259,7 +259,7 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
               isProcessing={isProcessing}
             />
           )}
-          
+
           {/* 反馈表单 */}
           {showFeedbackForm && (
             <FeedbackForm
@@ -268,7 +268,7 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
               language={language}
             />
           )}
-          
+
           {/* 操作按钮 */}
           {offerId && !showFeedbackForm && (
             <div className="flex justify-center gap-4 mt-6">
@@ -279,7 +279,7 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
               >
                 {getButtonText('accept')}
               </Button>
-              
+
               <Button
                 color="secondary"
                 onClick={handleRejectOffer}
@@ -289,7 +289,7 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
               </Button>
             </div>
           )}
-          
+
           {/* 最终取消按钮 */}
           <div className="mt-8 text-center">
             <button
@@ -299,7 +299,7 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
               {language === 'zh' ? '继续取消订阅' : 'Continue with Cancellation'}
             </button>
           </div>
-          
+
           {/* 确认对话框 */}
           {showConfirmation && (
             <ConfirmationDialog

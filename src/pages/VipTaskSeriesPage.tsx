@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { 
-  VipTaskSeriesRecord, 
+import {
+  VipTaskSeriesRecord,
   getActiveVipTaskSeries,
   canAccessVipTasks
 } from '@/services/vipTaskService';
@@ -27,23 +27,23 @@ const VipTaskSeriesPage: React.FC = () => {
   const [selectedSeries, setSelectedSeries] = useState<VipTaskSeriesRecord | null>(null);
   const [selectedTasks, setSelectedTasks] = useState<TaskRecord[]>([]);
   const [showDetails, setShowDetails] = useState(false);
-  
-  const { refreshEvents } = useDataRefreshContext();
-  const { pandaState } = usePandaState();
+
+  const { registerRefreshListener } = useDataRefreshContext();
+  const { _pandaState } = usePandaState(); // Prefix with underscore to indicate it's not used
   const navigate = useNavigate();
-  
+
   // 加载VIP任务系列
   useEffect(() => {
     const loadVipTaskSeries = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // 检查用户是否可以访问VIP任务
         const userId = 'current-user'; // 在实际应用中，这应该是当前用户的ID
         const hasAccess = await canAccessVipTasks(userId);
         setCanAccess(hasAccess);
-        
+
         if (hasAccess) {
           // 获取活跃的VIP任务系列
           const activeSeries = await getActiveVipTaskSeries();
@@ -56,10 +56,10 @@ const VipTaskSeriesPage: React.FC = () => {
         setIsLoading(false);
       }
     };
-    
+
     loadVipTaskSeries();
   }, []);
-  
+
   // 监听数据刷新
   useEffect(() => {
     const handleRefresh = (refreshType: string) => {
@@ -74,43 +74,50 @@ const VipTaskSeriesPage: React.FC = () => {
             console.error('Failed to load VIP task series:', error);
           }
         };
-        
+
         loadVipTaskSeries();
       }
     };
-    
-    refreshEvents.on('dataRefreshed', handleRefresh);
-    
+
+    const unregisterVipTaskSeries = registerRefreshListener('vipTaskSeries', () => {
+      handleRefresh('vipTaskSeries');
+    });
+
+    const unregisterTasks = registerRefreshListener('tasks', () => {
+      handleRefresh('tasks');
+    });
+
     return () => {
-      refreshEvents.off('dataRefreshed', handleRefresh);
+      unregisterVipTaskSeries();
+      unregisterTasks();
     };
-  }, [refreshEvents]);
-  
+  }, [registerRefreshListener]);
+
   // 处理查看任务
   const handleViewTasks = (series: VipTaskSeriesRecord, tasks: TaskRecord[]) => {
     setSelectedSeries(series);
     setSelectedTasks(tasks);
     setShowDetails(true);
   };
-  
+
   // 处理关闭详情
   const handleCloseDetails = () => {
     setShowDetails(false);
   };
-  
+
   // 处理导航到VIP页面
   const handleNavigateToVip = () => {
     playSound(SoundType.CLICK);
     navigate('/vip-benefits');
   };
-  
+
   // 渲染加载状态
   const renderLoading = () => (
     <div className="flex justify-center items-center h-40">
       <LoadingSpinner variant="jade" size="medium" />
     </div>
   );
-  
+
   // 渲染错误状态
   const renderError = () => (
     <div className="text-center p-4">
@@ -123,7 +130,7 @@ const VipTaskSeriesPage: React.FC = () => {
       </Button>
     </div>
   );
-  
+
   // 渲染VIP访问限制
   const renderVipRestriction = () => (
     <div className="vip-restriction text-center p-8 bg-gold-50 rounded-lg border border-gold-200">
@@ -142,7 +149,7 @@ const VipTaskSeriesPage: React.FC = () => {
       </Button>
     </div>
   );
-  
+
   // 渲染空状态
   const renderEmptyState = () => (
     <div className="empty-state text-center p-8 bg-gray-50 rounded-lg">
@@ -155,7 +162,7 @@ const VipTaskSeriesPage: React.FC = () => {
       </p>
     </div>
   );
-  
+
   // 渲染任务系列列表
   const renderSeriesList = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -168,7 +175,7 @@ const VipTaskSeriesPage: React.FC = () => {
       ))}
     </div>
   );
-  
+
   return (
     <div className="vip-task-series-page p-4">
       <div className="page-header mb-6">
@@ -179,7 +186,7 @@ const VipTaskSeriesPage: React.FC = () => {
           完成这些特殊的任务系列，获得额外的经验值和资源奖励
         </p>
       </div>
-      
+
       {isLoading ? (
         renderLoading()
       ) : error ? (
@@ -191,7 +198,7 @@ const VipTaskSeriesPage: React.FC = () => {
       ) : (
         renderSeriesList()
       )}
-      
+
       {/* VIP任务系列详情 */}
       <VipTaskSeriesDetails
         isOpen={showDetails}
