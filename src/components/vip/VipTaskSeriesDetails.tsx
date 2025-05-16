@@ -105,7 +105,7 @@ const VipTaskSeriesDetails: React.FC<VipTaskSeriesDetailsProps> = ({
           onClose={handleClose}
           title={series.title}
           showCloseButton={true}
-          size="large"
+          // size property is not supported by LatticeDialog
         >
           <div className="vip-task-series-details p-4">
             {/* 系列信息 */}
@@ -205,7 +205,7 @@ const VipTaskSeriesDetails: React.FC<VipTaskSeriesDetailsProps> = ({
                             className="ml-2"
                           >
                             {completingTaskId === task.id ? (
-                              <LoadingSpinner variant="white" size="small" />
+                              <LoadingSpinner variant="jade" size="small" />
                             ) : (
                               '完成'
                             )}

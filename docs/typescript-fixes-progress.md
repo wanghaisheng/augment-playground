@@ -5,9 +5,9 @@
 ## 当前状态
 
 **总错误数:** 830 (Initial)
-**已修复错误数:** 362 (830 - 468)
-**剩余错误数:** 468
-**完成百分比:** 43.61%
+**已修复错误数:** 365 (830 - 465)
+**剩余错误数:** 465
+**完成百分比:** 43.98%
 
 **最新进展:**
 1. 创建了一套自动化脚本来修复常见的 lint 错误，包括：
@@ -40,6 +40,9 @@
    - 修复了 useLocalizedView 调用
    - 修复了 refreshData 调用
    - 修复了 RewardType 枚举使用
+6. 修复了 VipTaskSeriesDetails.tsx 中的错误：
+   - 修复了 refreshData 调用为 refreshTable
+   - 移除了不支持的 size 属性
 
 这些脚本位于 `scripts/` 目录下，可以通过运行 `node scripts/fix-lint-errors.js` 来执行所有修复。
 
