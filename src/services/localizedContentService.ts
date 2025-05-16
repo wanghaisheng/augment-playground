@@ -290,6 +290,19 @@ export async function fetchSubscriptionExpirationView(lang: Language): Promise<L
   return { labels, data: null };
 }
 
+/**
+ * Fetches localized content for the resource shortage prompt
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized resource shortage prompt content
+ */
+export async function fetchResourceShortageView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching RESOURCE SHORTAGE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('resourceShortage', lang);
+  return { labels, data: null };
+}
+
 // --- Bamboo Planting Page Service ---
 export async function fetchBambooPlantingPageView(lang: Language): Promise<FetchBambooPlantingPageViewResult> {
   console.log(`SVC_DEXIE: Fetching BAMBOO PLANTING PAGE VIEW for lang: ${lang}`);

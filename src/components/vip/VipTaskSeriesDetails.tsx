@@ -26,34 +26,34 @@ const VipTaskSeriesDetails: React.FC<VipTaskSeriesDetailsProps> = ({
   tasks
 }) => {
   const [completingTaskId, setCompletingTaskId] = useState<number | null>(null);
-  const { refreshData } = useDataRefreshContext();
-  
+  const { refreshTable } = useDataRefreshContext();
+
   // 如果没有系列，不显示
   if (!series) {
     return null;
   }
-  
+
   // 处理关闭
   const handleClose = () => {
     playSound(SoundType.BUTTON_CLICK);
     onClose();
   };
-  
+
   // 处理完成任务
   const handleCompleteTask = async (taskId: number) => {
     try {
       setCompletingTaskId(taskId);
       playSound(SoundType.BUTTON_CLICK);
-      
+
       // 完成任务
       await completeTask(taskId);
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS);
-      
+
       // 刷新数据
-      refreshData('tasks');
-      refreshData('vipTaskSeries');
+      refreshTable('tasks');
+      refreshTable('vipTaskSeries');
     } catch (error) {
       console.error('Failed to complete task:', error);
       playSound(SoundType.ERROR);
@@ -61,42 +61,42 @@ const VipTaskSeriesDetails: React.FC<VipTaskSeriesDetailsProps> = ({
       setCompletingTaskId(null);
     }
   };
-  
+
   // 获取系列图标
   const getSeriesIcon = () => {
     return series.iconPath || '/assets/vip/default-series-icon.svg';
   };
-  
+
   // 获取剩余天数
   const getRemainingDays = () => {
     if (!series.endDate) return null;
-    
+
     const now = new Date();
     const endDate = new Date(series.endDate);
     const diffTime = endDate.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     return diffDays > 0 ? diffDays : 0;
   };
-  
+
   // 计算进度
   const calculateProgress = () => {
     if (tasks.length === 0) return 0;
-    
+
     const completedTasks = tasks.filter(task => task.status === TaskStatus.COMPLETED);
     return Math.round((completedTasks.length / tasks.length) * 100);
   };
-  
+
   // 获取任务完成状态文本
   const getCompletionStatusText = () => {
     if (series.isCompleted) {
       return '已完成';
     }
-    
+
     const completedTasks = tasks.filter(task => task.status === TaskStatus.COMPLETED);
     return `${completedTasks.length}/${tasks.length} 任务完成`;
   };
-  
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -117,12 +117,12 @@ const VipTaskSeriesDetails: React.FC<VipTaskSeriesDetailsProps> = ({
                   className="w-16 h-16 object-contain"
                 />
               </div>
-              
+
               <div className="flex-1">
                 <p className="text-gray-600 mb-2">
                   {series.description}
                 </p>
-                
+
                 <div className="flex items-center text-sm text-gray-500">
                   <span className="mr-3">{getCompletionStatusText()}</span>
                   {getRemainingDays() !== null && !series.isCompleted && (
@@ -133,14 +133,14 @@ const VipTaskSeriesDetails: React.FC<VipTaskSeriesDetailsProps> = ({
                 </div>
               </div>
             </div>
-            
+
             {/* 进度条 */}
             <div className="progress-container mb-6">
               <div className="flex justify-between text-sm text-gray-500 mb-1">
                 <span>系列进度</span>
                 <span>{calculateProgress()}%</span>
               </div>
-              
+
               <div className="w-full bg-gray-200 rounded-full h-3">
                 <div
                   className={`h-3 rounded-full ${series.isCompleted ? 'bg-gold-500' : 'bg-jade-500'}`}
@@ -148,11 +148,11 @@ const VipTaskSeriesDetails: React.FC<VipTaskSeriesDetailsProps> = ({
                 ></div>
               </div>
             </div>
-            
+
             {/* 任务列表 */}
             <div className="tasks-list mb-6">
               <h3 className="text-lg font-bold text-gray-800 mb-3">系列任务</h3>
-              
+
               {tasks.length === 0 ? (
                 <div className="text-center py-4 text-gray-500">
                   暂无任务
@@ -185,17 +185,17 @@ const VipTaskSeriesDetails: React.FC<VipTaskSeriesDetailsProps> = ({
                             </svg>
                           )}
                         </div>
-                        
+
                         <div className="flex-1">
                           <h4 className="text-base font-medium text-gray-800 mb-1">{task.title}</h4>
                           <p className="text-sm text-gray-600 mb-2">{task.description}</p>
-                          
+
                           <div className="flex items-center text-xs text-gray-500">
                             <span className="mr-3">预计时间: {task.estimatedMinutes} 分钟</span>
                             <span>优先级: {task.priority}</span>
                           </div>
                         </div>
-                        
+
                         {task.status !== TaskStatus.COMPLETED && (
                           <Button
                             variant="jade"
@@ -217,7 +217,7 @@ const VipTaskSeriesDetails: React.FC<VipTaskSeriesDetailsProps> = ({
                 </div>
               )}
             </div>
-            
+
             {/* 系列完成奖励 */}
             {series.isCompleted ? (
               <div className="series-completed bg-gold-50 border border-gold-200 rounded-lg p-4 mb-6">
@@ -234,7 +234,7 @@ const VipTaskSeriesDetails: React.FC<VipTaskSeriesDetailsProps> = ({
                 </p>
               </div>
             )}
-            
+
             {/* 关闭按钮 */}
             <div className="flex justify-end">
               <Button
