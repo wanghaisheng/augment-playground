@@ -54,7 +54,17 @@ export enum SoundType {
   // 竹子系统音效
   BAMBOO_COLLECT = 'bamboo_collect',
   WATER = 'water',
-  FERTILIZE = 'fertilize'
+  FERTILIZE = 'fertilize',
+
+  // Added from best-practices.md
+  CLICK = 'CLICK',
+  UNLOCK = 'UNLOCK',
+  REWARD = 'REWARD',
+  BAMBOO_PLANT = 'BAMBOO_PLANT',
+  BAMBOO_HARVEST = 'BAMBOO_HARVEST',
+  COMPLETE = 'COMPLETE',
+  FAIL = 'FAIL',
+  CREATE = 'CREATE'
 }
 
 // 音效文件路径映射
@@ -107,7 +117,17 @@ export const soundPaths: Record<SoundType, string> = {
   // 竹子系统音效
   [SoundType.BAMBOO_COLLECT]: '/assets/sounds/bamboo_collect.mp3',
   [SoundType.WATER]: '/assets/sounds/water.mp3',
-  [SoundType.FERTILIZE]: '/assets/sounds/fertilize.mp3'
+  [SoundType.FERTILIZE]: '/assets/sounds/fertilize.mp3',
+
+  // Added from best-practices.md
+  [SoundType.CLICK]: '/assets/sounds/button_click.mp3',
+  [SoundType.UNLOCK]: '/assets/sounds/challenge_unlocked.mp3',
+  [SoundType.REWARD]: '/assets/sounds/reward_common.mp3',
+  [SoundType.BAMBOO_PLANT]: '/assets/sounds/bamboo_collect.mp3',
+  [SoundType.BAMBOO_HARVEST]: '/assets/sounds/bamboo_collect.mp3',
+  [SoundType.COMPLETE]: '/assets/sounds/task_complete.mp3',
+  [SoundType.FAIL]: '/assets/sounds/task_failed.mp3',
+  [SoundType.CREATE]: '/assets/sounds/task_created.mp3'
 };
 
 // 兼容性映射

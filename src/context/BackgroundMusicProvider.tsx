@@ -7,9 +7,6 @@ import {
   pauseBackgroundMusic,
   resumeBackgroundMusic,
   setBackgroundMusicVolume,
-  enableBackgroundMusic,
-  disableBackgroundMusic,
-  getBackgroundMusicState
 } from '@/utils/backgroundMusic';
 
 // 背景音乐上下文类型

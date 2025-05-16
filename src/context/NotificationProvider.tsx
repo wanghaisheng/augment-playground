@@ -14,7 +14,6 @@ import {
   markAllNotificationsAsRead,
   deleteNotification,
   clearAllNotifications,
-  getUnreadNotificationCount,
   getNotificationPreferences,
   saveNotificationPreferences,
   updateNotificationTypePreference
@@ -74,7 +73,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   const [loading, setLoading] = useState<boolean>(true);
   
   // 数据刷新上下文
-  const { registerRefreshCallback } = useDataRefresh();
+  const { registerRefreshListener } = useDataRefresh();
   
   // 加载通知
   const loadNotifications = useCallback(async () => {
@@ -202,12 +201,12 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     loadNotifications();
     
     // 注册数据刷新回调
-    const unregister = registerRefreshCallback('notifications', loadNotifications);
+    const unregister = registerRefreshListener('notifications', loadNotifications);
     
     return () => {
       unregister();
     };
-  }, [loadNotifications, registerRefreshCallback]);
+  }, [loadNotifications, registerRefreshListener]);
   
   // 上下文值
   const contextValue: NotificationContextType = {

@@ -1,6 +1,6 @@
 // src/db-battle-pass-sample.ts
 import { db } from './db-old';
-import { tursoClient } from './db-turso';
+// import { tursoClient } from './db-turso'; // Removed unused import
 import {
   BattlePassRecord,
   BattlePassLevelRecord,
