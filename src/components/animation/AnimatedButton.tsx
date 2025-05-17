@@ -64,8 +64,7 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
   shape = 'rounded',
   variant = 'filled',
   isLoading = false,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  loadingText,
+  loadingText: _loadingText,
   startIcon,
   endIcon,
   fullWidth = false,

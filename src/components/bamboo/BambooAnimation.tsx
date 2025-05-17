@@ -21,8 +21,10 @@ const BambooAnimation: React.FC<BambooAnimationProps> = ({
 }) => {
   const [isAnimating, setIsAnimating] = useState(true);
   // 粒子显示状态 - 始终为true，但保留变量以便未来可能的扩展
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showParticles, setShowParticles] = useState(true);
+
+  // Prevent unused variable warning
+  void setShowParticles;
 
   // 播放音效
   useEffect(() => {

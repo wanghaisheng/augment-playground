@@ -28,14 +28,18 @@ const BambooSeedSelector: React.FC<BambooSeedSelectorProps> = ({
 }) => {
   const { language } = useLanguage();
   // 使用useDataRefresh，但暂时不使用refreshData
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dataRefreshContext = useDataRefresh();
+
+  // Prevent unused variable warning
+  void dataRefreshContext;
   // 为了兼容现有代码，创建一个空的refreshData函数
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const refreshData = () => {
     // 在实际实现中，这里应该调用dataRefreshContext中的刷新方法
     console.log('Refresh data called');
   };
+
+  // Prevent unused variable warning
+  void refreshData;
 
   const [unlockingSeedId, setUnlockingSeedId] = useState<number | null>(null);
   const [showParticles, setShowParticles] = useState(false);

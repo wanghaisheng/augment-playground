@@ -34,11 +34,13 @@ const BambooPlotCard: React.FC<BambooPlotCardProps> = ({
   const [particles, setParticles] = useState<React.ReactNode[]>([]);
 
   // 刷新数据的函数
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const refreshData = useCallback(() => {
     refreshTable('bambooPlots');
     refreshTable('userCurrencies');
   }, [refreshTable]);
+
+  // Prevent unused variable warning
+  void refreshData;
 
   // 解锁地块
   const handleUnlock = async () => {

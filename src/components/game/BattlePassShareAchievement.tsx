@@ -92,6 +92,7 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
 
   // Default labels
   const shareTitle = labels.shareTitle || 'Share Achievement';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const downloadButtonLabel = labels.downloadButtonLabel || 'Download';
   const copyButtonLabel = labels.copyButtonLabel || 'Copy';
@@ -103,7 +104,7 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
   const levelLabel = labels.levelLabel || 'Level';
   const rarityLabel = labels.rarityLabel || 'Rarity';
   const copiedLabel = labels.copiedLabel || 'Copied!';
-  
+
   // Default rarity labels
   const rarityLabels = {
     common: labels.rarityLabels?.common || 'Common',
@@ -146,13 +147,13 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
   // Handle download
   const handleDownload = async () => {
     if (!shareCardRef.current) return;
-    
+
     try {
       const canvas = await html2canvas(shareCardRef.current, {
         backgroundColor: null,
         scale: 2
       });
-      
+
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = dataUrl;
@@ -166,22 +167,22 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
   // Handle copy
   const handleCopy = async () => {
     if (!shareCardRef.current) return;
-    
+
     try {
       const canvas = await html2canvas(shareCardRef.current, {
         backgroundColor: null,
         scale: 2
       });
-      
+
       const dataUrl = canvas.toDataURL('image/png');
-      
+
       // In a real app, you would use the Clipboard API to copy the image
       // For now, we'll just simulate it
       console.log('Copying image to clipboard:', dataUrl.substring(0, 50) + '...');
-      
+
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
-      
+
       if (onShare) {
         onShare('copy');
       }
@@ -195,13 +196,13 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
     if (onShare) {
       onShare(platform);
     }
-    
+
     // In a real app, you would implement sharing to social media platforms
     console.log(`Sharing to ${platform}`);
-    
+
     // For demonstration purposes, we'll just open a new window
     const shareText = `I just unlocked the "${achievement.name}" achievement in PandaHabit Battle Pass! #PandaHabit #BattlePass`;
-    
+
     switch (platform) {
       case 'twitter':
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, '_blank');
@@ -244,9 +245,9 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
                 </svg>
               </button>
             </div>
-            
+
             <div className="share-achievement-content">
-              <div 
+              <div
                 ref={shareCardRef}
                 className={`achievement-share-card ${achievement.rarity}`}
               >
@@ -254,31 +255,31 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
                   <div className="app-logo">PandaHabit</div>
                   <div className="achievement-unlocked-text">{achievementUnlockedLabel}</div>
                 </div>
-                
-                <div 
+
+                <div
                   className="achievement-share-icon"
                   style={{ background: getRarityGradient(achievement.rarity) }}
                 >
                   {achievement.icon || '🏆'}
                 </div>
-                
+
                 <h3 className="achievement-share-name">{achievement.name}</h3>
                 <p className="achievement-share-description">{achievement.description}</p>
-                
+
                 <div className="achievement-share-details">
                   <div className="detail-item">
                     <span className="detail-label">{seasonLabel}</span>
                     <span className="detail-value">{achievement.seasonName}</span>
                   </div>
-                  
+
                   <div className="detail-item">
                     <span className="detail-label">{levelLabel}</span>
                     <span className="detail-value">{achievement.userLevel}</span>
                   </div>
-                  
+
                   <div className="detail-item">
                     <span className="detail-label">{rarityLabel}</span>
-                    <span 
+                    <span
                       className="detail-value rarity"
                       style={{ color: getRarityColor(achievement.rarity) }}
                     >
@@ -286,13 +287,13 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="achievement-share-footer">
                   <div className="user-name">{achievement.userName}</div>
                   <div className="unlock-date">{formatDate(achievement.unlockedAt)}</div>
                 </div>
               </div>
-              
+
               <div className="share-actions">
                 <button
                   className="download-button jade-button"
@@ -303,7 +304,7 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
                   </svg>
                   {downloadButtonLabel}
                 </button>
-                
+
                 <button
                   className="copy-button jade-button"
                   onClick={handleCopy}
@@ -313,7 +314,7 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
                   </svg>
                   {isCopied ? copiedLabel : copyButtonLabel}
                 </button>
-                
+
                 <div className="social-buttons">
                   <button
                     className="twitter-button social-button"
@@ -324,7 +325,7 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
                     </svg>
                     {twitterButtonLabel}
                   </button>
-                  
+
                   <button
                     className="facebook-button social-button"
                     onClick={() => handleShare('facebook')}
@@ -334,7 +335,7 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
                     </svg>
                     {facebookButtonLabel}
                   </button>
-                  
+
                   <button
                     className="instagram-button social-button"
                     onClick={() => handleShare('instagram')}

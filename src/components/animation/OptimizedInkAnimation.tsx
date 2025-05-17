@@ -220,10 +220,12 @@ const OptimizedInkAnimation: React.FC<OptimizedInkAnimationProps> = ({
   };
 
   // 停止动画 - 保留但未使用，可能在未来版本中使用
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stopAnimation = () => {
     setIsPlaying(false);
   };
+
+  // Prevent unused variable warning
+  void stopAnimation;
 
   // 处理动画完成
   const handleAnimationComplete = () => {

@@ -42,7 +42,6 @@ const InkButton: React.FC<InkButtonProps> = ({
   hoverEffect = true
 }) => {
   // 状态
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const [showSplash, setShowSplash] = useState<boolean>(false);
 
