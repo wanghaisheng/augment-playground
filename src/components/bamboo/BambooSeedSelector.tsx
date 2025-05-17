@@ -28,6 +28,7 @@ const BambooSeedSelector: React.FC<BambooSeedSelectorProps> = ({
 }) => {
   const { language } = useLanguage();
   // 使用useDataRefresh，但暂时不使用refreshData
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dataRefreshContext = useDataRefresh();
   // 为了兼容现有代码，创建一个空的refreshData函数
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

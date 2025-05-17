@@ -1,5 +1,5 @@
 // src/components/game/AbilityUnlockNotification.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PandaAbilityRecord } from '@/services/pandaAbilityService';
 import ScrollDialog from './ScrollDialog';

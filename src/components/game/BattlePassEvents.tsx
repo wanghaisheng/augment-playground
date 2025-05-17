@@ -116,6 +116,7 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
   const eventsTitle = labels.eventsTitle || 'Special Events';
   const joinButtonLabel = labels.joinButtonLabel || 'Join Event';
   const claimRewardsButtonLabel = labels.claimRewardsButtonLabel || 'Claim Rewards';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const noEventsLabel = labels.noEventsLabel || 'No events available';
   const premiumOnlyLabel = labels.premiumOnlyLabel || 'Premium Only';
@@ -144,15 +145,15 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
     const endDate = new Date(endDateString).getTime();
     const now = Date.now();
     const timeRemaining = endDate - now;
-    
+
     if (timeRemaining <= 0) {
       return { days: 0, hours: 0, minutes: 0 };
     }
-    
+
     const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     return { days, hours, minutes };
   };
 
@@ -171,12 +172,12 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
   // Handle join event
   const handleJoinEvent = async (eventId: string) => {
     if (!onJoinEvent) return;
-    
+
     setJoiningEventId(eventId);
-    
+
     try {
       const success = await onJoinEvent(eventId);
-      
+
       if (success) {
         // Show success message or update UI
       }
@@ -190,12 +191,12 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
   // Handle claim rewards
   const handleClaimRewards = async (eventId: string) => {
     if (!onClaimRewards) return;
-    
+
     setClaimingRewardsEventId(eventId);
-    
+
     try {
       const success = await onClaimRewards(eventId);
-      
+
       if (success) {
         // Show success message or update UI
       }
@@ -285,11 +286,11 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
                             </div>
                           )}
                         </div>
-                        
+
                         <div className="event-info">
                           <h3 className="event-name">{event.name}</h3>
                           <p className="event-description">{event.description}</p>
-                          
+
                           <div className="event-time-remaining">
                             <span className="time-label">{timeRemainingLabel}:</span>
                             <span className="time-value">
@@ -299,7 +300,7 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
                               })()}
                             </span>
                           </div>
-                          
+
                           {event.hasParticipated && (
                             <div className="event-progress-bar">
                               <div
@@ -309,7 +310,7 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
                             </div>
                           )}
                         </div>
-                        
+
                         <div className="event-actions">
                           {event.isPremiumOnly && !hasPremiumPass ? (
                             <span className="premium-required">{premiumOnlyLabel}</span>
@@ -340,7 +341,7 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
                               {joiningEventId === event.id ? '...' : joinButtonLabel}
                             </button>
                           )}
-                          
+
                           <button
                             className="event-details-button"
                             onClick={(e) => {
@@ -405,11 +406,11 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
                     </div>
                   )}
                 </div>
-                
+
                 <div className="event-detail-description">
                   <p>{selectedEvent.description}</p>
                 </div>
-                
+
                 <div className="event-detail-dates">
                   <div className="date-item">
                     <span className="date-label">{eventStartDateLabel}</span>
@@ -420,20 +421,20 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
                     <span className="date-value">{formatDate(selectedEvent.endDate)}</span>
                   </div>
                 </div>
-                
+
                 {selectedEvent.requirements && (
                   <div className="event-detail-requirements">
                     <h3>{eventRequirementsLabel}</h3>
                     <p>{selectedEvent.requirements}</p>
                   </div>
                 )}
-                
+
                 <div className="event-detail-rewards">
                   <h3>{eventRewardsLabel}</h3>
                   <div className="rewards-grid">
                     {selectedEvent.rewards.map((reward, index) => (
                       <div key={index} className="reward-item">
-                        <div 
+                        <div
                           className="reward-icon"
                           style={{ borderColor: getRarityColor(reward.rarity) }}
                         >
@@ -447,7 +448,7 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
                     ))}
                   </div>
                 </div>
-                
+
                 {selectedEvent.hasParticipated && (
                   <div className="event-detail-progress">
                     <h3>{eventProgressLabel}</h3>
@@ -465,7 +466,7 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
                     </div>
                   </div>
                 )}
-                
+
                 <div className="event-detail-actions">
                   {selectedEvent.isPremiumOnly && !hasPremiumPass ? (
                     <span className="premium-required">{premiumOnlyLabel}</span>

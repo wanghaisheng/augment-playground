@@ -21,19 +21,19 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const tooltipRef = useRef<HTMLDivElement>(null);
   const childRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // If content is empty, don't show tooltip
   if (!content) {
     return <>{children}</>;
   }
-  
+
   const handleMouseEnter = () => {
     timeoutRef.current = setTimeout(() => {
       setIsVisible(true);
       updatePosition();
     }, delay);
   };
-  
+
   const handleMouseLeave = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -41,16 +41,16 @@ export const Tooltip: React.FC<TooltipProps> = ({
     }
     setIsVisible(false);
   };
-  
+
   const updatePosition = () => {
     if (!childRef.current || !tooltipRef.current) return;
-    
+
     const childRect = childRef.current.getBoundingClientRect();
     const tooltipRect = tooltipRef.current.getBoundingClientRect();
-    
+
     let top = 0;
     let left = 0;
-    
+
     switch (placement) {
       case 'top':
         top = childRect.top - tooltipRect.height - 8;
@@ -69,37 +69,39 @@ export const Tooltip: React.FC<TooltipProps> = ({
         left = childRect.left - tooltipRect.width - 8;
         break;
     }
-    
+
     // Adjust if tooltip goes out of viewport
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    
+
     if (left < 8) left = 8;
     if (left + tooltipRect.width > viewportWidth - 8) {
       left = viewportWidth - tooltipRect.width - 8;
     }
-    
+
     if (top < 8) top = 8;
     if (top + tooltipRect.height > viewportHeight - 8) {
       top = viewportHeight - tooltipRect.height - 8;
     }
-    
+
     setPosition({ top, left });
   };
-  
+
   // Update position when window is resized
   useEffect(() => {
     if (isVisible) {
       window.addEventListener('resize', updatePosition);
       window.addEventListener('scroll', updatePosition);
-      
+
       return () => {
         window.removeEventListener('resize', updatePosition);
         window.removeEventListener('scroll', updatePosition);
       };
     }
-  }, [isVisible]);
-  
+
+    return undefined; // Return a cleanup function even when not visible
+  }, [isVisible, updatePosition]);
+
   // Clean up timeout on unmount
   useEffect(() => {
     return () => {
@@ -108,10 +110,10 @@ export const Tooltip: React.FC<TooltipProps> = ({
       }
     };
   }, []);
-  
+
   return (
     <>
-      <div 
+      <div
         ref={childRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -119,7 +121,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
       >
         {children}
       </div>
-      
+
       {isVisible && (
         <div
           ref={tooltipRef}
@@ -133,7 +135,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
           }}
         >
           {content}
-          <div 
+          <div
             className={`tooltip-arrow absolute w-2 h-2 bg-gray-800 transform rotate-45 ${
               placement === 'top' ? 'bottom-0 translate-y-1/2' :
               placement === 'right' ? 'left-0 -translate-x-1/2' :

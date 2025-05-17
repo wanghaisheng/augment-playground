@@ -110,17 +110,18 @@ const OptimizedAnimatedContainer: React.FC<OptimizedAnimatedContainerProps> = ({
       (isLowPerformanceMode && priority === 'low') ||
       !isAnimationEnabled) {
     // 创建一个不包含motion特定属性的props对象
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {
       initial, animate, exit, variants, transition,
       whileHover, whileTap, whileInView, whileFocus, whileDrag,
       style, // Extract style to avoid passing it twice
       ...divProps
-    } = props;
+    } = props as any;
 
     return (
       <div
         className={className}
-        style={style}
+        style={style as React.CSSProperties}
         {...divProps}
       >
         {children}

@@ -108,7 +108,6 @@ const StandaloneAnimatedButton = (props: AnimatedButtonProps) => {
   } = props;
 
   // Get animation props based on preset and color
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getAnimationProps = () => {
     if (disableAnimation) {
       return {};

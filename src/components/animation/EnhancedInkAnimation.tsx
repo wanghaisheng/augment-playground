@@ -141,14 +141,14 @@ const EnhancedInkAnimation: React.FC<EnhancedInkAnimationProps> = ({
     if (isPlaying) {
       setInkElements(generateInkElements());
     }
-  }, [isPlaying, type, color, count, duration, delay, size, opacity, blur, spread, originX, originY]);
+  }, [isPlaying, type, color, count, duration, delay, size, opacity, blur, spread, originX, originY, generateInkElements]);
 
   // 监听循环播放
   useEffect(() => {
     if (loop && !isPlaying) {
       setIsPlaying(true);
     }
-  }, [loop]);
+  }, [loop, isPlaying]);
 
   return (
     <div

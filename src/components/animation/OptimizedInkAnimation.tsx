@@ -246,7 +246,7 @@ const OptimizedInkAnimation: React.FC<OptimizedInkAnimationProps> = ({
     if (isPlaying && isAnimationEnabled && isComplexAnimationsEnabled) {
       setInkElements(generateInkElements());
     }
-  }, [isPlaying, adjustedConfig, isAnimationEnabled, isComplexAnimationsEnabled]);
+  }, [isPlaying, adjustedConfig, isAnimationEnabled, isComplexAnimationsEnabled, generateInkElements]);
 
   // 如果禁用动画或复杂动画，直接渲染子元素
   if (!isAnimationEnabled || !isComplexAnimationsEnabled ||
@@ -256,7 +256,7 @@ const OptimizedInkAnimation: React.FC<OptimizedInkAnimationProps> = ({
         className={`ink-animation-container ink-${color} ${className}`}
         style={{
           position: 'relative',
-          ...style
+          ...(style || {})
         }}
         {...props}
       >
@@ -280,7 +280,7 @@ const OptimizedInkAnimation: React.FC<OptimizedInkAnimationProps> = ({
       className={`ink-animation-container ink-${color} ${className}`}
       style={{
         position: 'relative',
-        ...style
+        ...(style || {})
       }}
       onClick={playAnimation}
       {...props}

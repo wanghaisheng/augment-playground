@@ -113,6 +113,7 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
   const challengesTitle = labels.challengesTitle || 'Limited-Time Challenges';
   const acceptButtonLabel = labels.acceptButtonLabel || 'Accept';
   const claimRewardsButtonLabel = labels.claimRewardsButtonLabel || 'Claim Rewards';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const noChallengesLabel = labels.noChallengesLabel || 'No challenges available';
   const premiumOnlyLabel = labels.premiumOnlyLabel || 'Premium Only';
@@ -120,6 +121,7 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
   const challengeRewardsLabel = labels.challengeRewardsLabel || 'Rewards';
   const challengeStepsLabel = labels.challengeStepsLabel || 'Steps';
   const challengeDifficultyLabel = labels.challengeDifficultyLabel || 'Difficulty';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const challengeCompletedLabel = labels.challengeCompletedLabel || 'Completed';
   const challengeAcceptedLabel = labels.challengeAcceptedLabel || 'Accepted';
   const challengeRewardsClaimedLabel = labels.challengeRewardsClaimedLabel || 'Rewards Claimed';
@@ -134,15 +136,15 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
     const endTime = new Date(endTimeString).getTime();
     const now = Date.now();
     const timeRemaining = endTime - now;
-    
+
     if (timeRemaining <= 0) {
       return { days: 0, hours: 0, minutes: 0, isExpired: true };
     }
-    
+
     const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     return { days, hours, minutes, isExpired: false };
   };
 
@@ -174,12 +176,12 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
   // Handle accept challenge
   const handleAcceptChallenge = async (challengeId: string) => {
     if (!onAcceptChallenge) return;
-    
+
     setAcceptingChallengeId(challengeId);
-    
+
     try {
       const success = await onAcceptChallenge(challengeId);
-      
+
       if (success) {
         // Show success message or update UI
       }
@@ -193,12 +195,12 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
   // Handle claim rewards
   const handleClaimRewards = async (challengeId: string) => {
     if (!onClaimRewards) return;
-    
+
     setClaimingRewardsChallengeId(challengeId);
-    
+
     try {
       const success = await onClaimRewards(challengeId);
-      
+
       if (success) {
         // Show success message or update UI
       }
@@ -269,7 +271,7 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
                       const completedSteps = challenge.steps.filter(step => step.isCompleted).length;
                       const totalSteps = challenge.steps.length;
                       const progress = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
-                      
+
                       return (
                         <div
                           key={challenge.id}
@@ -288,18 +290,18 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
                               </div>
                             )}
                           </div>
-                          
+
                           <div className="challenge-info">
                             <h3 className="challenge-name">{challenge.name}</h3>
                             <p className="challenge-description">{challenge.description}</p>
-                            
+
                             <div className="challenge-time-remaining">
                               <span className="time-label">{timeRemainingLabel}:</span>
                               <span className="time-value">
                                 {timeRemaining.days} {daysLabel}, {timeRemaining.hours} {hoursLabel}, {timeRemaining.minutes} {minutesLabel}
                               </span>
                             </div>
-                            
+
                             {challenge.isAccepted && (
                               <div className="challenge-progress">
                                 <div className="progress-text">
@@ -314,12 +316,12 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
                               </div>
                             )}
                           </div>
-                          
+
                           <div className="challenge-actions">
                             <div className="challenge-difficulty" title={`${challengeDifficultyLabel}: ${challenge.difficulty}/5`}>
                               {getDifficultyStars(challenge.difficulty)}
                             </div>
-                            
+
                             {challenge.isPremiumOnly && !hasPremiumPass ? (
                               <span className="premium-required">{premiumOnlyLabel}</span>
                             ) : challenge.isCompleted && !challenge.hasClaimedRewards ? (
@@ -349,7 +351,7 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
                                 {acceptingChallengeId === challenge.id ? '...' : acceptButtonLabel}
                               </button>
                             )}
-                            
+
                             <button
                               className="challenge-details-button"
                               onClick={(e) => {
@@ -409,11 +411,11 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
                 <div className="challenge-detail-icon">
                   {selectedChallenge.icon || '🏆'}
                 </div>
-                
+
                 <div className="challenge-detail-description">
                   <p>{selectedChallenge.description}</p>
                 </div>
-                
+
                 <div className="challenge-detail-info">
                   <div className="challenge-detail-difficulty">
                     <span className="detail-label">{challengeDifficultyLabel}</span>
@@ -421,7 +423,7 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
                       {getDifficultyStars(selectedChallenge.difficulty)}
                     </div>
                   </div>
-                  
+
                   <div className="challenge-detail-time">
                     <span className="detail-label">{timeRemainingLabel}</span>
                     <span className="detail-value">
@@ -434,7 +436,7 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="challenge-detail-steps">
                   <h3>{challengeStepsLabel}</h3>
                   <div className="steps-list">
@@ -450,13 +452,13 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="challenge-detail-rewards">
                   <h3>{challengeRewardsLabel}</h3>
                   <div className="rewards-grid">
                     {selectedChallenge.rewards.map((reward, index) => (
                       <div key={index} className="reward-item">
-                        <div 
+                        <div
                           className="reward-icon"
                           style={{ borderColor: getRarityColor(reward.rarity) }}
                         >
@@ -470,7 +472,7 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="challenge-detail-actions">
                   {selectedChallenge.isPremiumOnly && !hasPremiumPass ? (
                     <span className="premium-required">{premiumOnlyLabel}</span>

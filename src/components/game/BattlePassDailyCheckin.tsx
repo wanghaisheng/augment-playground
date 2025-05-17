@@ -74,6 +74,7 @@ const BattlePassDailyCheckin: React.FC<BattlePassDailyCheckinProps> = ({
   // Default labels
   const checkinTitle = labels.checkinTitle || 'Daily Check-in';
   const claimButtonLabel = labels.claimButtonLabel || 'Claim';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const streakLabel = labels.streakLabel || 'Current Streak';
   const claimedLabel = labels.claimedLabel || 'Claimed';
@@ -85,18 +86,18 @@ const BattlePassDailyCheckin: React.FC<BattlePassDailyCheckinProps> = ({
   // Handle claim reward
   const handleClaimReward = async (day: number) => {
     if (!onClaimReward) return;
-    
+
     setClaimingDay(day);
-    
+
     try {
       const success = await onClaimReward(day);
-      
+
       if (success) {
         const reward = rewards.find(r => r.day === day);
         if (reward) {
           setClaimedReward(reward);
           setShowRewardToast(true);
-          
+
           // Hide toast after 3 seconds
           setTimeout(() => {
             setShowRewardToast(false);

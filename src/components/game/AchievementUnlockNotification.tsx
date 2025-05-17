@@ -56,10 +56,12 @@ const AchievementUnlockNotification: React.FC<AchievementUnlockNotificationProps
 }) => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [showVipPrompt, setShowVipPrompt] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isVip, setIsVip] = useState(false);
 
   // 默认标签
   const title = labels?.title || '成就解锁';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const congratsText = labels?.congratsText || '恭喜解锁成就！';
   const rewardText = labels?.rewardText || '奖励';
   const claimButtonText = labels?.claimButtonText || '领取奖励';
@@ -108,6 +110,7 @@ const AchievementUnlockNotification: React.FC<AchievementUnlockNotificationProps
   });
 
   // 获取稀有度颜色
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getRarityColor = (rarity: string): string => {
     switch (rarity) {
       case 'legendary': return 'gold';

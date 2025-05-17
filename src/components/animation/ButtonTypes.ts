@@ -56,7 +56,7 @@ export interface ButtonProps {
 }
 
 // Mock Button component for type checking
-export const Button = (props: ButtonProps) => {
+export const Button = (_props: ButtonProps) => {
   return null;
 };
 

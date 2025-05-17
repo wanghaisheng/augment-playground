@@ -99,7 +99,7 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
   }, [filter, loadTasks]);
 
   // 使用稳定的回调函数，不依赖于 filter 或 loadTasks
-  const handleTaskDataUpdate = useCallback((taskData: any) => {
+  const handleTaskDataUpdate = useCallback((taskData: unknown) => {
     // 使用 ref 值而不是直接依赖
     const currentFilter = filterRef.current;
     const currentLoadTasks = loadTasksRef.current;

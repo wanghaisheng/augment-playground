@@ -19,7 +19,7 @@ interface InkTextAnimationProps {
 
 /**
  * 水墨文字动画组件
- * 
+ *
  * @param text - 要显示的文字
  * @param color - 水墨颜色
  * @param fontSize - 字体大小
@@ -47,7 +47,7 @@ const InkTextAnimation: React.FC<InkTextAnimationProps> = ({
   const [isPlaying, setIsPlaying] = useState<boolean>(autoPlay);
   const [isVisible, setIsVisible] = useState<boolean>(autoPlay);
   const characters = text.split('');
-  
+
   // 播放动画
   const playAnimation = () => {
     if (!isPlaying) {
@@ -79,7 +79,7 @@ const InkTextAnimation: React.FC<InkTextAnimationProps> = ({
       setIsPlaying(true);
       setIsVisible(true);
     }
-  }, [loop]);
+  }, [loop, isPlaying]);
 
   // 设置动画完成定时器
   useEffect(() => {
@@ -87,14 +87,15 @@ const InkTextAnimation: React.FC<InkTextAnimationProps> = ({
       const timer = setTimeout(() => {
         handleAnimationComplete();
       }, delay * 1000 + duration * 1000 + characters.length * staggerDelay * 1000);
-      
+
       return () => clearTimeout(timer);
     }
-  }, [isVisible, characters.length, delay, duration, staggerDelay]);
+    return undefined; // Return a cleanup function even when not visible
+  }, [isVisible, characters.length, delay, duration, staggerDelay, handleAnimationComplete]);
 
   // 字符动画变体
   const characterVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
       scale: 0.5,
       filter: 'blur(10px)'
@@ -120,10 +121,10 @@ const InkTextAnimation: React.FC<InkTextAnimationProps> = ({
       }
     })
   };
-  
+
   // 墨滴动画变体
   const inkDropVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
       scale: 0
     },
@@ -148,10 +149,10 @@ const InkTextAnimation: React.FC<InkTextAnimationProps> = ({
   };
 
   return (
-    <div 
+    <div
       className={`ink-text-animation ink-${color} ${className}`}
       onClick={playAnimation}
-      style={{ 
+      style={{
         display: 'inline-block',
         cursor: isPlaying ? 'default' : 'pointer'
       }}
@@ -197,7 +198,7 @@ const InkTextAnimation: React.FC<InkTextAnimationProps> = ({
                   animate="visible"
                   exit="exit"
                 />
-                
+
                 {/* 文字 */}
                 <motion.span
                   className="ink-text"
