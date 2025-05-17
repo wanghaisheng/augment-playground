@@ -102,6 +102,7 @@ export interface BattlePassLevelReward {
   itemType: string;
   itemRarity: string;
   iconAssetKey: string;
+  expReward?: number;
 }
 
 /**
