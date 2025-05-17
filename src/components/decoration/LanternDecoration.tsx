@@ -11,7 +11,7 @@ interface LanternDecorationProps {
 /**
  * 中国风灯笼装饰组件
  * 用于特殊场合的装饰，如节日、成就解锁等
- * 
+ *
  * @param count - 灯笼数量
  * @param character - 灯笼上的汉字
  * @param position - 灯笼位置
@@ -28,10 +28,10 @@ const LanternDecoration: React.FC<LanternDecorationProps> = ({
       zIndex: 10,
       pointerEvents: 'none' as const
     };
-    
+
     const totalWidth = count * 60; // 每个灯笼宽度约60px
     const startPosition = `calc(50% - ${totalWidth / 2}px)`;
-    
+
     switch (position) {
       case 'top':
         return {
@@ -61,7 +61,7 @@ const LanternDecoration: React.FC<LanternDecorationProps> = ({
         return baseStyle;
     }
   };
-  
+
   // 灯笼动画变体
   const lanternVariants = {
     initial: { y: -10, opacity: 0 },
@@ -74,18 +74,18 @@ const LanternDecoration: React.FC<LanternDecorationProps> = ({
         ease: 'easeOut'
       }
     }),
-    swing: (i: number) => ({
+    // Use a fixed variant instead of a function to match Framer Motion's Variants type
+    swing: {
       rotate: [0, 3, 0, -3, 0],
       transition: {
-        delay: i * 0.1,
         duration: 2,
         ease: 'easeInOut',
         repeat: Infinity,
-        repeatType: 'reverse'
+        repeatType: 'reverse' as const
       }
-    })
+    }
   };
-  
+
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (

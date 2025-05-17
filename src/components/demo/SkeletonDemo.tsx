@@ -20,25 +20,26 @@ interface SkeletonDemoProps {
 
 /**
  * 骨架屏演示组件
- * 
+ *
  * 展示各种骨架屏组件和加载效果
  */
 const SkeletonDemo: React.FC<SkeletonDemoProps> = ({
   className = ''
 }) => {
   // 骨架屏加载器
-  const { 
-    isLoading, 
-    setIsLoading, 
-    withSkeleton 
+  const {
+    isLoading,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setIsLoading,
+    withSkeleton
   } = useSkeletonLoader({
     variant: 'jade',
     minDuration: 1000
   });
-  
+
   // 当前演示的骨架屏组件
   const [demoComponent, setDemoComponent] = useState<string>('card');
-  
+
   // 模拟加载数据
   const loadData = async () => {
     return new Promise<void>(resolve => {
@@ -47,19 +48,19 @@ const SkeletonDemo: React.FC<SkeletonDemoProps> = ({
       }, 2000);
     });
   };
-  
+
   // 处理加载演示
   const handleLoadDemo = async () => {
     playSound(SoundType.BUTTON_CLICK);
     await withSkeleton(loadData);
   };
-  
+
   // 处理切换演示组件
   const handleChangeDemoComponent = (component: string) => {
     playSound(SoundType.BUTTON_CLICK);
     setDemoComponent(component);
   };
-  
+
   // 渲染当前演示的骨架屏组件
   const renderDemoComponent = () => {
     switch (demoComponent) {
@@ -141,11 +142,11 @@ const SkeletonDemo: React.FC<SkeletonDemoProps> = ({
         );
     }
   };
-  
+
   return (
     <div className={`skeleton-demo ${className}`}>
       <h2 className="text-xl font-bold text-gray-800 mb-4">骨架屏演示</h2>
-      
+
       {/* 演示控制 */}
       <div className="demo-controls mb-6">
         <div className="flex flex-wrap gap-2 mb-4">
@@ -213,7 +214,7 @@ const SkeletonDemo: React.FC<SkeletonDemoProps> = ({
             详情页
           </Button>
         </div>
-        
+
         <Button
           variant="jade"
           onClick={handleLoadDemo}
@@ -222,12 +223,12 @@ const SkeletonDemo: React.FC<SkeletonDemoProps> = ({
           {isLoading ? '加载中...' : '模拟加载 (2秒)'}
         </Button>
       </div>
-      
+
       {/* 演示内容 */}
       <div className="demo-content bg-gray-50 p-4 rounded-lg">
         {renderDemoComponent()}
       </div>
-      
+
       {/* 说明 */}
       <div className="explanation mt-6 bg-gray-50 p-4 rounded-lg text-sm text-gray-600">
         <h4 className="font-medium text-gray-700 mb-2">使用说明</h4>

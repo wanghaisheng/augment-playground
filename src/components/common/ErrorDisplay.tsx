@@ -29,6 +29,7 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
   messageTemplate,
   onRetry,
   retryButtonText,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   errorType = 'generic',
 }) => {
   const { labels } = useComponentLabels();

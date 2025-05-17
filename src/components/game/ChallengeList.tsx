@@ -1,6 +1,6 @@
 // src/components/game/ChallengeList.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import {
   ChallengeRecord,
   ChallengeStatus,
@@ -11,7 +11,6 @@ import {
 } from '@/services/challengeService';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import ChallengeCard from './ChallengeCard';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import RewardModal from '@/components/game/RewardModal';
 import { RewardRecord } from '@/services/rewardService';
 import ScrollDialog from './ScrollDialog';

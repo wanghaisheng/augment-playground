@@ -1,5 +1,5 @@
 // src/components/common/EnhancedDataLoader.tsx
-import React, { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSkeleton } from '@/context/SkeletonProvider';
 import ErrorDisplay from './ErrorDisplay';
@@ -55,6 +55,7 @@ function EnhancedDataLoader<T>({
   isError,
   error,
   data,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loadingText,
   errorTitle,
   onRetry,

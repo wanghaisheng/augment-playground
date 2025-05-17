@@ -46,14 +46,14 @@ const InkIconExample: React.FC = () => {
       'resource-food'
     ]
   };
-  
+
   // 图标尺寸
   const sizes = ['xs', 'sm', 'md', 'lg', 'xl'];
-  
+
   return (
     <div className="ink-icon-example">
       <h1>水墨风格图标示例</h1>
-      
+
       {/* 图标类型展示 */}
       {Object.entries(iconGroups).map(([groupName, icons]) => (
         <div key={groupName} className="icon-group">
@@ -62,7 +62,7 @@ const InkIconExample: React.FC = () => {
             {icons.map((icon) => {
               // 检查图标是否存在
               const iconExists = true; // 实际应用中可以添加检查逻辑
-              
+
               return (
                 <div key={icon} className="icon-item">
                   {iconExists ? (
@@ -82,7 +82,7 @@ const InkIconExample: React.FC = () => {
           </div>
         </div>
       ))}
-      
+
       {/* 图标尺寸展示 */}
       <div className="icon-group">
         <h2>图标尺寸</h2>
@@ -95,62 +95,62 @@ const InkIconExample: React.FC = () => {
           ))}
         </div>
       </div>
-      
+
       {/* 图标交互示例 */}
       <div className="icon-group">
         <h2>图标交互</h2>
         <div className="interactive-icons">
           <div className="interactive-icon">
-            <InkIcon 
-              type="action-add" 
-              size="lg" 
-              onClick={() => alert('添加按钮被点击')} 
+            <InkIcon
+              type="action-add"
+              size="lg"
+              onClick={() => alert('添加按钮被点击')}
               className="clickable-icon"
             />
             <div>可点击图标</div>
           </div>
-          
+
           <div className="interactive-icon">
-            <InkIcon 
-              type="resource-coin" 
-              size="lg" 
+            <InkIcon
+              type="resource-coin"
+              size="lg"
               className="animated-icon"
             />
             <div>动画效果图标</div>
           </div>
         </div>
       </div>
-      
-      <style jsx>{`
+
+      <style>{`
         .ink-icon-example {
           padding: 20px;
           max-width: 800px;
           margin: 0 auto;
         }
-        
+
         .icon-group {
           margin-bottom: 30px;
         }
-        
+
         .icon-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
           gap: 20px;
         }
-        
+
         .icon-item {
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
         }
-        
+
         .icon-name {
           margin-top: 8px;
           font-size: 12px;
           color: #666;
         }
-        
+
         .icon-placeholder {
           width: 32px;
           height: 32px;
@@ -162,50 +162,50 @@ const InkIconExample: React.FC = () => {
           font-size: 10px;
           color: #999;
         }
-        
+
         .size-grid {
           display: flex;
           align-items: flex-end;
           gap: 30px;
         }
-        
+
         .size-item {
           display: flex;
           flex-direction: column;
           align-items: center;
         }
-        
+
         .size-name {
           margin-top: 8px;
           font-size: 12px;
           color: #666;
         }
-        
+
         .interactive-icons {
           display: flex;
           gap: 40px;
         }
-        
+
         .interactive-icon {
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
         }
-        
+
         .clickable-icon {
           cursor: pointer;
           transition: transform 0.2s ease;
         }
-        
+
         .clickable-icon:hover {
           transform: scale(1.1);
         }
-        
+
         .animated-icon {
           animation: float 2s ease-in-out infinite;
         }
-        
+
         @keyframes float {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }

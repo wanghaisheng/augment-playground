@@ -12,7 +12,7 @@ import VipBoostPrompt from '@/components/vip/VipBoostPrompt';
 import { RewardType } from '@/services/rewardService';
 import { initializeVipBoostPromptLabels } from '@/data/vipBoostPromptLabels';
 import { fetchBambooSpotCardView } from '@/services/localizedContentService';
-import { Language, LocalizedContent } from '@/types';
+import { Language } from '@/types';
 
 interface BambooSpotCardProps {
   spot: BambooSpotRecord;
