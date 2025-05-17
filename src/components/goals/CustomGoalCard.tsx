@@ -3,14 +3,13 @@ import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { CustomGoalRecord, CustomGoalCardLabels } from '@/types/index';
 import { GoalStatus } from '@/types/goals';
-import { 
-  updateCustomGoalProgress,
-  deleteCustomGoal
+import {
+  updateCustomGoalProgress
 } from '@/services/customGoalService';
-import { useLocalizedView } from '@/hooks/useLocalizedView';
+
 import { playSound, SoundType } from '@/utils/sound';
 import Button from '@/components/common/Button';
-import ConfirmationDialog from '@/components/common/ConfirmationDialog';
+
 
 interface CustomGoalCardProps {
   goal: CustomGoalRecord;
@@ -31,24 +30,24 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
   labels
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting] = useState(false);
   const [progressValue, setProgressValue] = useState<number>(1);
   const [showProgressForm, setShowProgressForm] = useState(false);
   const [progressNotes, setProgressNotes] = useState('');
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  
+  // const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
   // const { content } = useLocalizedView('customGoalCard'); // Removed, use props.labels
   // const { refreshData } = useDataRefreshContext(); // Removed as refreshData is not used directly by card
-  
+
   // 计算进度百分比
   const progressPercentage = Math.min(100, Math.round((goal.currentValue / goal.targetValue) * 100)) || 0;
-  
+
   // 格式化日期
   const formatDate = (dateString: string | undefined) => {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString();
   };
-  
+
   // 获取目标状态文本
   const getGoalStatusText = useCallback(() => {
     switch (goal.status) {
@@ -63,7 +62,7 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
         return goal.isAchieved ? (labels?.statusCompleted || 'Completed') : (labels?.statusActive || 'Active');
     }
   }, [goal.status, goal.isAchieved, labels]);
-  
+
   // 获取目标状态颜色
   const getGoalStatusColor = useCallback(() => {
     switch (goal.status) {
@@ -78,19 +77,19 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
         return goal.isAchieved ? 'bg-green-500' : 'bg-blue-500';
     }
   }, [goal.status, goal.isAchieved]);
-  
+
   // 处理更新进度
   const handleUpdateProgress = async () => {
     try {
       setIsUpdating(true);
-      
+
       // 验证进度值
       if (progressValue <= 0) {
         playSound(SoundType.ERROR); // Added sound for validation error
         setIsUpdating(false);
         return;
       }
-      
+
       const goalIdNumber = parseInt(goal.id, 10);
       if (isNaN(goalIdNumber)) {
         console.error('Invalid goal ID for progress update:', goal.id);
@@ -98,13 +97,13 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
         setIsUpdating(false);
         return;
       }
-      
+
       // 更新进度
       await updateCustomGoalProgress(goalIdNumber, progressValue, progressNotes);
-      
+
       // 播放音效
       playSound(SoundType.SUCCESS);
-      
+
       // 重置表单
       setProgressValue(1);
       setProgressNotes('');
@@ -116,7 +115,7 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
       setIsUpdating(false);
     }
   };
-  
+
   // 处理删除目标
   const handleDeleteClick = () => {
     if (onDelete) {
@@ -131,7 +130,7 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
       onToggleComplete(goal);
     }
   };
-  
+
   return (
     <motion.div
       className="custom-goal-card bg-white rounded-lg shadow-md overflow-hidden"
@@ -150,7 +149,7 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
               </span>
             </div>
           </div>
-          
+
           <div className="flex gap-2 items-center">
             {onEdit && goal.status === GoalStatus.ACTIVE && (
               <button
@@ -164,7 +163,7 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
                 </svg>
               </button>
             )}
-            
+
             {onToggleComplete && (
               <button
                 className={`p-1 rounded-full ${goal.status === GoalStatus.COMPLETED ? 'text-gray-500 hover:text-yellow-600' : 'text-gray-500 hover:text-green-600'}`}
@@ -178,7 +177,7 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
                   </svg>
                 ) : (
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />                  
+                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
                   </svg>
                 )}
               </button>
@@ -199,12 +198,12 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
               )}
           </div>
         </div>
-        
+
         {goal.description && (
           <p className="text-gray-600 mt-2 text-sm">{goal.description}</p>
         )}
       </div>
-      
+
       {/* 目标进度 */}
       <div className="goal-progress p-4">
         <div className="flex justify-between items-center mb-1">
@@ -215,14 +214,14 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
             {goal.currentValue} / {goal.targetValue} ({progressPercentage}%)
           </span>
         </div>
-        
+
         <div className="w-full bg-gray-200 rounded-full h-2.5">
           <div
             className="bg-jade-600 h-2.5 rounded-full"
             style={{ width: `${progressPercentage}%` }}
           ></div>
         </div>
-        
+
         <div className="flex justify-between text-xs text-gray-500 mt-1">
           <span>{labels?.startDateLabel || '开始'}: {formatDate(goal.createdAt)}</span>
           {goal.deadline && (
@@ -230,7 +229,7 @@ const CustomGoalCard: React.FC<CustomGoalCardProps> = ({
           )}
         </div>
       </div>
-      
+
       {/* 更新进度表单 */}
       {goal.status === GoalStatus.ACTIVE && (
         <div className="goal-actions p-4 bg-gray-50">

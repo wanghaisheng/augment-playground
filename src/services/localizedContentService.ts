@@ -278,6 +278,19 @@ export async function fetchVipBoostPromptView(lang: Language): Promise<Localized
 }
 
 /**
+ * Fetches localized content for the custom goal form
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized custom goal form content
+ */
+export async function fetchCustomGoalFormView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching CUSTOM GOAL FORM VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('customGoalForm', lang);
+  return { labels, data: null };
+}
+
+/**
  * Fetches localized content for the subscription expiration reminder
  *
  * @param lang - The language to fetch content for

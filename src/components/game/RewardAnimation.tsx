@@ -43,10 +43,10 @@ const RewardAnimation: React.FC<RewardAnimationProps> = ({ rewards }) => {
             transition={{ duration: 0.5 }}
           >
             <div className="reward-icon">
-              {currentReward.type === RewardType.EXPERIENCE && '✨'}
+              {currentReward.type === 'experience' && '✨'}
               {currentReward.type === 'bamboo' && '🎋'}
               {currentReward.type === 'tea' && '🍵'}
-              {currentReward.type === RewardType.ITEM && '🎁'}
+              {currentReward.type === 'item' && '🎁'}
             </div>
             <h3 className="reward-title">{currentReward.name}</h3>
             <p className="reward-amount">
