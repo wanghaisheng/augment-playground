@@ -23,13 +23,13 @@ export type EvolutionStage = 'preparation' | 'transformation' | 'completion';
 export interface ParticleEffectConfig {
   count: number;
   colors: string[];
-  size?: number | [number, number]; // 固定大小或[最小值, 最大值]
-  duration?: number | [number, number]; // 固定持续时间或[最小值, 最大值]
-  distance?: number | [number, number]; // 固定距离或[最小值, 最大值]
+  size?: number | [number, number] | number[]; // 固定大小或[最小值, 最大值]
+  duration?: number | [number, number] | number[]; // 固定持续时间或[最小值, 最大值]
+  distance?: number | [number, number] | number[]; // 固定距离或[最小值, 最大值]
   spread?: number; // 扩散角度范围（0-360）
   gravity?: number; // 重力效果（0表示无重力）
   fadeOut?: boolean; // 是否淡出
-  particleType?: ParticleType | ParticleType[]; // 粒子类型或类型数组
+  particleType?: ParticleType | ParticleType[] | string | string[]; // 粒子类型或类型数组
   originX?: number; // 起始点X坐标（0-1）
   originY?: number; // 起始点Y坐标（0-1）
   container?: DOMRect; // 容器尺寸
@@ -99,7 +99,7 @@ const randomColor = (colors: string[]): string => {
  * @param size 粒子大小
  * @returns 粒子元素
  */
-const getParticleElement = (type: ParticleType, color: string, size: number): React.ReactNode => {
+const getParticleElement = (type: ParticleType | string, color: string, size: number): React.ReactNode => {
   switch (type) {
     case 'circle':
       return (

@@ -56,12 +56,12 @@ const PandaAvatar: React.FC<PandaAvatarProps> = ({
   const [accessories, setAccessories] = useState<PandaAccessoryRecord[]>([]);
   const [environment, setEnvironment] = useState<PandaEnvironmentRecord | null>(null);
   const [skin, setSkin] = useState<PandaSkinRecord | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true); // 未使用的状态
 
   // 加载装饰和环境
   const loadCustomizations = async () => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true); // 未使用的状态更新
 
       // 加载装饰
       if (showAccessories) {
@@ -83,7 +83,7 @@ const PandaAvatar: React.FC<PandaAvatarProps> = ({
     } catch (err) {
       console.error('Failed to load customizations:', err);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false); // 未使用的状态更新
     }
   };
 

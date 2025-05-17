@@ -208,7 +208,7 @@ const PandaAnimation: React.FC<PandaAnimationProps> = ({
     if (isPlaying) return;
 
     setIsPlaying(true);
-    setCurrentFrame(0);
+    // setCurrentFrame(0); // 未使用的状态更新
 
     // 播放音效
     const config = getAnimationConfig();
@@ -242,7 +242,7 @@ const PandaAnimation: React.FC<PandaAnimationProps> = ({
       if (elapsed >= frameDuration) {
         lastTime = time;
         frameCount++;
-        setCurrentFrame(frameCount % config.frames);
+        // setCurrentFrame(frameCount % config.frames); // 未使用的状态更新
 
         // 检查动画是否完成
         if (frameCount >= config.frames && !loop) {
