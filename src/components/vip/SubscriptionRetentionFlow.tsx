@@ -256,7 +256,6 @@ const SubscriptionRetentionFlow: React.FC<SubscriptionRetentionFlowProps> = ({
               step={currentStep}
               language={language}
               onCreateOffer={handleCreateOffer}
-              isProcessing={isProcessing}
             />
           )}
 

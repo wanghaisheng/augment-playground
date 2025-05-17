@@ -5,7 +5,7 @@ import { BambooPlotRecord, BambooSeedRecord, BambooPlantRecord } from '@/db-old'
 import { updateUserCurrency } from './storeService';
 import { playSound, SoundType } from '@/utils/sound';
 import { applyResourceMultiplier } from './resourceMultiplierService';
-import { PandaStateRecord, getPandaState, addPandaExperience } from './pandaStateService';
+import { addPandaExperience } from './pandaStateService';
 import { RewardType } from '@/services/rewardService';
 // import { initializeBambooPlantingLabels } from '@/data/bambooPlantingLabels'; // Temporarily commented out - file missing
 
@@ -884,7 +884,7 @@ export async function initializeBambooPlantingSystem(): Promise<void> {
     if (seedCount === 0) {
       await db.bambooSeeds.bulkAdd(DEFAULT_BAMBOO_SEEDS.map(s => ({...s, createdAt: new Date(), updatedAt: new Date()})));
     }
-    
+
     // await initializeBambooPlantingLabels(); // Temporarily commented out - file missing
     console.log('Bamboo planting system initialized, default seeds ensured if table was empty.');
   } catch (error) {

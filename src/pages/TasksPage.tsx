@@ -1,12 +1,9 @@
 // src/pages/TasksPage.tsx
 import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { fetchTasksPageView } from '@/services';
 import TaskManager from '@/features/tasks/TaskManager';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
-import { pageTransition } from '@/utils/animation';
 import type { TasksPageViewLabelsBundle } from '@/types';
 import TaskReminderNotification from '@/components/task/TaskReminderNotification';
 import { checkDueSoonTasks, checkOverdueTasks } from '@/services/taskReminderService';

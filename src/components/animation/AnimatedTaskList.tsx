@@ -347,7 +347,24 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
             <TimelyRewardCard
               reward={timelyReward}
               onComplete={() => {}}
-              labels={labels?.taskReminder}
+              labels={{
+                typeDaily: labels?.taskReminder?.typeDaily,
+                typeMorning: labels?.taskReminder?.typeMorning,
+                typeStreak: labels?.taskReminder?.typeStreak,
+                typeSpecial: labels?.taskReminder?.typeSpecial,
+                statusActive: labels?.taskReminder?.statusActive,
+                statusCompleted: labels?.taskReminder?.statusCompleted,
+                statusExpired: labels?.taskReminder?.statusExpired,
+                statusUpcoming: labels?.taskReminder?.statusUpcoming,
+                remainingTimeLabel: labels?.taskReminder?.remainingTimeLabel,
+                timeEnded: labels?.taskReminder?.timeEnded,
+                hourUnit: labels?.taskReminder?.hourUnit,
+                minuteUnit: labels?.taskReminder?.minuteUnit,
+                luckyPointsLabel: labels?.taskReminder?.luckyPointsLabel,
+                claimRewardButton: labels?.taskReminder?.claimRewardButton,
+                inProgressButton: labels?.taskReminder?.inProgressButton,
+                completedOnLabel: labels?.taskReminder?.completedOnLabel
+              }}
             />
             <div className="timely-reward-modal-actions">
               <AnimatedButton onClick={handleCloseTimelyReward}>

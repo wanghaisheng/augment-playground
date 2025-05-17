@@ -30,10 +30,24 @@ const TaskReminderNotification: React.FC<TaskReminderNotificationProps> = ({
   const [currentReminderIndex, setCurrentReminderIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [taskTitles, setTaskTitles] = useState<Record<number, string>>({});
-  const [isLoading, setIsLoading] = useState(false);
 
   // Get localized labels
   const { labels } = useComponentLabels();
+
+  // Default fallback labels in case taskReminder is undefined
+  const defaultTaskReminderLabels = {
+    title: 'Task Reminder',
+    subtitle: 'Your panda assistant reminds you',
+    unknownTask: 'Unknown Task',
+    defaultMessage: 'It\'s time to complete this task!',
+    reminderTimeLabel: 'Scheduled for:',
+    dismissButton: 'Dismiss',
+    laterButton: 'Later',
+    viewTaskButton: 'View Task'
+  };
+
+  // Use taskReminder labels if available, otherwise use defaults
+  const taskReminderLabels = labels.taskReminder || defaultTaskReminderLabels;
 
   // 当前用户ID（在实际应用中，这应该从用户会话中获取）
   const userId = 'current-user';
@@ -41,7 +55,6 @@ const TaskReminderNotification: React.FC<TaskReminderNotificationProps> = ({
   // 加载未查看的提醒
   const loadReminders = async () => {
     try {
-      setIsLoading(true);
       const unviewedReminders = await getUnviewedReminders(userId);
       setReminders(unviewedReminders);
 
@@ -64,8 +77,6 @@ const TaskReminderNotification: React.FC<TaskReminderNotificationProps> = ({
       }
     } catch (err) {
       console.error('Failed to load task reminders:', err);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -175,7 +186,7 @@ const TaskReminderNotification: React.FC<TaskReminderNotificationProps> = ({
   }
 
   const currentReminder = reminders[currentReminderIndex];
-  const taskTitle = taskTitles[currentReminder.taskId] || labels.taskReminder.unknownTask;
+  const taskTitle = taskTitles[currentReminder.taskId] || taskReminderLabels.unknownTask;
 
   return (
     <AnimatePresence>
@@ -194,9 +205,9 @@ const TaskReminderNotification: React.FC<TaskReminderNotificationProps> = ({
                 <span className="text-2xl">🐼📬</span>
               </div>
               <div className="flex-grow">
-                <h3 className="text-md font-bold text-jade-800">{labels.taskReminder.title}</h3>
+                <h3 className="text-md font-bold text-jade-800">{taskReminderLabels.title}</h3>
                 <p className="text-xs text-jade-600">
-                  {labels.taskReminder.subtitle}
+                  {taskReminderLabels.subtitle}
                 </p>
               </div>
               <div className="reminder-count">
@@ -215,11 +226,11 @@ const TaskReminderNotification: React.FC<TaskReminderNotificationProps> = ({
               {taskTitle}
             </div>
             <p className="text-gray-700 mb-3">
-              {currentReminder.message || labels.taskReminder.defaultMessage}
+              {currentReminder.message || taskReminderLabels.defaultMessage}
             </p>
 
             <div className="reminder-time text-xs text-gray-500 mb-3">
-              {labels.taskReminder.reminderTimeLabel} {new Date(currentReminder.reminderTime).toLocaleString()}
+              {taskReminderLabels.reminderTimeLabel} {new Date(currentReminder.reminderTime).toLocaleString()}
             </div>
 
             <div className="notification-actions flex justify-end gap-2">
@@ -228,21 +239,21 @@ const TaskReminderNotification: React.FC<TaskReminderNotificationProps> = ({
                 size="small"
                 onClick={handleDismiss}
               >
-                {labels.taskReminder.dismissButton}
+                {taskReminderLabels.dismissButton}
               </Button>
               <Button
                 variant="secondary"
                 size="small"
                 onClick={handleRemindLater}
               >
-                {labels.taskReminder.laterButton}
+                {taskReminderLabels.laterButton}
               </Button>
               <Button
                 variant="jade"
                 size="small"
                 onClick={handleViewTask}
               >
-                {labels.taskReminder.viewTaskButton}
+                {taskReminderLabels.viewTaskButton}
               </Button>
             </div>
           </div>

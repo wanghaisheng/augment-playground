@@ -1,6 +1,5 @@
 // src/pages/ButtonAnimationShowcase.tsx
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import EnhancedAnimatedButton from '@/components/animation/EnhancedAnimatedButton';
 import AnimatedButton from '@/components/animation/AnimatedButton';
 import Button from '@/components/common/Button';

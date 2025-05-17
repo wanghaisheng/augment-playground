@@ -22,6 +22,20 @@ import { VipBenefitsPageSkeleton } from '@/components/skeleton';
 import { useAuth } from '@/context/AuthContext';
 import '@/game-theme.css';
 
+// 添加 VipBenefitsPageLabels 接口
+interface VipBenefitsPageLabels {
+  title?: string;
+  description?: string;
+  benefitsTitle?: string;
+  benefits?: {
+    title?: string;
+    description?: string;
+    icon?: string;
+  }[];
+  subscribeButton?: string;
+  alreadySubscribedMessage?: string;
+}
+
 /**
  * VIP Benefits Overview Page
  *
@@ -427,3 +441,4 @@ const VipBenefitsPage: React.FC = () => {
 };
 
 export default VipBenefitsPage;
+

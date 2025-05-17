@@ -1,20 +1,16 @@
 // src/pages/HomePage.tsx
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { fetchHomePageView } from '@/services';
 import WelcomeSection from '@/features/home/WelcomeSection';
 import MoodsSection from '@/features/home/MoodsSection';
 import PandaSection from '@/features/home/PandaSection';
 import ResourcesSection from '@/features/home/ResourcesSection';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 import AnimatedButton from '@/components/animation/AnimatedButton';
 import GrowthBoostIndicator from '@/components/game/GrowthBoostIndicator';
 import VipValueSummary from '@/components/vip/VipValueSummary';
 import VipValueModal from '@/components/vip/VipValueModal';
-import BambooFeatureWidget from '@/components/bamboo/BambooFeatureWidget';
-import { pageTransition } from '@/utils/animation';
 import { initializeGameData } from '@/services/gameInitService';
 import { HomePageSkeleton } from '@/components/skeleton';
 import type { HomePageViewDataPayload, HomePageViewLabelsBundle, ApiError } from '@/types';

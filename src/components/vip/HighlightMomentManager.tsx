@@ -96,3 +96,4 @@ const HighlightMomentManager: React.FC = () => {
 };
 
 export default HighlightMomentManager;
+

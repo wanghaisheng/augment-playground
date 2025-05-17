@@ -1,10 +1,10 @@
 // src/components/task/TaskDetailDialog.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  TaskRecord, 
-  getTask, 
-  updateTask, 
+import {
+  TaskRecord,
+  getTask,
+  updateTask,
   completeTask,
   TaskStatus,
   TaskPriority
@@ -15,7 +15,7 @@ import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { playSound, SoundType } from '@/utils/sound';
 import ScrollDialog from '@/components/game/ScrollDialog';
-import SubtaskList from '@/components/task/SubtaskList';
+import SubtaskList from '@/components/tasks/SubtaskList';
 import TaskReminderForm from '@/components/task/TaskReminderForm';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 
@@ -46,18 +46,18 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
   const [activeTab, setActiveTab] = useState<'details' | 'subtasks' | 'reminders'>('details');
   const [showReminderForm, setShowReminderForm] = useState(false);
   const [reminders, setReminders] = useState<any[]>([]);
-  
+
   // 加载任务数据
   const loadTaskData = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // 获取任务数据
       const taskData = await getTask(taskId);
       if (taskData) {
         setTask(taskData);
-        
+
         // 获取任务分类
         if (taskData.categoryId) {
           const category = await getTaskCategory(taskData.categoryId);
@@ -65,7 +65,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
             setCategoryName(category.name);
           }
         }
-        
+
         // 获取任务提醒
         const taskReminders = await getTaskReminders(taskId);
         setReminders(taskReminders);
@@ -95,21 +95,21 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
   // 处理完成任务
   const handleCompleteTask = async () => {
     if (!task) return;
-    
+
     try {
       setIsCompleting(true);
-      
+
       // 完成任务
       const completedTask = await completeTask(task.id!);
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 通知父组件
       if (onTaskCompleted) {
         onTaskCompleted(completedTask);
       }
-      
+
       // 关闭对话框
       onClose();
     } catch (err) {
@@ -123,17 +123,17 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
   // 处理更新任务优先级
   const handleUpdatePriority = async (priority: TaskPriority) => {
     if (!task) return;
-    
+
     try {
       // 更新任务
       await updateTask(task.id!, { priority });
-      
+
       // 播放点击音效
       playSound(SoundType.BUTTON_CLICK, 0.3);
-      
+
       // 重新加载任务数据
       await loadTaskData();
-      
+
       // 通知父组件
       if (onTaskUpdated) {
         onTaskUpdated();
@@ -153,7 +153,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
   const handleReminderCreated = () => {
     // 重新加载任务数据
     loadTaskData();
-    
+
     // 通知父组件
     if (onTaskUpdated) {
       onTaskUpdated();
@@ -177,7 +177,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
   // 渲染任务详情
   const renderTaskDetails = () => {
     if (!task) return null;
-    
+
     return (
       <div className="task-details">
         <div className="task-header mb-4">
@@ -196,16 +196,16 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
               </span>
             )}
           </div>
-          
+
           <h3 className="text-xl font-bold">{task.title}</h3>
-          
+
           {task.description && (
             <div className="task-description mt-2">
               <p className="text-gray-700">{task.description}</p>
             </div>
           )}
         </div>
-        
+
         <div className="task-actions mb-4">
           <h3 className="text-md font-bold mb-2">任务操作</h3>
           <div className="grid grid-cols-2 gap-2">
@@ -228,7 +228,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
             </Button>
           </div>
         </div>
-        
+
         <div className="priority-selector mb-4">
           <h3 className="text-md font-bold mb-2">调整优先级</h3>
           <div className="grid grid-cols-3 gap-2">
@@ -258,7 +258,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
             </button>
           </div>
         </div>
-        
+
         <div className="task-dates">
           <div className="text-sm text-gray-500">
             <p>创建时间: {new Date(task.createdAt).toLocaleString()}</p>
@@ -274,7 +274,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
   // 渲染子任务
   const renderSubtasks = () => {
     if (!task) return null;
-    
+
     return (
       <div className="task-subtasks">
         <SubtaskList
@@ -282,7 +282,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
           onSubtasksUpdated={() => {
             // 重新加载任务数据
             loadTaskData();
-            
+
             // 通知父组件
             if (onTaskUpdated) {
               onTaskUpdated();
@@ -296,7 +296,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
   // 渲染提醒
   const renderReminders = () => {
     if (!task) return null;
-    
+
     return (
       <div className="task-reminders">
         <div className="reminders-header flex justify-between items-center mb-4">
@@ -309,7 +309,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
             添加提醒
           </Button>
         </div>
-        
+
         {reminders.length === 0 ? (
           <div className="no-reminders text-center p-4 bg-gray-50 rounded-md">
             <p className="text-gray-500">暂无提醒</p>
@@ -400,7 +400,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
                   </button>
                 </div>
               </div>
-              
+
               {/* 选项卡内容 */}
               <AnimatePresence mode="wait">
                 <motion.div
@@ -423,7 +423,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
           )}
         </div>
       </ScrollDialog>
-      
+
       {/* 提醒表单 */}
       {showReminderForm && task && (
         <TaskReminderForm

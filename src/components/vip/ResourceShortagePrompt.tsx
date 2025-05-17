@@ -1,5 +1,5 @@
 // src/components/vip/ResourceShortagePrompt.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/common/Button';
@@ -36,7 +36,7 @@ const ResourceShortagePrompt: React.FC<ResourceShortagePromptProps> = ({
   const navigate = useNavigate();
   const { pandaState } = usePandaState();
   const isVip = pandaState?.isVip || false;
-  const [_isClosing, setIsClosing] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [isRewarded, setIsRewarded] = useState(false);
 
   // Function to fetch localized content for resource shortage

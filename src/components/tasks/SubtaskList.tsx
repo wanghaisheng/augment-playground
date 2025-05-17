@@ -34,7 +34,7 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
       setError(null);
       const loadedSubtasks = await getSubtasks(parentTaskId);
       setSubtasks(loadedSubtasks);
-      
+
       // 通知父组件子任务状态变化
       if (onSubtasksChange) {
         onSubtasksChange(loadedSubtasks.length > 0);
@@ -101,7 +101,15 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
   };
 
   // 处理拖放结束
-  const handleDragEnd = async (result: any) => {
+  const handleDragEnd = async (result: {
+    destination?: {
+      index: number;
+    };
+    source: {
+      index: number;
+    };
+    draggableId: string;
+  }) => {
     if (!result.destination) return;
 
     const sourceIndex = result.source.index;
@@ -112,10 +120,10 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
     try {
       // 获取被拖动的子任务
       const draggedSubtask = subtasks[sourceIndex];
-      
+
       // 更新子任务顺序
       await updateSubtaskOrder(draggedSubtask.id!, destinationIndex);
-      
+
       // 重新加载子任务以获取最新顺序
       await loadSubtasks();
     } catch (err) {
@@ -142,11 +150,11 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
   return (
     <div className="subtask-list mt-4">
       <h3 className="text-lg font-bold mb-2">子任务</h3>
-      
+
       {error && (
         <div className="error-message text-red-500 mb-2">{error}</div>
       )}
-      
+
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="subtasks-list">
           {(provided) => (
@@ -219,7 +227,7 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
           )}
         </Droppable>
       </DragDropContext>
-      
+
       <div className="add-subtask-form mt-4">
         <div className="flex">
           <input

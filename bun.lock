@@ -8,6 +8,7 @@
         "@libsql/client": "^0.15.5",
         "@tanstack/react-query": "^5.32.0",
         "@types/node": "^22.15.17",
+        "@types/react-beautiful-dnd": "^13.1.8",
         "@types/uuid": "^10.0.0",
         "chart.js": "^4.4.9",
         "date-fns": "^4.1.0",
@@ -279,6 +280,8 @@
     "@types/prop-types": ["@types/prop-types@15.7.14", "https://registry.npmmirror.com/@types/prop-types/-/prop-types-15.7.14.tgz", {}, "sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ=="],
 
     "@types/react": ["@types/react@18.3.21", "https://registry.npmmirror.com/@types/react/-/react-18.3.21.tgz", { "dependencies": { "@types/prop-types": "*", "csstype": "^3.0.2" } }, "sha512-gXLBtmlcRJeT09/sI4PxVwyrku6SaNUj/6cMubjE6T6XdY1fDmBL7r0nX0jbSZPU/Xr0KuwLLZh6aOYY5d91Xw=="],
+
+    "@types/react-beautiful-dnd": ["@types/react-beautiful-dnd@13.1.8", "https://registry.npmmirror.com/@types/react-beautiful-dnd/-/react-beautiful-dnd-13.1.8.tgz", { "dependencies": { "@types/react": "*" } }, "sha512-E3TyFsro9pQuK4r8S/OL6G99eq7p8v29sX0PM7oT8Z+PJfZvSQTx4zTQbUJ+QZXioAF0e7TGBEcA1XhYhCweyQ=="],
 
     "@types/react-dom": ["@types/react-dom@18.3.7", "https://registry.npmmirror.com/@types/react-dom/-/react-dom-18.3.7.tgz", { "peerDependencies": { "@types/react": "^18.0.0" } }, "sha512-MEe3UeoENYVFXzoXEWsvcpg6ZvlrFNlOQ7EOsvhI3CfAXwzPfO8Qwuxd40nepsYKqyyVQnTdEfv68q91yLcKrQ=="],
 

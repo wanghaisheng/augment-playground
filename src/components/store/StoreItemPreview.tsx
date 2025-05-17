@@ -1,15 +1,14 @@
 // src/components/store/StoreItemPreview.tsx
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  StoreItemRecord, 
-  RewardRarity, 
+import {
+  StoreItemRecord,
+  RewardRarity,
   StoreItemType,
   PriceType,
   purchaseStoreItem
 } from '@/services/storeService';
 import Button from '@/components/common/Button';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { playSound, SoundType } from '@/utils/sound';
 import ScrollDialog from '@/components/game/ScrollDialog';
 import type { StoreItemPreviewLabelsBundle } from '@/types'; // Import the new labels bundle type
@@ -42,9 +41,9 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPreviewAnimating, setIsPreviewAnimating] = useState(false);
-  
+
   const safeLabels = labels || {} as StoreItemPreviewLabelsBundle; // Create a safe fallback
-  
+
   // 处理购买物品
   const handlePurchase = async () => {
     // 检查是否需要VIP
@@ -52,7 +51,7 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
       setError(safeLabels.vipRequiredError ?? '需要VIP会员才能购买');
       return;
     }
-    
+
     // 检查是否有足够的货币
     const price = item.isOnSale && item.salePrice !== undefined ? item.salePrice : item.price;
     if (item.priceType === PriceType.COINS && userCoins < price) {
@@ -63,22 +62,22 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
       setError(safeLabels.insufficientCurrencyError ?? '玉石不足'); // Assuming same message for jade
       return;
     }
-    
+
     try {
       setIsPurchasing(true);
       setError(null);
-      
+
       // 购买物品
       await purchaseStoreItem('current-user', item.id!);
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 通知父组件
       if (onPurchase) {
         onPurchase(item);
       }
-      
+
       // 关闭预览
       onClose();
     } catch (err) {
@@ -191,7 +190,7 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
                 target.src = '/assets/store/default-item.png';
               }}
             />
-            
+
             {/* 预览动画按钮 */}
             {(item.type === StoreItemType.AVATAR || item.type === StoreItemType.ACCESSORY) && (
               <button
@@ -203,19 +202,19 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
               </button>
             )}
           </div>
-          
+
           {/* 稀有度标签 */}
           <div className={`rarity-badge absolute top-2 right-2 px-2 py-1 rounded-full text-xs ${rarityInfo.className}`}>
             {rarityInfo.label}
           </div>
-          
+
           {/* VIP标签 */}
           {item.vipRequired && (
             <div className="vip-badge absolute top-2 left-2 px-2 py-1 rounded-full text-xs bg-amber-100 text-amber-800 border border-amber-300">
               {safeLabels.vipExclusiveBadge ?? 'VIP专属'}
             </div>
           )}
-          
+
           {/* 促销标签 */}
           {item.isOnSale && item.salePrice !== undefined && (
             <div className="sale-badge absolute bottom-2 left-2 px-2 py-1 rounded-full text-xs bg-red-100 text-red-800 border border-red-300">
@@ -223,11 +222,11 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
             </div>
           )}
         </div>
-        
+
         {/* 物品信息 */}
         <div className="item-info mb-4">
           <h3 className="item-name text-xl font-bold mb-2">{item.name}</h3>
-          
+
           <div className="item-meta flex flex-wrap gap-2 mb-2">
             <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
               {itemTypeLabel}
@@ -236,11 +235,11 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
               {rarityInfo.label}
             </span>
           </div>
-          
+
           <p className="item-description text-gray-700 mb-4">
             {item.description}
           </p>
-          
+
           {/* 标签 */}
           {item.tags && item.tags.length > 0 && (
             <div className="item-tags flex flex-wrap gap-1 mb-4">
@@ -254,7 +253,7 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
               ))}
             </div>
           )}
-          
+
           {/* 限量信息 */}
           {item.limitedQuantity && item.remainingQuantity !== undefined && (
             <div className="limited-quantity mb-4">
@@ -269,7 +268,7 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
               </div>
             </div>
           )}
-          
+
           {/* 促销信息 */}
           {item.isOnSale && item.salePrice !== undefined && item.saleEndDate && (
             <div className="sale-info mb-4">
@@ -279,7 +278,7 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
             </div>
           )}
         </div>
-        
+
         {/* 价格和购买 */}
         <div className="price-purchase-section">
           <div className="price-info flex items-center mb-4">
@@ -297,23 +296,21 @@ const StoreItemPreview: React.FC<StoreItemPreviewProps> = ({
               </span>
             )}
           </div>
-          
+
           {/* 错误信息 */}
           {error && <p className="error-message text-red-500 text-sm mb-2">{error}</p>}
-          
+
           <div className="purchase-actions flex gap-2">
             <Button
               onClick={handlePurchase}
-              color="primary" 
+              color="primary"
               variant="filled"
               disabled={isPurchasing || (item.vipRequired && !isVip) || !canAfford()}
-              isLoading={isPurchasing}
-              loadingText="处理中..."
             >
-              {safeLabels.purchaseButtonText ?? '购买'}
+              {isPurchasing ? '处理中...' : (safeLabels.purchaseButtonText ?? '购买')}
             </Button>
             <Button onClick={onClose} variant="outlined" color="secondary" disabled={isPurchasing}>
-              {safeLabels.closeButtonText ?? '关闭'} 
+              {safeLabels.closeButtonText ?? '关闭'}
             </Button>
           </div>
         </div>

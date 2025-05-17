@@ -191,7 +191,6 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
           shape,
           variant,
           isLoading,
-          loadingText,
           startIcon,
           endIcon,
           fullWidth,

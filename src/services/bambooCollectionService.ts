@@ -1,7 +1,7 @@
 // src/services/bambooCollectionService.ts
 import { db } from '@/db-old';
 import { addSyncItem } from './dataSyncService';
-import { RewardType, RewardRarity } from './rewardService';
+import { RewardType } from './rewardService';
 import { applyResourceMultiplier } from './resourceMultiplierService';
 import { playSound, SoundType } from '@/utils/sound';
 import { updateUserCurrency } from './storeService';

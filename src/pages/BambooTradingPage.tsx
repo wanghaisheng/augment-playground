@@ -5,7 +5,6 @@ import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { useLanguage } from '@/context/LanguageProvider';
 import { useBambooSystem } from '@/hooks/useBambooSystem';
 import { playSound, SoundType } from '@/utils/sound';
-import { generateSparkleParticles } from '@/utils/particleEffects';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 // import PageHeader from '@/components/common/PageHeader'; // Commented out - missing file
@@ -60,11 +59,7 @@ const BambooTradingPage: React.FC = () => {
   // 本地状态
   const [selectedResourceId, setSelectedResourceId] = useState<number | null>(null);
   const [tradeDirection, setTradeDirection] = useState<'bamboo_to_resource' | 'resource_to_bamboo'>('bamboo_to_resource');
-  const [tradeAmount, setTradeAmount] = useState<number>(0);
   const [isTrading, setIsTrading] = useState(false); // Local trading operation status
-  const [tradeResult, setTradeResult] = useState<{ amount: number, type: string } | null>(null);
-  const [showTradeAnimation, setShowTradeAnimation] = useState(false);
-  const [tradeParticles, setTradeParticles] = useState<React.ReactNode[]>([]);
   const [buyAmount, setBuyAmount] = useState(''); // For input fields
   const [sellAmount, setSellAmount] = useState(''); // For input fields
   const [tradeMessage, setTradeMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -79,8 +74,6 @@ const BambooTradingPage: React.FC = () => {
   // 选择资源
   const handleSelectResource = (resourceId: number) => {
     setSelectedResourceId(resourceId);
-    setTradeAmount(0);
-    setTradeResult(null);
     setBuyAmount('');
     setSellAmount('');
     setTradeMessage(null);
@@ -91,8 +84,6 @@ const BambooTradingPage: React.FC = () => {
     setTradeDirection(prev =>
       prev === 'bamboo_to_resource' ? 'resource_to_bamboo' : 'bamboo_to_resource'
     );
-    setTradeAmount(0);
-    setTradeResult(null);
     setBuyAmount('');
     setSellAmount('');
     setTradeMessage(null);
@@ -132,22 +123,22 @@ const BambooTradingPage: React.FC = () => {
       // } else {
       //   await tradeBambooForResource(selectedResourceId, currentTradeAmount); // or similar
       // }
-      
+
       // Mock trade success
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
-      setTradeMessage({ 
-        type: 'success', 
-        message: safePageLabels.transactionSuccessMessage ?? 'Trade successful!' 
+
+      setTradeMessage({
+        type: 'success',
+        message: safePageLabels.transactionSuccessMessage ?? 'Trade successful!'
       });
       playSound(SoundType.SUCCESS); // Changed from TRADE_SUCCESS
-      
+
       // Clear amounts after successful trade
       setBuyAmount('');
       setSellAmount('');
       refetch(); // Refetch page data which might include updated balances
       // Potentially refetch bambooSystem data too if not covered by page refetch
-      // bambooSystem.refetch?.(); 
+      // bambooSystem.refetch?.();
 
     } catch (error) {
       console.error('Failed to trade:', error);
@@ -237,7 +228,7 @@ const BambooTradingPage: React.FC = () => {
       </div>
     );
   }
-  
+
   // Main render
   return (
     <div className="bamboo-trading-page p-4 md:p-6">
@@ -245,7 +236,7 @@ const BambooTradingPage: React.FC = () => {
       <h1 className="text-2xl font-bold mb-6">{safePageLabels.pageTitle ?? 'Bamboo Marketplace'}</h1>
 
       {isTrading && <LoadingSpinner text={safePageLabels.processingTradeMessage ?? "Processing Trade..."}/>}
-      
+
       {tradeMessage && (
         <div className={`p-3 mb-4 rounded-md text-sm ${tradeMessage.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
           {tradeMessage.message}
@@ -255,7 +246,7 @@ const BambooTradingPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="md:col-span-2 p-4 bg-white shadow rounded-lg">
           <h2 className="text-xl font-semibold mb-4">{safePageLabels.marketTitle ?? 'Market Exchange'}</h2>
-          
+
           <div className="mb-4">
             <p className="text-sm text-gray-600">{safePageLabels.currentPriceLabel ?? 'Current Price (Example):'} 1 Bamboo = ¥{(safePageData?.currentMarketPrice ?? 0.1).toFixed(2)}</p>
             <p className="text-sm text-gray-600">{safePageLabels.yourBambooLabel ?? 'Your Bamboo:'} {bambooCount ?? 0}</p>
@@ -264,7 +255,7 @@ const BambooTradingPage: React.FC = () => {
 
           <div className="flex items-center mb-4">
                   <Button
-              onClick={handleToggleTradeDirection} 
+              onClick={handleToggleTradeDirection}
               variant="outlined"
                     size="small"
                   >
@@ -329,7 +320,7 @@ const BambooTradingPage: React.FC = () => {
               {safePageData.recentTransactions.slice(0, 5).map((tx: any) => ( // Use any for tx if structure is not strictly defined in types yet
                 <li key={tx.id} className="p-2 border-b border-gray-200 text-xs">
                   <div className="flex justify-between">
-                    <span>{(tx.type === 'sell' ? safePageLabels.txTypeSell ?? 'Sold' : safePageLabels.txTypeBuy ?? 'Bought') + ' ' + tx.amount + (tx.type === 'sell' ? ' Bamboo' : ' ResourceX')}</span> 
+                    <span>{(tx.type === 'sell' ? safePageLabels.txTypeSell ?? 'Sold' : safePageLabels.txTypeBuy ?? 'Bought') + ' ' + tx.amount + (tx.type === 'sell' ? ' Bamboo' : ' ResourceX')}</span>
                     <span className="text-gray-500">{formatTime(tx.timestamp)}</span>
                             </div>
                   <div className="text-gray-600">
@@ -343,12 +334,7 @@ const BambooTradingPage: React.FC = () => {
                         )}
                       </div>
                     </div>
-      {/* Particle animation container */}
-      {showTradeAnimation && (
-        <div className="trade-animation-container fixed inset-0 pointer-events-none z-50">
-          {tradeParticles}
-        </div>
-      )}
+      {/* Particle animation container removed */}
     </div>
   );
 };

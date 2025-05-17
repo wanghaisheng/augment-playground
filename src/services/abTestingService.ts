@@ -2,10 +2,8 @@
 import { db } from '@/db-old';
 import { addSyncItem } from '@/services/dataSyncService';
 import Dexie from 'dexie';
-import { 
-  ExperimentStatus, 
-  VariantType, 
-  type ExperimentGoal, 
+import {
+  ExperimentStatus,
   type AbTestExperimentRecord as ExperimentRecord, // Use AbTestExperimentRecord as ExperimentRecord
   type AbTestVariantRecord as VariantRecord, // Use AbTestVariantRecord as VariantRecord
   type UserAbTestAssignmentRecord as UserExperimentRecord, // Use UserAbTestAssignmentRecord as UserExperimentRecord
@@ -59,12 +57,12 @@ export async function createExperiment(experiment: Omit<ExperimentRecord, 'id' |
       createdAt: now,
       updatedAt: now
     };
-    
+
     const id = await db.abTestExperiments.add(newExperiment as AbTestExperimentRecord); // Cast to ensure correct type for Dexie
     const createdExperiment = { ...newExperiment, id: id as number };
-    
+
     await addSyncItem('abTestExperiments', 'create', createdExperiment);
-    
+
     return createdExperiment;
   } catch (err) {
     console.error('Failed to create experiment:', err);
@@ -89,13 +87,13 @@ export async function updateExperiment(experimentId: number, updates: Partial<Ex
     if (updates.updatedAt === undefined) {
       updatedExperimentData.updatedAt = new Date();
     }
-    
+
     await db.abTestExperiments.update(experimentId, updatedExperimentData);
     const finalExperiment = await db.abTestExperiments.get(experimentId);
     if (!finalExperiment) throw new Error('Failed to retrieve updated experiment');
-    
+
     await addSyncItem('abTestExperiments', 'update', finalExperiment);
-    
+
     return finalExperiment as ExperimentRecord; // Cast back
   } catch (err) {
     console.error('Failed to update experiment:', err);
@@ -111,11 +109,11 @@ export async function updateExperiment(experimentId: number, updates: Partial<Ex
 export async function getAllExperiments(status?: ExperimentStatus): Promise<ExperimentRecord[]> {
   try {
     let query: Dexie.Table<AbTestExperimentRecord, number> | Dexie.Collection<AbTestExperimentRecord, number> = db.abTestExperiments;
-    
+
     if (status) {
       query = query.where('status').equals(status);
     }
-    
+
     const experiments = await query.toArray();
     return experiments as ExperimentRecord[]; // Cast result array
   } catch (err) {
@@ -152,12 +150,12 @@ export async function createVariant(variantData: Omit<VariantRecord, 'id' | 'cre
       createdAt: now,
       updatedAt: now
     };
-    
+
     const id = await db.abTestVariants.add(newVariant as AbTestVariantRecord);
     const createdVariant = { ...newVariant, id: id as number };
-    
+
     await addSyncItem('abTestVariants', 'create', createdVariant);
-    
+
     return createdVariant;
   } catch (err) {
     console.error('Failed to create variant:', err);
@@ -196,28 +194,28 @@ export async function assignUserToExperiment(userId: string, experimentId: numbe
       .equals(userId)
       .and(record => record.experimentId === experimentId)
       .first();
-    
+
     if (existingAssignment) {
       const variant = await db.abTestVariants.get(existingAssignment.variantId);
       return variant ? variant as VariantRecord : null;
     }
-    
+
     const experiment = await getExperimentById(experimentId);
     // Ensure to use properties from AbTestExperimentRecord like sampleSizePercentage
     if (!experiment || experiment.status !== ExperimentStatus.RUNNING) { // Use RUNNING from imported enum
       return null;
     }
-    
+
     const variants = await getVariantsByExperimentId(experimentId);
     if (variants.length === 0) {
       return null;
     }
-    
+
     const variant = selectVariantByAllocation(variants); // Renamed from selectVariantByWeight for clarity
     if (!variant) {
       return null;
     }
-    
+
     const now = new Date();
     const userExperimentAssignment: UserExperimentRecord = {
       userId,
@@ -228,13 +226,13 @@ export async function assignUserToExperiment(userId: string, experimentId: numbe
       createdAt: now, // Add createdAt
       updatedAt: now // Add updatedAt
     };
-    
+
     await db.userAbTestAssignments.add(userExperimentAssignment as UserAbTestAssignmentRecord);
-    
+
     await addSyncItem('userAbTestAssignments', 'create', userExperimentAssignment);
-    
+
     await recordExperimentEvent(userId, experimentId, variant.id!, 'assigned', {});
-    
+
     return variant;
   } catch (err) {
     console.error(`Failed to assign user ${userId} to experiment ${experimentId}:`, err);
@@ -247,13 +245,13 @@ function selectVariantByAllocation(variants: VariantRecord[]): VariantRecord | n
   if (variants.length === 0) {
     return null;
   }
-  
+
   const totalAllocation = variants.reduce((sum, variant) => sum + variant.allocationPercentage, 0);
   if (totalAllocation !== 100 && totalAllocation !== 0) { // Allow 0 if no variants have allocation yet
       console.warn(`Sum of variant allocations for experiment is ${totalAllocation}, not 100.`);
       // Potentially re-normalize or handle error, for now, proceed with selection
   }
-  
+
   let random = Math.random() * totalAllocation; // Use totalAllocation which might not be 100
   if (totalAllocation === 0 && variants.length > 0) { // If all allocations are 0, pick one randomly
       return variants[Math.floor(Math.random() * variants.length)];
@@ -266,7 +264,7 @@ function selectVariantByAllocation(variants: VariantRecord[]): VariantRecord | n
     }
     random -= variant.allocationPercentage;
   }
-  
+
   // Fallback, though ideally, the loop should always find one if totalAllocation > 0
   return variants.length > 0 ? variants[variants.length -1] : null;
 }
@@ -283,7 +281,7 @@ export async function getUserVariant(userId: string, experimentId: number): Prom
       .where('[userId+experimentId]')
       .equals([userId, experimentId])
       .first();
-    
+
     if (assignment) {
       const variant = await db.abTestVariants.get(assignment.variantId);
       return variant ? variant as VariantRecord : null;
@@ -321,12 +319,12 @@ export async function recordExperimentEvent(
       eventData: JSON.stringify(eventData),
       timestamp: now
     };
-    
+
     const id = await db.abTestEvents.add(eventRecord); // Assuming db.abTestEvents table
     const createdEvent = { ...eventRecord, id: id as number };
-    
+
     await addSyncItem('abTestEvents', 'create', createdEvent);
-    
+
     // Update user's experiment assignment if it's a conversion event
     if (eventType === 'conversion') { // This is a simple check, might need more robust goal checking
       await updateUserExperimentConversion(userId, experimentId, variantId, eventData);
@@ -359,13 +357,13 @@ async function updateUserExperimentConversion(
       .where('[userId+experimentId+variantId]') // Query by variantId too
       .equals([userId, experimentId, variantId])
       .first();
-      
+
     if (assignment) {
       const goalId = eventData.goalId || 'default_goal'; // Extract goalId or use a default
-      
+
       const updatedConversionEvents = {
         ...(assignment.conversionEvents || {}), // Existing events (should be object, not string)
-        [goalId]: new Date() 
+        [goalId]: new Date()
       };
 
       await db.userAbTestAssignments.update(assignment.id!, {
@@ -393,7 +391,7 @@ async function updateUserExperimentInteraction(userId: string, experimentId: num
       .first(); // This might pick any variant if user is in multiple variants of same exp (not typical)
 
     if (assignment) {
-      await db.userAbTestAssignments.update(assignment.id!, { 
+      await db.userAbTestAssignments.update(assignment.id!, {
         lastInteractionAt: new Date(),
         updatedAt: new Date()
       });
@@ -417,9 +415,9 @@ export async function markExperimentAsViewed(userId: string, experimentId: numbe
       .where('[userId+experimentId]')
       .equals([userId, experimentId])
       .first();
-    
+
     if (assignment && !assignment.lastViewedAt) {
-      await db.userAbTestAssignments.update(assignment.id!, { 
+      await db.userAbTestAssignments.update(assignment.id!, {
         lastViewedAt: new Date(),
         updatedAt: new Date()
       });
@@ -462,7 +460,7 @@ export async function getExperimentResults(experimentId: number): Promise<any> {
         totalInteractions: 0, // Placeholder
       };
     }
-    
+
     const experimentGoals = experiment.goals.map(g => g.id);
 
     for (const assignment of assignments) {
@@ -470,7 +468,7 @@ export async function getExperimentResults(experimentId: number): Promise<any> {
         results[assignment.variantId].assignments++;
         if (assignment.conversionEvents) {
           // Ensure conversionEvents is an object
-          const events = typeof assignment.conversionEvents === 'string' 
+          const events = typeof assignment.conversionEvents === 'string'
             ? JSON.parse(assignment.conversionEvents) // Should already be an object based on type def
             : assignment.conversionEvents;
 

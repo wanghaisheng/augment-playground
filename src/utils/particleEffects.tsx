@@ -283,7 +283,8 @@ export const generateBurstParticles = (config: Partial<ParticleEffectConfig> = {
   // 生成粒子
   for (let i = 0; i < count; i++) {
     // 随机角度（弧度）
-    const angle = (i / count) * mergedConfig.spread * (Math.PI / 180) + ((360 - mergedConfig.spread) / 2) * (Math.PI / 180);
+    const spreadValue = mergedConfig.spread ?? 360;
+    const angle = (i / count) * spreadValue * (Math.PI / 180) + ((360 - spreadValue) / 2) * (Math.PI / 180);
 
     // 随机距离
     const distance = random(minDistance, maxDistance);
@@ -307,14 +308,18 @@ export const generateBurstParticles = (config: Partial<ParticleEffectConfig> = {
     // 重力效果
     const gravity = mergedConfig.gravity || 0;
 
+    // 获取原点坐标，默认为中心点
+    const originX = mergedConfig.originX ?? 0.5;
+    const originY = mergedConfig.originY ?? 0.5;
+
     // 创建粒子
     particles.push(
       <motion.div
         key={`particle-${i}`}
         style={{
           position: 'absolute',
-          top: `${mergedConfig.originY * 100}%`,
-          left: `${mergedConfig.originX * 100}%`,
+          top: `${originY * 100}%`,
+          left: `${originX * 100}%`,
           zIndex: 10,
           pointerEvents: 'none'
         }}
