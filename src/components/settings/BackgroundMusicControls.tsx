@@ -5,8 +5,30 @@ import { useBackgroundMusic } from '@/context/BackgroundMusicProvider';
 import { BackgroundMusicType } from '@/utils/backgroundMusic';
 import { playSound, SoundType } from '@/utils/sound';
 import Button from '@/components/common/Button';
-import { useLocalizedView } from '@/hooks/useLocalizedView';
-import MusicPlayerWithVisualizer from '@/components/sound/MusicPlayerWithVisualizer';
+import { useLanguage } from '@/context/LanguageProvider';
+import { Language } from '@/types';
+
+/**
+ * 定义背景音乐控制组件的标签类型
+ */
+interface BackgroundMusicLabels {
+  backgroundMusic: {
+    title: Record<Language, string>;
+    volumeLabel: Record<Language, string>;
+    muteButton: Record<Language, string>;
+    unmuteButton: Record<Language, string>;
+    playButton: Record<Language, string>;
+    pauseButton: Record<Language, string>;
+    trackSelectLabel: Record<Language, string>;
+    categoryLabels: {
+      environment: Record<Language, string>;
+      traditional: Record<Language, string>;
+      seasonal: Record<Language, string>;
+    };
+    noTrackSelected: Record<Language, string>;
+    currentlyPlaying: Record<Language, string>;
+  }
+}
 
 /**
  * 背景音乐控制组件
@@ -20,7 +42,6 @@ const BackgroundMusicControls: React.FC = () => {
     isMuted,
     volume,
     playMusic,
-    stopMusic,
     pauseMusic,
     resumeMusic,
     setVolume,
@@ -28,74 +49,74 @@ const BackgroundMusicControls: React.FC = () => {
     availableTracks
   } = useBackgroundMusic();
 
+  // 获取当前语言
+  const { language } = useLanguage();
+
   // 本地化标签
-  const { labels } = useLocalizedView({
-    scope: 'settings',
-    labels: {
-      backgroundMusic: {
-        title: {
-          en: 'Background Music',
-          zh: '背景音乐'
+  const labels: BackgroundMusicLabels = {
+    backgroundMusic: {
+      title: {
+        en: 'Background Music',
+        zh: '背景音乐'
+      },
+      volumeLabel: {
+        en: 'Volume',
+        zh: '音量'
+      },
+      muteButton: {
+        en: 'Mute',
+        zh: '静音'
+      },
+      unmuteButton: {
+        en: 'Unmute',
+        zh: '取消静音'
+      },
+      playButton: {
+        en: 'Play',
+        zh: '播放'
+      },
+      pauseButton: {
+        en: 'Pause',
+        zh: '暂停'
+      },
+      trackSelectLabel: {
+        en: 'Select Music',
+        zh: '选择音乐'
+      },
+      categoryLabels: {
+        environment: {
+          en: 'Environment',
+          zh: '环境音乐'
         },
-        volumeLabel: {
-          en: 'Volume',
-          zh: '音量'
+        traditional: {
+          en: 'Traditional',
+          zh: '传统音乐'
         },
-        muteButton: {
-          en: 'Mute',
-          zh: '静音'
-        },
-        unmuteButton: {
-          en: 'Unmute',
-          zh: '取消静音'
-        },
-        playButton: {
-          en: 'Play',
-          zh: '播放'
-        },
-        pauseButton: {
-          en: 'Pause',
-          zh: '暂停'
-        },
-        trackSelectLabel: {
-          en: 'Select Music',
-          zh: '选择音乐'
-        },
-        categoryLabels: {
-          environment: {
-            en: 'Environment',
-            zh: '环境音乐'
-          },
-          traditional: {
-            en: 'Traditional',
-            zh: '传统音乐'
-          },
-          seasonal: {
-            en: 'Seasonal',
-            zh: '季节主题'
-          }
-        },
-        noTrackSelected: {
-          en: 'No music selected',
-          zh: '未选择音乐'
-        },
-        currentlyPlaying: {
-          en: 'Currently playing',
-          zh: '正在播放'
+        seasonal: {
+          en: 'Seasonal',
+          zh: '季节主题'
         }
+      },
+      noTrackSelected: {
+        en: 'No music selected',
+        zh: '未选择音乐'
+      },
+      currentlyPlaying: {
+        en: 'Currently playing',
+        zh: '正在播放'
       }
     }
-  });
+  };
 
   // 状态
   const [showTrackSelector, setShowTrackSelector] = useState(false);
 
   // 获取当前播放的音乐名称
   const getCurrentMusicName = () => {
-    if (!currentMusic) return labels.backgroundMusic.noTrackSelected;
+    if (!currentMusic) return labels.backgroundMusic.noTrackSelected[language];
 
     const track = availableTracks.find(t => t.type === currentMusic);
-    return track ? track.name : labels.backgroundMusic.noTrackSelected;
+    return track ? track.name : labels.backgroundMusic.noTrackSelected[language];
   };
 
   // 处理音量变化

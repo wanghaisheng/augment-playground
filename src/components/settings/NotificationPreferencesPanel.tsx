@@ -2,24 +2,78 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNotifications } from '@/context/NotificationProvider';
-import { 
-  NotificationType, 
-  NotificationPriority 
+import {
+  NotificationType,
+  NotificationPriority
 } from '@/types/notification';
-import { useLocalizedView } from '@/hooks/useLocalizedView';
+import { useLanguage } from '@/context/LanguageProvider';
 import Button from '@/components/common/Button';
 import Switch from '@/components/common/Switch';
 import { playSound, SoundType } from '@/utils/sound';
+import { Language } from '@/types';
+
+// Define the type for our notification labels
+interface NotificationLabelsBundle {
+  notifications: {
+    title: Record<Language, string>;
+    globalSettings: Record<Language, string>;
+    enableNotifications: Record<Language, string>;
+    sound: Record<Language, string>;
+    vibration: Record<Language, string>;
+    desktop: Record<Language, string>;
+    showOnLockScreen: Record<Language, string>;
+    displayDuration: Record<Language, string>;
+    seconds: Record<Language, string>;
+    doNotDisturb: Record<Language, string>;
+    from: Record<Language, string>;
+    to: Record<Language, string>;
+    notificationTypes: Record<Language, string>;
+    priority: Record<Language, string>;
+    priorityLevels: {
+      low: Record<Language, string>;
+      medium: Record<Language, string>;
+      high: Record<Language, string>;
+      urgent: Record<Language, string>;
+    };
+    typeLabels: {
+      task_due_soon: Record<Language, string>;
+      task_overdue: Record<Language, string>;
+      task_completed: Record<Language, string>;
+      task_reminder: Record<Language, string>;
+      challenge_available: Record<Language, string>;
+      challenge_completed: Record<Language, string>;
+      challenge_expiring: Record<Language, string>;
+      achievement_unlocked: Record<Language, string>;
+      level_up: Record<Language, string>;
+      panda_mood_low: Record<Language, string>;
+      panda_energy_low: Record<Language, string>;
+      panda_evolution: Record<Language, string>;
+      system_update: Record<Language, string>;
+      feature_announcement: Record<Language, string>;
+      maintenance: Record<Language, string>;
+      friend_request: Record<Language, string>;
+      friend_activity: Record<Language, string>;
+      vip_expiring: Record<Language, string>;
+      vip_benefit: Record<Language, string>;
+      custom: Record<Language, string>;
+    };
+    saveButton: Record<Language, string>;
+    resetButton: Record<Language, string>;
+    advancedSettings: Record<Language, string>;
+    hideAdvancedSettings: Record<Language, string>;
+  }
+}
 
 /**
  * 通知偏好设置面板组件
- * 
+ *
  * 用于设置通知偏好，包括全局设置和各类型通知的设置
  */
 const NotificationPreferencesPanel: React.FC = () => {
   // 上下文
   const { preferences, savePreferences, updateTypePreference } = useNotifications();
-  
+  const { language } = useLanguage();
+
   // 状态
   const [localPreferences, setLocalPreferences] = useState(preferences);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
@@ -27,188 +81,185 @@ const NotificationPreferencesPanel: React.FC = () => {
     startTime: preferences.doNotDisturb.startTime,
     endTime: preferences.doNotDisturb.endTime
   });
-  
+
   // 本地化标签
-  const { labels } = useLocalizedView({
-    scope: 'settings',
-    labels: {
-      notifications: {
-        title: {
-          en: 'Notification Settings',
-          zh: '通知设置'
+  const labels: NotificationLabelsBundle = {
+    notifications: {
+      title: {
+        en: 'Notification Settings',
+        zh: '通知设置'
+      },
+      globalSettings: {
+        en: 'Global Settings',
+        zh: '全局设置'
+      },
+      enableNotifications: {
+        en: 'Enable Notifications',
+        zh: '启用通知'
+      },
+      sound: {
+        en: 'Sound',
+        zh: '声音'
+      },
+      vibration: {
+        en: 'Vibration',
+        zh: '振动'
+      },
+      desktop: {
+        en: 'Desktop Notifications',
+        zh: '桌面通知'
+      },
+      showOnLockScreen: {
+        en: 'Show on Lock Screen',
+        zh: '在锁屏上显示'
+      },
+      displayDuration: {
+        en: 'Display Duration',
+        zh: '显示时长'
+      },
+      seconds: {
+        en: 'seconds',
+        zh: '秒'
+      },
+      doNotDisturb: {
+        en: 'Do Not Disturb',
+        zh: '勿扰模式'
+      },
+      from: {
+        en: 'From',
+        zh: '从'
+      },
+      to: {
+        en: 'to',
+        zh: '到'
+      },
+      notificationTypes: {
+        en: 'Notification Types',
+        zh: '通知类型'
+      },
+      priority: {
+        en: 'Priority',
+        zh: '优先级'
+      },
+      priorityLevels: {
+        low: {
+          en: 'Low',
+          zh: '低'
         },
-        globalSettings: {
-          en: 'Global Settings',
-          zh: '全局设置'
+        medium: {
+          en: 'Medium',
+          zh: '中'
         },
-        enableNotifications: {
-          en: 'Enable Notifications',
-          zh: '启用通知'
+        high: {
+          en: 'High',
+          zh: '高'
         },
-        sound: {
-          en: 'Sound',
-          zh: '声音'
-        },
-        vibration: {
-          en: 'Vibration',
-          zh: '振动'
-        },
-        desktop: {
-          en: 'Desktop Notifications',
-          zh: '桌面通知'
-        },
-        showOnLockScreen: {
-          en: 'Show on Lock Screen',
-          zh: '在锁屏上显示'
-        },
-        displayDuration: {
-          en: 'Display Duration',
-          zh: '显示时长'
-        },
-        seconds: {
-          en: 'seconds',
-          zh: '秒'
-        },
-        doNotDisturb: {
-          en: 'Do Not Disturb',
-          zh: '勿扰模式'
-        },
-        from: {
-          en: 'From',
-          zh: '从'
-        },
-        to: {
-          en: 'to',
-          zh: '到'
-        },
-        notificationTypes: {
-          en: 'Notification Types',
-          zh: '通知类型'
-        },
-        priority: {
-          en: 'Priority',
-          zh: '优先级'
-        },
-        priorityLevels: {
-          low: {
-            en: 'Low',
-            zh: '低'
-          },
-          medium: {
-            en: 'Medium',
-            zh: '中'
-          },
-          high: {
-            en: 'High',
-            zh: '高'
-          },
-          urgent: {
-            en: 'Urgent',
-            zh: '紧急'
-          }
-        },
-        typeLabels: {
-          task_due_soon: {
-            en: 'Task Due Soon',
-            zh: '任务即将到期'
-          },
-          task_overdue: {
-            en: 'Task Overdue',
-            zh: '任务已过期'
-          },
-          task_completed: {
-            en: 'Task Completed',
-            zh: '任务已完成'
-          },
-          task_reminder: {
-            en: 'Task Reminder',
-            zh: '任务提醒'
-          },
-          challenge_available: {
-            en: 'Challenge Available',
-            zh: '新挑战可用'
-          },
-          challenge_completed: {
-            en: 'Challenge Completed',
-            zh: '挑战已完成'
-          },
-          challenge_expiring: {
-            en: 'Challenge Expiring',
-            zh: '挑战即将过期'
-          },
-          achievement_unlocked: {
-            en: 'Achievement Unlocked',
-            zh: '解锁成就'
-          },
-          level_up: {
-            en: 'Level Up',
-            zh: '等级提升'
-          },
-          panda_mood_low: {
-            en: 'Panda Mood Low',
-            zh: '熊猫心情低落'
-          },
-          panda_energy_low: {
-            en: 'Panda Energy Low',
-            zh: '熊猫能量不足'
-          },
-          panda_evolution: {
-            en: 'Panda Evolution',
-            zh: '熊猫进化'
-          },
-          system_update: {
-            en: 'System Update',
-            zh: '系统更新'
-          },
-          feature_announcement: {
-            en: 'Feature Announcement',
-            zh: '功能公告'
-          },
-          maintenance: {
-            en: 'Maintenance',
-            zh: '维护通知'
-          },
-          friend_request: {
-            en: 'Friend Request',
-            zh: '好友请求'
-          },
-          friend_activity: {
-            en: 'Friend Activity',
-            zh: '好友活动'
-          },
-          vip_expiring: {
-            en: 'VIP Expiring',
-            zh: 'VIP即将到期'
-          },
-          vip_benefit: {
-            en: 'VIP Benefit',
-            zh: 'VIP福利'
-          },
-          custom: {
-            en: 'Custom',
-            zh: '自定义通知'
-          }
-        },
-        saveButton: {
-          en: 'Save Settings',
-          zh: '保存设置'
-        },
-        resetButton: {
-          en: 'Reset to Defaults',
-          zh: '恢复默认设置'
-        },
-        advancedSettings: {
-          en: 'Advanced Settings',
-          zh: '高级设置'
-        },
-        hideAdvancedSettings: {
-          en: 'Hide Advanced Settings',
-          zh: '隐藏高级设置'
+        urgent: {
+          en: 'Urgent',
+          zh: '紧急'
         }
+      },
+      typeLabels: {
+        task_due_soon: {
+          en: 'Task Due Soon',
+          zh: '任务即将到期'
+        },
+        task_overdue: {
+          en: 'Task Overdue',
+          zh: '任务已过期'
+        },
+        task_completed: {
+          en: 'Task Completed',
+          zh: '任务已完成'
+        },
+        task_reminder: {
+          en: 'Task Reminder',
+          zh: '任务提醒'
+        },
+        challenge_available: {
+          en: 'Challenge Available',
+          zh: '新挑战可用'
+        },
+        challenge_completed: {
+          en: 'Challenge Completed',
+          zh: '挑战已完成'
+        },
+        challenge_expiring: {
+          en: 'Challenge Expiring',
+          zh: '挑战即将过期'
+        },
+        achievement_unlocked: {
+          en: 'Achievement Unlocked',
+          zh: '解锁成就'
+        },
+        level_up: {
+          en: 'Level Up',
+          zh: '等级提升'
+        },
+        panda_mood_low: {
+          en: 'Panda Mood Low',
+          zh: '熊猫心情低落'
+        },
+        panda_energy_low: {
+          en: 'Panda Energy Low',
+          zh: '熊猫能量不足'
+        },
+        panda_evolution: {
+          en: 'Panda Evolution',
+          zh: '熊猫进化'
+        },
+        system_update: {
+          en: 'System Update',
+          zh: '系统更新'
+        },
+        feature_announcement: {
+          en: 'Feature Announcement',
+          zh: '功能公告'
+        },
+        maintenance: {
+          en: 'Maintenance',
+          zh: '维护通知'
+        },
+        friend_request: {
+          en: 'Friend Request',
+          zh: '好友请求'
+        },
+        friend_activity: {
+          en: 'Friend Activity',
+          zh: '好友活动'
+        },
+        vip_expiring: {
+          en: 'VIP Expiring',
+          zh: 'VIP即将到期'
+        },
+        vip_benefit: {
+          en: 'VIP Benefit',
+          zh: 'VIP福利'
+        },
+        custom: {
+          en: 'Custom',
+          zh: '自定义通知'
+        }
+      },
+      saveButton: {
+        en: 'Save Settings',
+        zh: '保存设置'
+      },
+      resetButton: {
+        en: 'Reset to Defaults',
+        zh: '恢复默认设置'
+      },
+      advancedSettings: {
+        en: 'Advanced Settings',
+        zh: '高级设置'
+      },
+      hideAdvancedSettings: {
+        en: 'Hide Advanced Settings',
+        zh: '隐藏高级设置'
       }
     }
-  });
-  
+  };
+
   // 当preferences变化时更新本地状态
   useEffect(() => {
     setLocalPreferences(preferences);
@@ -217,7 +268,7 @@ const NotificationPreferencesPanel: React.FC = () => {
       endTime: preferences.doNotDisturb.endTime
     });
   }, [preferences]);
-  
+
   // 处理全局开关变化
   const handleGlobalToggle = (enabled: boolean) => {
     playSound(SoundType.BUTTON_CLICK);
@@ -226,7 +277,7 @@ const NotificationPreferencesPanel: React.FC = () => {
       enabled
     }));
   };
-  
+
   // 处理声音开关变化
   const handleSoundToggle = (enabled: boolean) => {
     playSound(SoundType.BUTTON_CLICK);
@@ -235,7 +286,7 @@ const NotificationPreferencesPanel: React.FC = () => {
       sound: enabled
     }));
   };
-  
+
   // 处理振动开关变化
   const handleVibrationToggle = (enabled: boolean) => {
     playSound(SoundType.BUTTON_CLICK);
@@ -244,22 +295,22 @@ const NotificationPreferencesPanel: React.FC = () => {
       vibration: enabled
     }));
   };
-  
+
   // 处理桌面通知开关变化
   const handleDesktopToggle = (enabled: boolean) => {
     playSound(SoundType.BUTTON_CLICK);
-    
+
     // 如果启用，请求权限
     if (enabled && 'Notification' in window && Notification.permission !== 'granted') {
       Notification.requestPermission();
     }
-    
+
     setLocalPreferences(prev => ({
       ...prev,
       desktop: enabled
     }));
   };
-  
+
   // 处理锁屏显示开关变化
   const handleLockScreenToggle = (enabled: boolean) => {
     playSound(SoundType.BUTTON_CLICK);
@@ -268,7 +319,7 @@ const NotificationPreferencesPanel: React.FC = () => {
       showOnLockScreen: enabled
     }));
   };
-  
+
   // 处理显示时长变化
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -277,7 +328,7 @@ const NotificationPreferencesPanel: React.FC = () => {
       displayDuration: value
     }));
   };
-  
+
   // 处理勿扰模式开关变化
   const handleDoNotDisturbToggle = (enabled: boolean) => {
     playSound(SoundType.BUTTON_CLICK);
@@ -289,7 +340,7 @@ const NotificationPreferencesPanel: React.FC = () => {
       }
     }));
   };
-  
+
   // 处理时间输入变化
   const handleTimeInputChange = (field: 'startTime' | 'endTime', value: string) => {
     setTimeInputs(prev => ({
@@ -297,7 +348,7 @@ const NotificationPreferencesPanel: React.FC = () => {
       [field]: value
     }));
   };
-  
+
   // 处理时间输入失去焦点
   const handleTimeInputBlur = () => {
     setLocalPreferences(prev => ({
@@ -309,7 +360,7 @@ const NotificationPreferencesPanel: React.FC = () => {
       }
     }));
   };
-  
+
   // 处理通知类型开关变化
   const handleTypeToggle = (type: NotificationType, enabled: boolean) => {
     playSound(SoundType.BUTTON_CLICK);
@@ -324,7 +375,7 @@ const NotificationPreferencesPanel: React.FC = () => {
       }
     }));
   };
-  
+
   // 处理通知类型优先级变化
   const handlePriorityChange = (type: NotificationType, priority: NotificationPriority) => {
     playSound(SoundType.BUTTON_CLICK);
@@ -339,40 +390,41 @@ const NotificationPreferencesPanel: React.FC = () => {
       }
     }));
   };
-  
+
   // 保存设置
   const handleSaveSettings = async () => {
     playSound(SoundType.BUTTON_CLICK);
     await savePreferences(localPreferences);
   };
-  
+
   // 重置为默认设置
   const handleResetSettings = () => {
     playSound(SoundType.BUTTON_CLICK);
     setLocalPreferences(preferences);
   };
-  
+
   // 获取通知类型名称
   const getTypeLabel = (type: NotificationType) => {
-    return labels.notifications.typeLabels[type as keyof typeof labels.notifications.typeLabels];
+    const typeLabel = labels.notifications.typeLabels[type as keyof typeof labels.notifications.typeLabels];
+    return typeLabel ? typeLabel[language] : type;
   };
-  
+
   // 获取优先级名称
   const getPriorityLabel = (priority: NotificationPriority) => {
     switch (priority) {
       case NotificationPriority.LOW:
-        return labels.notifications.priorityLevels.low;
+        return labels.notifications.priorityLevels.low[language];
       case NotificationPriority.MEDIUM:
-        return labels.notifications.priorityLevels.medium;
+        return labels.notifications.priorityLevels.medium[language];
       case NotificationPriority.HIGH:
-        return labels.notifications.priorityLevels.high;
+        return labels.notifications.priorityLevels.high[language];
       case NotificationPriority.URGENT:
-        return labels.notifications.priorityLevels.urgent;
+        return labels.notifications.priorityLevels.urgent[language];
       default:
-        return labels.notifications.priorityLevels.medium;
+        return labels.notifications.priorityLevels.medium[language];
     }
   };
-  
+
   // 按类别分组通知类型
   const notificationTypesByCategory = {
     task: [
@@ -412,7 +464,7 @@ const NotificationPreferencesPanel: React.FC = () => {
       NotificationType.CUSTOM
     ]
   };
-  
+
   // 类别名称
   const categoryNames = {
     task: '任务',
@@ -424,22 +476,22 @@ const NotificationPreferencesPanel: React.FC = () => {
     vip: 'VIP',
     other: '其他'
   };
-  
+
   return (
     <div className="notification-preferences-panel">
       <h3 className="text-lg font-medium mb-4 text-jade-800">
-        {labels.notifications.title}
+        {labels.notifications.title[language]}
       </h3>
-      
+
       {/* 全局设置 */}
       <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
         <h4 className="text-md font-medium mb-3 text-jade-700">
-          {labels.notifications.globalSettings}
+          {labels.notifications.globalSettings[language]}
         </h4>
-        
+
         <div className="flex items-center justify-between mb-4">
           <span className="text-sm text-gray-600">
-            {labels.notifications.enableNotifications}
+            {labels.notifications.enableNotifications[language]}
           </span>
           <Switch
             checked={localPreferences.enabled}
@@ -448,10 +500,10 @@ const NotificationPreferencesPanel: React.FC = () => {
             color="jade"
           />
         </div>
-        
+
         <div className="flex items-center justify-between mb-4">
           <span className="text-sm text-gray-600">
-            {labels.notifications.sound}
+            {labels.notifications.sound[language]}
           </span>
           <Switch
             checked={localPreferences.sound}
@@ -461,10 +513,10 @@ const NotificationPreferencesPanel: React.FC = () => {
             color="jade"
           />
         </div>
-        
+
         <div className="flex items-center justify-between mb-4">
           <span className="text-sm text-gray-600">
-            {labels.notifications.vibration}
+            {labels.notifications.vibration[language]}
           </span>
           <Switch
             checked={localPreferences.vibration}
@@ -474,10 +526,10 @@ const NotificationPreferencesPanel: React.FC = () => {
             color="jade"
           />
         </div>
-        
+
         <div className="flex items-center justify-between mb-4">
           <span className="text-sm text-gray-600">
-            {labels.notifications.desktop}
+            {labels.notifications.desktop[language]}
           </span>
           <Switch
             checked={localPreferences.desktop}
@@ -487,14 +539,14 @@ const NotificationPreferencesPanel: React.FC = () => {
             color="jade"
           />
         </div>
-        
+
         <div className="mb-4">
           <div className="flex justify-between mb-1">
             <span className="text-sm text-gray-600">
-              {labels.notifications.displayDuration}
+              {labels.notifications.displayDuration[language]}
             </span>
             <span className="text-sm text-gray-500">
-              {localPreferences.displayDuration / 1000} {labels.notifications.seconds}
+              {localPreferences.displayDuration / 1000} {labels.notifications.seconds[language]}
             </span>
           </div>
           <input
@@ -508,10 +560,10 @@ const NotificationPreferencesPanel: React.FC = () => {
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer disabled:opacity-50"
           />
         </div>
-        
+
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm text-gray-600">
-            {labels.notifications.doNotDisturb}
+            {labels.notifications.doNotDisturb[language]}
           </span>
           <Switch
             checked={localPreferences.doNotDisturb.enabled}
@@ -521,11 +573,11 @@ const NotificationPreferencesPanel: React.FC = () => {
             color="jade"
           />
         </div>
-        
+
         {localPreferences.doNotDisturb.enabled && (
           <div className="flex items-center space-x-2 ml-4 mt-2">
             <span className="text-xs text-gray-500">
-              {labels.notifications.from}
+              {labels.notifications.from[language]}
             </span>
             <input
               type="time"
@@ -536,7 +588,7 @@ const NotificationPreferencesPanel: React.FC = () => {
               className="text-xs p-1 border border-gray-300 rounded"
             />
             <span className="text-xs text-gray-500">
-              {labels.notifications.to}
+              {labels.notifications.to[language]}
             </span>
             <input
               type="time"
@@ -549,7 +601,7 @@ const NotificationPreferencesPanel: React.FC = () => {
           </div>
         )}
       </div>
-      
+
       {/* 高级设置切换 */}
       <div className="mb-4">
         <Button
@@ -558,12 +610,12 @@ const NotificationPreferencesPanel: React.FC = () => {
           onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
           className="text-sm"
         >
-          {showAdvancedSettings 
-            ? labels.notifications.hideAdvancedSettings 
-            : labels.notifications.advancedSettings}
+          {showAdvancedSettings
+            ? labels.notifications.hideAdvancedSettings[language]
+            : labels.notifications.advancedSettings[language]}
         </Button>
       </div>
-      
+
       {/* 高级设置 */}
       <AnimatePresence>
         {showAdvancedSettings && (
@@ -576,16 +628,16 @@ const NotificationPreferencesPanel: React.FC = () => {
           >
             <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
               <h4 className="text-md font-medium mb-3 text-jade-700">
-                {labels.notifications.notificationTypes}
+                {labels.notifications.notificationTypes[language]}
               </h4>
-              
+
               {/* 通知类型设置 */}
               {Object.entries(notificationTypesByCategory).map(([category, types]) => (
                 <div key={category} className="mb-4 pb-3 border-b border-gray-200 last:border-0 last:mb-0 last:pb-0">
                   <h5 className="text-sm font-medium text-jade-600 mb-2">
                     {categoryNames[category as keyof typeof categoryNames]}
                   </h5>
-                  
+
                   {types.map(type => (
                     <div key={type} className="mb-3 last:mb-0">
                       <div className="flex items-center justify-between mb-1">
@@ -600,10 +652,10 @@ const NotificationPreferencesPanel: React.FC = () => {
                           color="jade"
                         />
                       </div>
-                      
+
                       <div className="flex items-center ml-4">
                         <span className="text-xs text-gray-500 mr-2">
-                          {labels.notifications.priority}:
+                          {labels.notifications.priority[language]}:
                         </span>
                         <select
                           value={localPreferences.typePreferences[type]?.priority ?? NotificationPriority.MEDIUM}
@@ -612,16 +664,16 @@ const NotificationPreferencesPanel: React.FC = () => {
                           className="text-xs p-1 border border-gray-300 rounded bg-white disabled:opacity-50"
                         >
                           <option value={NotificationPriority.LOW}>
-                            {labels.notifications.priorityLevels.low}
+                            {labels.notifications.priorityLevels.low[language]}
                           </option>
                           <option value={NotificationPriority.MEDIUM}>
-                            {labels.notifications.priorityLevels.medium}
+                            {labels.notifications.priorityLevels.medium[language]}
                           </option>
                           <option value={NotificationPriority.HIGH}>
-                            {labels.notifications.priorityLevels.high}
+                            {labels.notifications.priorityLevels.high[language]}
                           </option>
                           <option value={NotificationPriority.URGENT}>
-                            {labels.notifications.priorityLevels.urgent}
+                            {labels.notifications.priorityLevels.urgent[language]}
                           </option>
                         </select>
                       </div>
@@ -633,7 +685,7 @@ const NotificationPreferencesPanel: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      
+
       {/* 操作按钮 */}
       <div className="flex justify-between mt-4">
         <Button
@@ -641,13 +693,13 @@ const NotificationPreferencesPanel: React.FC = () => {
           color="jade"
           onClick={handleResetSettings}
         >
-          {labels.notifications.resetButton}
+          {labels.notifications.resetButton[language]}
         </Button>
         <Button
           variant="jade"
           onClick={handleSaveSettings}
         >
-          {labels.notifications.saveButton}
+          {labels.notifications.saveButton[language]}
         </Button>
       </div>
     </div>
