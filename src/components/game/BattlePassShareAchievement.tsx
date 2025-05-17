@@ -92,8 +92,8 @@ const BattlePassShareAchievement: React.FC<BattlePassShareAchievementProps> = ({
 
   // Default labels
   const shareTitle = labels.shareTitle || 'Share Achievement';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const closeButtonLabel = labels.closeButtonLabel || 'Close';
+  // Close button label for future use
+  // const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const downloadButtonLabel = labels.downloadButtonLabel || 'Download';
   const copyButtonLabel = labels.copyButtonLabel || 'Copy';
   const twitterButtonLabel = labels.twitterButtonLabel || 'Twitter';

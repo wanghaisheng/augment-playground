@@ -113,16 +113,16 @@ const BattlePassChallenges: React.FC<BattlePassChallengesProps> = ({
   const challengesTitle = labels.challengesTitle || 'Limited-Time Challenges';
   const acceptButtonLabel = labels.acceptButtonLabel || 'Accept';
   const claimRewardsButtonLabel = labels.claimRewardsButtonLabel || 'Claim Rewards';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const closeButtonLabel = labels.closeButtonLabel || 'Close';
+  // Close button label for future use
+  // const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const noChallengesLabel = labels.noChallengesLabel || 'No challenges available';
   const premiumOnlyLabel = labels.premiumOnlyLabel || 'Premium Only';
   const challengeDetailsButtonLabel = labels.challengeDetailsButtonLabel || 'Details';
   const challengeRewardsLabel = labels.challengeRewardsLabel || 'Rewards';
   const challengeStepsLabel = labels.challengeStepsLabel || 'Steps';
   const challengeDifficultyLabel = labels.challengeDifficultyLabel || 'Difficulty';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const challengeCompletedLabel = labels.challengeCompletedLabel || 'Completed';
+  // Challenge completed label for future use
+  // const challengeCompletedLabel = labels.challengeCompletedLabel || 'Completed';
   const challengeAcceptedLabel = labels.challengeAcceptedLabel || 'Accepted';
   const challengeRewardsClaimedLabel = labels.challengeRewardsClaimedLabel || 'Rewards Claimed';
   const timeRemainingLabel = labels.timeRemainingLabel || 'Time Remaining';

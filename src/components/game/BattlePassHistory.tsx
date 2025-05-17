@@ -105,8 +105,8 @@ const BattlePassHistory: React.FC<BattlePassHistoryProps> = ({
 
   // Default labels
   const historyTitle = labels.historyTitle || 'Season History';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const seasonLabel = labels.seasonLabel || 'Season';
+  // Season label for future use
+  // const seasonLabel = labels.seasonLabel || 'Season';
   const levelLabel = labels.levelLabel || 'Level';
   const tasksLabel = labels.tasksLabel || 'Tasks';
   const rewardsLabel = labels.rewardsLabel || 'Rewards';
@@ -116,8 +116,8 @@ const BattlePassHistory: React.FC<BattlePassHistoryProps> = ({
   const freePassText = labels.freePassText || 'Free Pass';
   const notableRewardsLabel = labels.notableRewardsLabel || 'Notable Rewards';
   const achievementsLabel = labels.achievementsLabel || 'Achievements';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const closeButtonLabel = labels.closeButtonLabel || 'Close';
+  // Close button label for future use
+  // const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const noHistoryLabel = labels.noHistoryLabel || 'No season history yet';
   const viewDetailsButtonLabel = labels.viewDetailsButtonLabel || 'View Details';
   const seasonDatesLabel = labels.seasonDatesLabel || 'Season Dates';

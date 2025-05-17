@@ -56,13 +56,13 @@ const AchievementUnlockNotification: React.FC<AchievementUnlockNotificationProps
 }) => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [showVipPrompt, setShowVipPrompt] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isVip, setIsVip] = useState(false);
+  // We track VIP status but don't directly use the value in the UI
+  const [, setIsVip] = useState(false);
 
   // 默认标签
   const title = labels?.title || '成就解锁';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const congratsText = labels?.congratsText || '恭喜解锁成就！';
+  // Congrats text for future use
+  // const congratsText = labels?.congratsText || '恭喜解锁成就！';
   const rewardText = labels?.rewardText || '奖励';
   const claimButtonText = labels?.claimButtonText || '领取奖励';
   const closeButtonText = labels?.closeButtonText || '关闭';
@@ -109,17 +109,16 @@ const AchievementUnlockNotification: React.FC<AchievementUnlockNotificationProps
     setShowVipPrompt(false);
   });
 
-  // 获取稀有度颜色
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getRarityColor = (rarity: string): string => {
-    switch (rarity) {
-      case 'legendary': return 'gold';
-      case 'epic': return 'purple';
-      case 'rare': return 'blue';
-      case 'uncommon': return 'green';
-      default: return 'gray';
-    }
-  };
+  // 获取稀有度颜色 - Commented out as it's not currently used
+  // const getRarityColor = (rarity: string): string => {
+  //   switch (rarity) {
+  //     case 'legendary': return 'gold';
+  //     case 'epic': return 'purple';
+  //     case 'rare': return 'blue';
+  //     case 'uncommon': return 'green';
+  //     default: return 'gray';
+  //   }
+  // };
 
   // 获取稀有度名称
   const getRarityName = (rarity: string): string => {

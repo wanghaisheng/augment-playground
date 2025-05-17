@@ -29,8 +29,7 @@ const SkeletonDemo: React.FC<SkeletonDemoProps> = ({
   // 骨架屏加载器
   const {
     isLoading,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setIsLoading,
+    setIsLoading: _setIsLoading,
     withSkeleton
   } = useSkeletonLoader({
     variant: 'jade',

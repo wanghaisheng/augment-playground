@@ -42,7 +42,8 @@ const InkButton: React.FC<InkButtonProps> = ({
   hoverEffect = true
 }) => {
   // 状态
-  const [isPressed, setIsPressed] = useState<boolean>(false);
+  // We track pressed state but don't directly use the value
+  const [, setIsPressed] = useState<boolean>(false);
   const [showSplash, setShowSplash] = useState<boolean>(false);
 
   // 尺寸映射

@@ -55,6 +55,9 @@ export interface BattlePassTaskRecord {
   relatedGameActionKey: string;
   isRepeatable: boolean;
   isCompleted?: boolean;
+  estimatedTimeMinutes?: number;
+  difficulty?: number;
+  taskDescription?: string;
 }
 
 /**

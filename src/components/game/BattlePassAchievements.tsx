@@ -79,8 +79,8 @@ const BattlePassAchievements: React.FC<BattlePassAchievementsProps> = ({
   const claimButtonLabel = labels.claimButtonLabel || 'Claim';
   const lockedLabel = labels.lockedLabel || 'Locked';
   const unlockedLabel = labels.unlockedLabel || 'Unlocked';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const closeButtonLabel = labels.closeButtonLabel || 'Close';
+  // Close button label for future use
+  // const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const noAchievementsLabel = labels.noAchievementsLabel || 'No achievements yet';
 
   // Default rarity labels

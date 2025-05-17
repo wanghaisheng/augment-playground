@@ -81,8 +81,8 @@ const BattlePassFriendInvite: React.FC<BattlePassFriendInviteProps> = ({
   const inviteTitle = labels.inviteTitle || 'Invite Friends';
   const inviteButtonLabel = labels.inviteButtonLabel || 'Invite';
   const copyLinkButtonLabel = labels.copyLinkButtonLabel || 'Copy Invite Link';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const closeButtonLabel = labels.closeButtonLabel || 'Close';
+  // Close button label for future use
+  // const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const noFriendsLabel = labels.noFriendsLabel || 'No friends to invite';
   const inviteMessageLabel = labels.inviteMessageLabel || 'Invite your friends to join the Battle Pass and earn rewards together!';
   const inviteRewardsLabel = labels.inviteRewardsLabel || 'You\'ll receive 50 diamonds for each friend who joins!';

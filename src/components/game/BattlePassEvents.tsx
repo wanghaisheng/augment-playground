@@ -116,8 +116,8 @@ const BattlePassEvents: React.FC<BattlePassEventsProps> = ({
   const eventsTitle = labels.eventsTitle || 'Special Events';
   const joinButtonLabel = labels.joinButtonLabel || 'Join Event';
   const claimRewardsButtonLabel = labels.claimRewardsButtonLabel || 'Claim Rewards';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const closeButtonLabel = labels.closeButtonLabel || 'Close';
+  // Close button label for future use
+  // const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const noEventsLabel = labels.noEventsLabel || 'No events available';
   const premiumOnlyLabel = labels.premiumOnlyLabel || 'Premium Only';
   const eventDetailsButtonLabel = labels.eventDetailsButtonLabel || 'Details';

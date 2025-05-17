@@ -76,8 +76,8 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
       .sort((a, b) => {
         // Calculate a score based on time and reward
         // Use default values if properties don't exist
-        const timeA = a.estimatedTimeMinutes || 30;
-        const timeB = b.estimatedTimeMinutes || 30;
+        const timeA = a.estimatedTimeMinutes || 30; // Default to 30 minutes if not specified
+        const timeB = b.estimatedTimeMinutes || 30; // Default to 30 minutes if not specified
         const scoreA = (a.expReward / timeA) * 100;
         const scoreB = (b.expReward / timeB) * 100;
         return scoreB - scoreA;
@@ -87,8 +87,8 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
     // Easy tasks: low estimated time
     const easy = [...incompleteTasks]
       .sort((a, b) => {
-        const timeA = a.estimatedTimeMinutes || 30;
-        const timeB = b.estimatedTimeMinutes || 30;
+        const timeA = a.estimatedTimeMinutes || 30; // Default to 30 minutes if not specified
+        const timeB = b.estimatedTimeMinutes || 30; // Default to 30 minutes if not specified
         return timeA - timeB;
       })
       .slice(0, 3);
@@ -96,8 +96,8 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
     // Quick tasks: low estimated time
     const quick = [...incompleteTasks]
       .sort((a, b) => {
-        const timeA = a.estimatedTimeMinutes || 30;
-        const timeB = b.estimatedTimeMinutes || 30;
+        const timeA = a.estimatedTimeMinutes || 30; // Default to 30 minutes if not specified
+        const timeB = b.estimatedTimeMinutes || 30; // Default to 30 minutes if not specified
         return timeA - timeB;
       })
       .slice(0, 3);

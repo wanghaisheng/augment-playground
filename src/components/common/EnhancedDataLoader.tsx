@@ -55,8 +55,7 @@ function EnhancedDataLoader<T>({
   isError,
   error,
   data,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  loadingText,
+  loadingText: _loadingText,
   errorTitle,
   onRetry,
   emptyState,

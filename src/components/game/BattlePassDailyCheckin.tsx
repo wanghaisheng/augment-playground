@@ -74,8 +74,8 @@ const BattlePassDailyCheckin: React.FC<BattlePassDailyCheckinProps> = ({
   // Default labels
   const checkinTitle = labels.checkinTitle || 'Daily Check-in';
   const claimButtonLabel = labels.claimButtonLabel || 'Claim';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const closeButtonLabel = labels.closeButtonLabel || 'Close';
+  // Close button label for future use
+  // const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const streakLabel = labels.streakLabel || 'Current Streak';
   const claimedLabel = labels.claimedLabel || 'Claimed';
   const todayLabel = labels.todayLabel || 'Today';
