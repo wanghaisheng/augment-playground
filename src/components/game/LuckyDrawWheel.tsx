@@ -30,7 +30,6 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
   const [isDrawing, setIsDrawing] = useState(false);
   const [rewards, setRewards] = useState<RewardRecord[]>([]);
   const [points, setPoints] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showReward, setShowReward] = useState(false);
   const [currentRewardIndex, setCurrentRewardIndex] = useState(0);
@@ -52,14 +51,11 @@ const LuckyDrawWheel: React.FC<LuckyDrawWheelProps> = ({
   // 加载幸运点数量
   const loadPoints = async () => {
     try {
-      setIsLoading(true);
       const total = await getLuckyPointsTotal();
       setPoints(total);
     } catch (err) {
       console.error('Failed to load lucky points:', err);
       setError('加载幸运点失败，请重试');
-    } finally {
-      setIsLoading(false);
     }
   };
 

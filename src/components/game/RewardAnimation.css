@@ -1,0 +1,57 @@
+.reward-animation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.reward-item {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.reward-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.reward-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.reward-amount {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.reward-progress {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+}
+
+.progress-dot.active {
+  background-color: #4caf50;
+  transform: scale(1.2);
+}
+
+.progress-dot.completed {
+  background-color: #a5d6a7;
+}

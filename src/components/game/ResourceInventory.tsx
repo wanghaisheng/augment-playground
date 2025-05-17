@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ResourceList from './ResourceList';
-import ResourceDisplay from './ResourceDisplay';
+
 import { RewardType, RewardRarity, getPlayerCoins } from '@/services/rewardService';
 import { getPandaExperience } from '@/services/pandaStateService';
 import { getResourceMultiplier } from '@/services/resourceMultiplierService';

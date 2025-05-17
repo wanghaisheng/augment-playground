@@ -30,10 +30,10 @@ const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
 }) => {
   const [points, setPoints] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [isAnimating] = useState(false);
 
   // 使用组件标签钩子获取标签
-  const { componentLabels } = useComponentLabels('luckyPointsDisplay');
+  const { labels } = useComponentLabels();
 
   // 合并标签，优先使用props传入的标签，然后是组件标签，最后是默认标签
   const defaultLabels: LuckyPointsDisplayLabels = {
@@ -44,7 +44,7 @@ const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
   // 使用mergeLabelBundles合并标签
   const mergedLabels = mergeLabelBundles<LuckyPointsDisplayLabels>(
     propLabels,
-    mergeLabelBundles(componentLabels as Partial<LuckyPointsDisplayLabels>, defaultLabels)
+    mergeLabelBundles(labels.timelyRewardCongrats as unknown as Partial<LuckyPointsDisplayLabels>, defaultLabels)
   );
 
   // 加载幸运点数量 - 使用useStableCallback确保函数引用稳定
@@ -63,17 +63,6 @@ const LuckyPointsDisplay: React.FC<LuckyPointsDisplayProps> = ({
   // 初始加载 - 使用useAsyncEffectOnce替代useEffect
   useAsyncEffectOnce(async () => {
     await loadPoints();
-  });
-
-  // 定义幸运点数据更新处理函数 - 使用useStableCallback确保函数引用稳定
-  const handleLuckyPointsUpdate = useStableCallback(() => {
-    loadPoints();
-    setIsAnimating(true);
-
-    // 动画结束后重置状态
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 1000);
   });
 
   // 使用优化的数据刷新钩子替代直接的useRegisterTableRefresh

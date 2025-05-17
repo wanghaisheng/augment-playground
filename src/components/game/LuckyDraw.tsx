@@ -4,16 +4,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   getLuckyPointsTotal,
   performLuckyDraw,
-  PrizeLevel,
   getUserDrawLimitInfo
 } from '@/services/timelyRewardService';
 import { RewardRecord } from '@/services/rewardService';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import LuckyPointsDisplay from './LuckyPointsDisplay';
-import RewardAnimation from '@/components/animation/RewardAnimation';
+import RewardAnimation from '@/components/game/RewardAnimation';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { getLocalizedLabel, getLocalizedLabels } from '@/utils/localization';
+import { getLocalizedLabels } from '@/utils/localization';
 import { isUserVip } from '@/services/storeService';
 import { getVipDailyDrawLimits, getDefaultDailyDrawLimit } from '@/services/luckyDrawLimitService';
 

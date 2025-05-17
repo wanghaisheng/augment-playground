@@ -1,8 +1,8 @@
 // src/components/game/SocialChallengeForm.tsx
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  SocialChallengeRecord, 
+
+import {
+  SocialChallengeRecord,
   SocialChallengeType,
   createSocialChallenge
 } from '@/services/socialChallengeService';
@@ -36,33 +36,33 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
   const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState<string>('');
   const [iconPath, setIconPath] = useState('');
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // 处理提交表单
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!title.trim()) {
       setError('请输入挑战标题');
       return;
     }
-    
+
     if (!description.trim()) {
       setError('请输入挑战描述');
       return;
     }
-    
+
     if (!startDate) {
       setError('请选择开始日期');
       return;
     }
-    
+
     try {
       setIsSubmitting(true);
       setError(null);
-      
+
       // 创建社交挑战
       const challenge = await createSocialChallenge({
         title: title.trim(),
@@ -77,18 +77,18 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
         iconPath: iconPath || undefined,
         isPublic
       });
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 重置表单
       resetForm();
-      
+
       // 通知父组件
       if (onChallengeCreated) {
         onChallengeCreated(challenge);
       }
-      
+
       // 关闭对话框
       onClose();
     } catch (err) {
@@ -129,7 +129,7 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
               {error}
             </div>
           )}
-          
+
           {/* 挑战标题 */}
           <div className="form-group mb-4">
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
@@ -145,7 +145,7 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
               required
             />
           </div>
-          
+
           {/* 挑战描述 */}
           <div className="form-group mb-4">
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
@@ -160,7 +160,7 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
               required
             />
           </div>
-          
+
           {/* 挑战类型 */}
           <div className="form-group mb-4">
             <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
@@ -178,7 +178,7 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
               <option value={SocialChallengeType.TEAM}>团队型</option>
             </select>
           </div>
-          
+
           {/* 挑战难度 */}
           <div className="form-group mb-4">
             <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">
@@ -197,7 +197,7 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
               <option value={ChallengeDifficulty.EXPERT}>专家</option>
             </select>
           </div>
-          
+
           {/* 最大参与人数 */}
           <div className="form-group mb-4">
             <label htmlFor="maxParticipants" className="block text-sm font-medium text-gray-700 mb-1">
@@ -214,7 +214,7 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
               required
             />
           </div>
-          
+
           {/* 是否公开 */}
           <div className="form-group mb-4">
             <div className="flex items-center">
@@ -230,7 +230,7 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
               </label>
             </div>
           </div>
-          
+
           {/* 日期选择 */}
           <div className="form-group mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -260,7 +260,7 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
               />
             </div>
           </div>
-          
+
           {/* 图标路径 */}
           <div className="form-group mb-4">
             <label htmlFor="iconPath" className="block text-sm font-medium text-gray-700 mb-1">
@@ -275,7 +275,7 @@ const SocialChallengeForm: React.FC<SocialChallengeFormProps> = ({
               placeholder="/assets/challenges/social_default.svg"
             />
           </div>
-          
+
           {/* 提交按钮 */}
           <div className="form-actions flex justify-end gap-2 mt-6">
             <Button

@@ -5,9 +5,9 @@ import ScrollDialog from './ScrollDialog';
 import Button from '@/components/common/Button';
 import RewardAnimation from '@/components/animation/RewardAnimation';
 import { RewardRecord, markRewardsAsViewed, RewardType } from '@/services/rewardService';
-import { useTableRefresh } from '@/hooks/useDataRefresh';
+
 import VipBoostPrompt from '@/components/vip/VipBoostPrompt';
-import { isUserVip } from '@/services/storeService';
+
 import { initializeVipBoostPromptLabels } from '@/data/vipBoostPromptLabels';
 
 interface RewardModalProps {
@@ -33,7 +33,6 @@ const RewardModal: React.FC<RewardModalProps> = ({
   const [showAll, setShowAll] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
   const [showVipPrompt, setShowVipPrompt] = useState(false);
-  const [isVip, setIsVip] = useState(false);
 
   // 当前展示的奖励
   const currentReward = rewards[currentRewardIndex];
@@ -47,14 +46,6 @@ const RewardModal: React.FC<RewardModalProps> = ({
 
       // 初始化VIP助推提示标签
       initializeVipBoostPromptLabels();
-
-      // 检查用户是否是VIP
-      const checkVipStatus = async () => {
-        const vipStatus = await isUserVip('current-user');
-        setIsVip(vipStatus);
-      };
-
-      checkVipStatus();
     }
   }, [isOpen]);
 

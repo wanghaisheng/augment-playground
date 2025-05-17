@@ -1,14 +1,14 @@
 // src/components/game/PandaEvolutionManager.tsx
 import React, { useState, useEffect } from 'react';
 import { onPandaLevelUp, PandaStateRecord } from '@/services/pandaStateService';
-import { getUnlockedAbilities } from '@/services/abilityService';
+import { getNewlyUnlockedAbilities } from '@/services/abilityService';
 import PandaEvolutionModal from './PandaEvolutionModal';
 import { useLocalizedLabels } from '@/hooks/useLocalizedLabels';
 
 /**
  * 熊猫进化管理器组件的标签
  */
-interface PandaEvolutionLabels {
+interface PandaEvolutionLabels extends Record<string, string> {
   evolutionTitle: string;
   evolutionMessage: string;
   continueButtonLabel: string;
@@ -18,7 +18,7 @@ interface PandaEvolutionLabels {
 
 /**
  * 熊猫进化管理器组件
- * 
+ *
  * 监听熊猫等级提升事件，并在熊猫升级时显示进化动画
  */
 const PandaEvolutionManager: React.FC = () => {
@@ -28,7 +28,7 @@ const PandaEvolutionManager: React.FC = () => {
   const [newLevel, setNewLevel] = useState<number>(1);
   const [pandaState, setPandaState] = useState<PandaStateRecord | null>(null);
   const [newAbilities, setNewAbilities] = useState<Array<{id: number; name: string; description: string}>>([]);
-  
+
   // 获取本地化标签
   const { labels, isLoading } = useLocalizedLabels<PandaEvolutionLabels>('pandaEvolution', {
     evolutionTitle: '熊猫进化！',
@@ -37,47 +37,55 @@ const PandaEvolutionManager: React.FC = () => {
     levelLabel: '等级',
     newAbilitiesMessage: '解锁新能力：'
   });
-  
+
   // 处理熊猫等级提升事件
   useEffect(() => {
     // 注册等级提升回调
     const unsubscribe = onPandaLevelUp(async (prevLevel, newLvl, state) => {
       console.log(`Panda leveled up from ${prevLevel} to ${newLvl}!`);
-      
+
       // 获取新解锁的能力
-      const abilities = await getUnlockedAbilities(prevLevel, newLvl);
-      
+      const abilities = await getNewlyUnlockedAbilities(prevLevel, newLvl);
+
       // 更新状态
       setPreviousLevel(prevLevel);
       setNewLevel(newLvl);
       setPandaState(state);
-      setNewAbilities(abilities);
-      
+
+      // 将能力映射为所需的格式
+      const simplifiedAbilities = abilities.map(ability => ({
+        id: ability.id || 0,
+        name: ability.name,
+        description: ability.description
+      }));
+
+      setNewAbilities(simplifiedAbilities);
+
       // 显示进化模态框
       setIsModalVisible(true);
     });
-    
+
     // 清理函数
     return () => {
       unsubscribe();
     };
   }, []);
-  
+
   // 处理关闭模态框
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
-  
+
   // 如果标签正在加载，不渲染任何内容
   if (isLoading) {
     return null;
   }
-  
+
   // 格式化进化消息，替换{level}占位符
   const formatEvolutionMessage = (message: string, level: number) => {
     return message.replace('{level}', level.toString());
   };
-  
+
   return (
     <>
       {pandaState && (

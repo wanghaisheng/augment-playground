@@ -1,9 +1,9 @@
 // src/components/game/TaskDetailDialog.tsx
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import ScrollDialog from './ScrollDialog';
 import Button from '@/components/common/Button';
-import { TaskRecord, TaskStatus, TaskPriority, TaskType, updateTask, completeTask } from '@/services/taskService';
+import { TaskRecord, TaskStatus, TaskPriority, TaskType, completeTask } from '@/services/taskService';
 import { hasSubtasks, convertTaskToParentTask } from '@/services/subtaskService';
 import SubtaskList from '@/components/tasks/SubtaskList';
 import { playSound, SoundType } from '@/utils/sound';
@@ -28,7 +28,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
   task,
   onTaskUpdated
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSubtasksList, setHasSubtasksList] = useState(false);
   const [isAddingSubtasks, setIsAddingSubtasks] = useState(false);
@@ -59,7 +59,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
   // 处理添加子任务
   const handleAddSubtask = () => {
     if (!currentSubtaskTitle.trim()) return;
-    
+
     setSubtaskTitles([...subtaskTitles, currentSubtaskTitle.trim()]);
     setCurrentSubtaskTitle('');
   };
@@ -78,16 +78,16 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
     try {
       setIsAddingSubtasks(true);
       setError(null);
-      
+
       await convertTaskToParentTask(task.id!, subtaskTitles);
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 重置状态
       setSubtaskTitles([]);
       setHasSubtasksList(true);
-      
+
       // 通知父组件任务已更新
       if (onTaskUpdated) {
         onTaskUpdated();
@@ -105,19 +105,19 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
     try {
       setIsCompletingTask(true);
       setError(null);
-      
+
       // 完成任务
       const result = await completeTask(task.id!);
-      
+
       // 设置奖励
       setRewards(result.rewards);
-      
+
       // 播放成功音效
       playSound(SoundType.TASK_COMPLETE, 0.5);
-      
+
       // 显示奖励模态框
       setShowRewardModal(true);
-      
+
       // 通知父组件任务已更新
       if (onTaskUpdated) {
         onTaskUpdated();
@@ -194,7 +194,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
           {error && (
             <div className="error-message text-red-500 mb-4">{error}</div>
           )}
-          
+
           <div className="task-header mb-4">
             <h2 className="text-xl font-bold">{task.title}</h2>
             <div className="task-meta flex flex-wrap gap-2 mt-2">
@@ -215,21 +215,21 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
               </span>
             </div>
           </div>
-          
+
           {task.description && (
             <div className="task-description mb-4">
               <h3 className="text-lg font-bold mb-1">描述</h3>
               <p className="text-gray-700">{task.description}</p>
             </div>
           )}
-          
+
           {task.dueDate && (
             <div className="task-due-date mb-4">
               <h3 className="text-lg font-bold mb-1">截止日期</h3>
               <p className="text-gray-700">{new Date(task.dueDate).toLocaleDateString()}</p>
             </div>
           )}
-          
+
           {/* 子任务列表 */}
           {hasSubtasksList && (
             <SubtaskList
@@ -237,12 +237,12 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
               onSubtasksChange={setHasSubtasksList}
             />
           )}
-          
+
           {/* 添加子任务表单 */}
           {!hasSubtasksList && task.status !== TaskStatus.COMPLETED && (
             <div className="add-subtasks-section mt-4">
               <h3 className="text-lg font-bold mb-2">添加子任务</h3>
-              
+
               <div className="subtask-input-container mb-2">
                 <div className="flex">
                   <input
@@ -267,7 +267,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
                   </Button>
                 </div>
               </div>
-              
+
               {subtaskTitles.length > 0 && (
                 <div className="subtask-list-preview mb-4">
                   <h4 className="text-md font-bold mb-1">子任务列表预览</h4>
@@ -287,7 +287,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
                       </li>
                     ))}
                   </ul>
-                  
+
                   <Button
                     variant="gold"
                     onClick={handleConvertToParentTask}
@@ -304,7 +304,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
               )}
             </div>
           )}
-          
+
           {/* 任务操作按钮 */}
           <div className="task-actions mt-4 flex justify-end">
             {task.status !== TaskStatus.COMPLETED && (
@@ -321,14 +321,14 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
                 )}
               </Button>
             )}
-            
+
             <Button variant="secondary" onClick={onClose}>
               关闭
             </Button>
           </div>
         </div>
       </ScrollDialog>
-      
+
       {/* 奖励模态框 */}
       {showRewardModal && (
         <RewardModal

@@ -112,10 +112,10 @@ const TaskList: React.FC<TaskListProps> = ({
     }
   };
 
-  // 获取任务类别名称
-  const getCategoryName = (categoryId: number) => {
-    return categories[categoryId]?.name || '未分类';
-  };
+  // 获取任务类别名称 (暂未使用)
+  // const getCategoryName = (categoryId: number) => {
+  //   return categories[categoryId]?.name || '未分类';
+  // };
 
   // 按优先级排序任务
   const sortedTasks = [...tasks].sort((a, b) => {

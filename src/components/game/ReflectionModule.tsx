@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Button from '@/components/common/Button';
 import ScrollDialog from './ScrollDialog';
 import { playSound, SoundType } from '@/utils/sound';
-import { TaskRecord } from '@/services/taskService';
-import { getPandaMood, updatePandaMood, PandaMood } from '@/services/pandaStateService';
+
+import { updatePandaMood } from '@/services/pandaStateService';
+import { PandaMood } from '@/components/game/PandaAvatar';
 
 interface ReflectionModuleProps {
   isOpen: boolean;
@@ -34,7 +35,7 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
   onReflectionComplete
 }) => {
   const [step, setStep] = useState(1);
-  const [mood, setMood] = useState<PandaMood>(initialMood as PandaMood || 'normal');
+  const [mood] = useState<PandaMood>(initialMood as PandaMood || 'normal');
   const [reflection, setReflection] = useState('');
   const [action, setAction] = useState('');
   const [suggestedActions, setSuggestedActions] = useState<string[]>([]);
@@ -104,7 +105,7 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
       playSound(SoundType.SUCCESS, 0.5);
 
       // 如果心情不好，尝试更新为正常
-      if (mood === 'sad' || mood === 'concerned') {
+      if (mood === 'tired') {
         await updatePandaMood('normal');
       }
 

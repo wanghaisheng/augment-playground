@@ -1,16 +1,15 @@
 // src/components/game/SocialChallengeList.tsx
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  SocialChallengeRecord, 
-  SocialChallengeType,
+import { motion } from 'framer-motion';
+import {
+  SocialChallengeRecord,
   getAllSocialChallenges,
   getUserSocialChallenges,
   getPublicSocialChallenges,
   joinSocialChallenge,
   leaveSocialChallenge
 } from '@/services/socialChallengeService';
-import { ChallengeStatus } from '@/services/challengeService';
+
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { playSound, SoundType } from '@/utils/sound';
@@ -43,7 +42,7 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
   const [selectedChallengeId, setSelectedChallengeId] = useState<number | null>(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [joinInviteCode, setJoinInviteCode] = useState('');
-  
+
   // 当前用户ID（在实际应用中，这应该从用户会话中获取）
   const currentUserId = 'current-user';
 
@@ -52,9 +51,9 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
     try {
       setIsLoading(true);
       setError(null);
-      
+
       let challengesList: SocialChallengeRecord[] = [];
-      
+
       // 根据过滤条件获取挑战
       switch (filter) {
         case 'my':
@@ -67,12 +66,12 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
           challengesList = await getAllSocialChallenges();
           break;
       }
-      
+
       // 限制数量
       if (maxItems && challengesList.length > maxItems) {
         challengesList = challengesList.slice(0, maxItems);
       }
-      
+
       setChallenges(challengesList);
     } catch (err) {
       console.error('Failed to load social challenges:', err);
@@ -97,10 +96,10 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
   };
 
   // 处理挑战创建完成
-  const handleChallengeCreated = (challenge: SocialChallengeRecord) => {
+  const handleChallengeCreated = () => {
     // 播放成功音效
     playSound(SoundType.SUCCESS, 0.5);
-    
+
     // 重新加载挑战
     loadChallenges();
   };
@@ -111,24 +110,24 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
       // 获取挑战
       const challenge = challenges.find(c => c.id === challengeId);
       if (!challenge) return;
-      
+
       // 如果是非公开挑战，需要邀请码
       if (!challenge.isPublic) {
         const code = prompt('请输入邀请码');
         if (!code) return;
         setJoinInviteCode(code);
       }
-      
+
       // 加入挑战
       await joinSocialChallenge(
         challengeId,
         currentUserId,
         challenge.isPublic ? undefined : joinInviteCode
       );
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 重新加载挑战
       loadChallenges();
     } catch (err) {
@@ -142,13 +141,13 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
     try {
       // 确认离开
       if (!confirm('确定要离开这个挑战吗？')) return;
-      
+
       // 离开挑战
       await leaveSocialChallenge(challengeId, currentUserId);
-      
+
       // 播放点击音效
       playSound(SoundType.BUTTON_CLICK, 0.5);
-      
+
       // 重新加载挑战
       loadChallenges();
     } catch (err) {
@@ -164,7 +163,7 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
   };
 
   // 处理分享挑战
-  const handleShareChallenge = (challengeId: number, inviteCode: string) => {
+  const handleShareChallenge = (_challengeId: number, inviteCode: string) => {
     // 复制邀请码到剪贴板
     navigator.clipboard.writeText(inviteCode)
       .then(() => {
@@ -212,8 +211,8 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
       {/* 头部 */}
       <div className="list-header flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">
-          {filter === 'my' ? '我的社交挑战' : 
-           filter === 'public' ? '公开社交挑战' : 
+          {filter === 'my' ? '我的社交挑战' :
+           filter === 'public' ? '公开社交挑战' :
            '所有社交挑战'}
         </h2>
         {showCreateButton && (
@@ -225,7 +224,7 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
           </Button>
         )}
       </div>
-      
+
       {/* 内容 */}
       <div className="list-content">
         {isLoading ? (
@@ -265,8 +264,8 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
         ) : (
           <div className="empty-container text-center p-8 bg-gray-50 rounded-lg">
             <p className="text-gray-500 mb-4">
-              {filter === 'my' ? '你还没有参与任何社交挑战' : 
-               filter === 'public' ? '暂无公开的社交挑战' : 
+              {filter === 'my' ? '你还没有参与任何社交挑战' :
+               filter === 'public' ? '暂无公开的社交挑战' :
                '暂无社交挑战'}
             </p>
             {filter !== 'my' && showCreateButton && (
@@ -277,7 +276,7 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
           </div>
         )}
       </div>
-      
+
       {/* 创建挑战表单 */}
       {showCreateForm && (
         <SocialChallengeForm
@@ -286,7 +285,7 @@ const SocialChallengeList: React.FC<SocialChallengeListProps> = ({
           onChallengeCreated={handleChallengeCreated}
         />
       )}
-      
+
       {/* 挑战详情对话框 */}
       {showDetailDialog && selectedChallengeId !== null && (
         <SocialChallengeDetailDialog
