@@ -105,6 +105,7 @@ const BattlePassHistory: React.FC<BattlePassHistoryProps> = ({
 
   // Default labels
   const historyTitle = labels.historyTitle || 'Season History';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const seasonLabel = labels.seasonLabel || 'Season';
   const levelLabel = labels.levelLabel || 'Level';
   const tasksLabel = labels.tasksLabel || 'Tasks';
@@ -115,6 +116,7 @@ const BattlePassHistory: React.FC<BattlePassHistoryProps> = ({
   const freePassText = labels.freePassText || 'Free Pass';
   const notableRewardsLabel = labels.notableRewardsLabel || 'Notable Rewards';
   const achievementsLabel = labels.achievementsLabel || 'Achievements';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const noHistoryLabel = labels.noHistoryLabel || 'No season history yet';
   const viewDetailsButtonLabel = labels.viewDetailsButtonLabel || 'View Details';
@@ -199,23 +201,23 @@ const BattlePassHistory: React.FC<BattlePassHistoryProps> = ({
                             {formatDate(entry.startDate)} - {formatDate(entry.endDate)}
                           </span>
                         </div>
-                        
+
                         <div className="season-stats">
                           <div className="stat-item">
                             <span className="stat-label">{levelLabel}</span>
                             <span className="stat-value">{entry.finalLevel}/{entry.maxLevel}</span>
                           </div>
-                          
+
                           <div className="stat-item">
                             <span className="stat-label">{tasksLabel}</span>
                             <span className="stat-value">{entry.completedTasks}/{entry.totalTasks}</span>
                           </div>
-                          
+
                           <div className="stat-item">
                             <span className="stat-label">{rewardsLabel}</span>
                             <span className="stat-value">{entry.claimedRewards}/{entry.totalRewards}</span>
                           </div>
-                          
+
                           {entry.finalRank && (
                             <div className="stat-item">
                               <span className="stat-label">{rankLabel}</span>
@@ -223,12 +225,12 @@ const BattlePassHistory: React.FC<BattlePassHistoryProps> = ({
                             </div>
                           )}
                         </div>
-                        
+
                         <div className="season-footer">
                           <span className={`pass-type ${entry.hadPremiumPass ? 'premium' : 'free'}`}>
                             {entry.hadPremiumPass ? premiumPassText : freePassText}
                           </span>
-                          
+
                           <button
                             className="view-details-button"
                             onClick={(e) => {
@@ -297,7 +299,7 @@ const BattlePassHistory: React.FC<BattlePassHistoryProps> = ({
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="season-detail-section">
                   <h3 className="section-title">Statistics</h3>
                   <div className="season-stats-detail">
@@ -305,48 +307,48 @@ const BattlePassHistory: React.FC<BattlePassHistoryProps> = ({
                       <span className="stat-detail-label">{levelLabel}</span>
                       <span className="stat-detail-value">{selectedSeason.finalLevel}/{selectedSeason.maxLevel}</span>
                       <div className="stat-progress-bar">
-                        <div 
+                        <div
                           className="stat-progress-fill"
                           style={{ width: `${(selectedSeason.finalLevel / selectedSeason.maxLevel) * 100}%` }}
                         ></div>
                       </div>
                     </div>
-                    
+
                     <div className="stat-detail-item">
                       <span className="stat-detail-label">{tasksLabel}</span>
                       <span className="stat-detail-value">{selectedSeason.completedTasks}/{selectedSeason.totalTasks}</span>
                       <div className="stat-progress-bar">
-                        <div 
+                        <div
                           className="stat-progress-fill"
                           style={{ width: `${(selectedSeason.completedTasks / selectedSeason.totalTasks) * 100}%` }}
                         ></div>
                       </div>
                     </div>
-                    
+
                     <div className="stat-detail-item">
                       <span className="stat-detail-label">{rewardsLabel}</span>
                       <span className="stat-detail-value">{selectedSeason.claimedRewards}/{selectedSeason.totalRewards}</span>
                       <div className="stat-progress-bar">
-                        <div 
+                        <div
                           className="stat-progress-fill"
                           style={{ width: `${(selectedSeason.claimedRewards / selectedSeason.totalRewards) * 100}%` }}
                         ></div>
                       </div>
                     </div>
-                    
+
                     {selectedSeason.finalRank && (
                       <div className="stat-detail-item">
                         <span className="stat-detail-label">{rankLabel}</span>
                         <span className="stat-detail-value">{selectedSeason.finalRank}/{selectedSeason.totalPlayers || '?'}</span>
                         <div className="stat-progress-bar">
-                          <div 
+                          <div
                             className="stat-progress-fill"
                             style={{ width: `${(1 - (selectedSeason.finalRank / (selectedSeason.totalPlayers || 100))) * 100}%` }}
                           ></div>
                         </div>
                       </div>
                     )}
-                    
+
                     <div className="stat-detail-item">
                       <span className="stat-detail-label">{premiumStatusLabel}</span>
                       <span className={`stat-detail-value ${selectedSeason.hadPremiumPass ? 'premium' : 'free'}`}>
@@ -355,14 +357,14 @@ const BattlePassHistory: React.FC<BattlePassHistoryProps> = ({
                     </div>
                   </div>
                 </div>
-                
+
                 {selectedSeason.notableRewards && selectedSeason.notableRewards.length > 0 && (
                   <div className="season-detail-section">
                     <h3 className="section-title">{notableRewardsLabel}</h3>
                     <div className="rewards-grid">
                       {selectedSeason.notableRewards.map((reward, index) => (
                         <div key={index} className="reward-item">
-                          <div 
+                          <div
                             className="reward-icon"
                             style={{ borderColor: getRarityColor(reward.rarity) }}
                           >
@@ -374,14 +376,14 @@ const BattlePassHistory: React.FC<BattlePassHistoryProps> = ({
                     </div>
                   </div>
                 )}
-                
+
                 {selectedSeason.achievements && selectedSeason.achievements.length > 0 && (
                   <div className="season-detail-section">
                     <h3 className="section-title">{achievementsLabel}</h3>
                     <div className="achievements-grid">
                       {selectedSeason.achievements.map((achievement, index) => (
                         <div key={index} className="achievement-item">
-                          <div 
+                          <div
                             className="achievement-icon"
                             style={{ borderColor: getRarityColor(achievement.rarity) }}
                           >

@@ -81,6 +81,7 @@ const BattlePassFriendInvite: React.FC<BattlePassFriendInviteProps> = ({
   const inviteTitle = labels.inviteTitle || 'Invite Friends';
   const inviteButtonLabel = labels.inviteButtonLabel || 'Invite';
   const copyLinkButtonLabel = labels.copyLinkButtonLabel || 'Copy Invite Link';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const closeButtonLabel = labels.closeButtonLabel || 'Close';
   const noFriendsLabel = labels.noFriendsLabel || 'No friends to invite';
   const inviteMessageLabel = labels.inviteMessageLabel || 'Invite your friends to join the Battle Pass and earn rewards together!';
@@ -94,15 +95,15 @@ const BattlePassFriendInvite: React.FC<BattlePassFriendInviteProps> = ({
   // Handle invite friend
   const handleInviteFriend = async (friendId: string) => {
     if (!onInviteFriend) return;
-    
+
     setInvitingFriendId(friendId);
-    
+
     try {
       const success = await onInviteFriend(friendId);
-      
+
       if (success) {
         setInvitedFriends(prev => [...prev, friendId]);
-        
+
         // Show success message for 2 seconds
         setTimeout(() => {
           setInvitingFriendId(null);
@@ -123,25 +124,25 @@ const BattlePassFriendInvite: React.FC<BattlePassFriendInviteProps> = ({
       try {
         await navigator.clipboard.writeText(`Join me in the ${seasonName} Battle Pass! https://pandahabit.app/battlepass/invite`);
         setLinkCopied(true);
-        
+
         // Reset after 2 seconds
         setTimeout(() => {
           setLinkCopied(false);
         }, 2000);
-        
+
         return;
       } catch (error) {
         console.error('Failed to copy link:', error);
         return;
       }
     }
-    
+
     try {
       const success = await onCopyInviteLink();
-      
+
       if (success) {
         setLinkCopied(true);
-        
+
         // Reset after 2 seconds
         setTimeout(() => {
           setLinkCopied(false);
@@ -197,7 +198,7 @@ const BattlePassFriendInvite: React.FC<BattlePassFriendInviteProps> = ({
                   <p>{inviteMessageLabel}</p>
                   <p className="invite-rewards">{inviteRewardsLabel}</p>
                 </div>
-                
+
                 <div className="invite-link-section">
                   <p>{inviteLinkLabel}</p>
                   <div className="invite-link-container">
@@ -216,10 +217,10 @@ const BattlePassFriendInvite: React.FC<BattlePassFriendInviteProps> = ({
                     </button>
                   </div>
                 </div>
-                
+
                 <div className="friends-section">
                   <h3>Friends</h3>
-                  
+
                   {friends.length > 0 ? (
                     <div className="friends-list">
                       {friends.map(friend => (
@@ -233,14 +234,14 @@ const BattlePassFriendInvite: React.FC<BattlePassFriendInviteProps> = ({
                               </div>
                             )}
                           </div>
-                          
+
                           <div className="friend-info">
                             <div className="friend-name">{friend.name}</div>
                             {friend.currentLevel && (
                               <div className="friend-level">Level {friend.currentLevel}</div>
                             )}
                           </div>
-                          
+
                           <div className="friend-action">
                             {friend.hasJoined ? (
                               <span className="friend-status joined">{alreadyJoinedLabel}</span>

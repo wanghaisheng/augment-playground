@@ -70,32 +70,43 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
   useEffect(() => {
     // Filter out completed tasks
     const incompleteTasks = allTasks.filter(task => !task.isCompleted);
-    
+
     // Recommended tasks: balanced mix of difficulty, time, and reward
     const recommended = [...incompleteTasks]
       .sort((a, b) => {
-        // Calculate a score based on difficulty, time, and reward
-        const scoreA = (a.expReward / (a.difficulty * a.estimatedTimeMinutes)) * 100;
-        const scoreB = (b.expReward / (b.difficulty * b.estimatedTimeMinutes)) * 100;
+        // Calculate a score based on time and reward
+        // Use default values if properties don't exist
+        const timeA = a.estimatedTimeMinutes || 30;
+        const timeB = b.estimatedTimeMinutes || 30;
+        const scoreA = (a.expReward / timeA) * 100;
+        const scoreB = (b.expReward / timeB) * 100;
         return scoreB - scoreA;
       })
       .slice(0, 3);
-    
-    // Easy tasks: low difficulty
+
+    // Easy tasks: low estimated time
     const easy = [...incompleteTasks]
-      .sort((a, b) => a.difficulty - b.difficulty)
+      .sort((a, b) => {
+        const timeA = a.estimatedTimeMinutes || 30;
+        const timeB = b.estimatedTimeMinutes || 30;
+        return timeA - timeB;
+      })
       .slice(0, 3);
-    
+
     // Quick tasks: low estimated time
     const quick = [...incompleteTasks]
-      .sort((a, b) => a.estimatedTimeMinutes - b.estimatedTimeMinutes)
+      .sort((a, b) => {
+        const timeA = a.estimatedTimeMinutes || 30;
+        const timeB = b.estimatedTimeMinutes || 30;
+        return timeA - timeB;
+      })
       .slice(0, 3);
-    
+
     // High reward tasks: high exp reward
     const highReward = [...incompleteTasks]
       .sort((a, b) => b.expReward - a.expReward)
       .slice(0, 3);
-    
+
     setRecommendedTasks(recommended);
     setEasyTasks(easy);
     setQuickTasks(quick);
@@ -145,7 +156,7 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
   return (
     <div className="task-recommendations">
       <h3 className="recommendations-title">{recommendationsTitle}</h3>
-      
+
       <div className="recommendations-tabs">
         <button
           className={`tab-button ${activeTab === 'recommended' ? 'active' : ''}`}
@@ -172,7 +183,7 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
           {highRewardTasksLabel}
         </button>
       </div>
-      
+
       <div className="recommendations-content">
         {currentTasks.length > 0 ? (
           <div className="recommended-tasks-list">
@@ -186,25 +197,25 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
               >
                 <div className="task-name">{task.taskName}</div>
                 <div className="task-description">{task.taskDescription}</div>
-                
+
                 <div className="task-metrics">
                   <div className="task-metric">
                     <span className="metric-label">{difficultyLabel}</span>
-                    <span 
-                      className="metric-value" 
+                    <span
+                      className="metric-value"
                       style={{ color: getDifficultyColor(task.difficulty) }}
                     >
                       {getDifficultyLabel(task.difficulty)}
                     </span>
                   </div>
-                  
+
                   <div className="task-metric">
                     <span className="metric-label">{timeLabel}</span>
                     <span className="metric-value">
                       {getTimeLabel(task.estimatedTimeMinutes)}
                     </span>
                   </div>
-                  
+
                   <div className="task-metric">
                     <span className="metric-label">{rewardLabel}</span>
                     <span className="metric-value reward">
@@ -212,7 +223,7 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
                     </span>
                   </div>
                 </div>
-                
+
                 {onTaskSelected && (
                   <button
                     className="start-task-button jade-button"

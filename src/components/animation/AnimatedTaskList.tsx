@@ -105,24 +105,26 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
     const currentLoadTasks = loadTasksRef.current;
 
     // 如果有特定任务数据，则更新该任务
-    if (taskData && taskData.id) {
+    if (taskData && typeof taskData === 'object' && 'id' in taskData) {
+      const typedTaskData = taskData as TaskRecord;
+
       setTasks(prevTasks => {
         // 检查任务是否已存在
-        const taskExists = prevTasks.some(task => task.id === taskData.id);
+        const taskExists = prevTasks.some(task => task.id === typedTaskData.id);
 
         if (taskExists) {
           // 更新现有任务
           return prevTasks.map(task =>
-            task.id === taskData.id ? { ...task, ...taskData } : task
+            task.id === typedTaskData.id ? { ...task, ...typedTaskData } : task
           );
         } else {
           // 添加新任务（如果符合过滤条件）
           if (!currentFilter ||
-              ((!currentFilter.status || taskData.status === currentFilter.status) &&
-               (!currentFilter.categoryId || taskData.categoryId === currentFilter.categoryId) &&
-               (!currentFilter.type || taskData.type === currentFilter.type) &&
-               (!currentFilter.priority || taskData.priority === currentFilter.priority))) {
-            return [...prevTasks, taskData];
+              ((!currentFilter.status || typedTaskData.status === currentFilter.status) &&
+               (!currentFilter.categoryId || typedTaskData.categoryId === currentFilter.categoryId) &&
+               (!currentFilter.type || typedTaskData.type === currentFilter.type) &&
+               (!currentFilter.priority || typedTaskData.priority === currentFilter.priority))) {
+            return [...prevTasks, typedTaskData];
           }
           return prevTasks;
         }
