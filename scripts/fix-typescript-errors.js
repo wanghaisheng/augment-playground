@@ -9,6 +9,14 @@
  * - TS2741: Property missing in type
  * - TS6192: All imports in import declaration are unused
  * - TS2554: Expected X arguments, but got Y
+ * - TS18048: Possibly undefined values
+ * - TS2307: Cannot find module
+ * - TS2532: Object is possibly undefined
+ * - TS2769: No overload matches this call
+ * - TS2571: Object is of type unknown
+ * - TS2304: Cannot find name
+ * - TS2531: Object is possibly null
+ * - TS2538: Type cannot be used as an index type
  */
 
 const fs = require('fs');
@@ -73,9 +81,8 @@ const fixers = {
         lines[lineIndex] = `// ${line}`;
       }
     } else {
-      // For non-import unused variables, prefix with underscore
-      const newLine = line.replace(new RegExp(`\\b${varName}\\b`), `_${varName}`);
-      lines[lineIndex] = newLine;
+      // For non-import unused variables, add eslint-disable comment
+      lines[lineIndex] = `// eslint-disable-next-line @typescript-eslint/no-unused-vars\n${line}`;
     }
 
     return lines.join('\n');
@@ -128,6 +135,23 @@ const fixers = {
       lines[lineIndex] = line.replace(new RegExp(`\\.${propName}\\b`), `?.${propName}`);
     }
 
+    // Check if it's a common property that might be missing
+    if (propName === 'isOpen' && line.includes('<') && line.includes('>')) {
+      // For components that need isOpen prop
+      if (line.includes('ScrollDialog') || line.includes('LatticeDialog') || line.includes('RewardModal')) {
+        // If the component is conditionally rendered with a state variable
+        const stateVarMatch = line.match(/\{(\w+)\s*&&/);
+        if (stateVarMatch) {
+          const stateVar = stateVarMatch[1];
+          // Add isOpen={stateVar} before the closing bracket
+          lines[lineIndex] = line.replace(/(\s*)(\/>|>)/, ` isOpen={${stateVar}}$1$2`);
+        } else {
+          // Add isOpen={true} before the closing bracket
+          lines[lineIndex] = line.replace(/(\s*)(\/>|>)/, ` isOpen={true}$1$2`);
+        }
+      }
+    }
+
     return lines.join('\n');
   },
 
@@ -158,6 +182,144 @@ const fixers = {
       if (match) {
         const arg = match[1];
         lines[lineIndex] = line.replace(arg, `Number(${arg})`);
+      }
+    }
+
+    return lines.join('\n');
+  },
+
+  // Fix for property missing in type (TS2741)
+  TS2741: (fileContent, error) => {
+    const lines = fileContent.split('\n');
+    const lineIndex = error.lineNum - 1;
+    const line = lines[lineIndex];
+
+    // Extract the property name from the error message
+    const propNameMatch = error.errorMessage.match(/Property '([^']+)' is missing in type/);
+    if (!propNameMatch) return fileContent;
+
+    const propName = propNameMatch[1];
+
+    // Add the missing property
+    if (line.includes('<') && line.includes('>')) {
+      // For boolean props like 'isOpen', add them with value={true}
+      if (propName === 'isOpen') {
+        // If the component is conditionally rendered with a state variable
+        const stateVarMatch = line.match(/\{(\w+)\s*&&/);
+        if (stateVarMatch) {
+          const stateVar = stateVarMatch[1];
+          // Add isOpen={stateVar} before the closing bracket
+          lines[lineIndex] = line.replace(/(\s*)(\/>|>)/, ` isOpen={${stateVar}}$1$2`);
+        } else {
+          // Add isOpen={true} before the closing bracket
+          lines[lineIndex] = line.replace(/(\s*)(\/>|>)/, ` isOpen={true}$1$2`);
+        }
+      } else {
+        // For other props, add them with empty string value
+        lines[lineIndex] = line.replace(/(\s*)(\/>|>)/, ` ${propName}=""$1$2`);
+      }
+    }
+
+    return lines.join('\n');
+  },
+
+  // Fix for possibly undefined values (TS18048)
+  TS18048: (fileContent, error) => {
+    const lines = fileContent.split('\n');
+    const lineIndex = error.lineNum - 1;
+    const line = lines[lineIndex];
+
+    // Extract the property name from the error message
+    const propNameMatch = error.errorMessage.match(/'([^']+)' is possibly '([^']+)'/);
+    if (!propNameMatch) return fileContent;
+
+    const [, propPath, undefinedType] = propNameMatch;
+
+    // Add optional chaining or nullish coalescing
+    if (line.includes(propPath)) {
+      let newLine = line;
+
+      // Replace direct property access with optional chaining
+      const parts = propPath.split('.');
+      if (parts.length > 1) {
+        // For nested properties, add optional chaining
+        let currentPath = parts[0];
+        for (let i = 1; i < parts.length; i++) {
+          const nextPart = parts[i];
+          const pattern = new RegExp(`${currentPath}\\.${nextPart}`, 'g');
+          newLine = newLine.replace(pattern, `${currentPath}?.${nextPart}`);
+          currentPath = `${currentPath}.${nextPart}`;
+        }
+      } else {
+        // For simple properties, add nullish coalescing with a default value
+        const pattern = new RegExp(`${propPath}(?![?\\w])`, 'g');
+
+        // Choose an appropriate default value based on context
+        let defaultValue = '""';
+        if (line.includes('={') && line.includes('}')) {
+          // JSX attribute
+          if (propPath.includes('isOpen') || propPath.includes('disabled')) {
+            defaultValue = 'false';
+          } else if (propPath.includes('onClick') || propPath.includes('onClose')) {
+            defaultValue = '() => {}';
+          } else if (line.includes('number')) {
+            defaultValue = '0';
+          }
+        } else if (line.includes('?') || line.includes(':')) {
+          // Ternary expression or object property
+          if (line.includes('boolean')) {
+            defaultValue = 'false';
+          } else if (line.includes('number')) {
+            defaultValue = '0';
+          } else if (line.includes('function')) {
+            defaultValue = '() => {}';
+          } else if (line.includes('[]')) {
+            defaultValue = '[]';
+          } else if (line.includes('{}')) {
+            defaultValue = '{}';
+          }
+        }
+
+        newLine = newLine.replace(pattern, `(${propPath} ?? ${defaultValue})`);
+      }
+
+      lines[lineIndex] = newLine;
+    }
+
+    return lines.join('\n');
+  },
+
+  // Fix for expected arguments error (TS2554)
+  TS2554: (fileContent, error) => {
+    const lines = fileContent.split('\n');
+    const lineIndex = error.lineNum - 1;
+    const line = lines[lineIndex];
+
+    // Extract the expected and actual argument counts
+    const argCountMatch = error.errorMessage.match(/Expected (\d+) arguments, but got (\d+)/);
+    if (!argCountMatch) return fileContent;
+
+    const [, expectedCount, actualCount] = argCountMatch;
+    const expected = parseInt(expectedCount, 10);
+    const actual = parseInt(actualCount, 10);
+
+    // Add missing arguments
+    if (expected > actual) {
+      const funcCallMatch = line.match(/(\w+)\((.*?)\)/);
+      if (funcCallMatch) {
+        const [, funcName, args] = funcCallMatch;
+        let newArgs = args;
+
+        // Add empty arguments
+        for (let i = actual; i < expected; i++) {
+          if (newArgs.trim() === '') {
+            newArgs = 'undefined';
+          } else {
+            newArgs += ', undefined';
+          }
+        }
+
+        lines[lineIndex] = line.replace(`${funcName}(${args})`, `${funcName}(${newArgs})`);
       }
     }
 

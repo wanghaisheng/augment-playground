@@ -37,18 +37,8 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
   const [isVip, setIsVip] = useState<boolean>(false);
   const [isResolved, setIsResolved] = useState<boolean>(false);
 
-  // Function to fetch localized content for pain point solution
-  const fetchPainPointSolutionViewFn = useCallback(async (lang: Language) => {
-    try {
-      return await fetchPainPointSolutionView(lang);
-    } catch (error) {
-      console.error('Error fetching pain point solution view:', error);
-      throw error;
-    }
-  }, []);
-
   // Fetch localized content for the pain point solution
-  const { data: viewData } = useLocalizedView<null, any>('painPointSolution', fetchPainPointSolutionViewFn);
+  const { data: viewData } = useLocalizedView<null, any>('painPointSolution', fetchPainPointSolutionView);
 
   // Get content from viewData
   const content = viewData?.labels || {};
@@ -206,7 +196,7 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
 
         <div className="flex justify-end space-x-3">
           <Button
-            variant="secondary"
+            variant="outlined"
             onClick={onClose}
             disabled={isResolved}
           >

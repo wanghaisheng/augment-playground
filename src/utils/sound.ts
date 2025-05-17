@@ -304,6 +304,15 @@ export function enableSound(): void {
 }
 
 /**
+ * 禁用声音
+ * 用于在用户设置中关闭声音
+ */
+export function disableSound(): void {
+  soundEnabled = false;
+  console.log('Sound has been disabled');
+}
+
+/**
  * 根据奖励稀有度播放对应音效
  * @param rarity 奖励稀有度
  * @param volume 音量（0-1）

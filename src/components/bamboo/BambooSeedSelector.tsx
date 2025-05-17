@@ -6,7 +6,7 @@ import { useLanguage } from '@/context/LanguageProvider';
 import { playSound, SoundType } from '@/utils/sound';
 import { generateSparkleParticles } from '@/utils/particleEffects';
 import Button from '@/components/common/Button';
-import { useDataRefresh } from '@/context/DataRefreshProvider';
+import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 
 interface BambooSeedSelectorProps {
   seeds: BambooSeedRecord[];
@@ -27,18 +27,8 @@ const BambooSeedSelector: React.FC<BambooSeedSelectorProps> = ({
   bambooCount
 }) => {
   const { language } = useLanguage();
-  // 使用useDataRefresh，但暂时不使用refreshData
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const dataRefreshContext = useDataRefresh();
-  // 为了兼容现有代码，创建一个空的refreshData函数
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const refreshData = () => {
-    // 在实际实现中，这里应该调用dataRefreshContext中的刷新方法
-    console.log('Refresh data called');
-  };
-
-  // Call refreshData in a comment to prevent unused variable warning
-  // This function can be used for future data refresh: ${refreshData()}
+  // 使用useDataRefreshContext替代useDataRefresh
+  const { refreshTable } = useDataRefreshContext();
 
   const [unlockingSeedId, setUnlockingSeedId] = useState<number | null>(null);
   const [showParticles, setShowParticles] = useState(false);
@@ -72,6 +62,10 @@ const BambooSeedSelector: React.FC<BambooSeedSelectorProps> = ({
           count: 30,
           colors: ['#FFD700', '#FFEB3B', '#FFC107', '#FFFDE7']
         }));
+
+        // 刷新数据
+        refreshTable('bambooSeeds');
+        refreshTable('userCurrencies');
 
         // 3秒后隐藏粒子效果
         setTimeout(() => {

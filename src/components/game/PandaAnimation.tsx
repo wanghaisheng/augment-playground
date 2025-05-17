@@ -1,11 +1,11 @@
 // src/components/game/PandaAnimation.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import PandaAvatar, { PandaMood, EnergyLevel } from '@/components/game/PandaAvatar';
 import { playSound, SoundType } from '@/utils/sound';
 
 // 熊猫动画类型
-export type PandaAnimationType = 
+export type PandaAnimationType =
   | 'pet'      // 抚摸
   | 'eat'      // 吃东西
   | 'play'     // 玩耍
@@ -37,7 +37,7 @@ interface PandaAnimationProps {
 
 /**
  * 熊猫动画组件
- * 
+ *
  * @param type - 动画类型
  * @param mood - 熊猫心情
  * @param energy - 熊猫能量
@@ -66,7 +66,7 @@ const PandaAnimation: React.FC<PandaAnimationProps> = ({
   showEnvironment = false
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(autoPlay);
-  const [currentFrame, setCurrentFrame] = useState<number>(0);
+  // const [currentFrame, setCurrentFrame] = useState<number>(0); // 未使用的状态
   const animationRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -206,10 +206,10 @@ const PandaAnimation: React.FC<PandaAnimationProps> = ({
   // 播放动画
   const playAnimation = () => {
     if (isPlaying) return;
-    
+
     setIsPlaying(true);
     setCurrentFrame(0);
-    
+
     // 播放音效
     const config = getAnimationConfig();
     if (config.sound) {
@@ -271,7 +271,7 @@ const PandaAnimation: React.FC<PandaAnimationProps> = ({
     if (autoPlay) {
       playAnimation();
     }
-    
+
     return () => {
       stopAnimation();
     };
@@ -388,7 +388,7 @@ const PandaAnimation: React.FC<PandaAnimationProps> = ({
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className={`panda-animation-container ${className}`}
       style={{ position: 'relative', width: size, height: size, margin: '0 auto' }}
@@ -408,7 +408,7 @@ const PandaAnimation: React.FC<PandaAnimationProps> = ({
           showEnvironment={showEnvironment}
         />
       </motion.div>
-      
+
       {renderParticles()}
     </div>
   );

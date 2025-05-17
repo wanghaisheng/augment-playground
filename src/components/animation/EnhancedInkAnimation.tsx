@@ -115,10 +115,10 @@ const EnhancedInkAnimation: React.FC<EnhancedInkAnimationProps> = ({
   };
 
   // 停止动画 - 定义但暂未使用
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const stopAnimation = () => {
-    setIsPlaying(false);
-  };
+  // 注释掉未使用的函数
+  // const stopAnimation = () => {
+  //   setIsPlaying(false);
+  // };
 
   // 处理动画完成
   const handleAnimationComplete = () => {
@@ -154,7 +154,7 @@ const EnhancedInkAnimation: React.FC<EnhancedInkAnimationProps> = ({
     <div
       className={`ink-animation-container ink-${color} ${className}`}
       style={{
-        position: 'relative' as const,
+        position: 'relative',
         ...(props.style || {})
       }}
       onClick={playAnimation}

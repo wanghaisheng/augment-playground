@@ -1,7 +1,7 @@
 // src/components/skeleton/SkeletonSystem.tsx
 import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+// 使用自定义骨架屏组件替代react-loading-skeleton
+import LoadingSpinner from '../common/LoadingSpinner';
 
 // 基础骨架屏属性
 interface BaseSkeletonProps {
@@ -89,7 +89,7 @@ interface SkeletonDetailPageProps extends BaseSkeletonProps {
 }
 
 /**
- * 获取骨架屏颜色
+ * 获取骨架屏颜色 - 已不再使用，保留作为参考
  * @param variant 骨架屏变体
  * @returns 骨架屏颜色
  */
@@ -125,18 +125,21 @@ export const SkeletonText: React.FC<SkeletonTextProps> = ({
   className = '',
   style
 }) => {
-  const { baseColor, highlightColor } = getSkeletonColor(variant);
-  
+  // 使用自定义骨架屏样式
   return (
     <div className={`skeleton-text ${className}`} style={style}>
-      <Skeleton
-        count={lines}
-        width={width}
-        height={height}
-        baseColor={baseColor}
-        highlightColor={highlightColor}
-        style={{ lineHeight }}
-      />
+      {Array.from({ length: lines }).map((_, index) => (
+        <div
+          key={index}
+          className={`skeleton-line ${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+          style={{
+            width: typeof width === 'number' ? `${width}px` : width || '100%',
+            height: typeof height === 'number' ? `${height}px` : height || '16px',
+            marginBottom: index < lines - 1 ? '8px' : 0,
+            lineHeight: lineHeight
+          }}
+        />
+      ))}
     </div>
   );
 };
@@ -152,17 +155,21 @@ export const SkeletonImage: React.FC<SkeletonImageProps> = ({
   className = '',
   style
 }) => {
-  const { baseColor, highlightColor } = getSkeletonColor(variant);
-  
+  // 使用自定义骨架屏样式
   return (
-    <div className={`skeleton-image ${className}`} style={style}>
-      <Skeleton
-        width={width}
-        height={height}
-        circle={circle}
-        baseColor={baseColor}
-        highlightColor={highlightColor}
-      />
+    <div
+      className={`skeleton-image ${className} ${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+      style={{
+        ...style,
+        width: typeof width === 'number' ? `${width}px` : width,
+        height: typeof height === 'number' ? `${height}px` : height,
+        borderRadius: circle ? '50%' : '4px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <LoadingSpinner variant={variant === 'jade' ? 'jade' : variant === 'gold' ? 'gold' : 'default'} />
     </div>
   );
 };
@@ -178,24 +185,18 @@ export const SkeletonButton: React.FC<SkeletonButtonProps> = ({
   className = '',
   style
 }) => {
-  const { baseColor, highlightColor } = getSkeletonColor(variant);
-  
+  // 使用自定义骨架屏样式
   return (
-    <div 
-      className={`skeleton-button ${className}`} 
+    <div
+      className={`skeleton-button ${className} ${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
       style={{
         ...style,
-        borderRadius: rounded ? '9999px' : '4px'
+        width: typeof width === 'number' ? `${width}px` : width,
+        height: typeof height === 'number' ? `${height}px` : height,
+        borderRadius: rounded ? '9999px' : '4px',
+        display: 'inline-block'
       }}
-    >
-      <Skeleton
-        width={width}
-        height={height}
-        baseColor={baseColor}
-        highlightColor={highlightColor}
-        borderRadius={rounded ? '9999px' : '4px'}
-      />
-    </div>
+    />
   );
 };
 
@@ -215,11 +216,10 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({
   className = '',
   style
 }) => {
-  const { baseColor, highlightColor } = getSkeletonColor(variant);
-  
+  // 使用自定义骨架屏样式
   return (
-    <div 
-      className={`skeleton-card ${className}`} 
+    <div
+      className={`skeleton-card ${className}`}
       style={{
         width,
         height,
@@ -231,42 +231,43 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({
     >
       {hasImage && (
         <div className="skeleton-card-image mb-3">
-          <Skeleton
-            height={imageHeight}
-            baseColor={baseColor}
-            highlightColor={highlightColor}
+          <div
+            className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+            style={{ height: `${imageHeight}px`, width: '100%' }}
           />
         </div>
       )}
-      
+
       {hasTitle && (
         <div className="skeleton-card-title mb-3">
-          <Skeleton
-            width="70%"
-            height={24}
-            baseColor={baseColor}
-            highlightColor={highlightColor}
+          <div
+            className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+            style={{ width: '70%', height: '24px' }}
           />
         </div>
       )}
-      
+
       {hasDescription && (
         <div className="skeleton-card-description mb-3">
-          <Skeleton
-            count={descriptionLines}
-            baseColor={baseColor}
-            highlightColor={highlightColor}
-          />
+          {Array.from({ length: descriptionLines }).map((_, index) => (
+            <div
+              key={index}
+              className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+              style={{
+                width: '100%',
+                height: '16px',
+                marginBottom: index < descriptionLines - 1 ? '8px' : 0
+              }}
+            />
+          ))}
         </div>
       )}
-      
+
       {hasFooter && (
         <div className="skeleton-card-footer mt-auto">
-          <Skeleton
-            width="40%"
-            height={30}
-            baseColor={baseColor}
-            highlightColor={highlightColor}
+          <div
+            className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+            style={{ width: '40%', height: '30px' }}
           />
         </div>
       )}
@@ -292,11 +293,9 @@ export const SkeletonList: React.FC<SkeletonListProps> = ({
   className = '',
   style
 }) => {
-  const { baseColor, highlightColor } = getSkeletonColor(variant);
-  
   // 生成列表项
   const renderListItem = (index: number) => (
-    <div 
+    <div
       key={index}
       className="skeleton-list-item"
       style={{
@@ -309,44 +308,49 @@ export const SkeletonList: React.FC<SkeletonListProps> = ({
     >
       {hasImage && (
         <div className="skeleton-list-item-image mr-3">
-          <Skeleton
-            width={imageSize}
-            height={imageSize}
-            circle
-            baseColor={baseColor}
-            highlightColor={highlightColor}
+          <div
+            className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+            style={{
+              width: `${imageSize}px`,
+              height: `${imageSize}px`,
+              borderRadius: '50%'
+            }}
           />
         </div>
       )}
-      
+
       <div className="skeleton-list-item-content flex-1">
         {hasTitle && (
           <div className="skeleton-list-item-title mb-2">
-            <Skeleton
-              width="60%"
-              height={20}
-              baseColor={baseColor}
-              highlightColor={highlightColor}
+            <div
+              className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+              style={{ width: '60%', height: '20px' }}
             />
           </div>
         )}
-        
+
         {hasDescription && (
           <div className="skeleton-list-item-description">
-            <Skeleton
-              count={descriptionLines}
-              baseColor={baseColor}
-              highlightColor={highlightColor}
-            />
+            {Array.from({ length: descriptionLines }).map((_, idx) => (
+              <div
+                key={idx}
+                className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+                style={{
+                  width: '100%',
+                  height: '16px',
+                  marginBottom: idx < descriptionLines - 1 ? '8px' : 0
+                }}
+              />
+            ))}
           </div>
         )}
       </div>
     </div>
   );
-  
+
   // 生成网格项
   const renderGridItem = (index: number) => (
-    <div 
+    <div
       key={index}
       className="skeleton-grid-item"
       style={{
@@ -358,39 +362,42 @@ export const SkeletonList: React.FC<SkeletonListProps> = ({
     >
       {hasImage && (
         <div className="skeleton-grid-item-image mb-3">
-          <Skeleton
-            height={100}
-            baseColor={baseColor}
-            highlightColor={highlightColor}
+          <div
+            className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+            style={{ height: '100px', width: '100%' }}
           />
         </div>
       )}
-      
+
       {hasTitle && (
         <div className="skeleton-grid-item-title mb-2">
-          <Skeleton
-            width="70%"
-            height={20}
-            baseColor={baseColor}
-            highlightColor={highlightColor}
+          <div
+            className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+            style={{ width: '70%', height: '20px' }}
           />
         </div>
       )}
-      
+
       {hasDescription && (
         <div className="skeleton-grid-item-description">
-          <Skeleton
-            count={descriptionLines}
-            baseColor={baseColor}
-            highlightColor={highlightColor}
-          />
+          {Array.from({ length: descriptionLines }).map((_, idx) => (
+            <div
+              key={idx}
+              className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+              style={{
+                width: '100%',
+                height: '16px',
+                marginBottom: idx < descriptionLines - 1 ? '8px' : 0
+              }}
+            />
+          ))}
         </div>
       )}
     </div>
   );
-  
+
   return (
-    <div 
+    <div
       className={`skeleton-list ${layout === 'grid' ? 'skeleton-grid' : ''} ${className}`}
       style={{
         display: layout === 'grid' ? 'grid' : 'flex',
@@ -419,8 +426,6 @@ export const SkeletonTable: React.FC<SkeletonTableProps> = ({
   className = '',
   style
 }) => {
-  const { baseColor, highlightColor } = getSkeletonColor(variant);
-  
   return (
     <div className={`skeleton-table ${className}`} style={style}>
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -429,26 +434,24 @@ export const SkeletonTable: React.FC<SkeletonTableProps> = ({
             <tr>
               {Array.from({ length: columns }).map((_, index) => (
                 <th key={`header-${index}`} style={{ padding: '8px' }}>
-                  <Skeleton
-                    height={cellHeight}
-                    baseColor={baseColor}
-                    highlightColor={highlightColor}
+                  <div
+                    className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+                    style={{ height: `${cellHeight}px`, width: '100%' }}
                   />
                 </th>
               ))}
             </tr>
           </thead>
         )}
-        
+
         <tbody>
           {Array.from({ length: rows }).map((_, rowIndex) => (
             <tr key={`row-${rowIndex}`}>
               {Array.from({ length: columns }).map((_, colIndex) => (
                 <td key={`cell-${rowIndex}-${colIndex}`} style={{ padding: '8px' }}>
-                  <Skeleton
-                    height={cellHeight}
-                    baseColor={baseColor}
-                    highlightColor={highlightColor}
+                  <div
+                    className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+                    style={{ height: `${cellHeight}px`, width: '100%' }}
                   />
                 </td>
               ))}
@@ -473,11 +476,9 @@ export const SkeletonStatCard: React.FC<SkeletonStatCardProps> = ({
   className = '',
   style
 }) => {
-  const { baseColor, highlightColor } = getSkeletonColor(variant);
-  
   return (
-    <div 
-      className={`skeleton-stat-card ${className}`} 
+    <div
+      className={`skeleton-stat-card ${className}`}
       style={{
         width,
         height,
@@ -493,34 +494,31 @@ export const SkeletonStatCard: React.FC<SkeletonStatCardProps> = ({
       <div className="skeleton-stat-card-content">
         {hasIcon && (
           <div className="skeleton-stat-card-icon mb-3">
-            <Skeleton
-              width={40}
-              height={40}
-              circle
-              baseColor={baseColor}
-              highlightColor={highlightColor}
+            <div
+              className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%'
+              }}
             />
           </div>
         )}
-        
+
         {hasTitle && (
           <div className="skeleton-stat-card-title mb-2">
-            <Skeleton
-              width="50%"
-              height={16}
-              baseColor={baseColor}
-              highlightColor={highlightColor}
+            <div
+              className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+              style={{ width: '50%', height: '16px' }}
             />
           </div>
         )}
-        
+
         {hasValue && (
           <div className="skeleton-stat-card-value">
-            <Skeleton
-              width="70%"
-              height={30}
-              baseColor={baseColor}
-              highlightColor={highlightColor}
+            <div
+              className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+              style={{ width: '70%', height: '30px' }}
             />
           </div>
         )}
@@ -546,73 +544,71 @@ export const SkeletonDetailPage: React.FC<SkeletonDetailPageProps> = ({
   className = '',
   style
 }) => {
-  const { baseColor, highlightColor } = getSkeletonColor(variant);
-  
   return (
     <div className={`skeleton-detail-page ${className}`} style={style}>
       <div style={{ display: 'flex', gap: '24px' }}>
         <div style={{ flex: 1 }}>
           {hasHeader && (
             <div className="skeleton-detail-page-header mb-4">
-              <Skeleton
-                height={50}
-                baseColor={baseColor}
-                highlightColor={highlightColor}
+              <div
+                className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+                style={{ height: '50px', width: '100%' }}
               />
             </div>
           )}
-          
+
           {hasImage && (
             <div className="skeleton-detail-page-image mb-4">
-              <Skeleton
-                height={imageHeight}
-                baseColor={baseColor}
-                highlightColor={highlightColor}
+              <div
+                className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+                style={{ height: `${imageHeight}px`, width: '100%' }}
               />
             </div>
           )}
-          
+
           {hasTitle && (
             <div className="skeleton-detail-page-title mb-3">
-              <Skeleton
-                height={36}
-                baseColor={baseColor}
-                highlightColor={highlightColor}
+              <div
+                className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+                style={{ height: '36px', width: '100%' }}
               />
             </div>
           )}
-          
+
           {hasMeta && (
             <div className="skeleton-detail-page-meta mb-4">
-              <Skeleton
-                width="60%"
-                height={20}
-                baseColor={baseColor}
-                highlightColor={highlightColor}
+              <div
+                className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+                style={{ width: '60%', height: '20px' }}
               />
             </div>
           )}
-          
+
           {hasContent && (
             <div className="skeleton-detail-page-content">
-              <Skeleton
-                count={contentLines}
-                baseColor={baseColor}
-                highlightColor={highlightColor}
-              />
+              {Array.from({ length: contentLines }).map((_, index) => (
+                <div
+                  key={`content-line-${index}`}
+                  className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+                  style={{
+                    width: '100%',
+                    height: '16px',
+                    marginBottom: index < contentLines - 1 ? '8px' : 0
+                  }}
+                />
+              ))}
             </div>
           )}
         </div>
-        
+
         {hasSidebar && (
-          <div 
+          <div
             className="skeleton-detail-page-sidebar"
             style={{ width: sidebarWidth }}
           >
-            <Skeleton
-              height={400}
-              baseColor={baseColor}
-              highlightColor={highlightColor}
+            <div
+              className={`${variant === 'jade' ? 'jade-spinner' : variant === 'gold' ? 'gold-spinner' : 'loading-spinner'}`}
+              style={{ height: '400px', width: '100%' }}
             />
           </div>
         )}

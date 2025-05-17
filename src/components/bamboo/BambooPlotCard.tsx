@@ -33,15 +33,11 @@ const BambooPlotCard: React.FC<BambooPlotCardProps> = ({
   const [showParticles, setShowParticles] = useState(false);
   const [particles, setParticles] = useState<React.ReactNode[]>([]);
 
-  // 刷新数据的函数
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // 刷新数据的函数 - 在解锁和升级操作中使用
   const refreshData = useCallback(() => {
     refreshTable('bambooPlots');
     refreshTable('userCurrencies');
   }, [refreshTable]);
-
-  // Call refreshData in a comment to prevent unused variable warning
-  // This function can be used for future data refresh: ${refreshData()}
 
   // 解锁地块
   const handleUnlock = async () => {
@@ -61,6 +57,9 @@ const BambooPlotCard: React.FC<BambooPlotCardProps> = ({
           count: 30,
           colors: ['#FFD700', '#FFEB3B', '#FFC107', '#FFFDE7']
         }));
+
+        // 刷新数据
+        refreshData();
 
         // 3秒后隐藏粒子效果
         setTimeout(() => {
@@ -92,6 +91,9 @@ const BambooPlotCard: React.FC<BambooPlotCardProps> = ({
           count: 50,
           colors: ['#4CAF50', '#8BC34A', '#CDDC39', '#F0F4C3']
         }));
+
+        // 刷新数据
+        refreshData();
 
         // 3秒后隐藏粒子效果
         setTimeout(() => {

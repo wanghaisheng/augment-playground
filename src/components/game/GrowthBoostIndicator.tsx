@@ -19,7 +19,7 @@ interface GrowthBoostIndicatorProps {
  */
 const GrowthBoostIndicator: React.FC<GrowthBoostIndicatorProps> = ({
   size = 'medium',
-  showLabel = true,
+  // showLabel = true, // 未使用的属性
   className = '',
   onClick
 }) => {
@@ -27,7 +27,7 @@ const GrowthBoostIndicator: React.FC<GrowthBoostIndicatorProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [activeBoosts, setActiveBoosts] = useState<any[]>([]);
-  const { labels } = useLocalizedView('growthBoostIndicator');
+  const { labels } = useLocalizedView<null, { growthBoostLabel?: string; activeBoostsTitle?: string; noActiveBoostsMessage?: string }>('growthBoostIndicator', () => Promise.resolve({ labels: { growthBoostLabel: '成长速度', activeBoostsTitle: '激活的成长加成', noActiveBoostsMessage: '没有激活的成长加成' } }));
 
   // 加载成长速度加成数据
   const loadBoostData = async () => {
@@ -89,12 +89,12 @@ const GrowthBoostIndicator: React.FC<GrowthBoostIndicatorProps> = ({
   // 动画变体
   const containerVariants = {
     hidden: { opacity: 0, y: -10 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.3 }
     },
-    exit: { 
+    exit: {
       opacity: 0,
       y: -10,
       transition: { duration: 0.2 }
@@ -104,13 +104,13 @@ const GrowthBoostIndicator: React.FC<GrowthBoostIndicatorProps> = ({
   // 详情面板变体
   const detailsVariants = {
     hidden: { opacity: 0, scale: 0.9, y: -10 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       scale: 1,
       y: 0,
       transition: { duration: 0.3 }
     },
-    exit: { 
+    exit: {
       opacity: 0,
       scale: 0.9,
       y: -10,
@@ -135,9 +135,9 @@ const GrowthBoostIndicator: React.FC<GrowthBoostIndicatorProps> = ({
           exit="exit"
           onClick={handleClick}
         >
-          <InkIcon 
-            type="resource-experience" 
-            size={sizeMap[size].icon as any} 
+          <InkIcon
+            type="resource-experience"
+            size={sizeMap[size].icon as 'xs' | 'sm' | 'md' | 'lg' | 'xl'}
           />
           <span className="font-medium">
             {labels?.growthBoostLabel || '成长速度'}: x{multiplier.toFixed(1)}

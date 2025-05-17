@@ -37,8 +37,8 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
   onChallengeViewed,
   labels
 }) => {
-  // Add console log to check labels
-  console.log('ChallengeDiscoverySection labels:', labels);
+  // 移除不必要的控制台日志
+  // console.log('ChallengeDiscoverySection labels:', labels);
   const [recommendations, setRecommendations] = useState<ChallengeRecommendation[]>([]);
   const [discoveries, setDiscoveries] = useState<ChallengeDiscovery[]>([]);
   const [currentDiscoveryIndex, setCurrentDiscoveryIndex] = useState(0);
@@ -57,7 +57,7 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
       setDiscoveries(unviewedDiscoveries);
 
       // 获取推荐的挑战
-      const recommendedChallenges = await getRecommendedChallenges(String(3));
+      const recommendedChallenges = await getRecommendedChallenges(3);
       // Convert ChallengeRecord[] to ChallengeRecommendation[]
       const recommendationsData = recommendedChallenges.map(challenge => ({
         challenge,

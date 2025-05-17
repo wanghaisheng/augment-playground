@@ -495,6 +495,19 @@ export interface ChallengeFilterLabels {
   clearFiltersLabel?: string;
 }
 
+export interface ChallengeRecommendationCardLabels {
+  difficultyEasy?: string;
+  difficultyMedium?: string;
+  difficultyHard?: string;
+  difficultyExpert?: string;
+  difficultyUnknown?: string;
+  matchRateLabel?: string;
+  startDateLabel?: string;
+  endDateLabel?: string;
+  viewDetailsButton?: string;
+  acceptButton?: string;
+}
+
 export interface ChallengeCardLabels {
   statusActive?: string;
   statusCompleted?: string;

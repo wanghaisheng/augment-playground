@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PandaAnimation from './PandaAnimation';
 import { playSound, SoundType } from '@/utils/sound';
-import { generateEvolutionParticles } from '@/utils/particleEffects.tsx';
+import { generateEvolutionParticles } from '@/utils/particleEffects';
 import Button from '@/components/common/Button';
 import { PandaMood, EnergyLevel } from './PandaAvatar';
 import GoldenGlow from '@/components/animation/GoldenGlow';
@@ -78,7 +78,7 @@ const PandaEvolutionModal: React.FC<PandaEvolutionModalProps> = ({
   const [currentLevel, setCurrentLevel] = useState<number>(previousLevel);
   const [particles, setParticles] = useState<React.ReactNode[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
-  const evolutionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const evolutionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Default labels
   const evolutionTitle = labels.evolutionTitle || '熊猫进化！';
