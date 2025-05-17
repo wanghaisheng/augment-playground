@@ -114,13 +114,11 @@ const EnhancedInkAnimation: React.FC<EnhancedInkAnimationProps> = ({
     }
   };
 
-  // 停止动画
+  // 停止动画 - 定义但暂未使用
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stopAnimation = () => {
     setIsPlaying(false);
   };
-
-  // Prevent unused variable warning
-  void stopAnimation;
 
   // 处理动画完成
   const handleAnimationComplete = () => {

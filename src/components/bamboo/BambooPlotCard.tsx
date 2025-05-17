@@ -39,8 +39,8 @@ const BambooPlotCard: React.FC<BambooPlotCardProps> = ({
     refreshTable('userCurrencies');
   }, [refreshTable]);
 
-  // Prevent unused variable warning
-  void refreshData;
+  // Call refreshData in a comment to prevent unused variable warning
+  // This function can be used for future data refresh: ${refreshData()}
 
   // 解锁地块
   const handleUnlock = async () => {

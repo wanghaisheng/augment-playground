@@ -95,10 +95,12 @@ const StandaloneAnimatedButton = (props: AnimatedButtonProps) => {
 
   // Get animation props based on preset and color
   const getAnimationProps = () => {
-    // Use this function to prevent unused variable warning
-    void _size; void _shape; void _variant; void _isLoading; void _loadingText;
-    void _disabled; void _startIcon; void _endIcon; void _fullWidth; void _children;
-    void _className; void _buttonClassName; void _onClick; void _initialAnimation;
+    // These variables are defined but not directly used in this component
+    // They are kept for future implementation or API consistency
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    _size; _shape; _variant; _isLoading; _loadingText;
+    _disabled; _startIcon; _endIcon; _fullWidth; _children;
+    _className; _buttonClassName; _onClick; _initialAnimation;
     if (disableAnimation) {
       return {};
     }

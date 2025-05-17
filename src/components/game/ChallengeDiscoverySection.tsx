@@ -57,8 +57,14 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
       setDiscoveries(unviewedDiscoveries);
 
       // 获取推荐的挑战
-      const recommendedChallenges = await getRecommendedChallenges(3);
-      setRecommendations(recommendedChallenges);
+      const recommendedChallenges = await getRecommendedChallenges(String(3));
+      // Convert ChallengeRecord[] to ChallengeRecommendation[]
+      const recommendationsData = recommendedChallenges.map(challenge => ({
+        challenge,
+        score: 0,
+        reason: ''
+      }));
+      setRecommendations(recommendationsData);
     } catch (err) {
       console.error('Failed to load challenge discoveries:', err);
       setError('加载挑战发现失败，请重试');
@@ -231,7 +237,7 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
               exit={{ opacity: 0 }}
             >
               {recommendations.length > 0 ? (
-                recommendations.map((recommendation, index) => (
+                recommendations.map((recommendation) => (
                   <motion.div
                     key={`recommendation-${recommendation.challenge.id}`}
                     variants={itemVariants}

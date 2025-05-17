@@ -1,6 +1,5 @@
 // src/components/game/DialogDemo.tsx
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import ScrollDialog from './ScrollDialog';
 import LatticeDialog from './LatticeDialog';
 import Button from '@/components/common/Button';
@@ -75,7 +74,7 @@ const DialogDemo: React.FC = () => {
           打开窗棂对话框
         </Button>
 
-        <Button variant="primary" onClick={openConfirmDialog}>
+        <Button variant="filled" onClick={openConfirmDialog}>
           打开确认对话框
         </Button>
       </div>

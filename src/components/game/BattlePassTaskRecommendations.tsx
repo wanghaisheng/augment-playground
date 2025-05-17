@@ -203,16 +203,16 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
                     <span className="metric-label">{difficultyLabel}</span>
                     <span
                       className="metric-value"
-                      style={{ color: getDifficultyColor(task.difficulty) }}
+                      style={{ color: getDifficultyColor(task.difficulty ?? 1) }}
                     >
-                      {getDifficultyLabel(task.difficulty)}
+                      {getDifficultyLabel(task.difficulty ?? 1)}
                     </span>
                   </div>
 
                   <div className="task-metric">
                     <span className="metric-label">{timeLabel}</span>
                     <span className="metric-value">
-                      {getTimeLabel(task.estimatedTimeMinutes)}
+                      {getTimeLabel(task.estimatedTimeMinutes ?? 30)}
                     </span>
                   </div>
 
@@ -227,7 +227,7 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
                 {onTaskSelected && (
                   <button
                     className="start-task-button jade-button"
-                    onClick={() => onTaskSelected(task.id)}
+                    onClick={() => onTaskSelected(String(task.id))}
                   >
                     {startTaskButtonLabel}
                   </button>

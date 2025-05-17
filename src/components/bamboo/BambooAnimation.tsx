@@ -21,10 +21,8 @@ const BambooAnimation: React.FC<BambooAnimationProps> = ({
 }) => {
   const [isAnimating, setIsAnimating] = useState(true);
   // 粒子显示状态 - 始终为true，但保留变量以便未来可能的扩展
-  const [showParticles, setShowParticles] = useState(true);
-
-  // Prevent unused variable warning
-  void setShowParticles;
+  // We track particle visibility but don't directly use the setter
+  const [showParticles, _setShowParticles] = useState(true);
 
   // 播放音效
   useEffect(() => {

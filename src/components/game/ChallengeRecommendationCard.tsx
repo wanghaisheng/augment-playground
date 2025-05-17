@@ -113,7 +113,7 @@ const ChallengeRecommendationCard: React.FC<ChallengeRecommendationCardProps> = 
         <h3 className="text-md font-bold">{challenge.title}</h3>
         <div className="recommendation-score">
           <span className={`text-sm font-bold ${getScoreStyle(score)}`}>
-            {labels?.matchScoreLabel || 'Match Score'}: {Math.min(100, Math.round(score * 2))}%
+            {labels?.matchRateLabel || 'Match Score'}: {Math.min(100, Math.round(score * 2))}%
           </span>
         </div>
       </div>

@@ -208,6 +208,7 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
         <RewardModal
           rewards={rewards}
           onClose={handleCloseRewardModal}
+          isOpen={showRewardModal}
         />
       )}
 
@@ -216,6 +217,7 @@ const ChallengeList: React.FC<ChallengeListProps> = ({ filter, onSelectChallenge
         <ScrollDialog
           title={selectedChallenge.title}
           onClose={handleCloseChallengeDetails}
+          isOpen={showChallengeDetails}
         >
           <div className="challenge-details">
             <div className="challenge-header">
