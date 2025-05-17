@@ -45,7 +45,7 @@ const CustomGoalForm: React.FC<CustomGoalFormProps> = ({
   const [goalCount, setGoalCount] = useState(0);
 
   const { labels } = useLocalizedView('customGoalForm', fetchCustomGoalFormView);
-  const { refreshData } = useDataRefreshContext();
+  const { refreshTable } = useDataRefreshContext();
   const { pandaState } = usePandaState();
   const isVip = pandaState?.isVip || false;
   const navigate = useNavigate();
@@ -140,7 +140,7 @@ const CustomGoalForm: React.FC<CustomGoalFormProps> = ({
       playSound(SoundType.SUCCESS);
 
       // 刷新数据
-      refreshData('customGoals');
+      refreshTable('customGoals');
 
       // 关闭表单
       onClose();

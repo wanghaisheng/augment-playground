@@ -1,7 +1,7 @@
 // src/components/meditation/MeditationPlayer.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
+import {
   MeditationCourseRecord,
   startMeditationSession,
   completeMeditationSession
@@ -36,57 +36,59 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
   const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCompletionMessage, setShowCompletionMessage] = useState(false);
-  
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { refreshData } = useDataRefreshContext();
-  
+  const { refreshTable } = useDataRefreshContext();
+
   // 如果没有课程，不显示
   if (!course) {
     return null;
   }
-  
+
   // 初始化音频
   useEffect(() => {
     if (isOpen && course) {
       // 创建音频元素
       const audio = new Audio(course.audioPath);
       audioRef.current = audio;
-      
+
       // 监听事件
       audio.addEventListener('loadedmetadata', () => {
         setDuration(audio.duration);
         setIsLoading(false);
       });
-      
+
       audio.addEventListener('timeupdate', () => {
         setCurrentTime(audio.currentTime);
       });
-      
+
       audio.addEventListener('ended', () => {
         setIsPlaying(false);
         setShowCompletionMessage(true);
       });
-      
+
       audio.addEventListener('error', () => {
         console.error('Failed to load audio');
         setIsLoading(false);
       });
-      
+
       // 开始冥想会话
       const startSession = async () => {
         try {
           // 在实际应用中，这应该是当前用户的ID
           const userId = 'current-user';
-          
+
           const session = await startMeditationSession(userId, course.id!);
-          setSessionId(session.id);
+          if (session.id) {
+            setSessionId(session.id);
+          }
         } catch (error) {
           console.error('Failed to start meditation session:', error);
         }
       };
-      
+
       startSession();
-      
+
       // 清理
       return () => {
         if (audioRef.current) {
@@ -99,11 +101,11 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
       };
     }
   }, [isOpen, course]);
-  
+
   // 处理播放/暂停
   const handlePlayPause = () => {
     if (!audioRef.current) return;
-    
+
     if (isPlaying) {
       audioRef.current.pause();
       playSound(SoundType.BUTTON_CLICK);
@@ -111,30 +113,30 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
       audioRef.current.play();
       playSound(SoundType.BUTTON_CLICK);
     }
-    
+
     setIsPlaying(!isPlaying);
   };
-  
+
   // 处理进度条点击
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!audioRef.current) return;
-    
+
     const progressBar = e.currentTarget;
     const rect = progressBar.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const percentage = offsetX / rect.width;
     const newTime = percentage * duration;
-    
+
     audioRef.current.currentTime = newTime;
     setCurrentTime(newTime);
   };
-  
+
   // 处理关闭
   const handleClose = () => {
     if (audioRef.current) {
       audioRef.current.pause();
     }
-    
+
     // 如果会话已开始但未完成，则完成会话
     if (sessionId && !showRating && !showCompletionMessage) {
       const completeSession = async () => {
@@ -143,41 +145,41 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
             sessionId,
             Math.round(currentTime / 60) // 转换为分钟
           );
-          
+
           // 刷新数据
-          refreshData('meditationSessions');
-          refreshData('meditationCourses');
+          refreshTable('meditationSessions');
+          refreshTable('meditationCourses');
         } catch (error) {
           console.error('Failed to complete meditation session:', error);
         }
       };
-      
+
       completeSession();
     }
-    
+
     playSound(SoundType.BUTTON_CLICK);
     onClose();
   };
-  
+
   // 处理完成冥想
   const handleCompleteMeditation = () => {
     setShowRating(true);
     playSound(SoundType.SUCCESS);
   };
-  
+
   // 处理评分
   const handleRate = (value: number) => {
     setRating(value);
     playSound(SoundType.BUTTON_CLICK);
   };
-  
+
   // 处理提交评分
   const handleSubmitRating = async () => {
     if (!sessionId) return;
-    
+
     try {
       setIsSubmitting(true);
-      
+
       // 完成会话
       await completeMeditationSession(
         sessionId,
@@ -185,14 +187,14 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
         rating || undefined,
         feedback || undefined
       );
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS);
-      
+
       // 刷新数据
-      refreshData('meditationSessions');
-      refreshData('meditationCourses');
-      
+      refreshTable('meditationSessions');
+      refreshTable('meditationCourses');
+
       // 关闭评分界面
       setShowRating(false);
       setShowCompletionMessage(true);
@@ -203,19 +205,19 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
       setIsSubmitting(false);
     }
   };
-  
+
   // 格式化时间
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
-  
+
   // 获取默认封面图片
   const getDefaultCoverImage = () => {
     return '/assets/meditation/default-cover.jpg';
   };
-  
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -224,14 +226,14 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
           onClose={handleClose}
           title={course.title}
           showCloseButton={true}
-          size="large"
+          // size="large" - removed as LatticeDialog doesn't support this prop
         >
           {showRating ? (
             <div className="rating-container p-4">
               <h3 className="text-xl font-bold text-center mb-4">
                 冥想完成！请评价您的体验
               </h3>
-              
+
               <div className="rating-stars flex justify-center mb-6">
                 {[1, 2, 3, 4, 5].map(value => (
                   <button
@@ -245,7 +247,7 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
                   </button>
                 ))}
               </div>
-              
+
               <div className="feedback-input mb-6">
                 <label className="block text-gray-700 mb-2">
                   反馈（可选）
@@ -258,7 +260,7 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
                   placeholder="分享您的冥想体验..."
                 />
               </div>
-              
+
               <div className="flex justify-center">
                 <Button
                   variant="jade"
@@ -283,15 +285,15 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
               >
                 <span className="text-6xl">🧘</span>
               </motion.div>
-              
+
               <h3 className="text-xl font-bold text-jade-700 mb-2">
                 恭喜您完成冥想！
               </h3>
-              
+
               <p className="text-gray-600 mb-6">
                 感谢您参与这次冥想体验。希望您感到放松和平静。
               </p>
-              
+
               <div className="benefits mb-6">
                 <h4 className="font-medium text-gray-700 mb-2">
                   您获得了以下好处：
@@ -304,7 +306,7 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
                   ))}
                 </ul>
               </div>
-              
+
               <Button
                 variant="jade"
                 onClick={handleClose}
@@ -322,7 +324,7 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
                   className="w-full h-48 object-cover rounded-lg"
                 />
               </div>
-              
+
               {/* 播放控制 */}
               <div className="player-controls mb-6">
                 {isLoading ? (
@@ -341,13 +343,13 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
                         style={{ width: `${(currentTime / duration) * 100}%` }}
                       ></div>
                     </div>
-                    
+
                     {/* 时间显示 */}
                     <div className="flex justify-between text-xs text-gray-500 mb-4">
                       <span>{formatTime(currentTime)}</span>
                       <span>{formatTime(duration)}</span>
                     </div>
-                    
+
                     {/* 播放按钮 */}
                     <div className="flex justify-center">
                       <button
@@ -369,7 +371,7 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
                   </>
                 )}
               </div>
-              
+
               {/* 课程信息 */}
               <div className="course-info mb-6">
                 <h3 className="text-lg font-bold text-gray-800 mb-2">
@@ -389,7 +391,7 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
                   </span>
                 </div>
               </div>
-              
+
               {/* 完成按钮 */}
               <div className="flex justify-center">
                 <Button

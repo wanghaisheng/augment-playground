@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RewardRecord } from '@/services/rewardService';
+import { RewardRecord, RewardType } from '@/services/rewardService';
 import './RewardAnimation.css';
 
 export interface RewardAnimationProps {
@@ -43,10 +43,9 @@ const RewardAnimation: React.FC<RewardAnimationProps> = ({ rewards }) => {
             transition={{ duration: 0.5 }}
           >
             <div className="reward-icon">
-              {currentReward.type === 'experience' && '✨'}
-              {currentReward.type === 'bamboo' && '🎋'}
-              {currentReward.type === 'tea' && '🍵'}
-              {currentReward.type === 'item' && '🎁'}
+              {currentReward.type === RewardType.EXPERIENCE && '✨'}
+              {currentReward.type === RewardType.COIN && '🎋'}
+              {currentReward.type === RewardType.ITEM && '🎁'}
             </div>
             <h3 className="reward-title">{currentReward.name}</h3>
             <p className="reward-amount">

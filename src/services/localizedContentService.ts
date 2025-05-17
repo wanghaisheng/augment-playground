@@ -291,6 +291,19 @@ export async function fetchCustomGoalFormView(lang: Language): Promise<Localized
 }
 
 /**
+ * Fetches localized content for the panda interaction panel
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized panda interaction panel content
+ */
+export async function fetchPandaInteractionView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching PANDA INTERACTION VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('pandaInteraction', lang);
+  return { labels, data: null };
+}
+
+/**
  * Fetches localized content for the subscription expiration reminder
  *
  * @param lang - The language to fetch content for

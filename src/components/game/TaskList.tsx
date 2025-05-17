@@ -35,7 +35,7 @@ const TaskList: React.FC<TaskListProps> = ({
   refreshTrigger = 0
 }) => {
   const [tasks, setTasks] = useState<TaskRecord[]>([]);
-  const [categories, setCategories] = useState<Record<number, TaskCategoryRecord>>({});
+  // const [categories, setCategories] = useState<Record<number, TaskCategoryRecord>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,7 +58,7 @@ const TaskList: React.FC<TaskListProps> = ({
             categoryMap[category.id] = category;
           }
         });
-        setCategories(categoryMap);
+        // setCategories(categoryMap);
       } catch (err) {
         console.error('Failed to load tasks:', err);
         setError('加载任务失败，请重试');
