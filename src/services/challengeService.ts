@@ -9,7 +9,8 @@ export enum ChallengeStatus {
   ACTIVE = 'active',         // 活跃中
   COMPLETED = 'completed',   // 已完成
   EXPIRED = 'expired',       // 已过期
-  UPCOMING = 'upcoming'      // 即将开始
+  UPCOMING = 'upcoming',     // 即将开始
+  FAILED = 'failed'          // 失败
 }
 
 // 挑战类型枚举

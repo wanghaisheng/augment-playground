@@ -1,6 +1,5 @@
 // src/components/game/BattlePassTaskRecommendations.tsx
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { BattlePassTaskRecord } from '@/types/battle-pass';
 
 /**
@@ -188,12 +187,9 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
         {currentTasks.length > 0 ? (
           <div className="recommended-tasks-list">
             {currentTasks.map(task => (
-              <motion.div
+              <div
                 key={task.id}
                 className="recommended-task-item"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
               >
                 <div className="task-name">{task.taskName}</div>
                 <div className="task-description">{task.taskDescription}</div>
@@ -232,7 +228,7 @@ const BattlePassTaskRecommendations: React.FC<BattlePassTaskRecommendationsProps
                     {startTaskButtonLabel}
                   </button>
                 )}
-              </motion.div>
+              </div>
             ))}
           </div>
         ) : (

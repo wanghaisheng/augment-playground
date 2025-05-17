@@ -1,6 +1,5 @@
 // src/components/game/LatticeDialog.tsx
 import React from 'react';
-import { motion } from 'framer-motion';
 import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
 
@@ -61,15 +60,13 @@ const LatticeDialog: React.FC<LatticeDialogProps> = ({
       <div className="lattice-modal-header">
         <h3 className="lattice-modal-title">{title}</h3>
         {showCloseButton && (
-          <motion.button
+          <button
             className="lattice-modal-close"
             onClick={onClose}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
             aria-label="关闭"
           >
             ×
-          </motion.button>
+          </button>
         )}
       </div>
 

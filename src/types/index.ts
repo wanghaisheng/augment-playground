@@ -52,9 +52,9 @@ export interface CustomGoalCardLabels {
   statusActive?: string;
   statusCompleted?: string;
   statusArchived?: string;
-  deleteConfirmation?: string; 
-  toggleCompleteButton?: string; 
-  cancelButtonText?: string; 
+  deleteConfirmation?: string;
+  toggleCompleteButton?: string;
+  cancelButtonText?: string;
 }
 
 // --- Common Components Labels ---
@@ -389,7 +389,7 @@ export interface MeditationPageViewLabelsBundle {
   };
 }
 
-export interface MeditationPageViewDataPayload { 
+export interface MeditationPageViewDataPayload {
 }
 
 export type FetchMeditationPageViewResult = LocalizedContent<MeditationPageViewDataPayload | null, MeditationPageViewLabelsBundle>;
@@ -528,6 +528,11 @@ export interface ChallengeRecommendationCardLabels {
   endDateLabel?: string;
   viewDetailsButton?: string;
   acceptButton?: string;
+  difficultyEasy?: string;
+  difficultyMedium?: string;
+  difficultyHard?: string;
+  difficultyExpert?: string;
+  difficultyUnknown?: string;
 }
 
 export interface SocialChallengeCardLabels {
@@ -761,7 +766,7 @@ export interface VipBenefitsPageViewLabelsBundle {
 export type FetchVipBenefitsPageViewResult = LocalizedContent<null, VipBenefitsPageViewLabelsBundle>;
 
 // --- Definition for VipBenefitCardLabelsBundle (moved here for clarity) ---
-export interface VipBenefitCardLabelsBundle { 
+export interface VipBenefitCardLabelsBundle {
   freeUserLabel?: string;
   vipUserLabel?: string;
   activeLabel?: string;
@@ -776,35 +781,35 @@ export interface VipBenefitCardLabelsBundle {
 }
 
 // --- Definitions for other placeholder label bundles (moved here for clarity) ---
-export interface VipSubscriptionOptionsLabelsBundle { 
-  closeButton?: string; 
+export interface VipSubscriptionOptionsLabelsBundle {
+  closeButton?: string;
   title?: string;
   // ... other labels for subscription options ...
 }
-export interface VipValueSummaryLabelsBundle { 
-  detailsButton?: string; 
+export interface VipValueSummaryLabelsBundle {
+  detailsButton?: string;
   title?: string;
   totalValueLabel?: string;
   // ... other labels ...
 }
-export interface VipHighlightDemoLabelsBundle { 
-  title?: string; 
+export interface VipHighlightDemoLabelsBundle {
+  title?: string;
   // ... other labels ...
 }
-export interface PainPointDemoLabelsBundle { 
-  title?: string; 
+export interface PainPointDemoLabelsBundle {
+  title?: string;
   // ... other labels ...
 }
-export interface ResourceShortageDemoLabelsBundle { 
-  title?: string; 
+export interface ResourceShortageDemoLabelsBundle {
+  title?: string;
   // ... other labels ...
 }
-export interface PandaSkinDemoLabelsBundle { 
-  title?: string; 
+export interface PandaSkinDemoLabelsBundle {
+  title?: string;
   // ... other labels ...
 }
-export interface VipValueModalLabelsBundle { 
-  title?: string; 
+export interface VipValueModalLabelsBundle {
+  title?: string;
   closeButton?: string;
   // ... other labels ...
 }
@@ -1146,7 +1151,7 @@ export interface CustomGoalsPageViewLabelsBundle {
 }
 
 export interface CustomGoalsPageViewDataPayload {
-  username?: string; 
+  username?: string;
   goals?: CustomGoalRecord[];
   isVipUser?: boolean;
   currentGoalCount?: number;
@@ -1257,7 +1262,7 @@ export interface SocialComparisonPageViewLabelsBundle {
   friendsTab?: string;
   vipPromotionTitle?: string;
   vipPromotionDescription?: string;
-  upgradeButton?: string; 
+  upgradeButton?: string;
   comingSoonTitle?: string;
   comingSoonDescription?: string;
   vipEarlyAccessTitle?: string;
@@ -1266,10 +1271,10 @@ export interface SocialComparisonPageViewLabelsBundle {
 
 export interface SocialComparisonPageDataPayload {
   currentUser?: { id: string; name: string; avatarUrl?: string; };
-  friends?: Array<{ 
-    id: string; 
-    name: string; 
-    avatarUrl?: string; 
+  friends?: Array<{
+    id: string;
+    name: string;
+    avatarUrl?: string;
     comparisonData?: Record<string, { userScore: number; friendScore: number }>;
   }>;
 }

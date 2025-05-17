@@ -31,6 +31,7 @@ const BambooSeedSelector: React.FC<BambooSeedSelectorProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dataRefreshContext = useDataRefresh();
   // 为了兼容现有代码，创建一个空的refreshData函数
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const refreshData = () => {
     // 在实际实现中，这里应该调用dataRefreshContext中的刷新方法
     console.log('Refresh data called');

@@ -58,6 +58,8 @@ export interface BattlePassTaskRecord {
   estimatedTimeMinutes?: number;
   difficulty?: number;
   taskDescription?: string;
+  currentValue?: number;
+  progressPercentage?: number;
 }
 
 /**

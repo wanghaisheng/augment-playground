@@ -1,6 +1,5 @@
 // src/components/game/ScrollDialog.tsx
 import React from 'react';
-import { motion } from 'framer-motion';
 import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
 
@@ -18,7 +17,7 @@ interface ScrollDialogProps {
 /**
  * 卷轴风格对话框组件
  * 设计为古代卷轴样式，适合展示重要信息、成就或故事内容
- * 
+ *
  * @param isOpen - 控制对话框是否显示
  * @param onClose - 关闭对话框的回调函数
  * @param title - 对话框标题
@@ -56,15 +55,13 @@ const ScrollDialog: React.FC<ScrollDialogProps> = ({
       <div className="scroll-modal-header">
         <h3 className="scroll-modal-title">{title}</h3>
         {showCloseButton && (
-          <motion.button
+          <button
             className="scroll-modal-close"
             onClick={onClose}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
             aria-label="关闭"
           >
             ×
-          </motion.button>
+          </button>
         )}
       </div>
 

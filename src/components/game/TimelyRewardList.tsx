@@ -225,6 +225,7 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
         <RewardModal
           rewards={earnedRewards}
           onClose={handleCloseRewardModal}
+          isOpen={showRewardModal}
         />
       )}
 
@@ -233,6 +234,7 @@ const TimelyRewardList: React.FC<TimelyRewardListProps> = ({ filter, onSelectRew
         <ScrollDialog
           title={selectedReward.title}
           onClose={handleCloseRewardDetails}
+          isOpen={showRewardDetails}
         >
           <div className="reward-details">
             <div className="reward-header">

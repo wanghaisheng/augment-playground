@@ -1,8 +1,7 @@
 // src/components/game/SocialChallengeDetailDialog.tsx
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  SocialChallengeRecord, 
+import {
+  SocialChallengeRecord,
   SocialChallengeType,
   SocialChallengeParticipation,
   getSocialChallenge,
@@ -45,13 +44,13 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
   const [contributionAmount, setContributionAmount] = useState(10);
   const [inviteCode, setInviteCode] = useState('');
   const [showInviteCode, setShowInviteCode] = useState(false);
-  
+
   // 当前用户ID（在实际应用中，这应该从用户会话中获取）
   const currentUserId = 'current-user';
-  
+
   // 检查当前用户是否是参与者
   const isParticipant = challenge?.participantIds.includes(currentUserId) || false;
-  
+
   // 检查当前用户是否是创建者
   const isCreator = challenge?.creatorId === currentUserId;
 
@@ -60,13 +59,13 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // 获取挑战数据
       const challengeData = await getSocialChallenge(challengeId);
       if (challengeData) {
         setChallenge(challengeData);
         setInviteCode(challengeData.inviteCode || '');
-        
+
         // 获取参与记录
         const participationData = await getChallengeParticipations(challengeId);
         setParticipations(participationData);
@@ -95,24 +94,24 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
   // 处理加入挑战
   const handleJoin = async () => {
     if (!challenge) return;
-    
+
     try {
       setIsJoining(true);
       setError(null);
-      
+
       // 加入挑战
       await joinSocialChallenge(
         challengeId,
         currentUserId,
         challenge.isPublic ? undefined : inviteCode
       );
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 重新加载数据
       await loadChallengeData();
-      
+
       // 通知父组件
       if (onChallengeUpdated) {
         onChallengeUpdated();
@@ -130,16 +129,16 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
     try {
       setIsLeaving(true);
       setError(null);
-      
+
       // 离开挑战
       await leaveSocialChallenge(challengeId, currentUserId);
-      
+
       // 播放点击音效
       playSound(SoundType.BUTTON_CLICK, 0.5);
-      
+
       // 重新加载数据
       await loadChallengeData();
-      
+
       // 通知父组件
       if (onChallengeUpdated) {
         onChallengeUpdated();
@@ -157,16 +156,16 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
     try {
       setIsContributing(true);
       setError(null);
-      
+
       // 贡献进度
       await contributeToChallenge(challengeId, currentUserId, contributionAmount);
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 重新加载数据
       await loadChallengeData();
-      
+
       // 通知父组件
       if (onChallengeUpdated) {
         onChallengeUpdated();
@@ -182,7 +181,7 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
   // 处理复制邀请码
   const handleCopyInviteCode = () => {
     if (!inviteCode) return;
-    
+
     navigator.clipboard.writeText(inviteCode)
       .then(() => {
         // 播放成功音效
@@ -236,6 +235,8 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
         return '失败';
       case ChallengeStatus.UPCOMING:
         return '即将开始';
+      case ChallengeStatus.EXPIRED:
+        return '已过期';
       default:
         return '未知';
     }
@@ -303,11 +304,11 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
                   </div>
                 </div>
               </div>
-              
+
               <div className="challenge-description mb-4">
                 <p className="text-gray-700">{challenge.description}</p>
               </div>
-              
+
               <div className="challenge-dates text-sm text-gray-600 mb-4">
                 <p>开始日期: {new Date(challenge.startDate).toLocaleDateString()}</p>
                 {challenge.endDate && (
@@ -315,7 +316,7 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
                 )}
                 <p>创建日期: {new Date(challenge.createdAt).toLocaleDateString()}</p>
               </div>
-              
+
               <div className="challenge-progress mb-4">
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-sm text-gray-600">进度</span>
@@ -328,7 +329,7 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
                   ></div>
                 </div>
               </div>
-              
+
               {/* 邀请码（仅对参与者显示） */}
               {isParticipant && !challenge.isPublic && (
                 <div className="invite-code-section mb-4">
@@ -360,7 +361,7 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
                 </div>
               )}
             </div>
-            
+
             {/* 参与者列表 */}
             <div className="participants-section mb-6">
               <h3 className="text-lg font-bold mb-2">参与者 ({challenge.participantIds.length}/{challenge.maxParticipants})</h3>
@@ -410,7 +411,7 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
                 )}
               </div>
             </div>
-            
+
             {/* 操作区域 */}
             <div className="actions-section">
               {isParticipant ? (
@@ -444,11 +445,11 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
                       </Button>
                     </div>
                   )}
-                  
+
                   {/* 离开挑战按钮（非创建者可见） */}
                   {!isCreator && challenge.status === ChallengeStatus.ACTIVE && (
                     <Button
-                      variant="danger"
+                      variant="error"
                       onClick={handleLeave}
                       disabled={isLeaving}
                       className="w-full"

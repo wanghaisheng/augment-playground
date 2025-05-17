@@ -32,7 +32,7 @@ const SocialChallengeCard: React.FC<SocialChallengeCardProps> = ({
     e.stopPropagation();
     // 播放点击音效
     playSound(SoundType.BUTTON_CLICK, 0.5);
-    
+
     // 通知父组件
     if (onJoin) {
       onJoin(challenge.id!);
@@ -44,7 +44,7 @@ const SocialChallengeCard: React.FC<SocialChallengeCardProps> = ({
     e.stopPropagation();
     // 播放点击音效
     playSound(SoundType.BUTTON_CLICK, 0.5);
-    
+
     // 通知父组件
     if (onLeave) {
       onLeave(challenge.id!);
@@ -55,7 +55,7 @@ const SocialChallengeCard: React.FC<SocialChallengeCardProps> = ({
   const handleViewDetails = () => {
     // 播放点击音效
     playSound(SoundType.BUTTON_CLICK, 0.3);
-    
+
     // 通知父组件
     if (onViewDetails) {
       onViewDetails(challenge.id!);
@@ -67,7 +67,7 @@ const SocialChallengeCard: React.FC<SocialChallengeCardProps> = ({
     e.stopPropagation();
     // 播放点击音效
     playSound(SoundType.BUTTON_CLICK, 0.5);
-    
+
     // 通知父组件
     if (onShare && challenge.inviteCode) {
       onShare(challenge.id!, challenge.inviteCode);
@@ -181,13 +181,13 @@ const SocialChallengeCard: React.FC<SocialChallengeCardProps> = ({
           </div>
         </div>
       </div>
-      
+
       {/* 卡片内容 */}
       <div className="card-content p-4">
         <div className="challenge-description mb-4">
           <p className="text-sm text-gray-700 line-clamp-3">{challenge.description}</p>
         </div>
-        
+
         <div className="challenge-progress mb-4">
           <div className="flex justify-between items-center mb-1">
             <span className="text-xs text-gray-600">进度</span>
@@ -200,7 +200,7 @@ const SocialChallengeCard: React.FC<SocialChallengeCardProps> = ({
             ></div>
           </div>
         </div>
-        
+
         <div className="challenge-dates text-xs text-gray-500 mb-2">
           <p>开始日期: {new Date(challenge.startDate).toLocaleDateString()}</p>
           {challenge.endDate && (
@@ -208,7 +208,7 @@ const SocialChallengeCard: React.FC<SocialChallengeCardProps> = ({
           )}
         </div>
       </div>
-      
+
       {/* 卡片底部 */}
       <div className="card-footer bg-gray-50 p-3 border-t border-gray-200 flex justify-end gap-2">
         {isParticipant ? (
@@ -224,7 +224,7 @@ const SocialChallengeCard: React.FC<SocialChallengeCardProps> = ({
             )}
             {challenge.status === ChallengeStatus.ACTIVE && challenge.creatorId !== 'current-user' && (
               <Button
-                variant="danger"
+                variant="error"
                 size="small"
                 onClick={handleLeave}
               >
