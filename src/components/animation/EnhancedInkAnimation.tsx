@@ -154,7 +154,7 @@ const EnhancedInkAnimation: React.FC<EnhancedInkAnimationProps> = ({
     <div
       className={`ink-animation-container ink-${color} ${className}`}
       style={{
-        position: 'relative',
+        position: 'relative' as const,
         ...(props.style || {})
       }}
       onClick={playAnimation}

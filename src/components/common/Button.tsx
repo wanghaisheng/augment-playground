@@ -17,7 +17,9 @@ export type ButtonColor =
   | 'danger'   // 危险 - 兼容性
   | 'success'  // 成功 - 兼容性
   | 'warning'  // 警告 - 兼容性
-  | 'info';    // 信息 - 兼容性
+  | 'info'     // 信息 - 兼容性
+  | 'red'      // 红色 - 兼容性
+  | 'gray';    // 灰色 - 兼容性
 
 // 按钮大小
 export type ButtonSize = 'small' | 'medium' | 'large';
@@ -36,7 +38,8 @@ export type ButtonVariant =
   | 'contained' // 包含样式 (兼容性)
   | 'standard'  // 标准样式 (兼容性)
   | 'ghost'     // 幽灵样式 (兼容性)
-  | 'secondary';// 次要样式 (兼容性)
+  | 'secondary' // 次要样式 (兼容性)
+  | 'error';    // 错误样式 (兼容性)
 
 // 按钮属性
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -45,6 +48,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   shape?: ButtonShape;
   variant?: ButtonVariant;
   isLoading?: boolean;
+  loading?: boolean; // 兼容性属性，等同于isLoading
   loadingText?: string;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
@@ -73,6 +77,7 @@ const Button: React.FC<ButtonProps> = ({
   shape = 'rounded',
   variant = 'filled',
   isLoading = false,
+  loading,
   loadingText,
   startIcon,
   endIcon,
@@ -100,14 +105,17 @@ const Button: React.FC<ButtonProps> = ({
     }
   };
 
+  // 处理loading属性（兼容性）
+  const isButtonLoading = isLoading || loading;
+
   // 构建类名
   const baseClass = 'button-base';
   const colorClass = `button-${color}`;
   const sizeClass = `button-size-${size}`;
   const shapeClass = `button-shape-${shape}`;
   const variantClass = variant !== 'filled' ? `button-variant-${variant}` : '';
-  const disabledClass = props.disabled || isLoading ? 'button-disabled' : '';
-  const loadingClass = isLoading ? 'button-loading' : '';
+  const disabledClass = props.disabled || isButtonLoading ? 'button-disabled' : '';
+  const loadingClass = isButtonLoading ? 'button-loading' : '';
   const fullWidthClass = fullWidth ? 'w-full' : '';
   const iconClass = (startIcon || endIcon) ? 'button-with-icon' : '';
 
@@ -132,21 +140,21 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <button
       className={`${buttonClassName} ${legacyClass}`.trim()}
-      disabled={isLoading || restProps.disabled}
+      disabled={isButtonLoading || restProps.disabled}
       onClick={handleClick}
       {...restProps}
     >
-      {isLoading && (
+      {isButtonLoading && (
         <span className="button-loading-spinner" aria-hidden="true"></span>
       )}
 
-      {startIcon && !isLoading && (
+      {startIcon && !isButtonLoading && (
         <span className="button-icon-left">{startIcon}</span>
       )}
 
-      {isLoading ? finalLoadingText : children}
+      {isButtonLoading ? finalLoadingText : children}
 
-      {endIcon && !isLoading && (
+      {endIcon && !isButtonLoading && (
         <span className="button-icon-right">{endIcon}</span>
       )}
     </button>

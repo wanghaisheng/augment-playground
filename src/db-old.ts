@@ -142,6 +142,10 @@ export interface TradeRateRecord {
 }
 
 export class AppDB extends Dexie {
+  // 添加tableExists方法
+  async tableExists(tableName: string): Promise<boolean> {
+    return this.tables.some(table => table.name === tableName);
+  }
   uiLabels!: Table<UILabelRecord, number>;
   pandaState!: Table<PandaStateRecord, number>;
   tasks!: Table<TaskRecord, number>;
@@ -227,7 +231,7 @@ export class AppDB extends Dexie {
     this.version(19).stores({
       // Add new tables here, and re-declare existing ones if their schema changes for this version
       bambooSpots: '++id, type, status, location, nextAvailableAt', // Schema for bambooSpots
-      
+
       // Re-declare all existing tables from V17
       bambooCollections: '++id, userId, source, timestamp, isProcessed',
       uiLabels: '++id, scopeKey, labelKey, languageCode, &[scopeKey+labelKey+languageCode]',
@@ -1527,7 +1531,7 @@ export async function populateDB() {
     { scopeKey: 'customGoalsView.customGoalCardLabels', labelKey: 'statusCompleted', languageCode: 'zh', translatedText: '已完成' },
     { scopeKey: 'customGoalsView.customGoalCardLabels', labelKey: 'statusArchived', languageCode: 'en', translatedText: 'Archived' },
     { scopeKey: 'customGoalsView.customGoalCardLabels', labelKey: 'statusArchived', languageCode: 'zh', translatedText: '已归档' },
-    { scopeKey: 'customGoalsView.customGoalCardLabels', labelKey: 'deleteConfirmation', languageCode: 'en', translatedText: 'Confirm delete action?' }, 
+    { scopeKey: 'customGoalsView.customGoalCardLabels', labelKey: 'deleteConfirmation', languageCode: 'en', translatedText: 'Confirm delete action?' },
     { scopeKey: 'customGoalsView.customGoalCardLabels', labelKey: 'deleteConfirmation', languageCode: 'zh', translatedText: '确认删除操作吗？' },
     { scopeKey: 'customGoalsView.customGoalCardLabels', labelKey: 'toggleCompleteButton', languageCode: 'en', translatedText: 'Toggle Completion' },
     { scopeKey: 'customGoalsView.customGoalCardLabels', labelKey: 'toggleCompleteButton', languageCode: 'zh', translatedText: '切换完成状态' },

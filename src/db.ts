@@ -181,6 +181,10 @@ export interface BambooSpotRecord {
 
 
 export class AppDB extends Dexie {
+  // 添加tableExists方法
+  async tableExists(tableName: string): Promise<boolean> {
+    return this.tables.some(table => table.name === tableName);
+  }
   // Standard Tables
   uiLabels!: Table<UILabelRecord, number>;
   pandaState!: Table<PandaStateRecord, number>;

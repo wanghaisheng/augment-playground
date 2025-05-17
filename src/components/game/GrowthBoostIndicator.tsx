@@ -27,7 +27,7 @@ const GrowthBoostIndicator: React.FC<GrowthBoostIndicatorProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [activeBoosts, setActiveBoosts] = useState<any[]>([]);
-  const { labels } = useLocalizedView<null, { growthBoostLabel?: string; activeBoostsTitle?: string; noActiveBoostsMessage?: string }>('growthBoostIndicator', () => Promise.resolve({ labels: { growthBoostLabel: '成长速度', activeBoostsTitle: '激活的成长加成', noActiveBoostsMessage: '没有激活的成长加成' } }));
+  const { labels } = useLocalizedView<null, { growthBoostLabel?: string; activeBoostsTitle?: string; noActiveBoostsMessage?: string }>('growthBoostIndicator', () => Promise.resolve({ data: null, labels: { growthBoostLabel: '成长速度', activeBoostsTitle: '激活的成长加成', noActiveBoostsMessage: '没有激活的成长加成' } }));
 
   // 加载成长速度加成数据
   const loadBoostData = async () => {
