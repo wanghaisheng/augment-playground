@@ -528,6 +528,19 @@ export async function fetchAvatarFrameShowcaseView(lang: Language): Promise<Fetc
 }
 
 // --- Service function for Social Comparison Page ---
+/**
+ * Fetches localized content for the profile customization component
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized profile customization content
+ */
+export async function fetchProfileCustomizationView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching PROFILE CUSTOMIZATION VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('profileCustomization', lang);
+  return { labels, data: null };
+}
+
 export async function fetchSocialComparisonPageView(lang: Language): Promise<FetchSocialComparisonPageViewResult> {
   console.log(`SVC_DEXIE: Fetching SOCIAL COMPARISON VIEW for lang: ${lang}`);
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS));

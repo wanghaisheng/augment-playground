@@ -3,17 +3,18 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   performInteraction,
-  InteractionType,
-  InteractionResult,
   getInteractionStats
 } from '@/services/pandaInteractionService';
+import { InteractionType, InteractionResult } from '@/types/pandaInteractionTypes';
 import PandaAnimation, { PandaAnimationType } from '@/components/game/PandaAnimation';
 import { usePandaState } from '@/context/PandaStateProvider';
 import AnimatedButton from '@/components/animation/AnimatedButton';
 import { playSound, SoundType } from '@/utils/sound';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN, enUS } from 'date-fns/locale';
+import { useLanguage } from '@/context/LanguageProvider';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
+import { fetchPandaInteractionView } from '@/services/localizedContentService';
 
 // 互动面板属性
 interface PandaInteractionPanelProps {
@@ -43,8 +44,14 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
   const [interactionStats, setInteractionStats] = useState<Record<InteractionType, { count: number; lastTime: Date | null; totalExperience: number }> | null>(null);
   const [cooldowns, setCooldowns] = useState<Record<InteractionType, number>>({} as Record<InteractionType, number>);
 
+  // 获取语言
+  const { language } = useLanguage();
+
   // 获取本地化内容
-  const { content, currentLanguage } = useLocalizedView('pandaInteraction');
+  const { labels } = useLocalizedView(
+    'pandaInteractionViewContent',
+    fetchPandaInteractionView
+  );
 
   // 加载互动统计信息
   useEffect(() => {
@@ -99,7 +106,7 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
       // 如果在冷却中，显示提示
       setInteractionResult({
         success: false,
-        message: `${getInteractionName(type)}${content.cooldownMessage} ${cooldowns[type]} ${content.seconds}`,
+        message: `${getInteractionName(type)}${labels?.cooldownMessage || ''} ${cooldowns[type]} ${labels?.seconds || ''}`,
         experienceGained: 0,
         moodChanged: false,
         energyChanged: false
@@ -152,7 +159,7 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
 
       setInteractionResult({
         success: false,
-        message: `${content.interactionFailed}: ${error instanceof Error ? error.message : content.unknownError}`,
+        message: `${labels?.interactionFailed || 'Interaction Failed'}: ${error instanceof Error ? error.message : labels?.unknownError || 'Unknown Error'}`,
         experienceGained: 0,
         moodChanged: false,
         energyChanged: false
@@ -185,27 +192,29 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
 
   // 获取互动名称
   const getInteractionName = (type: InteractionType): string => {
+    if (!labels) return type;
+
     switch (type) {
       case InteractionType.PET:
-        return content.pet;
+        return labels.pet || 'Pet';
       case InteractionType.FEED:
-        return content.feed;
+        return labels.feed || 'Feed';
       case InteractionType.PLAY:
-        return content.play;
+        return labels.play || 'Play';
       case InteractionType.TRAIN:
-        return content.train;
+        return labels.train || 'Train';
       case InteractionType.CLEAN:
-        return content.clean;
+        return labels.clean || 'Clean';
       case InteractionType.TALK:
-        return content.talk;
+        return labels.talk || 'Talk';
       case InteractionType.GIFT:
-        return content.gift;
+        return labels.gift || 'Gift';
       case InteractionType.PHOTO:
-        return content.photo;
+        return labels.photo || 'Photo';
       case InteractionType.SLEEP:
-        return content.sleep;
+        return labels.sleep || 'Sleep';
       case InteractionType.WAKE:
-        return content.wake;
+        return labels.wake || 'Wake';
       default:
         return type;
     }
@@ -241,10 +250,10 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
 
   // 格式化时间
   const formatTime = (date: Date | null): string => {
-    if (!date) return content.never;
+    if (!date) return labels?.never || 'Never';
     return formatDistanceToNow(date, {
       addSuffix: true,
-      locale: currentLanguage === 'zh' ? zhCN : enUS
+      locale: language === 'zh' ? zhCN : enUS
     });
   };
 
@@ -316,13 +325,13 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
             </p>
             {interactionResult.success && (
               <p className="text-green-700 mt-2">
-                +{interactionResult.experienceGained} {content.experience}
+                +{interactionResult.experienceGained} {labels?.experience || 'Experience'}
               </p>
             )}
           </div>
         ) : (
           <div className="p-4 bg-gray-100 rounded-lg mb-4 w-full text-center">
-            <p>{content.confirmInteraction.replace('{interaction}', getInteractionName(selectedInteraction))}</p>
+            <p>{(labels?.confirmInteraction || 'Are you sure you want to {interaction}?').replace('{interaction}', getInteractionName(selectedInteraction))}</p>
           </div>
         )}
 
@@ -334,14 +343,14 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
                 onClick={handleInteractionExecute}
                 disabled={isInteracting}
               >
-                {isInteracting ? content.interacting : content.confirm}
+                {isInteracting ? (labels?.interacting || 'Interacting...') : (labels?.confirm || 'Confirm')}
               </AnimatedButton>
               <AnimatedButton
                 variant="secondary"
                 onClick={handleBackToMenu}
                 disabled={isInteracting}
               >
-                {content.cancel}
+                {labels?.cancel || 'Cancel'}
               </AnimatedButton>
             </>
           ) : (
@@ -349,7 +358,7 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
               variant="jade"
               onClick={handleBackToMenu}
             >
-              {content.backToMenu}
+              {labels?.backToMenu || 'Back to Menu'}
             </AnimatedButton>
           )}
         </div>
@@ -369,15 +378,15 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
 
     return (
       <div className="mt-4">
-        <h3 className="text-lg font-semibold mb-3">{content.interactionStats}</h3>
+        <h3 className="text-lg font-semibold mb-3">{labels?.interactionStats || 'Interaction Statistics'}</h3>
         <div className="bg-gray-50 rounded-lg p-4">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200">
-                <th className="text-left py-2">{content.interaction}</th>
-                <th className="text-center py-2">{content.count}</th>
-                <th className="text-center py-2">{content.experience}</th>
-                <th className="text-right py-2">{content.lastTime}</th>
+                <th className="text-left py-2">{labels?.interaction || 'Interaction'}</th>
+                <th className="text-center py-2">{labels?.count || 'Count'}</th>
+                <th className="text-center py-2">{labels?.experience || 'Experience'}</th>
+                <th className="text-right py-2">{labels?.lastTime || 'Last Time'}</th>
               </tr>
             </thead>
             <tbody>
@@ -419,7 +428,7 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
         onClick={e => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">{content.title}</h2>
+          <h2 className="text-2xl font-bold">{labels?.title || 'Panda Interaction'}</h2>
           <button
             className="text-gray-500 hover:text-gray-700"
             onClick={onClose}
@@ -433,13 +442,13 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
             className={`py-2 px-4 ${activeTab === 'main' ? 'border-b-2 border-jade text-jade' : 'text-gray-500'}`}
             onClick={() => handleTabChange('main')}
           >
-            {content.interactions}
+            {labels?.interactions || 'Interactions'}
           </button>
           <button
             className={`py-2 px-4 ${activeTab === 'stats' ? 'border-b-2 border-jade text-jade' : 'text-gray-500'}`}
             onClick={() => handleTabChange('stats')}
           >
-            {content.statistics}
+            {labels?.statistics || 'Statistics'}
           </button>
         </div>
 

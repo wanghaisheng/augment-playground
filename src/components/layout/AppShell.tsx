@@ -11,7 +11,7 @@ import SyncStatusIndicator from '../common/SyncStatusIndicator';
 import OptimizedSyncStatusIndicator from '../sync/OptimizedSyncStatusIndicator';
 import OfflineStatusIndicator from '../offline/OfflineStatusIndicator';
 import OfflineNotification from '../offline/OfflineNotification';
-import type { GlobalLayoutLabelsBundle, ApiError } from '@/types';
+import type { GlobalLayoutLabelsBundle } from '@/types';
 
 interface AppShellProps { children: ReactNode; }
 
@@ -25,7 +25,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
   if (isPending && !globalLabels) {
     // Use a very generic loading text if global labels themselves are not available
-    return <LoadingSpinner variant="jade" text={globalLabels?.loadingGeneric || "Initializing Application..."} />;
+    return <LoadingSpinner variant="jade" text="Initializing Application..." />;
   }
 
   if (isError || !globalLabels) { // Critical error if global labels fail

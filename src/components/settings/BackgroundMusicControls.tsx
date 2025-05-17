@@ -168,14 +168,14 @@ const BackgroundMusicControls: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 mb-4">
       <h3 className="text-lg font-medium mb-4 text-jade-800">
-        {labels.backgroundMusic.title}
+        {labels.backgroundMusic.title[language]}
       </h3>
 
       {/* 当前播放信息 */}
       <div className="mb-4">
         <p className="text-sm text-gray-600">
           {isPlaying
-            ? `${labels.backgroundMusic.currentlyPlaying}: ${getCurrentMusicName()}`
+            ? `${labels.backgroundMusic.currentlyPlaying[language]}: ${getCurrentMusicName()}`
             : getCurrentMusicName()
           }
         </p>
@@ -184,7 +184,7 @@ const BackgroundMusicControls: React.FC = () => {
       {/* 音量控制 */}
       <div className="flex items-center mb-4">
         <span className="text-sm text-gray-600 mr-2">
-          {labels.backgroundMusic.volumeLabel}:
+          {labels.backgroundMusic.volumeLabel[language]}:
         </span>
         <input
           type="range"
@@ -205,7 +205,7 @@ const BackgroundMusicControls: React.FC = () => {
             </svg>
           ) : (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
+              <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071a1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243a1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828a1 1 0 010-1.415z" clipRule="evenodd" />
             </svg>
           )}
         </button>
@@ -218,7 +218,7 @@ const BackgroundMusicControls: React.FC = () => {
           size="small"
           onClick={handlePlayPause}
         >
-          {isPlaying ? labels.backgroundMusic.pauseButton : labels.backgroundMusic.playButton}
+          {isPlaying ? labels.backgroundMusic.pauseButton[language] : labels.backgroundMusic.playButton[language]}
         </Button>
 
         <Button
@@ -226,7 +226,7 @@ const BackgroundMusicControls: React.FC = () => {
           size="small"
           onClick={() => setShowTrackSelector(!showTrackSelector)}
         >
-          {labels.backgroundMusic.trackSelectLabel}
+          {labels.backgroundMusic.trackSelectLabel[language]}
         </Button>
       </div>
 
@@ -240,26 +240,32 @@ const BackgroundMusicControls: React.FC = () => {
             className="overflow-hidden"
           >
             <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              {Object.entries(tracksByCategory).map(([category, tracks]) => (
-                <div key={category} className="mb-3 last:mb-0">
-                  <h4 className="text-sm font-medium text-jade-700 mb-2">{category}</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {tracks.map(track => (
-                      <button
-                        key={track.type}
-                        onClick={() => handleSelectTrack(track.type)}
-                        className={`text-left text-sm p-2 rounded-md ${
-                          currentMusic === track.type
-                            ? 'bg-jade-100 text-jade-800 border border-jade-300'
-                            : 'bg-white hover:bg-gray-100 border border-gray-200'
-                        }`}
-                      >
-                        {track.name}
-                      </button>
-                    ))}
+              {Object.entries(tracksByCategory).map(([category, tracks]) => {
+                // 获取类别的本地化名称
+                const categoryLabel = labels.backgroundMusic.categoryLabels[category as keyof typeof labels.backgroundMusic.categoryLabels];
+                const localizedCategory = categoryLabel ? categoryLabel[language] : category;
+
+                return (
+                  <div key={category} className="mb-3 last:mb-0">
+                    <h4 className="text-sm font-medium text-jade-700 mb-2">{localizedCategory}</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {tracks.map(track => (
+                        <button
+                          key={track.type}
+                          onClick={() => handleSelectTrack(track.type)}
+                          className={`text-left text-sm p-2 rounded-md ${
+                            currentMusic === track.type
+                              ? 'bg-jade-100 text-jade-800 border border-jade-300'
+                              : 'bg-white hover:bg-gray-100 border border-gray-200'
+                          }`}
+                        >
+                          {track.name}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
         )}
