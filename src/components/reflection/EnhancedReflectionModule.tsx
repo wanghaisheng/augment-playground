@@ -12,7 +12,7 @@ import {
   completeReflection,
   markTriggerAsCompleted
 } from '@/services/reflectionService';
-import { getPandaMood, updatePandaMood } from '@/services/pandaStateService';
+import { getPandaMood, updatePandaMood, PandaMood } from '@/services/pandaStateService';
 import MoodTracker from './MoodTracker';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useComponentLabels } from '@/hooks/useComponentLabels';
@@ -113,7 +113,7 @@ const EnhancedReflectionModule: React.FC<EnhancedReflectionModuleProps> = ({
   labels: propLabels
 }) => {
   const [step, setStep] = useState(1);
-  const [mood, setMood] = useState<string>('neutral');
+  const [mood, setMood] = useState<PandaMood>('normal');
   const [reflection, setReflection] = useState('');
   const [action, setAction] = useState('');
   const [suggestedActions, setSuggestedActions] = useState<string[]>([]);
@@ -124,6 +124,9 @@ const EnhancedReflectionModule: React.FC<EnhancedReflectionModuleProps> = ({
   const [selectedTag, setSelectedTag] = useState<string>('');
   const [customTag, setCustomTag] = useState('');
   const [showMoodTracker, setShowMoodTracker] = useState(false);
+  // 添加本地状态变量用于存储任务ID和名称
+  const [localTaskId, setTaskId] = useState<number | undefined>(taskId);
+  const [localTaskName, setTaskName] = useState<string | undefined>(taskName);
 
   // Get component labels with fallbacks
   const { labels: componentLabels } = useComponentLabels();
@@ -168,14 +171,14 @@ const EnhancedReflectionModule: React.FC<EnhancedReflectionModuleProps> = ({
           setPandaMessage(labels.triggerMessages?.defaultWelcome ||
             "Welcome to the Tranquil Tea Room. Would you like to share your feelings?");
       }
-    } else if (taskName) {
+    } else if (localTaskName) {
       setPandaMessage((labels.triggerMessages?.taskSpecific ||
-        "About task '{0}', what would you like to share?").replace('{0}', taskName));
+        "About task '{0}', what would you like to share?").replace('{0}', localTaskName));
     } else {
       setPandaMessage(labels.triggerMessages?.defaultWelcome ||
         "Welcome to the Tranquil Tea Room. Would you like to share your feelings?");
     }
-  }, [trigger, taskName, labels.triggerMessages]);
+  }, [trigger, localTaskName, labels.triggerMessages]);
 
   // 根据反思内容生成建议行动和标签
   useEffect(() => {
@@ -329,7 +332,7 @@ const EnhancedReflectionModule: React.FC<EnhancedReflectionModuleProps> = ({
       // 创建反思记录
       const newReflection = await createReflection({
         userId,
-        taskId,
+        taskId: localTaskId,
         mood,
         reflection,
         action: '',
@@ -368,9 +371,9 @@ const EnhancedReflectionModule: React.FC<EnhancedReflectionModuleProps> = ({
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
 
-      // 如果心情不好，尝试更新为中性
-      if (mood === 'sad' || mood === 'anxious' || mood === 'stressed') {
-        await updatePandaMood('neutral');
+      // 如果心情不好，尝试更新为正常
+      if (mood === 'tired' || mood === 'focused') {
+        await updatePandaMood('normal');
       }
 
       // 通知父组件
@@ -523,7 +526,7 @@ const EnhancedReflectionModule: React.FC<EnhancedReflectionModuleProps> = ({
               <span>{tag}</span>
               <Button
                 variant="text"
-                size="xsmall"
+                size="small"
                 onClick={() => handleRemoveTag(tag)}
                 className="ml-1 text-gray-500 hover:text-gray-700 p-0"
               >

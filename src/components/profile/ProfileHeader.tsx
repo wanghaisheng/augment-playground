@@ -18,7 +18,7 @@ interface ProfileHeaderProps {
 
 /**
  * 个人资料头部组件
- * 
+ *
  * 显示用户头像、名称、等级和称号，并提供编辑功能
  */
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -34,7 +34,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   const [editedProfile, setEditedProfile] = useState<UserProfile | null>(profile);
   const [selectedAvatar, setSelectedAvatar] = useState<string>(profile?.avatarUrl || '');
   const [selectedTitle, setSelectedTitle] = useState<string | null>(title);
-  
+
   // 预设头像列表
   const avatarOptions = [
     '/assets/images/avatars/avatar-1.png',
@@ -44,24 +44,24 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     '/assets/images/avatars/avatar-5.png',
     '/assets/images/avatars/avatar-6.png'
   ];
-  
+
   // 处理输入变化
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!editedProfile) return;
-    
+
     const { name, value } = e.target;
-    
+
     setEditedProfile({
       ...editedProfile,
       [name]: value
     });
   };
-  
+
   // 处理头像选择
   const handleAvatarSelect = (avatarUrl: string) => {
     playSound(SoundType.BUTTON_CLICK);
     setSelectedAvatar(avatarUrl);
-    
+
     if (editedProfile) {
       setEditedProfile({
         ...editedProfile,
@@ -69,37 +69,37 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       });
     }
   };
-  
+
   // 处理称号选择
   const handleTitleSelect = (titleId: string | null) => {
     playSound(SoundType.BUTTON_CLICK);
     setSelectedTitle(titleId);
   };
-  
+
   // 处理保存
   const handleSave = async () => {
     if (!editedProfile) return;
-    
+
     // 保存编辑后的资料
     await onSave(editedProfile);
   };
-  
+
   // 获取称号名称
   const getTitleName = (titleId: string | null): string => {
     if (!titleId) return '无称号';
-    
+
     const foundTitle = titles.find(t => t.id === titleId);
     return foundTitle ? foundTitle.name : '无称号';
   };
-  
+
   // 获取等级进度百分比
   const getLevelProgressPercentage = (): number => {
     if (!profile) return 0;
-    
+
     const { experience, nextLevelExperience } = profile;
     return Math.min(100, Math.round((experience / nextLevelExperience) * 100));
   };
-  
+
   // 如果没有资料，显示加载中
   if (!profile) {
     return (
@@ -115,24 +115,24 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       </div>
     );
   }
-  
+
   // 查看模式
   if (!isEditing) {
     return (
       <div className="profile-header bg-white rounded-lg shadow-md p-4 mb-6">
         <div className="flex flex-col sm:flex-row items-center">
           {/* 头像 */}
-          <div 
+          <div
             className="w-24 h-24 rounded-full overflow-hidden border-4 border-jade-500 mb-4 sm:mb-0"
             style={{ backgroundColor: profile.themeColor }}
           >
-            <img 
-              src={profile.avatarUrl} 
-              alt={profile.displayName} 
+            <img
+              src={profile.avatarUrl}
+              alt={profile.displayName}
               className="w-full h-full object-cover"
             />
           </div>
-          
+
           {/* 用户信息 */}
           <div className="ml-0 sm:ml-6 text-center sm:text-left flex-1">
             <h2 className="text-xl font-bold text-gray-800">
@@ -143,17 +143,17 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 </span>
               )}
             </h2>
-            
+
             <p className="text-gray-600 text-sm mb-2">@{profile.username}</p>
-            
+
             {/* 等级进度条 */}
             <div className="flex items-center mb-1">
               <span className="text-sm font-medium text-gray-700 mr-2">
                 Lv.{profile.level}
               </span>
               <div className="flex-1 bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="bg-jade-500 h-2.5 rounded-full" 
+                <div
+                  className="bg-jade-500 h-2.5 rounded-full"
                   style={{ width: `${getLevelProgressPercentage()}%` }}
                 ></div>
               </div>
@@ -161,7 +161,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 {profile.experience}/{profile.nextLevelExperience} XP
               </span>
             </div>
-            
+
             {/* 个人简介 */}
             <p className="text-gray-700 mt-2">
               {profile.bio || '这个用户很懒，还没有填写个人简介...'}
@@ -171,7 +171,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       </div>
     );
   }
-  
+
   // 编辑模式
   return (
     <div className="profile-header bg-white rounded-lg shadow-md p-4 mb-6">
@@ -190,16 +190,16 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 }`}
                 onClick={() => handleAvatarSelect(avatar)}
               >
-                <img 
-                  src={avatar} 
-                  alt={`Avatar option ${index + 1}`} 
+                <img
+                  src={avatar}
+                  alt={`Avatar option ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
               </button>
             ))}
           </div>
         </div>
-        
+
         {/* 称号选择 */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -227,7 +227,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             ))}
           </div>
         </div>
-        
+
         {/* 显示名称 */}
         <div className="mb-4">
           <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-1">
@@ -243,7 +243,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             maxLength={20}
           />
         </div>
-        
+
         {/* 个人简介 */}
         <div className="mb-4">
           <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-1">
@@ -259,7 +259,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             maxLength={200}
           />
         </div>
-        
+
         {/* 主题颜色 */}
         <div className="mb-4">
           <label htmlFor="themeColor" className="block text-sm font-medium text-gray-700 mb-1">
@@ -274,12 +274,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             className="w-full h-10 p-1 border border-gray-300 rounded-md"
           />
         </div>
-        
+
         {/* 按钮 */}
         <div className="flex justify-between mt-4">
           <Button
             variant="outlined"
-            color="gray"
+            color="silk"
             onClick={onCancel}
             disabled={isSaving}
           >
@@ -288,7 +288,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <Button
             variant="jade"
             onClick={handleSave}
-            loading={isSaving}
+            isLoading={isSaving}
             loadingText="保存中..."
           >
             保存资料

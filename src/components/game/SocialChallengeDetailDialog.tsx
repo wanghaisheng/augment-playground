@@ -449,7 +449,8 @@ const SocialChallengeDetailDialog: React.FC<SocialChallengeDetailDialogProps> = 
                   {/* 离开挑战按钮（非创建者可见） */}
                   {!isCreator && challenge.status === ChallengeStatus.ACTIVE && (
                     <Button
-                      variant="error"
+                      variant="filled"
+                      color="cinnabar"
                       onClick={handleLeave}
                       disabled={isLeaving}
                       className="w-full"

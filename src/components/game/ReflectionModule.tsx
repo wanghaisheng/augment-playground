@@ -5,14 +5,14 @@ import Button from '@/components/common/Button';
 import ScrollDialog from './ScrollDialog';
 import { playSound, SoundType } from '@/utils/sound';
 import { TaskRecord } from '@/services/taskService';
-import { getPandaMood, updatePandaMood } from '@/services/pandaStateService';
+import { getPandaMood, updatePandaMood, PandaMood } from '@/services/pandaStateService';
 
 interface ReflectionModuleProps {
   isOpen: boolean;
   onClose: () => void;
   taskName?: string;
   taskId?: number;
-  mood?: 'happy' | 'neutral' | 'sad' | 'concerned';
+  mood?: PandaMood;
   onReflectionComplete?: (reflectionData: {
     taskId?: number;
     mood?: string;
@@ -34,7 +34,7 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
   onReflectionComplete
 }) => {
   const [step, setStep] = useState(1);
-  const [mood, setMood] = useState<string>(initialMood || 'neutral');
+  const [mood, setMood] = useState<PandaMood>(initialMood as PandaMood || 'normal');
   const [reflection, setReflection] = useState('');
   const [action, setAction] = useState('');
   const [suggestedActions, setSuggestedActions] = useState<string[]>([]);
@@ -44,12 +44,12 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
   // 根据任务名称和心情设置熊猫消息
   useEffect(() => {
     if (taskName) {
-      if (mood === 'sad' || mood === 'concerned') {
+      if (mood === 'tired' || mood === 'focused') {
         setPandaMessage(`我注意到你最近在"${taskName}"这个任务上遇到了一些困难。想聊聊吗？`);
       } else {
         setPandaMessage('今天感觉如何？想花点时间反思一下吗？');
       }
-    } else if (mood === 'sad' || mood === 'concerned') {
+    } else if (mood === 'tired' || mood === 'focused') {
       setPandaMessage('我注意到你最近心情不太好。想聊聊吗？');
     } else {
       setPandaMessage('今天感觉如何？想花点时间反思一下吗？');
@@ -62,7 +62,7 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
       // 这里可以根据反思内容生成建议行动
       // 在实际应用中，可以使用更复杂的算法或API来生成建议
       const lowerReflection = reflection.toLowerCase();
-      
+
       if (lowerReflection.includes('压力') || lowerReflection.includes('焦虑') || lowerReflection.includes('紧张')) {
         setSuggestedActions([
           '尝试5分钟的深呼吸冥想',
@@ -99,15 +99,15 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
-      // 如果心情不好，尝试更新为中性
+
+      // 如果心情不好，尝试更新为正常
       if (mood === 'sad' || mood === 'concerned') {
-        await updatePandaMood('neutral');
+        await updatePandaMood('normal');
       }
-      
+
       // 通知父组件
       if (onReflectionComplete) {
         onReflectionComplete({
@@ -117,12 +117,12 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
           action
         });
       }
-      
+
       // 重置状态
       setStep(1);
       setReflection('');
       setAction('');
-      
+
       // 关闭对话框
       onClose();
     } catch (error) {
@@ -150,7 +150,7 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
           </div>
         </div>
       </div>
-      
+
       <div className="reflection-input mb-4">
         <label htmlFor="reflection" className="block text-sm font-medium text-gray-700 mb-1">
           分享你的想法（可以是任何感受、困难或成就）
@@ -163,7 +163,7 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
           placeholder="今天我感觉..."
         />
       </div>
-      
+
       <div className="reflection-actions flex justify-end">
         <Button variant="jade" onClick={() => setStep(2)} disabled={!reflection.trim()}>
           继续
@@ -185,7 +185,7 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
           </div>
         </div>
       </div>
-      
+
       <div className="suggested-actions mb-4">
         <h3 className="text-sm font-medium text-gray-700 mb-2">建议的行动</h3>
         <div className="grid grid-cols-1 gap-2">
@@ -202,7 +202,7 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
           ))}
         </div>
       </div>
-      
+
       <div className="custom-action mb-4">
         <label htmlFor="custom-action" className="block text-sm font-medium text-gray-700 mb-1">
           或者，创建你自己的行动
@@ -216,7 +216,7 @@ const ReflectionModule: React.FC<ReflectionModuleProps> = ({
           placeholder="我将..."
         />
       </div>
-      
+
       <div className="reflection-actions flex justify-between">
         <Button variant="secondary" onClick={() => setStep(1)}>
           返回

@@ -46,6 +46,14 @@ export async function getPandaMood(): Promise<PandaMood> {
 }
 
 /**
+ * 获取当前熊猫经验值
+ */
+export async function getPandaExperience(): Promise<number> {
+  const pandaState = await getPandaState();
+  return pandaState.experience;
+}
+
+/**
  * 获取当前熊猫状态
  * 如果不存在，则创建默认状态
  */

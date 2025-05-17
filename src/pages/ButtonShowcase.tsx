@@ -339,7 +339,8 @@ const ButtonShowcase: React.FC = () => {
           <h2 className="text-xl font-semibold mb-4">增强动画按钮</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <EnhancedAnimatedButton
-              variant={selectedColor as any}
+              variant="filled"
+              color={selectedColor}
               size={selectedSize as any}
               isLoading={isLoading}
               animationType="scale"
@@ -350,7 +351,8 @@ const ButtonShowcase: React.FC = () => {
               粒子爆发效果
             </EnhancedAnimatedButton>
             <EnhancedAnimatedButton
-              variant={selectedColor as any}
+              variant="filled"
+              color={selectedColor}
               size={selectedSize as any}
               isLoading={isLoading}
               animationType="glow"

@@ -224,7 +224,8 @@ const SocialChallengeCard: React.FC<SocialChallengeCardProps> = ({
             )}
             {challenge.status === ChallengeStatus.ACTIVE && challenge.creatorId !== 'current-user' && (
               <Button
-                variant="error"
+                variant="filled"
+                color="cinnabar"
                 size="small"
                 onClick={handleLeave}
               >

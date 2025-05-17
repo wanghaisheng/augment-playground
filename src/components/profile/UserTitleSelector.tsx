@@ -1,11 +1,11 @@
 // src/components/profile/UserTitleSelector.tsx
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  getUserTitles, 
-  activateUserTitle, 
-  UserTitleRecord, 
-  UserTitleType 
+import {
+  getUserTitles,
+  activateUserTitle,
+  UserTitleRecord,
+  UserTitleType
 } from '@/services/userTitleService';
 import { usePandaState } from '@/context/PandaStateProvider';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
@@ -22,7 +22,7 @@ interface UserTitleSelectorProps {
 
 /**
  * 用户称号选择器组件
- * 
+ *
  * 允许用户选择和激活称号
  */
 const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
@@ -46,7 +46,7 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
         setIsLoading(true);
         const userTitles = await getUserTitles(userId);
         setTitles(userTitles);
-        
+
         // 设置当前激活的称号为选中状态
         const activeTitle = userTitles.find(title => title.isActive);
         if (activeTitle) {
@@ -73,16 +73,16 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
   // 处理称号激活
   const handleActivateTitle = async () => {
     if (!selectedTitleId) return;
-    
+
     try {
       setIsSaving(true);
       playSound(SoundType.CONFIRM);
-      
+
       await activateUserTitle(selectedTitleId);
-      
+
       // 刷新数据
       refreshData('userTitles');
-      
+
       // 关闭对话框
       onClose();
     } catch (error) {
@@ -152,15 +152,15 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
         {titles.map(title => {
           const isDisabled = title.isVipExclusive && !isVip;
           const isSelected = selectedTitleId === title.id;
-          
+
           return (
             <motion.div
               key={title.id}
               className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                isSelected 
-                  ? 'border-jade-500 bg-jade-50' 
-                  : isDisabled 
-                    ? 'border-gray-200 bg-gray-50 opacity-60' 
+                isSelected
+                  ? 'border-jade-500 bg-jade-50'
+                  : isDisabled
+                    ? 'border-gray-200 bg-gray-50 opacity-60'
                     : 'border-gray-200 hover:border-jade-300'
               }`}
               whileHover={!isDisabled ? { scale: 1.02 } : {}}
@@ -173,7 +173,7 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
                 }`}>
                   <img src={getTitleIcon(title.titleType)} alt="" className="w-6 h-6" />
                 </div>
-                
+
                 <div className="flex-1">
                   <div className="flex items-center">
                     <h3 className={`font-medium ${
@@ -181,24 +181,24 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
                     }`}>
                       {getLocalizedTitleText(title)}
                     </h3>
-                    
+
                     {title.isVipExclusive && (
                       <span className="ml-2 text-gold-500 text-sm">★ VIP</span>
                     )}
-                    
+
                     {title.isActive && (
                       <span className="ml-2 text-jade-500 text-xs bg-jade-50 px-1.5 py-0.5 rounded">
                         {content.activeLabel || '已激活'}
                       </span>
                     )}
                   </div>
-                  
+
                   <p className="text-sm text-gray-500 mt-1">
                     {getLocalizedTitleDescription(title)}
                   </p>
                 </div>
               </div>
-              
+
               {isDisabled && (
                 <div className="mt-2 text-sm text-gold-600 bg-gold-50 p-2 rounded">
                   {content.vipRequiredMessage || '需要VIP会员才能使用此称号'}
@@ -225,9 +225,10 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
           >
             {content.cancelButton || '取消'}
           </Button>
-          
+
           <Button
-            variant="primary"
+            variant="filled"
+            color="jade"
             onClick={handleActivateTitle}
             disabled={!selectedTitleId || isSaving}
             isLoading={isSaving}
@@ -242,9 +243,9 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
           {content.dialogDescription || '选择一个称号来展示您的成就和身份。'}
         </p>
       </div>
-      
+
       {renderTitleList()}
-      
+
       {!isVip && (
         <div className="mt-4 p-3 bg-gold-50 border border-gold-200 rounded-lg">
           <h3 className="font-medium text-gold-700 flex items-center">

@@ -56,8 +56,8 @@ const ButtonAnimationShowcase: React.FC = () => {
 
   // 按钮变体
   const buttonVariants = [
-    'primary',
-    'secondary',
+    'filled',
+    'outlined',
     'jade',
     'gold'
   ] as const;
@@ -133,7 +133,8 @@ const ButtonAnimationShowcase: React.FC = () => {
             {soundTypes.map((type) => (
               <EnhancedAnimatedButton
                 key={type}
-                variant="primary"
+                variant="filled"
+                color="jade"
                 animationType={selectedAnimationType}
                 particleType={selectedParticleType}
                 soundType={type}

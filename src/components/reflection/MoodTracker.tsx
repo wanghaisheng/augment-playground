@@ -7,6 +7,7 @@ import { playSound, SoundType } from '@/utils/sound';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import EnhancedTextArea from '@/components/common/EnhancedTextArea';
 import EnhancedInput from '@/components/common/EnhancedInput';
+import { PandaMood } from '@/components/game/PandaAvatar';
 
 interface MoodTrackerProps {
   onMoodRecorded?: (mood: MoodRecord) => void;
@@ -98,7 +99,7 @@ const MoodTracker: React.FC<MoodTrackerProps> = ({
       // Record mood
       const mood = await recordMood({
         userId,
-        mood: selectedMood,
+        mood: selectedMood as PandaMood,
         intensity,
         note: note.trim() || undefined
       });

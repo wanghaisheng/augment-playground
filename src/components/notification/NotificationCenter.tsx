@@ -17,7 +17,7 @@ interface NotificationCenterProps {
 
 /**
  * 通知中心组件
- * 
+ *
  * 显示所有通知的列表，并提供管理功能
  */
 const NotificationCenter: React.FC<NotificationCenterProps> = ({
@@ -27,18 +27,18 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
   // 状态
   const [activeTab, setActiveTab] = useState<'all' | 'unread'>('all');
   const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([]);
-  
+
   // 上下文
-  const { 
-    notifications, 
-    unreadCount, 
-    markAsRead, 
-    markAllAsRead, 
-    removeNotification, 
-    clearAll 
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    markAllAsRead,
+    removeNotification,
+    clearAll
   } = useNotifications();
   const { language } = useLanguage();
-  
+
   // 过滤通知
   useEffect(() => {
     if (activeTab === 'unread') {
@@ -47,7 +47,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
       setFilteredNotifications(notifications);
     }
   }, [activeTab, notifications]);
-  
+
   // 格式化时间
   const formatTime = (timestamp: number) => {
     return formatDistanceToNow(new Date(timestamp), {
@@ -55,7 +55,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
       locale: language === 'zh' ? zhCN : enUS
     });
   };
-  
+
   // 获取优先级样式
   const getPriorityStyles = (priority: NotificationPriority) => {
     switch (priority) {
@@ -94,37 +94,37 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
         };
     }
   };
-  
+
   // 处理标记为已读
   const handleMarkAsRead = (id: string) => {
     playSound(SoundType.BUTTON_CLICK);
     markAsRead(id);
   };
-  
+
   // 处理标记所有为已读
   const handleMarkAllAsRead = () => {
     playSound(SoundType.BUTTON_CLICK);
     markAllAsRead();
   };
-  
+
   // 处理删除通知
   const handleRemoveNotification = (id: string) => {
     playSound(SoundType.BUTTON_CLICK);
     removeNotification(id);
   };
-  
+
   // 处理清除所有通知
   const handleClearAll = () => {
     playSound(SoundType.BUTTON_CLICK);
     clearAll();
   };
-  
+
   // 处理切换标签
   const handleTabChange = (tab: 'all' | 'unread') => {
     playSound(SoundType.BUTTON_CLICK);
     setActiveTab(tab);
   };
-  
+
   // 处理通知点击
   const handleNotificationClick = (notification: Notification) => {
     // 如果有导航动作，执行导航
@@ -132,16 +132,16 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
     if (navigateAction) {
       window.location.href = navigateAction.value;
     }
-    
+
     // 标记为已读
     if (!notification.read) {
       markAsRead(notification.id);
     }
-    
+
     // 关闭通知中心
     onClose();
   };
-  
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -183,7 +183,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
                 </svg>
               </button>
             </div>
-            
+
             {/* 标签页 */}
             <div className="flex border-b border-gray-200">
               <button
@@ -212,7 +212,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
                 )}
               </button>
             </div>
-            
+
             {/* 通知列表 */}
             <div className="overflow-y-auto max-h-[50vh]">
               {filteredNotifications.length === 0 ? (
@@ -238,7 +238,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
                 <ul className="divide-y divide-gray-200">
                   {filteredNotifications.map((notification) => {
                     const styles = getPriorityStyles(notification.priority);
-                    
+
                     return (
                       <li
                         key={notification.id}
@@ -254,14 +254,14 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
                               <img src={notification.icon} alt="" className="w-6 h-6" />
                             </div>
                           )}
-                          
+
                           {/* 内容 */}
                           <div className="flex-1 min-w-0">
                             <div className="flex justify-between items-start">
                               <h3 className={`text-sm font-medium ${styles.titleColor} truncate`}>
                                 {notification.title}
                               </h3>
-                              
+
                               <div className="flex items-center">
                                 {!notification.read && (
                                   <span className="inline-block w-2 h-2 bg-jade-500 rounded-full mr-2"></span>
@@ -271,11 +271,11 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
                                 </span>
                               </div>
                             </div>
-                            
+
                             <p className={`text-xs ${styles.messageColor} mt-1`}>
                               {notification.message}
                             </p>
-                            
+
                             {/* 图片 */}
                             {notification.image && (
                               <div className="mt-2">
@@ -286,7 +286,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
                                 />
                               </div>
                             )}
-                            
+
                             {/* 操作按钮 */}
                             <div className="mt-2 flex justify-end space-x-2">
                               {!notification.read && (
@@ -318,7 +318,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
                 </ul>
               )}
             </div>
-            
+
             {/* 底部操作 */}
             <div className="p-4 border-t border-gray-200 flex justify-between">
               <Button
@@ -332,7 +332,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
               </Button>
               <Button
                 variant="outlined"
-                color="red"
+                color="cinnabar"
                 size="small"
                 onClick={handleClearAll}
                 disabled={filteredNotifications.length === 0}
