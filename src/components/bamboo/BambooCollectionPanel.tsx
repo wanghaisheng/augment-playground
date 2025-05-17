@@ -18,7 +18,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 // import { zhCN, enUS } from 'date-fns/locale';
 import { BambooSpotCardSkeleton } from '@/components/skeleton';
 import { fetchBambooCollectionPanelView } from '@/services/localizedContentService';
-import { Language, LocalizedContent } from '@/types';
+import { Language } from '@/types';
 
 interface BambooCollectionPanelProps {
   isOpen: boolean;

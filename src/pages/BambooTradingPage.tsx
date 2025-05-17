@@ -7,7 +7,6 @@ import { useBambooSystem } from '@/hooks/useBambooSystem';
 import { playSound, SoundType } from '@/utils/sound';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-// import PageHeader from '@/components/common/PageHeader'; // Commented out - missing file
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN, enUS } from 'date-fns/locale';
 import { fetchBambooTradingPageView } from '@/services/localizedContentService';
@@ -217,7 +216,6 @@ const BambooTradingPage: React.FC = () => {
   if (isError && !pageData) { // Prioritize error display if data fetching failed critically
     return (
       <div className="p-4">
-        {/* <PageHeader title={safePageLabels.errorTitle ?? 'Market Error'} /> */}
         <ErrorDisplay
           error={error}
           title={safePageLabels.errorTitle ?? 'Market Data Error'}
@@ -232,7 +230,6 @@ const BambooTradingPage: React.FC = () => {
   // Main render
   return (
     <div className="bamboo-trading-page p-4 md:p-6">
-      {/* <PageHeader title={safePageLabels.pageTitle ?? 'Bamboo Marketplace'} /> */}
       <h1 className="text-2xl font-bold mb-6">{safePageLabels.pageTitle ?? 'Bamboo Marketplace'}</h1>
 
       {isTrading && <LoadingSpinner text={safePageLabels.processingTradeMessage ?? "Processing Trade..."}/>}

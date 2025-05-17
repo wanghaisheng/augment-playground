@@ -80,11 +80,16 @@ const OptimizedAnimatedItem: React.FC<OptimizedAnimatedItemProps> = ({
     const {
       initial, animate, exit, variants, transition,
       whileHover, whileTap, whileInView, whileFocus, whileDrag,
+      style, // Extract style to avoid passing it twice
       ...divProps
     } = props;
 
     return (
-      <div className={className} {...divProps}>
+      <div
+        className={className}
+        style={style}
+        {...divProps}
+      >
         {children}
       </div>
     );

@@ -1,8 +1,8 @@
 // src/components/animation/EnhancedInkAnimation.tsx
 import React, { ReactNode, useState, useEffect } from 'react';
-import { motion, AnimatePresence, HTMLMotionProps } from 'framer-motion';
-import { 
-  InkAnimationType, 
+import { AnimatePresence, HTMLMotionProps } from 'framer-motion';
+import {
+  InkAnimationType,
   InkColorType,
   generateInkSpreadElements,
   generateInkStrokeElements,
@@ -33,7 +33,7 @@ interface EnhancedInkAnimationProps extends HTMLMotionProps<'div'> {
 
 /**
  * 增强的水墨动画组件
- * 
+ *
  * @param children - 子元素
  * @param type - 水墨动画类型
  * @param color - 水墨颜色
@@ -115,6 +115,7 @@ const EnhancedInkAnimation: React.FC<EnhancedInkAnimationProps> = ({
   };
 
   // 停止动画
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stopAnimation = () => {
     setIsPlaying(false);
   };
@@ -150,11 +151,11 @@ const EnhancedInkAnimation: React.FC<EnhancedInkAnimationProps> = ({
   }, [loop]);
 
   return (
-    <div 
+    <div
       className={`ink-animation-container ink-${color} ${className}`}
-      style={{ 
+      style={{
         position: 'relative',
-        ...props.style
+        ...(props.style || {})
       }}
       onClick={playAnimation}
     >
@@ -165,9 +166,9 @@ const EnhancedInkAnimation: React.FC<EnhancedInkAnimationProps> = ({
 
       {/* 子元素 */}
       {children && (
-        <div 
+        <div
           className="ink-animation-content"
-          style={{ 
+          style={{
             position: 'relative',
             zIndex: 2
           }}

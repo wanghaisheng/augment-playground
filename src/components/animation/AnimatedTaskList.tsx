@@ -213,7 +213,11 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
 
   // 处理删除任务
   const handleDeleteTask = async (taskId: number) => {
-    if (!window.confirm(labels?.deleteConfirmation || 'Are you sure you want to delete this task?')) {
+    // Convert DeleteConfirmationLabels to string if needed
+    const confirmMessage = typeof labels?.deleteConfirmation === 'string'
+      ? labels?.deleteConfirmation
+      : 'Are you sure you want to delete this task?';
+    if (!window.confirm(confirmMessage)) {
       return;
     }
 
@@ -342,28 +346,31 @@ const AnimatedTaskList: React.FC<AnimatedTaskListProps> = ({
           <div className="timely-reward-modal-content">
             <h3 className="timely-reward-modal-title">{labels?.taskReminder?.title || "Timely Reward"}</h3>
             <p className="timely-reward-modal-description">
-              {labels?.timelyRewardCongrats || "Congratulations! You completed the task in time and earned a timely reward!"}
+              {typeof labels?.timelyRewardCongrats === 'string'
+                ? labels?.timelyRewardCongrats
+                : "Congratulations! You completed the task in time and earned a timely reward!"}
             </p>
             <TimelyRewardCard
               reward={timelyReward}
               onComplete={() => {}}
               labels={{
-                typeDaily: labels?.taskReminder?.typeDaily,
-                typeMorning: labels?.taskReminder?.typeMorning,
-                typeStreak: labels?.taskReminder?.typeStreak,
-                typeSpecial: labels?.taskReminder?.typeSpecial,
-                statusActive: labels?.taskReminder?.statusActive,
-                statusCompleted: labels?.taskReminder?.statusCompleted,
-                statusExpired: labels?.taskReminder?.statusExpired,
-                statusUpcoming: labels?.taskReminder?.statusUpcoming,
-                remainingTimeLabel: labels?.taskReminder?.remainingTimeLabel,
-                timeEnded: labels?.taskReminder?.timeEnded,
-                hourUnit: labels?.taskReminder?.hourUnit,
-                minuteUnit: labels?.taskReminder?.minuteUnit,
-                luckyPointsLabel: labels?.taskReminder?.luckyPointsLabel,
-                claimRewardButton: labels?.taskReminder?.claimRewardButton,
-                inProgressButton: labels?.taskReminder?.inProgressButton,
-                completedOnLabel: labels?.taskReminder?.completedOnLabel
+                // Use default values for all TimelyRewardCard labels
+                typeDaily: "Daily Reward",
+                typeMorning: "Early Bird Reward",
+                typeStreak: "Streak Reward",
+                typeSpecial: "Special Reward",
+                statusActive: "Active",
+                statusCompleted: "Completed",
+                statusExpired: "Expired",
+                statusUpcoming: "Upcoming",
+                remainingTimeLabel: "Remaining time",
+                timeEnded: "Ended",
+                hourUnit: "h",
+                minuteUnit: "m",
+                luckyPointsLabel: "Lucky Points",
+                claimRewardButton: "Claim Reward",
+                inProgressButton: "In Progress...",
+                completedOnLabel: "Completed on"
               }}
             />
             <div className="timely-reward-modal-actions">

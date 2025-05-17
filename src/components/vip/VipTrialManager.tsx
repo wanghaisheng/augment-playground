@@ -23,7 +23,7 @@ const VipTrialManager: React.FC = () => {
   const [trialData, setTrialData] = useState<any>(null);
   const [isChecking, setIsChecking] = useState(false);
   const { refreshTable, registerRefreshListener } = useDataRefreshContext();
-  const { _pandaState } = usePandaState(); // Prefix with underscore to indicate it's not used
+  const { pandaState: _pandaState } = usePandaState(); // Rename to _pandaState to indicate it's not used
 
   // 检查VIP试用资格和状态
   useEffect(() => {

@@ -29,7 +29,7 @@ const VipTaskSeriesPage: React.FC = () => {
   const [showDetails, setShowDetails] = useState(false);
 
   const { registerRefreshListener } = useDataRefreshContext();
-  const { _pandaState } = usePandaState(); // Prefix with underscore to indicate it's not used
+  const { pandaState: _pandaState } = usePandaState(); // Rename to _pandaState to indicate it's not used
   const navigate = useNavigate();
 
   // 加载VIP任务系列
