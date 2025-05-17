@@ -13,6 +13,8 @@ import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 import Button from '@/components/common/Button';
 import { playSound, SoundType } from '@/utils/sound';
 import LatticeDialog from '@/components/game/LatticeDialog';
+import { fetchUserTitleSelectorView } from '@/services/localizedContentService';
+import { useLanguage } from '@/context/LanguageProvider';
 
 interface UserTitleSelectorProps {
   userId: string;

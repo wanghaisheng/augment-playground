@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { getActiveUserTitle, UserTitleRecord, UserTitleType } from '@/services/userTitleService';
 import { usePandaState } from '@/context/PandaStateProvider';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
+import { fetchUserTitleView } from '@/services/localizedContentService';
+import { useLanguage } from '@/context/LanguageProvider';
 
 interface UserTitleProps {
   userId: string;
@@ -14,7 +16,7 @@ interface UserTitleProps {
 
 /**
  * 用户称号组件
- * 
+ *
  * 显示用户当前激活的称号
  */
 const UserTitle: React.FC<UserTitleProps> = ({
@@ -27,7 +29,13 @@ const UserTitle: React.FC<UserTitleProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { pandaState } = usePandaState();
   const isVip = pandaState?.isVip || false;
-  const { content } = useLocalizedView('userTitle');
+  const { language } = useLanguage();
+
+  // 本地化视图
+  const { labels } = useLocalizedView(
+    'userTitleViewContent',
+    fetchUserTitleView
+  );
 
   // 加载用户称号
   useEffect(() => {
@@ -113,7 +121,7 @@ const UserTitle: React.FC<UserTitleProps> = ({
   // 获取本地化的称号文本
   const getLocalizedTitleText = () => {
     const key = `title_${title.titleType.toLowerCase()}`;
-    return content[key] || title.titleText;
+    return labels?.[key]?.[language] || title.titleText;
   };
 
   return (

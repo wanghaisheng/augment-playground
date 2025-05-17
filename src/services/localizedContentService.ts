@@ -541,6 +541,46 @@ export async function fetchProfileCustomizationView(lang: Language): Promise<Loc
   return { labels, data: null };
 }
 
+/**
+ * Fetches localized content for the social share component
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized social share content
+ */
+export async function fetchSocialShareView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching SOCIAL SHARE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('socialShare', lang);
+  return { labels, data: null };
+}
+
+/**
+ * Fetches localized content for the user title selector component
+ *
+ * @param lang - The language to fetch content for
+ * @returns A promise that resolves to the localized user title selector content
+ */
+export async function fetchUserTitleSelectorView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching USER TITLE SELECTOR VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('userTitleSelector', lang);
+  return { labels, data: null };
+}
+
+export async function fetchUserTitleView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching USER TITLE VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('userTitle', lang);
+  return { labels, data: null };
+}
+
+export async function fetchUserStatisticsView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching USER STATISTICS VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('userStatistics', lang);
+  return { labels, data: null };
+}
+
 export async function fetchSocialComparisonPageView(lang: Language): Promise<FetchSocialComparisonPageViewResult> {
   console.log(`SVC_DEXIE: Fetching SOCIAL COMPARISON VIEW for lang: ${lang}`);
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS));
