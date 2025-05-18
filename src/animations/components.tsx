@@ -1,15 +1,16 @@
 // src/animations/components.tsx
 import React, { ReactNode } from 'react';
 import { motion, Variants, HTMLMotionProps, AnimatePresence } from 'framer-motion';
-import { 
-  fadeIn, 
-  slideUp, 
-  pageTransition, 
-  listItem, 
-  inkSpread, 
-  scrollUnroll 
+import {
+  fadeIn,
+  slideUp,
+  pageTransition,
+  listItem,
+  inkSpread,
+  scrollUnroll
 } from './variants';
 import { createContainerVariants } from './presets';
+import OptimizedAnimatedItem from '@/components/animation/OptimizedAnimatedItem';
 
 // 动画容器组件接口
 interface AnimatedContainerProps extends HTMLMotionProps<'div'> {
@@ -25,6 +26,8 @@ interface AnimatedContainerProps extends HTMLMotionProps<'div'> {
 
 /**
  * 动画容器组件，用于为子元素添加交错动画效果
+ *
+ * @deprecated 此组件已废弃，请使用 OptimizedAnimatedContainer 组件代替。
  */
 export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
   children,
@@ -37,20 +40,26 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
   exit = 'exit',
   ...props
 }) => {
-  // 如果没有提供变体，则使用默认的容器变体
-  const containerVariants = variants || createContainerVariants(staggerChildren, delayChildren);
+  // 导入 OptimizedAnimatedContainer
+  const OptimizedAnimatedContainer = React.lazy(() => import('@/components/animation/OptimizedAnimatedContainer'));
 
   return (
-    <motion.div
-      className={className}
-      variants={containerVariants}
-      initial={initial}
-      animate={animate}
-      exit={exit}
-      {...props}
-    >
-      {children}
-    </motion.div>
+    <React.Suspense fallback={<div className="loading-container">Loading...</div>}>
+      <OptimizedAnimatedContainer
+        variants={variants}
+        staggerChildren={staggerChildren}
+        delayChildren={delayChildren}
+        className={className}
+        initial={initial}
+        animate={animate}
+        exit={exit}
+        priority="medium" // 默认使用中等优先级
+        disableOnLowPerformance={false} // 默认在低性能设备上不禁用动画
+        {...props}
+      >
+        {children}
+      </OptimizedAnimatedContainer>
+    </React.Suspense>
   );
 };
 
@@ -67,6 +76,15 @@ interface AnimatedItemProps extends HTMLMotionProps<'div'> {
 
 /**
  * 动画项组件，用于为列表项添加动画效果
+ *
+ * @deprecated 此组件已废弃，请使用 OptimizedAnimatedItem 组件代替。
+ * 此组件将在下一个主要版本中移除。
+ *
+ * OptimizedAnimatedItem 提供了以下优势：
+ * 1. 根据设备性能自动调整动画效果
+ * 2. 支持低性能设备上禁用或简化动画
+ * 3. 支持减少动作模式
+ * 4. 使用硬件加速提高性能
  */
 export const AnimatedItem: React.FC<AnimatedItemProps> = ({
   children,
@@ -78,18 +96,20 @@ export const AnimatedItem: React.FC<AnimatedItemProps> = ({
   exit = 'exit',
   ...props
 }) => {
+  // 使用 OptimizedAnimatedItem 替代原始实现
   return (
-    <motion.div
+    <OptimizedAnimatedItem
       className={className}
       variants={variants}
+      index={index}
       initial={initial}
       animate={animate}
       exit={exit}
-      custom={index}
+      priority="medium"
       {...props}
     >
       {children}
-    </motion.div>
+    </OptimizedAnimatedItem>
   );
 };
 
@@ -102,24 +122,29 @@ interface PageTransitionProps extends HTMLMotionProps<'div'> {
 
 /**
  * 页面过渡组件，用于为页面添加进入和退出动画
+ *
+ * @deprecated 此组件已废弃，请使用 EnhancedPageTransition 组件代替。
  */
 export const PageTransitionWrapper: React.FC<PageTransitionProps> = ({
   children,
-  variants = pageTransition,
+  variants,
   className = '',
   ...props
 }) => {
+  // 导入 EnhancedPageTransition
+  const EnhancedPageTransition = React.lazy(() => import('@/components/animation/EnhancedPageTransition'));
+
   return (
-    <motion.div
-      className={className}
-      variants={variants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      {...props}
-    >
-      {children}
-    </motion.div>
+    <React.Suspense fallback={<div className="loading-page-transition">Loading...</div>}>
+      <EnhancedPageTransition
+        type="basic" // 使用基础转场类型，保持与原 PageTransitionWrapper 一致
+        className={className}
+        showDecorations={false} // 默认不显示装饰元素，保持与原 PageTransitionWrapper 一致
+        {...props}
+      >
+        {children}
+      </EnhancedPageTransition>
+    </React.Suspense>
   );
 };
 
@@ -233,28 +258,74 @@ interface InkAnimationProps extends HTMLMotionProps<'div'> {
   children: ReactNode;
   variants?: Variants;
   className?: string;
+  type?: 'spread' | 'stroke' | 'flow' | 'drop' | 'loading';
+  color?: 'black' | 'jade' | 'blue' | 'red' | 'gold';
+  count?: number;
+  duration?: number;
+  delay?: number;
+  size?: number;
+  opacity?: number;
+  blur?: number;
+  spread?: number;
+  originX?: number;
+  originY?: number;
+  autoPlay?: boolean;
+  loop?: boolean;
+  onAnimationComplete?: () => void;
 }
 
 /**
  * 水墨动画组件，用于为元素添加水墨扩散动画
+ *
+ * @deprecated 此组件已废弃，请使用 OptimizedInkAnimation 组件代替。
  */
 export const InkAnimation: React.FC<InkAnimationProps> = ({
   children,
-  variants = inkSpread,
+  variants,
   className = '',
+  type = 'spread',
+  color = 'black',
+  count = 5,
+  duration = 1.5,
+  delay = 0,
+  size = 100,
+  opacity = 0.8,
+  blur = 5,
+  spread = 360,
+  originX = 0.5,
+  originY = 0.5,
+  autoPlay = true,
+  loop = false,
+  onAnimationComplete,
   ...props
 }) => {
+  // 导入 OptimizedInkAnimation
+  const OptimizedInkAnimation = React.lazy(() => import('@/components/animation/OptimizedInkAnimation'));
+
   return (
-    <motion.div
-      className={`ink-animation ${className}`}
-      variants={variants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      {...props}
-    >
-      {children}
-    </motion.div>
+    <React.Suspense fallback={<div className="loading-ink-animation">Loading...</div>}>
+      <OptimizedInkAnimation
+        type={type}
+        color={color}
+        count={count}
+        duration={duration}
+        delay={delay}
+        size={size}
+        opacity={opacity}
+        blur={blur}
+        spread={spread}
+        originX={originX}
+        originY={originY}
+        autoPlay={autoPlay}
+        loop={loop}
+        className={className}
+        onAnimationComplete={onAnimationComplete}
+        priority="medium" // 默认使用中等优先级
+        {...props}
+      >
+        {children}
+      </OptimizedInkAnimation>
+    </React.Suspense>
   );
 };
 

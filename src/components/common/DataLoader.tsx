@@ -1,10 +1,17 @@
-// src/components/common/DataLoader.tsx
+/**
+ * @deprecated 此组件已废弃，请使用 EnhancedDataLoader 组件代替。
+ * 此组件将在下一个主要版本中移除。
+ *
+ * EnhancedDataLoader 提供了以下优势：
+ * 1. 与骨架屏上下文集成，自动管理骨架屏显示
+ * 2. 支持更多骨架屏选项，如变体样式、布局方式、列数等
+ * 3. 支持最小显示时间，确保骨架屏不会闪烁
+ * 4. 使用AnimatePresence提供更流畅的过渡效果
+ * 5. 支持自定义CSS类名和ID
+ */
+
 import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
-import LoadingSpinner from './LoadingSpinner';
-import ErrorDisplay from './ErrorDisplay';
-import { useComponentLabels } from '@/hooks/useComponentLabels';
-import { SkeletonList } from '@/components/skeleton';
+import EnhancedDataLoader from './EnhancedDataLoader';
 
 interface DataLoaderProps<T> {
   isLoading: boolean;
@@ -26,6 +33,8 @@ interface DataLoaderProps<T> {
 /**
  * Generic data loading component
  * Handles loading, error, and empty data states with localized text support
+ *
+ * @deprecated 此组件已废弃，请使用 EnhancedDataLoader 组件代替。
  *
  * @param isLoading - Whether data is currently loading
  * @param isError - Whether an error occurred
@@ -58,75 +67,27 @@ function DataLoader<T>({
   useSkeleton = false,
   skeletonCount = 3
 }: DataLoaderProps<T>) {
-  // Get localized labels
-  const { labels } = useComponentLabels();
-
-  // Loading state
-  if (isLoading && !data) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="data-loader-container"
-      >
-        {loadingComponent || (
-          useSkeleton ? (
-            skeletonComponent || (
-              <SkeletonList
-                count={skeletonCount}
-                variant="jade"
-                layout="list"
-              />
-            )
-          ) : (
-            <LoadingSpinner variant="jade" text={loadingText} type="data" />
-          )
-        )}
-      </motion.div>
-    );
-  }
-
-  // Error state
-  if (isError && !data) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="data-loader-container"
-      >
-        {errorComponent || (
-          <ErrorDisplay
-            error={error}
-            title={errorTitle}
-            onRetry={onRetry}
-          />
-        )}
-      </motion.div>
-    );
-  }
-
-  // Empty data state
-  if (!data) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="data-loader-container"
-      >
-        {emptyState || (
-          <div className="empty-state">
-            <p>{labels?.emptyState?.noData || "No data available"}</p>
-          </div>
-        )}
-      </motion.div>
-    );
-  }
-
-  // Render data
-  return <>{children(data)}</>;
+  // 使用 EnhancedDataLoader 实现
+  return (
+    <EnhancedDataLoader
+      isLoading={isLoading}
+      isError={isError}
+      error={error}
+      data={data}
+      loadingText={loadingText}
+      errorTitle={errorTitle}
+      onRetry={onRetry}
+      emptyState={emptyState}
+      skeletonComponent={loadingComponent || skeletonComponent}
+      errorComponent={errorComponent}
+      skeletonCount={skeletonCount}
+      skeletonVariant="jade"
+      skeletonLayout="list"
+      skeletonMinDuration={500}
+    >
+      {children}
+    </EnhancedDataLoader>
+  );
 }
 
 export default DataLoader;

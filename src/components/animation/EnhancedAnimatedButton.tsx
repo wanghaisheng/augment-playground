@@ -41,10 +41,16 @@ interface EnhancedAnimatedButtonProps extends Omit<HTMLMotionProps<'button'>, 'v
   variant?: ButtonVariant;
   size?: 'small' | 'medium' | 'large';
   color?: ButtonColor;
+  shape?: 'rounded' | 'pill' | 'square' | 'circle';
   isLoading?: boolean;
+  loading?: boolean; // 兼容性属性，等同于isLoading
   loadingText?: string;
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+  fullWidth?: boolean;
   children: React.ReactNode;
   className?: string;
+  buttonClassName?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   animationType?: ButtonAnimationType;
   soundType?: ButtonSoundType;
@@ -64,10 +70,16 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
   variant = 'filled',
   size = 'medium',
   color: themeColor = 'jade',
+  shape = 'rounded',
   isLoading = false,
+  loading,
   loadingText,
+  startIcon,
+  endIcon,
+  fullWidth = false,
   children,
   className = '',
+  buttonClassName = '',
   onClick,
   animationType = 'scale',
   soundType = 'click',
@@ -85,9 +97,12 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
   const [particles, setParticles] = useState<React.ReactNode[]>([]);
   const buttonRef = useRef<HTMLDivElement>(null);
 
+  // 处理loading属性（兼容性）
+  const isButtonLoading = isLoading || loading;
+
   // 处理点击事件
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (disabled || isLoading) return;
+    if (disabled || isButtonLoading) return;
 
     // 播放音效
     if (!disableSound) {
@@ -287,7 +302,10 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
     <div
       ref={buttonRef}
       className={`enhanced-animated-button-container relative ${className}`}
-      style={{ display: 'inline-block' }}
+      style={{
+        display: 'inline-block',
+        width: fullWidth ? '100%' : 'auto'
+      }}
     >
       <motion.div
         className={`enhanced-animated-button ${sizeStyle}`}
@@ -302,11 +320,17 @@ const EnhancedAnimatedButton: React.FC<EnhancedAnimatedButtonProps> = ({
       >
         <Button
           variant={variant === 'secondary' ? 'outlined' : variant}
-          isLoading={isLoading}
+          color={themeColor}
+          size={size}
+          shape={shape}
+          isLoading={isButtonLoading}
           loadingText={loadingText}
+          startIcon={startIcon}
+          endIcon={endIcon}
+          fullWidth={fullWidth}
           onClick={handleClick}
           disabled={disabled}
-          className={sizeStyle}
+          className={`${sizeStyle} ${buttonClassName}`}
           style={{ width: '100%', height: '100%' }}
         >
           {children}

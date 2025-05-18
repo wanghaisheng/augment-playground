@@ -1,54 +1,13 @@
-// src/components/animation/AnimatedItem.tsx
-import React, { ReactNode } from 'react';
-import { motion, Variants, HTMLMotionProps, TargetAndTransition, VariantLabels, AnimationControls } from 'framer-motion';
-import { listItem } from '@/utils/animation';
-
-// 使用Omit排除与HTMLMotionProps冲突的属性
-interface AnimatedItemProps extends Omit<HTMLMotionProps<'div'>, 'initial' | 'animate' | 'exit' | 'variants'> {
-  children: ReactNode;
-  variants?: Variants;
-  index?: number;
-  className?: string;
-  // 使用Framer Motion的类型定义
-  initial?: boolean | TargetAndTransition | VariantLabels | undefined;
-  animate?: boolean | TargetAndTransition | VariantLabels | AnimationControls | undefined;
-  exit?: TargetAndTransition | VariantLabels | undefined;
-}
-
 /**
- * 动画项组件，用于为列表项添加动画效果
+ * @deprecated 此组件已废弃，请使用 OptimizedAnimatedItem 组件代替。
+ * 此组件将在下一个主要版本中移除。
  *
- * @param children - 子元素
- * @param variants - 动画变体
- * @param index - 项目索引，用于计算延迟
- * @param className - CSS类名
- * @param initial - 初始动画状态
- * @param animate - 动画状态
- * @param exit - 退出动画状态
+ * OptimizedAnimatedItem 提供了以下优势：
+ * 1. 根据设备性能自动调整动画效果
+ * 2. 支持低性能设备上禁用或简化动画
+ * 3. 支持减少动作模式
+ * 4. 使用硬件加速提高性能
  */
-const AnimatedItem: React.FC<AnimatedItemProps> = ({
-  children,
-  variants = listItem,
-  index = 0,
-  className = '',
-  initial = 'hidden',
-  animate = 'visible',
-  exit = 'exit',
-  ...props
-}) => {
-  return (
-    <motion.div
-      className={className}
-      variants={variants}
-      initial={initial}
-      animate={animate}
-      exit={exit}
-      custom={index}
-      {...props}
-    >
-      {children}
-    </motion.div>
-  );
-};
 
-export default AnimatedItem;
+import OptimizedAnimatedItem from './OptimizedAnimatedItem';
+export default OptimizedAnimatedItem;

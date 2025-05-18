@@ -1056,7 +1056,8 @@ blockquote::before {
 }
 
 /* 窗棂风格模态框 */
-.lattice-modal {
+.lattice-modal,
+.traditional-window-modal {
   background-color: var(--paper-light);
   border: 8px solid var(--imperial-gold);
   border-radius: var(--radius-md);
@@ -1066,7 +1067,8 @@ blockquote::before {
 }
 
 /* 窗棂边框装饰 */
-.lattice-modal::before {
+.lattice-modal::before,
+.traditional-window-modal::before {
   content: '';
   position: absolute;
   top: -8px;
@@ -1080,7 +1082,8 @@ blockquote::before {
 }
 
 /* 窗棂角落装饰 */
-.lattice-modal::after {
+.lattice-modal::after,
+.traditional-window-modal::after {
   content: '';
   position: absolute;
   top: -8px;
@@ -1094,7 +1097,8 @@ blockquote::before {
 }
 
 /* 右上角装饰 */
-.lattice-modal-corner-tr {
+.lattice-modal-corner-tr,
+.traditional-window-corner-tr {
   position: absolute;
   top: -8px;
   right: -8px;
@@ -1108,7 +1112,8 @@ blockquote::before {
 }
 
 /* 左下角装饰 */
-.lattice-modal-corner-bl {
+.lattice-modal-corner-bl,
+.traditional-window-corner-bl {
   position: absolute;
   bottom: -8px;
   left: -8px;
@@ -1122,7 +1127,8 @@ blockquote::before {
 }
 
 /* 右下角装饰 */
-.lattice-modal-corner-br {
+.lattice-modal-corner-br,
+.traditional-window-corner-br {
   position: absolute;
   bottom: -8px;
   right: -8px;
@@ -1135,7 +1141,21 @@ blockquote::before {
   pointer-events: none;
 }
 
-.lattice-modal-header {
+/* 左上角装饰 */
+.traditional-window-corner-tl {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 50px;
+  height: 50px;
+  background-image: url('/assets/lattice-corner.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+}
+
+.lattice-modal-header,
+.traditional-window-header {
   background: var(--gold-gradient);
   color: var(--deep-night);
   padding: var(--spacing-md) var(--spacing-lg);
@@ -1147,7 +1167,8 @@ blockquote::before {
 }
 
 /* 标题装饰边框 */
-.lattice-modal-header::before {
+.lattice-modal-header::before,
+.traditional-window-header::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1160,7 +1181,8 @@ blockquote::before {
   opacity: 0.6;
 }
 
-.lattice-modal-title {
+.lattice-modal-title,
+.traditional-window-title {
   font-family: var(--font-accent);
   font-size: 1.5rem;
   margin: 0;
@@ -1172,7 +1194,9 @@ blockquote::before {
 
 /* 标题装饰 */
 .lattice-modal-title::before,
-.lattice-modal-title::after {
+.lattice-modal-title::after,
+.traditional-window-title::before,
+.traditional-window-title::after {
   content: '❖';
   position: absolute;
   top: 50%;
@@ -1181,15 +1205,18 @@ blockquote::before {
   font-size: 1.2rem;
 }
 
-.lattice-modal-title::before {
+.lattice-modal-title::before,
+.traditional-window-title::before {
   left: -25px;
 }
 
-.lattice-modal-title::after {
+.lattice-modal-title::after,
+.traditional-window-title::after {
   right: -25px;
 }
 
-.lattice-modal-close {
+.lattice-modal-close,
+.traditional-window-close {
   position: absolute;
   top: 50%;
   right: var(--spacing-md);
@@ -1208,12 +1235,14 @@ blockquote::before {
   font-weight: bold;
 }
 
-.lattice-modal-close:hover {
+.lattice-modal-close:hover,
+.traditional-window-close:hover {
   background-color: rgba(0, 0, 0, 0.1);
   transform: translateY(-50%) rotate(90deg);
 }
 
-.lattice-modal-content {
+.lattice-modal-content,
+.traditional-window-content {
   padding: var(--spacing-lg);
   position: relative;
   max-height: 70vh;
@@ -1222,7 +1251,8 @@ blockquote::before {
 }
 
 /* 窗棂图案背景 */
-.lattice-modal-content::before {
+.lattice-modal-content::before,
+.traditional-window-content::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1238,7 +1268,8 @@ blockquote::before {
 }
 
 /* 内容区域装饰边框 */
-.lattice-modal-content::after {
+.lattice-modal-content::after,
+.traditional-window-content::after {
   content: '';
   position: absolute;
   top: 0;
@@ -1252,7 +1283,8 @@ blockquote::before {
   pointer-events: none;
 }
 
-.lattice-modal-footer {
+.lattice-modal-footer,
+.traditional-window-footer {
   display: flex;
   justify-content: flex-end;
   gap: var(--spacing-md);
@@ -1263,7 +1295,8 @@ blockquote::before {
 }
 
 /* 底部装饰边框 */
-.lattice-modal-footer::before {
+.lattice-modal-footer::before,
+.traditional-window-footer::before {
   content: '';
   position: absolute;
   bottom: 0;
@@ -1278,11 +1311,13 @@ blockquote::before {
 }
 
 /* 窗棂对话框表单样式 */
-.lattice-modal .form-group {
+.lattice-modal .form-group,
+.traditional-window-modal .form-group {
   margin-bottom: var(--spacing-md);
 }
 
-.lattice-modal .form-group label {
+.lattice-modal .form-group label,
+.traditional-window-modal .form-group label {
   display: block;
   margin-bottom: var(--spacing-xs);
   font-weight: 500;
@@ -1291,7 +1326,10 @@ blockquote::before {
 
 .lattice-modal .input-styled,
 .lattice-modal .select-styled,
-.lattice-modal .textarea-styled {
+.lattice-modal .textarea-styled,
+.traditional-window-modal .input-styled,
+.traditional-window-modal .select-styled,
+.traditional-window-modal .textarea-styled {
   width: 100%;
   padding: var(--spacing-sm);
   border: 1px solid var(--border-color);
@@ -1302,34 +1340,57 @@ blockquote::before {
 
 .lattice-modal .input-styled:focus,
 .lattice-modal .select-styled:focus,
-.lattice-modal .textarea-styled:focus {
+.lattice-modal .textarea-styled:focus,
+.traditional-window-modal .input-styled:focus,
+.traditional-window-modal .select-styled:focus,
+.traditional-window-modal .textarea-styled:focus {
   outline: none;
   border-color: var(--imperial-gold);
   box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
 }
 
-.lattice-modal .checkbox-styled {
+.lattice-modal .checkbox-styled,
+.traditional-window-modal .checkbox-styled {
   display: flex;
   align-items: center;
   cursor: pointer;
   margin-right: var(--spacing-md);
 }
 
-.lattice-modal .checkbox-styled input {
+.lattice-modal .checkbox-styled input,
+.traditional-window-modal .checkbox-styled input {
   margin-right: var(--spacing-xs);
 }
 
-.lattice-modal .option-grid {
+.lattice-modal .option-grid,
+.traditional-window-modal .option-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: var(--spacing-sm);
   margin-top: var(--spacing-xs);
 }
 
-.lattice-modal .option-item {
+.lattice-modal .option-item,
+.traditional-window-modal .option-item {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
+}
+
+/* 传统窗棂模态框遮罩层 */
+.traditional-window-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(3px);
+  z-index: 1000;
+  padding: var(--spacing-md);
 }
 
 /* 奖励模态框样式 */

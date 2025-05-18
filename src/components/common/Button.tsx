@@ -1,9 +1,16 @@
-// src/components/common/Button.tsx
-import React from 'react';
-import { useComponentLabels } from '@/hooks/useComponentLabels';
-import { playSound, SoundType } from '@/utils/sound';
+/**
+ * @deprecated 此组件已废弃，请使用 EnhancedAnimatedButton 组件代替。
+ * 此组件将在下一个主要版本中移除。
+ *
+ * EnhancedAnimatedButton 提供了以下优势：
+ * 1. 支持多种动画效果（缩放、发光、脉冲、弹跳、抖动、涟漪、水墨）
+ * 2. 支持粒子效果（爆发、喷泉、水墨、闪烁）
+ * 3. 支持音效（点击、成功、错误）
+ * 4. 可以禁用动画、粒子效果和音效
+ * 5. 更好的性能和用户体验
+ */
 
-// 按钮颜色变体
+// 导出类型定义，以保持向后兼容性
 export type ButtonColor =
   | 'jade'     // 翡翠绿 - 主要操作
   | 'gold'     // 黄金 - 高级操作
@@ -21,13 +28,10 @@ export type ButtonColor =
   | 'red'      // 红色 - 兼容性
   | 'gray';    // 灰色 - 兼容性
 
-// 按钮大小
 export type ButtonSize = 'small' | 'medium' | 'large';
 
-// 按钮形状
 export type ButtonShape = 'rounded' | 'pill' | 'square' | 'circle';
 
-// 按钮变种
 export type ButtonVariant =
   | 'filled'    // 填充样式
   | 'outlined'  // 轮廓样式
@@ -41,124 +45,8 @@ export type ButtonVariant =
   | 'secondary' // 次要样式 (兼容性)
   | 'error';    // 错误样式 (兼容性)
 
-// 按钮属性
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  color?: ButtonColor;
-  size?: ButtonSize;
-  shape?: ButtonShape;
-  variant?: ButtonVariant;
-  isLoading?: boolean;
-  loading?: boolean; // 兼容性属性，等同于isLoading
-  loadingText?: string;
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
-  fullWidth?: boolean;
-  className?: string;
-}
+// 导入增强动画按钮组件
+import EnhancedAnimatedButton from '@/components/animation/EnhancedAnimatedButton';
 
-/**
- * 增强的按钮组件，支持多种样式、大小、形状和变种
- *
- * @param color - 按钮颜色：'jade'（翡翠绿，默认）, 'gold'（黄金）, 'silk'（丝绸）, 'cinnabar'（朱砂）, 'blue'（青花）, 'purple'（紫檀）
- * @param size - 按钮大小：'small', 'medium'（默认）, 'large'
- * @param shape - 按钮形状：'rounded'（默认）, 'pill', 'square', 'circle'
- * @param variant - 按钮变种：'filled'（默认）, 'outlined', 'text'
- * @param isLoading - 是否显示加载状态
- * @param loadingText - 加载状态显示的文本（覆盖默认本地化文本）
- * @param startIcon - 按钮左侧图标
- * @param endIcon - 按钮右侧图标
- * @param fullWidth - 是否占满容器宽度
- * @param className - 自定义类名
- */
-const Button: React.FC<ButtonProps> = ({
-  children,
-  color = 'jade',
-  size = 'medium',
-  shape = 'rounded',
-  variant = 'filled',
-  isLoading = false,
-  loading,
-  loadingText,
-  startIcon,
-  endIcon,
-  fullWidth = false,
-  className = '',
-  ...props
-}) => {
-  // 获取本地化标签
-  const { labels } = useComponentLabels();
-
-  // 使用提供的loadingText或回退到本地化标签
-  const finalLoadingText = loadingText || labels?.button?.loading || "Loading...";
-
-  // 提取onClick属性
-  const { onClick, ...restProps } = props;
-
-  // 处理点击事件，添加音效
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // 播放按钮点击音效
-    playSound(SoundType.BUTTON_CLICK, 0.3);
-
-    // 调用原始的onClick处理函数
-    if (onClick) {
-      onClick(e);
-    }
-  };
-
-  // 处理loading属性（兼容性）
-  const isButtonLoading = isLoading || loading;
-
-  // 构建类名
-  const baseClass = 'button-base';
-  const colorClass = `button-${color}`;
-  const sizeClass = `button-size-${size}`;
-  const shapeClass = `button-shape-${shape}`;
-  const variantClass = variant !== 'filled' ? `button-variant-${variant}` : '';
-  const disabledClass = props.disabled || isButtonLoading ? 'button-disabled' : '';
-  const loadingClass = isButtonLoading ? 'button-loading' : '';
-  const fullWidthClass = fullWidth ? 'w-full' : '';
-  const iconClass = (startIcon || endIcon) ? 'button-with-icon' : '';
-
-  // 组合所有类名
-  const buttonClassName = [
-    baseClass,
-    colorClass,
-    sizeClass,
-    shapeClass,
-    variantClass,
-    disabledClass,
-    loadingClass,
-    fullWidthClass,
-    iconClass,
-    className
-  ].filter(Boolean).join(' ');
-
-  // 兼容旧版本的jade和gold变体
-  const legacyClass = (color === 'jade' && variant === 'filled') ? 'jade-button' :
-                      (color === 'gold' && variant === 'filled') ? 'gold-button' : '';
-
-  return (
-    <button
-      className={`${buttonClassName} ${legacyClass}`.trim()}
-      disabled={isButtonLoading || restProps.disabled}
-      onClick={handleClick}
-      {...restProps}
-    >
-      {isButtonLoading && (
-        <span className="button-loading-spinner" aria-hidden="true"></span>
-      )}
-
-      {startIcon && !isButtonLoading && (
-        <span className="button-icon-left">{startIcon}</span>
-      )}
-
-      {isButtonLoading ? finalLoadingText : children}
-
-      {endIcon && !isButtonLoading && (
-        <span className="button-icon-right">{endIcon}</span>
-      )}
-    </button>
-  );
-};
-
-export default Button;
+// 导出增强动画按钮组件作为默认导出
+export default EnhancedAnimatedButton;

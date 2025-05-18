@@ -3,8 +3,17 @@ import * as React from 'react';
 import { motion } from 'framer-motion';
 // Import Button types from local file to avoid JSX parsing issues
 import { ButtonColor, ButtonSize, ButtonShape, ButtonVariant } from './ButtonTypes';
-// Import the actual Button component at runtime
-const Button = React.lazy(() => import('../common/Button'));
+import { ButtonAnimationType } from './EnhancedAnimatedButton';
+// Import EnhancedAnimatedButton for internal use
+import EnhancedAnimatedButton from './EnhancedAnimatedButton';
+
+/**
+ * @deprecated 此组件将在未来版本中被废弃，建议直接使用 EnhancedAnimatedButton 组件。
+ * EnhancedAnimatedButton 提供了更丰富的动画效果、粒子效果和音效。
+ *
+ * 当前版本的 AnimatedButton 内部已经使用 EnhancedAnimatedButton 实现，
+ * 以保持向后兼容性，同时提供更好的用户体验。
+ */
 
 // 动画按钮属性
 interface AnimatedButtonProps {
@@ -163,45 +172,54 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
 
   const animationProps = getAnimationProps();
 
-  return React.createElement(
-    motion.div,
-    {
-      className: `animated-button-container ${className}`,
-      style: {
-        display: 'inline-block',
-        position: 'relative',
-        width: fullWidth ? '100%' : 'auto',
-        opacity: disabled ? 0.6 : 1,
-        cursor: disabled ? 'not-allowed' : 'pointer'
-      },
-      initial: initialAnimation ? { opacity: 0, y: 10 } : undefined,
-      animate: initialAnimation ? { opacity: 1, y: 0 } : undefined,
-      exit: initialAnimation ? { opacity: 0, y: 10 } : undefined,
-      whileHover: disabled ? undefined : animationProps.whileHover,
-      whileTap: disabled ? undefined : animationProps.whileTap
-    },
-    React.createElement(
-      React.Suspense,
-      { fallback: React.createElement('div', { className: 'loading-button' }, 'Loading...') },
-      React.createElement(
-        Button,
-        {
-          color,
-          size,
-          shape,
-          variant,
-          isLoading,
-          startIcon,
-          endIcon,
-          fullWidth,
-          onClick: disabled ? undefined : onClick,
-          className: buttonClassName,
-          style: { width: '100%', height: '100%' },
-          disabled: disabled || isLoading
-        },
-        children
-      )
-    )
+  // 将 animationPreset 映射到 EnhancedAnimatedButton 的 animationType
+  const mapAnimationPresetToType = (): ButtonAnimationType => {
+    switch (animationPreset) {
+      case 'scale':
+        return 'scale';
+      case 'glow':
+        return 'glow';
+      case 'pulse':
+        return 'pulse';
+      case 'bounce':
+        return 'bounce';
+      case 'shake':
+        return 'shake';
+      case 'none':
+        return 'scale'; // 默认使用 scale，但禁用动画
+      default:
+        return 'scale';
+    }
+  };
+
+  // 使用 EnhancedAnimatedButton 实现
+  return (
+    <EnhancedAnimatedButton
+      variant={variant}
+      color={color}
+      size={size}
+      shape={shape}
+      isLoading={isLoading}
+      loadingText={_loadingText}
+      startIcon={startIcon}
+      endIcon={endIcon}
+      fullWidth={fullWidth}
+      className={className}
+      buttonClassName={buttonClassName}
+      onClick={onClick}
+      animationType={mapAnimationPresetToType()}
+      disabled={disabled}
+      disableAnimation={disableAnimation || animationPreset === 'none'}
+      disableParticles={true} // 默认禁用粒子效果，保持与原 AnimatedButton 一致
+      disableSound={true} // 默认禁用音效，保持与原 AnimatedButton 一致
+      whileHover={whileHover}
+      whileTap={whileTap}
+      initial={initialAnimation ? { opacity: 0, y: 10 } : undefined}
+      animate={initialAnimation ? { opacity: 1, y: 0 } : undefined}
+      exit={initialAnimation ? { opacity: 0, y: 10 } : undefined}
+    >
+      {children}
+    </EnhancedAnimatedButton>
   );
 };
 

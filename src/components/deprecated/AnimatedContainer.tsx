@@ -1,17 +1,7 @@
-/**
- * @deprecated 此组件已废弃，请使用 OptimizedAnimatedContainer 组件代替。
- * 此组件将在下一个主要版本中移除。
- *
- * OptimizedAnimatedContainer 提供了以下优势：
- * 1. 根据设备性能自动调整动画效果
- * 2. 支持动画优先级和在低性能设备上禁用动画
- * 3. 支持减少动作模式，使用简化的动画
- * 4. 使用硬件加速提高性能
- */
-
+// src/components/animation/AnimatedContainer.tsx
 import React, { ReactNode } from 'react';
-import { Variants, HTMLMotionProps, TargetAndTransition, VariantLabels, AnimationControls } from 'framer-motion';
-import OptimizedAnimatedContainer from './OptimizedAnimatedContainer';
+import { motion, Variants, HTMLMotionProps, TargetAndTransition, VariantLabels, AnimationControls } from 'framer-motion';
+import { createContainerVariants } from '@/utils/animation';
 
 // 使用Omit排除与HTMLMotionProps冲突的属性
 interface AnimatedContainerProps extends Omit<HTMLMotionProps<'div'>, 'initial' | 'animate' | 'exit' | 'variants'> {
@@ -28,8 +18,6 @@ interface AnimatedContainerProps extends Omit<HTMLMotionProps<'div'>, 'initial' 
 
 /**
  * 动画容器组件，用于为子元素添加交错动画效果
- *
- * @deprecated 此组件已废弃，请使用 OptimizedAnimatedContainer 组件代替。
  *
  * @param children - 子元素
  * @param variants - 动画变体
@@ -51,22 +39,20 @@ const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
   exit = 'exit',
   ...props
 }) => {
-  // 使用 OptimizedAnimatedContainer 实现
+  // 如果没有提供变体，则使用默认的容器变体
+  const containerVariants = variants || createContainerVariants(staggerChildren, delayChildren);
+
   return (
-    <OptimizedAnimatedContainer
-      variants={variants}
-      staggerChildren={staggerChildren}
-      delayChildren={delayChildren}
+    <motion.div
       className={className}
+      variants={containerVariants}
       initial={initial}
       animate={animate}
       exit={exit}
-      priority="medium" // 默认使用中等优先级
-      disableOnLowPerformance={false} // 默认在低性能设备上不禁用动画
       {...props}
     >
       {children}
-    </OptimizedAnimatedContainer>
+    </motion.div>
   );
 };
 

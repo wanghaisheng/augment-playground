@@ -27,6 +27,7 @@ const InkAnimationShowcase = lazy(() => import('@/pages/InkAnimationShowcase'));
 const InputShowcase = lazy(() => import('@/pages/InputShowcase'));
 const ButtonShowcase = lazy(() => import('@/pages/ButtonShowcase'));
 const PandaInteractionShowcase = lazy(() => import('@/pages/PandaInteractionShowcase'));
+const PandaInteractionPage = lazy(() => import('@/pages/PandaInteractionPage'));
 const BambooCollectionPage = lazy(() => import('@/pages/BambooCollectionPage'));
 const SoundTestingPage = lazy(() => import('@/pages/SoundTestingPage'));
 const BambooPlantingPage = lazy(() => import('@/pages/BambooPlantingPage'));
@@ -133,6 +134,11 @@ const AppRouter: React.FC = () => {
           <Route path="/panda-interaction" element={
             <EnhancedPageTransition type="auto" className={`page-type-basic`}>
               <PandaInteractionShowcase />
+            </EnhancedPageTransition>
+          } />
+          <Route path="/panda-companion" element={
+            <EnhancedPageTransition type="auto" className={`page-type-bambooBlind`}>
+              <PandaInteractionPage />
             </EnhancedPageTransition>
           } />
           <Route path="/bamboo-collection" element={
