@@ -10,7 +10,6 @@ import { TaskRecord } from '@/services/taskService';
 import VipTaskSeriesCard from '@/components/vip/VipTaskSeriesCard';
 import VipTaskSeriesDetails from '@/components/vip/VipTaskSeriesDetails';
 import Button from '@/components/common/Button';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { playSound, SoundType } from '@/utils/sound';
 import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 import { usePandaState } from '@/context/PandaStateProvider';
@@ -113,7 +112,7 @@ const VipTaskSeriesPage: React.FC = () => {
   // 渲染加载状态
   const renderLoading = () => (
     <div className="flex justify-center items-center h-40">
-      <LoadingSpinner variant="jade" size="medium" />
+      <div className="loading-spinner jade medium">Loading...</div>
     </div>
   );
 

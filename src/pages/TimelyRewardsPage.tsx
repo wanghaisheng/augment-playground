@@ -12,7 +12,6 @@ import PageTransition from '@/components/animation/PageTransition';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import AnimatedButton from '@/components/animation/AnimatedButton';
 import ScrollDialog from '@/components/game/ScrollDialog';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 import { fetchTimelyRewardsPageView } from '@/services';
 import { TimelyRewardsPageSkeleton } from '@/components/skeleton';

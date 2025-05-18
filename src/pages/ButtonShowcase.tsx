@@ -326,7 +326,7 @@ const ButtonShowcase: React.FC = () => {
                 variant={selectedVariant}
                 isLoading={isLoading}
                 fullWidth={fullWidth}
-                animationPreset={preset}
+                animationPreset={preset as 'scale' | 'glow' | 'pulse' | 'bounce' | 'shake' | 'none'}
                 onClick={handleButtonClick}
               >
                 {preset}

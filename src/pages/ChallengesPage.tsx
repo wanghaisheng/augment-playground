@@ -12,7 +12,6 @@ import ChallengeList from '@/components/game/ChallengeList';
 import PageTransition from '@/components/animation/PageTransition';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import AnimatedButton from '@/components/animation/AnimatedButton';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 import { fetchChallengesPageView } from '@/services';
 import { ChallengesPageSkeleton } from '@/components/skeleton';
