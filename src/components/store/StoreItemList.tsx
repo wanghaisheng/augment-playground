@@ -1,5 +1,5 @@
 // src/components/store/StoreItemList.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   StoreItemRecord,
@@ -8,7 +8,6 @@ import {
   getSaleItems
 } from '@/services/storeService';
 import StoreItemCard from './StoreItemCard';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useOptimizedDataRefresh } from '@/hooks/useOptimizedDataRefresh';
 import { StoreItemCardSkeleton } from '@/components/skeleton';
 import { createContainerVariants } from '@/utils/animation';

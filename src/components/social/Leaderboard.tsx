@@ -1,11 +1,13 @@
 // src/components/social/Leaderboard.tsx
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import LeaderboardItem from './LeaderboardItem';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { playSound, SoundType } from '@/utils/sound';
+import { fetchLeaderboardView } from '@/services/localizedContentService';
+import { useLanguage } from '@/context/LanguageProvider';
 
 // 排行榜类型
 export enum LeaderboardType {
@@ -42,7 +44,7 @@ interface LeaderboardProps {
 
 /**
  * 排行榜组件
- * 
+ *
  * 显示用户排行榜，支持不同类型和类别的排行
  */
 const Leaderboard: React.FC<LeaderboardProps> = ({
@@ -57,18 +59,24 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
   const [users, setUsers] = useState<LeaderboardUserData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { content } = useLocalizedView('leaderboard');
-  
+  const { language } = useLanguage();
+
+  // 本地化视图
+  const { labels } = useLocalizedView(
+    'leaderboardViewContent',
+    fetchLeaderboardView
+  );
+
   // 模拟加载排行榜数据
   useEffect(() => {
     const loadLeaderboardData = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // 模拟API请求延迟
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         // 模拟排行榜数据
         // 在实际应用中，这应该是从API获取的数据
         const mockUsers: LeaderboardUserData[] = [
@@ -85,11 +93,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
           { userId: 'user11', username: '写作高手', score: 580, isVip: false },
           { userId: 'user12', username: '健康生活家', score: 550, isVip: false }
         ];
-        
+
         // 根据类型和类别过滤和排序数据
         // 在实际应用中，这应该是在API端完成的
         const filteredUsers = mockUsers.slice(0, limit);
-        
+
         setUsers(filteredUsers);
       } catch (error) {
         console.error('Failed to load leaderboard data:', error);
@@ -98,10 +106,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         setIsLoading(false);
       }
     };
-    
+
     loadLeaderboardData();
   }, [selectedType, selectedCategory, limit]);
-  
+
   // 处理类型切换
   const handleTypeChange = (newType: LeaderboardType) => {
     if (newType !== selectedType) {
@@ -109,7 +117,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       setSelectedType(newType);
     }
   };
-  
+
   // 处理类别切换
   const handleCategoryChange = (newCategory: LeaderboardCategory) => {
     if (newCategory !== selectedCategory) {
@@ -117,45 +125,45 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       setSelectedCategory(newCategory);
     }
   };
-  
+
   // 获取类型文本
   const getTypeText = (type: LeaderboardType) => {
     switch (type) {
       case LeaderboardType.DAILY:
-        return content.typeDaily || '每日';
+        return labels?.typeDaily?.[language] || '每日';
       case LeaderboardType.WEEKLY:
-        return content.typeWeekly || '每周';
+        return labels?.typeWeekly?.[language] || '每周';
       case LeaderboardType.MONTHLY:
-        return content.typeMonthly || '每月';
+        return labels?.typeMonthly?.[language] || '每月';
       case LeaderboardType.ALL_TIME:
-        return content.typeAllTime || '总榜';
+        return labels?.typeAllTime?.[language] || '总榜';
       default:
         return '';
     }
   };
-  
+
   // 获取类别文本
   const getCategoryText = (category: LeaderboardCategory) => {
     switch (category) {
       case LeaderboardCategory.TASKS_COMPLETED:
-        return content.categoryTasksCompleted || '任务完成';
+        return labels?.categoryTasksCompleted?.[language] || '任务完成';
       case LeaderboardCategory.STREAK_DAYS:
-        return content.categoryStreakDays || '连续打卡';
+        return labels?.categoryStreakDays?.[language] || '连续打卡';
       case LeaderboardCategory.BAMBOO_COLLECTED:
-        return content.categoryBambooCollected || '竹子收集';
+        return labels?.categoryBambooCollected?.[language] || '竹子收集';
       case LeaderboardCategory.EXPERIENCE_GAINED:
-        return content.categoryExperienceGained || '经验获取';
+        return labels?.categoryExperienceGained?.[language] || '经验获取';
       default:
         return '';
     }
   };
-  
+
   // 获取当前用户ID
   const getCurrentUserId = () => {
     // 在实际应用中，这应该是从用户状态或认证服务获取的
     return 'user5';
   };
-  
+
   // 渲染类型过滤器
   const renderTypeFilters = () => (
     <div className="type-filters flex space-x-2 mb-4 overflow-x-auto pb-2">
@@ -171,7 +179,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       ))}
     </div>
   );
-  
+
   // 渲染类别过滤器
   const renderCategoryFilters = () => (
     <div className="category-filters flex space-x-2 mb-4 overflow-x-auto pb-2">
@@ -187,14 +195,14 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       ))}
     </div>
   );
-  
+
   // 渲染加载状态
   const renderLoading = () => (
     <div className="flex justify-center items-center h-40">
       <LoadingSpinner variant="jade" size="medium" />
     </div>
   );
-  
+
   // 渲染错误状态
   const renderError = () => (
     <div className="text-center p-4">
@@ -203,11 +211,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
         variant="jade"
         onClick={() => window.location.reload()}
       >
-        {content.retryButton || '重试'}
+        {labels?.retryButton?.[language] || '重试'}
       </Button>
     </div>
   );
-  
+
   // 渲染排行榜
   const renderLeaderboard = () => (
     <div className="leaderboard-list space-y-2">
@@ -226,20 +234,20 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
       </AnimatePresence>
     </div>
   );
-  
+
   return (
     <div className={`leaderboard ${className}`}>
       <h2 className="text-xl font-bold text-gray-800 mb-4">
-        {content.title || '排行榜'}
+        {labels?.title?.[language] || '排行榜'}
       </h2>
-      
+
       {showFilters && (
         <>
           {renderTypeFilters()}
           {renderCategoryFilters()}
         </>
       )}
-      
+
       {isLoading ? renderLoading() : error ? renderError() : renderLeaderboard()}
     </div>
   );

@@ -106,8 +106,8 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
       playSound(SoundType.SUCCESS, 0.5);
 
       // 通知父组件
-      if (onTaskCompleted) {
-        onTaskCompleted(completedTask);
+      if (onTaskCompleted && task) {
+        onTaskCompleted(task);
       }
 
       // 关闭对话框
@@ -279,15 +279,6 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
       <div className="task-subtasks">
         <SubtaskList
           parentTaskId={task.id!}
-          onSubtasksUpdated={() => {
-            // 重新加载任务数据
-            loadTaskData();
-
-            // 通知父组件
-            if (onTaskUpdated) {
-              onTaskUpdated();
-            }
-          }}
         />
       </div>
     );

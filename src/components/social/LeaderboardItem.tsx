@@ -16,7 +16,7 @@ interface LeaderboardItemProps {
 
 /**
  * 排行榜项目组件
- * 
+ *
  * 显示排行榜中的用户项目，包括VIP标识和排名
  */
 const LeaderboardItem: React.FC<LeaderboardItemProps> = ({
@@ -28,23 +28,18 @@ const LeaderboardItem: React.FC<LeaderboardItemProps> = ({
   isCurrentUser = false
 }) => {
   const [isVip, setIsVip] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(true);
-  
+
   // 加载用户VIP状态
   useAsyncEffect(async () => {
     try {
-      setIsLoading(true);
-      
       // 检查用户是否是VIP
       const vipStatus = await isUserVip(userId);
       setIsVip(vipStatus);
     } catch (error) {
       console.error('Failed to load user VIP status:', error);
-    } finally {
-      setIsLoading(false);
     }
   }, [userId]);
-  
+
   // 获取排名徽章样式
   const getRankBadgeStyles = () => {
     switch (rank) {
@@ -58,12 +53,12 @@ const LeaderboardItem: React.FC<LeaderboardItemProps> = ({
         return 'bg-gray-200 text-gray-700';
     }
   };
-  
+
   // 获取默认头像
   const getDefaultAvatar = () => {
     return '/assets/default-avatar.svg';
   };
-  
+
   return (
     <motion.div
       className={`leaderboard-item flex items-center p-3 rounded-lg ${
@@ -78,7 +73,7 @@ const LeaderboardItem: React.FC<LeaderboardItemProps> = ({
       <div className={`rank-badge ${getRankBadgeStyles()} w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm mr-3`}>
         {rank}
       </div>
-      
+
       {/* 头像 */}
       <div className="avatar-container relative mr-3">
         <img
@@ -86,7 +81,7 @@ const LeaderboardItem: React.FC<LeaderboardItemProps> = ({
           alt={username}
           className={`w-10 h-10 rounded-full ${isVip ? 'border-2 border-gold-300' : ''}`}
         />
-        
+
         {/* VIP光环效果 */}
         {isVip && (
           <motion.div
@@ -106,19 +101,19 @@ const LeaderboardItem: React.FC<LeaderboardItemProps> = ({
           />
         )}
       </div>
-      
+
       {/* 用户信息 */}
       <div className="user-info flex-1">
         <div className="flex items-center">
           <span className="username font-medium text-gray-800 mr-2">{username}</span>
           <UserProfileBadge userId={userId} size="small" />
         </div>
-        
+
         <div className="score text-sm text-gray-500">
           {score} 分
         </div>
       </div>
-      
+
       {/* VIP标识 */}
       {isVip && (
         <div className="vip-indicator flex items-center">

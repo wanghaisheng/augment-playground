@@ -1,6 +1,5 @@
 // src/components/store/StoreItemPreview.tsx
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   StoreItemRecord,
   RewardRarity,

@@ -18,7 +18,7 @@ interface MusicPlayerWithVisualizerProps {
 
 /**
  * 带可视化效果的音乐播放器组件
- * 
+ *
  * 结合了背景音乐控制和音乐可视化效果
  */
 const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
@@ -42,7 +42,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
     toggleMute,
     availableTracks
   } = useBackgroundMusic();
-  
+
   // 状态
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
   const [visualizerStyle, setVisualizerStyle] = useState<VisualizerStyle>(defaultVisualizerStyle);
@@ -50,37 +50,37 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
   const [showVisualizerSettings, setShowVisualizerSettings] = useState(false);
   const [visualizerSensitivity, setVisualizerSensitivity] = useState(1.0);
   const [visualizerSmoothing, setVisualizerSmoothing] = useState(0.8);
-  
+
   // 引用
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  
+
   // 当前播放的音乐信息
-  const currentTrack = currentMusic 
-    ? availableTracks.find(track => track.type === currentMusic) 
+  const currentTrack = currentMusic
+    ? availableTracks.find(track => track.type === currentMusic)
     : null;
-  
+
   // 创建音频元素
   useEffect(() => {
     if (currentMusic && isPlaying) {
       // 获取音乐路径
       const musicPath = `/assets/sounds/music/${currentMusic}.mp3`;
-      
+
       // 创建音频元素
       const audio = new Audio(musicPath);
       audio.loop = true;
       audio.volume = isMuted ? 0 : volume;
       audio.crossOrigin = 'anonymous'; // 允许跨域访问
-      
+
       // 加载并播放
       audio.load();
       audio.play().catch(err => {
         console.warn('Failed to play audio:', err);
       });
-      
+
       // 保存引用
       audioRef.current = audio;
       setAudioElement(audio);
-      
+
       // 清理函数
       return () => {
         audio.pause();
@@ -98,18 +98,18 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
       setAudioElement(null);
     }
   }, [currentMusic, isPlaying]);
-  
+
   // 更新音量
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = isMuted ? 0 : volume;
     }
   }, [volume, isMuted]);
-  
+
   // 处理播放/暂停
   const handlePlayPause = () => {
     playSound(SoundType.BUTTON_CLICK);
-    
+
     if (isPlaying) {
       pauseMusic();
     } else {
@@ -120,42 +120,42 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
       }
     }
   };
-  
+
   // 处理停止
   const handleStop = () => {
     playSound(SoundType.BUTTON_CLICK);
     stopMusic({ fadeOut: true });
   };
-  
+
   // 处理音乐选择
   const handleSelectTrack = (type: BackgroundMusicType) => {
     playSound(SoundType.BUTTON_CLICK);
     playMusic(type, { fadeIn: true });
     setShowTrackSelector(false);
   };
-  
+
   // 处理音量变化
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
   };
-  
+
   // 处理可视化器样式变化
   const handleVisualizerStyleChange = (style: VisualizerStyle) => {
     playSound(SoundType.BUTTON_CLICK);
     setVisualizerStyle(style);
   };
-  
+
   // 按类别分组音乐
   const tracksByCategory = availableTracks.reduce((acc, track) => {
     if (!acc[track.category]) {
       acc[track.category] = [];
     }
-    
+
     acc[track.category].push(track);
     return acc;
   }, {} as Record<string, typeof availableTracks>);
-  
+
   // 渲染紧凑模式
   if (compact) {
     return (
@@ -176,14 +176,14 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
               </svg>
             )}
           </button>
-          
+
           {/* 当前播放信息 */}
           <div className="flex-grow truncate">
             <p className="text-xs text-gray-500 truncate">
               {currentTrack ? currentTrack.name : '未播放'}
             </p>
           </div>
-          
+
           {/* 静音按钮 */}
           <button
             onClick={toggleMute}
@@ -200,13 +200,13 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
             )}
           </button>
         </div>
-        
+
         {/* 可视化器 */}
         {showVisualizer && (
           <div className="mt-2 h-16 overflow-hidden rounded-lg">
             <MusicVisualizer
               active={isPlaying && !isMuted && !!audioElement}
-              audio={audioElement}
+              audio={audioElement || undefined}
               style={visualizerStyle}
               colorTheme={colorTheme}
               sensitivity={visualizerSensitivity}
@@ -218,7 +218,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
       </div>
     );
   }
-  
+
   // 渲染完整模式
   return (
     <div className={`music-player ${className}`}>
@@ -226,23 +226,23 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
         <h3 className="text-lg font-medium mb-4 text-jade-800">
           音乐播放器
         </h3>
-        
+
         {/* 当前播放信息 */}
         <div className="mb-4">
           <p className="text-sm text-gray-600">
-            {isPlaying 
+            {isPlaying
               ? `正在播放: ${currentTrack ? currentTrack.name : '未知音乐'}`
               : currentTrack ? `已暂停: ${currentTrack.name}` : '未播放'
             }
           </p>
         </div>
-        
+
         {/* 可视化器 */}
         {showVisualizer && (
           <div className="mb-4 h-24 overflow-hidden rounded-lg">
             <MusicVisualizer
               active={isPlaying && !isMuted && !!audioElement}
-              audio={audioElement}
+              audio={audioElement || undefined}
               style={visualizerStyle}
               colorTheme={colorTheme}
               sensitivity={visualizerSensitivity}
@@ -251,7 +251,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
             />
           </div>
         )}
-        
+
         {/* 音量控制 */}
         <div className="flex items-center mb-4">
           <span className="text-sm text-gray-600 mr-2">
@@ -281,7 +281,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
             )}
           </button>
         </div>
-        
+
         {/* 播放控制 */}
         <div className="flex justify-between mb-4">
           <Button
@@ -291,7 +291,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
           >
             {isPlaying ? '暂停' : '播放'}
           </Button>
-          
+
           <Button
             variant="secondary"
             size="small"
@@ -300,7 +300,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
           >
             停止
           </Button>
-          
+
           <Button
             variant="gold"
             size="small"
@@ -308,7 +308,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
           >
             选择音乐
           </Button>
-          
+
           {showVisualizer && (
             <Button
               variant="outlined"
@@ -319,7 +319,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
             </Button>
           )}
         </div>
-        
+
         {/* 音乐选择器 */}
         <AnimatePresence>
           {showTrackSelector && (
@@ -354,7 +354,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
             </motion.div>
           )}
         </AnimatePresence>
-        
+
         {/* 可视化器设置 */}
         <AnimatePresence>
           {showVisualizerSettings && (
@@ -385,7 +385,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
                     </button>
                   ))}
                 </div>
-                
+
                 <h4 className="text-sm font-medium text-jade-700 mb-2">灵敏度</h4>
                 <div className="mb-3">
                   <input
@@ -403,7 +403,7 @@ const MusicPlayerWithVisualizer: React.FC<MusicPlayerWithVisualizerProps> = ({
                     <span>高</span>
                   </div>
                 </div>
-                
+
                 <h4 className="text-sm font-medium text-jade-700 mb-2">平滑度</h4>
                 <div className="mb-2">
                   <input

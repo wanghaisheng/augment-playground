@@ -38,8 +38,15 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const { pandaState } = usePandaState();
   const isVip = pandaState?.isVip || false;
-  const { content } = useLocalizedView('userTitleSelector');
-  const { refreshData } = useDataRefreshContext();
+  const { language } = useLanguage();
+
+  // 本地化视图
+  const { labels } = useLocalizedView(
+    'userTitleSelectorViewContent',
+    fetchUserTitleSelectorView
+  );
+
+  const { refreshTable } = useDataRefreshContext();
 
   // 加载用户称号
   useEffect(() => {
@@ -83,7 +90,7 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
       await activateUserTitle(selectedTitleId);
 
       // 刷新数据
-      refreshData('userTitles');
+      refreshTable('userTitles');
 
       // 关闭对话框
       onClose();
@@ -122,13 +129,13 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
   // 获取本地化的称号文本
   const getLocalizedTitleText = (title: UserTitleRecord) => {
     const key = `title_${title.titleType.toLowerCase()}`;
-    return content[key] || title.titleText;
+    return labels?.[key]?.[language] || title.titleText;
   };
 
   // 获取本地化的称号描述
   const getLocalizedTitleDescription = (title: UserTitleRecord) => {
     const key = `description_${title.titleType.toLowerCase()}`;
-    return content[key] || '';
+    return labels?.[key]?.[language] || '';
   };
 
   // 渲染称号列表
@@ -144,7 +151,7 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
     if (titles.length === 0) {
       return (
         <div className="text-center py-8 text-gray-500">
-          {content.noTitlesMessage || '您还没有解锁任何称号'}
+          {labels?.noTitlesMessage?.[language] || '您还没有解锁任何称号'}
         </div>
       );
     }
@@ -190,7 +197,7 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
 
                     {title.isActive && (
                       <span className="ml-2 text-jade-500 text-xs bg-jade-50 px-1.5 py-0.5 rounded">
-                        {content.activeLabel || '已激活'}
+                        {labels?.activeLabel?.[language] || '已激活'}
                       </span>
                     )}
                   </div>
@@ -203,7 +210,7 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
 
               {isDisabled && (
                 <div className="mt-2 text-sm text-gold-600 bg-gold-50 p-2 rounded">
-                  {content.vipRequiredMessage || '需要VIP会员才能使用此称号'}
+                  {labels?.vipRequiredMessage?.[language] || '需要VIP会员才能使用此称号'}
                 </div>
               )}
             </motion.div>
@@ -217,7 +224,7 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
     <LatticeDialog
       isOpen={isOpen}
       onClose={onClose}
-      title={content.dialogTitle || '选择称号'}
+      title={labels?.dialogTitle?.[language] || '选择称号'}
       footer={
         <>
           <Button
@@ -225,7 +232,7 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
             onClick={onClose}
             disabled={isSaving}
           >
-            {content.cancelButton || '取消'}
+            {labels?.cancelButton?.[language] || '取消'}
           </Button>
 
           <Button
@@ -235,14 +242,14 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
             disabled={!selectedTitleId || isSaving}
             isLoading={isSaving}
           >
-            {content.confirmButton || '激活称号'}
+            {labels?.confirmButton?.[language] || '激活称号'}
           </Button>
         </>
       }
     >
       <div className="mb-4">
         <p className="text-gray-600">
-          {content.dialogDescription || '选择一个称号来展示您的成就和身份。'}
+          {labels?.dialogDescription?.[language] || '选择一个称号来展示您的成就和身份。'}
         </p>
       </div>
 
@@ -252,10 +259,10 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
         <div className="mt-4 p-3 bg-gold-50 border border-gold-200 rounded-lg">
           <h3 className="font-medium text-gold-700 flex items-center">
             <span className="mr-1">★</span>
-            {content.vipTitlesHeader || 'VIP专属称号'}
+            {labels?.vipTitlesHeader?.[language] || 'VIP专属称号'}
           </h3>
           <p className="text-sm text-gray-600 mt-1">
-            {content.vipTitlesDescription || '成为VIP会员解锁专属称号，彰显您的独特身份。'}
+            {labels?.vipTitlesDescription?.[language] || '成为VIP会员解锁专属称号，彰显您的独特身份。'}
           </p>
           <Button
             variant="gold"
@@ -265,7 +272,7 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
               window.location.href = '/vip-benefits';
             }}
           >
-            {content.becomeVipButton || '了解VIP特权'}
+            {labels?.becomeVipButton?.[language] || '了解VIP特权'}
           </Button>
         </div>
       )}

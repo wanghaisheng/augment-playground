@@ -91,7 +91,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
       // 通知父组件
       if (onTaskCompleted) {
-        onTaskCompleted(completedTask);
+        onTaskCompleted(task);
       }
     } catch (err) {
       console.error('Failed to complete task:', err);

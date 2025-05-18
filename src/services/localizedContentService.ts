@@ -555,11 +555,18 @@ export async function fetchSocialShareView(lang: Language): Promise<LocalizedCon
 }
 
 /**
- * Fetches localized content for the user title selector component
+ * Fetches localized content for the leaderboard component
  *
  * @param lang - The language to fetch content for
- * @returns A promise that resolves to the localized user title selector content
+ * @returns A promise that resolves to the localized leaderboard content
  */
+export async function fetchLeaderboardView(lang: Language): Promise<LocalizedContent<null, any>> {
+  console.log(`SVC_DEXIE: Fetching LEADERBOARD VIEW for lang: ${lang}`);
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
+  const labels = await getScopedLabels<any>('leaderboard', lang);
+  return { labels, data: null };
+}
+
 export async function fetchUserTitleSelectorView(lang: Language): Promise<LocalizedContent<null, any>> {
   console.log(`SVC_DEXIE: Fetching USER TITLE SELECTOR VIEW for lang: ${lang}`);
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));

@@ -1,11 +1,11 @@
 // src/components/store/StoreItemCard.tsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  StoreItemRecord, 
-  StoreItemRarity, 
+import {
+  StoreItemRecord,
   PriceType,
-  purchaseStoreItem
+  purchaseStoreItem,
+  RewardRarity as StoreItemRarity
 } from '@/services/storeService';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
@@ -34,17 +34,17 @@ const StoreItemCard: React.FC<StoreItemCardProps> = ({
 }) => {
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // 处理购买物品
   const handlePurchase = async (e: React.MouseEvent) => {
     e.stopPropagation(); // 阻止事件冒泡
-    
+
     // 检查是否需要VIP
     if (item.vipRequired && !isVip) {
       setError('需要VIP会员才能购买');
       return;
     }
-    
+
     // 检查是否有足够的货币
     const price = item.isOnSale && item.salePrice !== undefined ? item.salePrice : item.price;
     if (item.priceType === PriceType.COINS && userCoins < price) {
@@ -55,17 +55,17 @@ const StoreItemCard: React.FC<StoreItemCardProps> = ({
       setError('玉石不足');
       return;
     }
-    
+
     try {
       setIsPurchasing(true);
       setError(null);
-      
+
       // 购买物品
       await purchaseStoreItem('current-user', item.id!);
-      
+
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 通知父组件
       if (onPurchase) {
         onPurchase(item);
@@ -82,7 +82,7 @@ const StoreItemCard: React.FC<StoreItemCardProps> = ({
   const handlePreview = () => {
     // 播放点击音效
     playSound(SoundType.BUTTON_CLICK, 0.3);
-    
+
     // 通知父组件
     if (onPreview) {
       onPreview(item);
@@ -161,19 +161,19 @@ const StoreItemCard: React.FC<StoreItemCardProps> = ({
             target.src = '/assets/store/default-item.png';
           }}
         />
-        
+
         {/* 稀有度标签 */}
         <div className={`rarity-badge absolute top-2 right-2 px-2 py-1 rounded-full text-xs ${rarityInfo.className}`}>
           {rarityInfo.label}
         </div>
-        
+
         {/* VIP标签 */}
         {item.vipRequired && (
           <div className="vip-badge absolute top-2 left-2 px-2 py-1 rounded-full text-xs bg-amber-100 text-amber-800 border border-amber-300">
             VIP专属
           </div>
         )}
-        
+
         {/* 促销标签 */}
         {item.isOnSale && item.salePrice !== undefined && (
           <div className="sale-badge absolute bottom-2 left-2 px-2 py-1 rounded-full text-xs bg-red-100 text-red-800 border border-red-300">
@@ -181,14 +181,14 @@ const StoreItemCard: React.FC<StoreItemCardProps> = ({
           </div>
         )}
       </div>
-      
+
       {/* 物品信息 */}
       <div className="item-info p-3">
         <h3 className="item-name text-md font-bold mb-1">{item.name}</h3>
         <p className="item-description text-xs text-gray-600 mb-2 line-clamp-2">
           {item.description}
         </p>
-        
+
         {/* 价格信息 */}
         <div className="price-info flex justify-between items-center">
           <div className="price-display flex items-center">
@@ -202,7 +202,7 @@ const StoreItemCard: React.FC<StoreItemCardProps> = ({
               </span>
             )}
           </div>
-          
+
           <Button
             variant="jade"
             size="small"
@@ -216,7 +216,7 @@ const StoreItemCard: React.FC<StoreItemCardProps> = ({
             )}
           </Button>
         </div>
-        
+
         {/* 错误信息 */}
         {error && (
           <div className="error-message mt-2 text-xs text-red-500">

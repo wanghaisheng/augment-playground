@@ -4,7 +4,6 @@ import {
   preloadAllSounds,
   enableSound,
   getSoundSettings,
-  setSoundSettings,
   setGlobalVolume,
   setCategoryVolume,
   enableCategory,
@@ -26,8 +25,6 @@ import SoundLoadingIndicator from './SoundLoadingIndicator';
 const SoundManager: React.FC = () => {
   // 状态
   const [soundsLoaded, setSoundsLoaded] = useState(false);
-  const [loadProgress, setLoadProgress] = useState(0);
-  const [loadError, setLoadError] = useState<Error | null>(null);
   const [userInteracted, setUserInteracted] = useState(false);
 
   // 背景音乐上下文
@@ -60,8 +57,8 @@ const SoundManager: React.FC = () => {
     // 预加载所有音效
     preloadAllSounds({
       metadataOnly: true, // 只加载元数据，减少初始加载时间
-      onProgress: (progress) => {
-        setLoadProgress(progress);
+      onProgress: () => {
+        // 不再使用进度
       },
       onComplete: () => {
         console.log('All sounds preloaded successfully');
@@ -69,7 +66,6 @@ const SoundManager: React.FC = () => {
       },
       onError: (error) => {
         console.error('Error preloading sounds:', error);
-        setLoadError(error);
         // 即使有错误，也标记为已加载，以便应用程序可以继续
         setSoundsLoaded(true);
       }
