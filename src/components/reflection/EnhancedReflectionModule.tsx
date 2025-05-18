@@ -11,8 +11,8 @@ import {
   completeReflection,
   markTriggerAsCompleted
 } from '@/services/reflectionService';
-import { updatePandaMood, getPandaMood } from '@/services/pandaStateService';
-import type { PandaMood } from '@/types/pandaTypes';
+import { updatePandaMood } from '@/services/pandaStateService';
+import type { PandaMood } from '@/components/game/PandaAvatar';
 import MoodTracker from './MoodTracker';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useComponentLabels } from '@/hooks/useComponentLabels';

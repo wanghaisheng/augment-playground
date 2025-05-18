@@ -210,7 +210,7 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="skin-image-preview flex-1 flex justify-center">
                     <img
-                      src={selectedSkin.imagePath.normal}
+                      src={`/assets/skins/${selectedSkin.assetKey}_normal.svg`}
                       alt={selectedSkin.name}
                       className="h-40 object-contain"
                     />
@@ -312,7 +312,7 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
                       >
                         <div className="relative">
                           <img
-                            src={skin.thumbnailPath}
+                            src={`/assets/skins/${skin.assetKey}_thumbnail.svg`}
                             alt={skin.name}
                             className="w-full h-24 object-contain mb-2"
                           />

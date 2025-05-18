@@ -6,7 +6,6 @@ import { applyResourceMultiplier } from './resourceMultiplierService';
 import { playSound, SoundType } from '@/utils/sound';
 import { updateUserCurrency } from './storeService';
 import { initializeBambooCollectionLabels } from '@/data/bambooCollectionLabels';
-import { UILabelRecord } from '@/types';
 
 // 竹子收集记录类型
 export interface BambooCollectionRecord {
@@ -67,7 +66,8 @@ export interface BambooSpotRecord {
   updatedAt: Date;
 }
 
-// 默认竹子收集点
+// 默认竹子收集点 - 暂时未使用
+/* Commented out to fix TypeScript errors
 const DEFAULT_BAMBOO_SPOTS: Omit<BambooSpotRecord, 'id'>[] = [
   {
     type: BambooSpotType.COMMON,
@@ -140,6 +140,7 @@ const DEFAULT_BAMBOO_SPOTS: Omit<BambooSpotRecord, 'id'>[] = [
     updatedAt: new Date()
   }
 ];
+*/
 
 /**
  * 初始化竹子收集系统

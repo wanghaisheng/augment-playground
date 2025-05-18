@@ -388,28 +388,28 @@ const VipBenefitsPage: React.FC = () => {
       )}
 
       {/* VIP高光时刻演示 - 仅在开发环境中显示 */}
-      {process.env.NODE_ENV === 'development' && (
+      {import.meta.env.DEV && (
         <div className="mt-8 max-w-4xl mx-auto">
           <VipHighlightDemo />
         </div>
       )}
 
       {/* 痛点解决方案演示 - 仅在开发环境中显示 */}
-      {process.env.NODE_ENV === 'development' && (
+      {import.meta.env.DEV && (
         <div className="mt-8 max-w-4xl mx-auto">
           <PainPointDemo />
         </div>
       )}
 
       {/* 资源不足提示演示 - 仅在开发环境中显示 */}
-      {process.env.NODE_ENV === 'development' && (
+      {import.meta.env.DEV && (
         <div className="mt-8 max-w-4xl mx-auto">
           <ResourceShortageDemo />
         </div>
       )}
 
       {/* 熊猫皮肤演示 - 仅在开发环境中显示 */}
-      {process.env.NODE_ENV === 'development' && (
+      {import.meta.env.DEV && (
         <div className="mt-8 max-w-4xl mx-auto">
           <PandaSkinDemo />
         </div>

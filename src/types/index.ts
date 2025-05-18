@@ -862,22 +862,23 @@ export interface StoreCategoryLabels {
 }
 
 export interface StorePageViewLabelsBundle {
-  pageTitle: string;
-  featuredItemsTitle: string;
-  saleItemsTitle: string;
-  allItemsTitle: string;
-  categoriesTitle: string;
-  vipSectionTitle: string;
-  vipSectionButtonOpen: string;
-  vipSectionButtonClose: string;
-  viewCartButtonText: string; // Assuming a cart feature might exist
-  errorLoadingData: string;
-  itemPreview: StoreItemPreviewLabelsBundle; // Nested structure for item preview labels
-  vipCard: StoreVipCardLabelsBundle; // Nested for VIP card
+  pageTitle?: string;
+  featuredItemsTitle?: string;
+  saleItemsTitle?: string;
+  allItemsTitle?: string;
+  categoriesTitle?: string;
+  vipSectionTitle?: string;
+  vipSectionButtonOpen?: string;
+  vipSectionButtonClose?: string;
+  viewCartButtonText?: string; // Assuming a cart feature might exist
+  errorLoadingData?: string;
+  itemPreview?: StoreItemPreviewLabelsBundle; // Nested structure for item preview labels
+  vipCard?: StoreVipCardLabelsBundle; // Nested for VIP card
   // currencyDisplay: { coinsLabel: string; jadeLabel: string; } // If needed
 }
 
-export type FetchStorePageViewResult = LocalizedContent<UserStoreDataPayload | null, StorePageViewLabelsBundle>;
+// Original store page view result with user data payload
+export type FetchStorePageViewResultWithData = LocalizedContent<UserStoreDataPayload | null, StorePageViewLabelsBundle>;
 
 export interface UserStoreDataPayload { // Assuming we might fetch all this together for the page
   categories: StoreCategoryRecord[];
@@ -1284,7 +1285,8 @@ export interface StorePageViewLabelsBundle {
   };
 }
 
-export type FetchStorePageViewResult = LocalizedContent<null, StorePageViewLabelsBundle>;
+// Store page view result without user data payload (labels only)
+export type FetchStorePageViewLabelsResult = LocalizedContent<null, StorePageViewLabelsBundle>;
 
 // --- Social Comparison Page/View Specific Types ---
 export interface SocialComparisonPageFeatureLabels {

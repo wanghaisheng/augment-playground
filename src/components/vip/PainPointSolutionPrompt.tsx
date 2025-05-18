@@ -40,8 +40,8 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
   // Fetch localized content for the pain point solution
   const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('painPointSolution', fetchPainPointSolutionView);
 
-  // Get content from viewData
-  const content = viewData?.labels || {} as { [key: string]: string };
+  // Get content from viewData or use empty object as fallback
+  const content = (viewData?.labels || {}) as { [key: string]: string };
 
   // 加载痛点解决方案详情
   useEffect(() => {

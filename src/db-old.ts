@@ -16,7 +16,7 @@ import type { ChallengeDiscovery } from '@/services/challengeDiscoveryService';
 import type { SocialChallengeRecord, SocialChallengeParticipation, SocialChallengeMilestone } from '@/services/socialChallengeService';
 import type { ReflectionRecord, ReflectionTriggerRecord, MoodRecord } from '@/services/reflectionService';
 import type { TaskReminderRecord } from '@/services/taskReminderService';
-import type { StoreItemRecord, StoreCategoryRecord, PurchaseRecord, VipSubscriptionRecord as StoreVipSubscriptionRecord, UserCurrencyRecord } from '@/services/storeService';
+import type { StoreItemRecord, StoreCategoryRecord, PurchaseRecord, UserCurrencyRecord } from '@/services/storeService';
 import type { PandaAccessoryRecord, PandaEnvironmentRecord } from '@/services/pandaCustomizationService';
 import type { ResourceMultiplierRecord } from '@/services/resourceMultiplierService';
 import type { GrowthBoostRecord } from '@/services/growthBoostService';

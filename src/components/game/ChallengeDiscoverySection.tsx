@@ -57,9 +57,9 @@ const ChallengeDiscoverySection: React.FC<ChallengeDiscoverySectionProps> = ({
       setDiscoveries(unviewedDiscoveries);
 
       // 获取推荐的挑战
-      const recommendedChallenges = await getRecommendedChallenges(3);
+      const recommendedChallenges = await getRecommendedChallenges('current-user');
       // Convert ChallengeRecord[] to ChallengeRecommendation[]
-      const recommendationsData = recommendedChallenges.map(challenge => ({
+      const recommendationsData = recommendedChallenges.slice(0, 3).map(challenge => ({
         challenge,
         score: 0,
         reason: ''

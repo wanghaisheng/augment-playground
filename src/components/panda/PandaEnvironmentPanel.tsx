@@ -311,11 +311,11 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                     <Button
                       variant="jade"
                       onClick={() => handleActivateEnvironment(previewEnvironment)}
-                      disabled={isUpdating || (activeEnvironment && activeEnvironment.id === previewEnvironment.id)}
+                      disabled={isUpdating || (activeEnvironment?.id === previewEnvironment.id)}
                     >
                       {isUpdating ? (
                         <LoadingSpinner variant="white" size="small" />
-                      ) : activeEnvironment && activeEnvironment.id === previewEnvironment.id ? (
+                      ) : activeEnvironment?.id === previewEnvironment.id ? (
                         '当前环境'
                       ) : (
                         '激活环境'

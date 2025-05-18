@@ -16,7 +16,7 @@ import { VipTaskSeriesType, VipTaskSeriesRecord as BaseVipTaskSeriesRecord } fro
  * 扩展VIP任务系列记录，添加额外的字段
  */
 export interface ExtendedVipTaskSeriesRecord extends Omit<BaseVipTaskSeriesRecord, 'taskIds'> {
-  iconPath?: string;
+  iconPath: string;
   taskIds: number[]; // Override the string type with number[]
 }
 
@@ -36,9 +36,10 @@ export async function canAccessVipTasks(userId: string): Promise<boolean> {
 export async function getAllVipTaskSeries(): Promise<ExtendedVipTaskSeriesRecord[]> {
   const series = await db.vipTaskSeries.toArray();
 
-  // Convert taskIds from string to number[]
+  // Convert taskIds from string to number[] and ensure iconPath exists
   return series.map(item => ({
     ...item,
+    iconPath: item.iconPath || '/assets/vip/default-series-icon.svg',
     taskIds: item.taskIds ? JSON.parse(item.taskIds as unknown as string) : []
   })) as ExtendedVipTaskSeriesRecord[];
 }
@@ -52,9 +53,10 @@ export async function getActiveVipTaskSeries(): Promise<ExtendedVipTaskSeriesRec
     .filter(series => series.isActive === true)
     .toArray();
 
-  // Convert taskIds from string to number[]
+  // Convert taskIds from string to number[] and ensure iconPath exists
   return series.map(item => ({
     ...item,
+    iconPath: item.iconPath || '/assets/vip/default-series-icon.svg',
     taskIds: item.taskIds ? JSON.parse(item.taskIds as unknown as string) : []
   })) as ExtendedVipTaskSeriesRecord[];
 }
@@ -69,9 +71,10 @@ export async function getVipTaskSeries(seriesId: number): Promise<ExtendedVipTas
 
   if (!series) return undefined;
 
-  // Convert taskIds from string to number[]
+  // Convert taskIds from string to number[] and ensure iconPath exists
   return {
     ...series,
+    iconPath: series.iconPath || '/assets/vip/default-series-icon.svg',
     taskIds: series.taskIds ? JSON.parse(series.taskIds as unknown as string) : []
   } as ExtendedVipTaskSeriesRecord;
 }
@@ -127,8 +130,8 @@ export async function createVipTaskSeries(
 
   // 添加到同步队列
   await addSyncItem('vipTaskSeries', 'create', {
-    ...createdSeries,
-    taskIds: JSON.stringify(createdSeries.taskIds)
+    ...dbSeries,
+    id: id as number
   });
 
   return createdSeries;

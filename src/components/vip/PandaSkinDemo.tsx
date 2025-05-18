@@ -110,7 +110,7 @@ const PandaSkinDemo: React.FC = () => {
             >
               <div className="skin-image p-4 bg-gray-50 flex justify-center">
                 <img
-                  src={skin.thumbnailPath}
+                  src={`/assets/skins/${skin.assetKey}_thumbnail.svg`}
                   alt={skin.name}
                   className="h-32 object-contain"
                 />

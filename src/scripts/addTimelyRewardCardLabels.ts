@@ -3,9 +3,17 @@
 
 // 导入数据库
 import { db } from '../db-old';
+import type { Language } from '@/types';
 
 // 定义要添加的标签
-const timelyRewardCardLabels = [
+interface TimelyRewardCardLabel {
+  scopeKey: string;
+  labelKey: string;
+  languageCode: Language;
+  translatedText: string;
+}
+
+const timelyRewardCardLabels: TimelyRewardCardLabel[] = [
   // 类型标签
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeLabel', languageCode: 'en', translatedText: 'Type' },
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeLabel', languageCode: 'zh', translatedText: '类型' },
@@ -17,7 +25,7 @@ const timelyRewardCardLabels = [
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeStreak', languageCode: 'zh', translatedText: '连续完成奖励' },
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeSpecial', languageCode: 'en', translatedText: 'Special Reward' },
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'typeSpecial', languageCode: 'zh', translatedText: '特殊奖励' },
-  
+
   // 状态标签
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusLabel', languageCode: 'en', translatedText: 'Status' },
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusLabel', languageCode: 'zh', translatedText: '状态' },
@@ -29,7 +37,7 @@ const timelyRewardCardLabels = [
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusExpired', languageCode: 'zh', translatedText: '已过期' },
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusUpcoming', languageCode: 'en', translatedText: 'Upcoming' },
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'statusUpcoming', languageCode: 'zh', translatedText: '即将开始' },
-  
+
   // 其他标签
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'remainingTimeLabel', languageCode: 'en', translatedText: 'Remaining time' },
   { scopeKey: 'timelyRewardsView.rewardCard', labelKey: 'remainingTimeLabel', languageCode: 'zh', translatedText: '剩余时间' },
@@ -65,7 +73,7 @@ const timelyRewardCardLabels = [
 async function addTimelyRewardCardLabels(): Promise<void> {
   try {
     console.log('Adding TimelyRewardCard labels to database...');
-    
+
     // 检查标签是否已存在
     for (const label of timelyRewardCardLabels) {
       const existingLabel = await db.uiLabels
@@ -75,7 +83,7 @@ async function addTimelyRewardCardLabels(): Promise<void> {
           languageCode: label.languageCode
         })
         .first();
-      
+
       if (!existingLabel) {
         await db.uiLabels.add(label);
         console.log(`Added label: ${label.scopeKey}.${label.labelKey} (${label.languageCode})`);
@@ -83,7 +91,7 @@ async function addTimelyRewardCardLabels(): Promise<void> {
         console.log(`Label already exists: ${label.scopeKey}.${label.labelKey} (${label.languageCode})`);
       }
     }
-    
+
     console.log('TimelyRewardCard labels added successfully.');
   } catch (error) {
     console.error('Error adding TimelyRewardCard labels:', error);
@@ -94,6 +102,8 @@ async function addTimelyRewardCardLabels(): Promise<void> {
 export { addTimelyRewardCardLabels };
 
 // 如果直接运行此脚本，则执行添加标签操作
-if (require.main === module) {
-  addTimelyRewardCardLabels();
-}
+// Note: This check doesn't work in browser environment, only in Node.js
+// Commented out for TypeScript compatibility
+// if (require.main === module) {
+//   addTimelyRewardCardLabels();
+// }

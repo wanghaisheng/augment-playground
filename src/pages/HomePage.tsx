@@ -13,7 +13,7 @@ import VipValueSummary from '@/components/vip/VipValueSummary';
 import VipValueModal from '@/components/vip/VipValueModal';
 import { initializeGameData } from '@/services/gameInitService';
 import { HomePageSkeleton } from '@/components/skeleton';
-import type { HomePageViewDataPayload, HomePageViewLabelsBundle, ApiError } from '@/types';
+import type { HomePageViewDataPayload, HomePageViewLabelsBundle } from '@/types';
 import { triggerDataRefresh } from '@/hooks/useDataRefresh';
 import { usePandaState } from '@/context/PandaStateProvider';
 

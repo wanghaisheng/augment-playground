@@ -27,7 +27,7 @@ import { pageTransition } from '@/utils/animation';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { fetchStorePageView } from '@/services';
 import { StorePageSkeleton } from '@/components/skeleton';
-import type { StorePageViewLabelsBundle, FetchStorePageViewResult, UserStoreDataPayload } from '@/types';
+import type { StorePageViewLabelsBundle, FetchStorePageViewLabelsResult } from '@/types';
 
 /**
  * 商店页面

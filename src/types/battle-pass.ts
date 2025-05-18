@@ -77,7 +77,7 @@ export interface UserBattlePassOwnershipRecord {
   id: number;
   userId: string;
   passId: number;
-  purchaseDate: Date;
+  purchaseDate: string; // ISO string date format
   platformTransactionId: string;
   passType: BattlePassType;
 }

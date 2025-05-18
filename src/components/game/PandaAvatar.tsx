@@ -99,16 +99,18 @@ const PandaAvatar: React.FC<PandaAvatarProps> = ({
   const getPandaImage = (pandaMood: PandaMood) => {
     // 如果有皮肤，使用皮肤的图像
     if (skin) {
+      // 使用 assetKey 构建图像路径
+      const basePath = `/assets/skins/${skin.assetKey}`;
       switch (pandaMood) {
         case 'happy':
-          return skin.imagePath.happy;
+          return `${basePath}_happy.svg`;
         case 'focused':
-          return skin.imagePath.focused;
+          return `${basePath}_focused.svg`;
         case 'tired':
-          return skin.imagePath.tired;
+          return `${basePath}_tired.svg`;
         case 'normal':
         default:
-          return skin.imagePath.normal;
+          return `${basePath}_normal.svg`;
       }
     }
 

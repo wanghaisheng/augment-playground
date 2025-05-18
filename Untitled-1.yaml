@@ -1,0 +1,1109 @@
+[vite] connecting... client:495:9
+[vite] connected. client:618:15
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools chunk-5FIUFYUJ.js:21551:25
+SVC_DEXIE: Fetching COMPONENTS LABELS for lang: en localizedContentService.ts:106:11
+SVC_DEXIE: Fetching GLOBAL LAYOUT VIEW for lang: en localizedContentService.ts:41:11
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition. react-router-dom.js:4394:13
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath. react-router-dom.js:4394:13
+Auto sync stopped optimizedSyncService.ts:122:11
+Populating Final V3 Dexie DB... db-old.ts:177:11
+Failed to initialize database: 
+Object { _e: Error, name: "BulkError", failures: (14) […], failuresByPos: (1005) […], message: "uiLabels.bulkAdd(): 14 of 1096 operations failed. Errors: ConstraintError: A mutation operation in the transaction failed because a constraint was not satisfied.", _promise: {…}, stack: "", … }
+App.tsx:151:17
+Added VIP navigation labels db-update.ts:16:15
+CRITICAL: No labels found for essential scope components (lang: en or fallback 'en'). Unable to build labels bundle. localizedContentService.ts:35:13
+The query {"scopeKey":"pandaEvolution","languageCode":"en"} on uiLabels would benefit of a compound index [scopeKey+languageCode] dexie.js:1257:15
+SVC_DEXIE: Fetching RESOURCE SHORTAGE VIEW for lang: en localizedContentService.ts:172:11
+Sound has been enabled sound.ts:209:11
+The query {"scopeKey":"pandaEvolution","languageCode":"en"} on uiLabels would benefit of a compound index [scopeKey+languageCode] dexie.js:1257:15
+Sound has been enabled sound.ts:209:11
+Added Battle Pass navigation labels db-update.ts:30:15
+Added Avatar Frames navigation labels db-update.ts:45:13
+Sync item added: bambooPlots create 1 dataSyncService.ts:66:13
+Sync started dataSyncService.ts:96:13
+Sync item added: bambooPlots create 2 dataSyncService.ts:66:13
+Failed to add Battle Pass page view labels: 
+Object { _e: Error, name: "BulkError", failures: (18) […], failuresByPos: (250) […], message: "uiLabels.bulkAdd(): 18 of 352 operations failed. Errors: ConstraintError: A mutation operation in the transaction failed because a constraint was not satisfied.", _promise: {…}, stack: "", … }
+db-update.ts:479:13
+Bamboo trading system initialized bambooTradingService.ts:31:13
+Found 2 items to sync dataSyncService.ts:105:13
+Bamboo trading system initialized bambooTradingService.ts:31:13
+Sync item added: milestones create 1 dataSyncService.ts:66:13
+Sync item added: bambooPlots create 3 dataSyncService.ts:66:13
+Sync item added: milestones create 8 dataSyncService.ts:66:13
+Sync item added: bambooPlots create 4 dataSyncService.ts:66:13
+Sync item added: milestones create 2 dataSyncService.ts:66:13
+Sync item added: milestones create 9 dataSyncService.ts:66:13
+Sync item added: bambooPlots create 5 dataSyncService.ts:66:13
+Bamboo planting system initialized bambooPlantingService.ts:14:13
+Sync item added: bambooPlots create 6 dataSyncService.ts:66:13
+Unhandled rejection: SchemaError: KeyPath [userId+plotId] on object store bambooPlants is not indexed
+getPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84
+useBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:62:36
+
+From previous: 
+getPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84
+useBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:62:36
+2 dexie.js:1136:17
+Failed to get plants in plot: 
+Object { _e: Error, name: "SchemaError", message: "KeyPath [userId+plotId] on object store bambooPlants is not indexed", inner: null, _promise: {…}, _stack: "SchemaError: KeyPath [userId+plotId] on object store bambooPlants is not indexed\ngetPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84\nuseBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:62:36\n", stack: "", … }
+bambooPlantingService.ts:544:13
+Unhandled rejection: SchemaError: KeyPath [userId+plotId] on object store bambooPlants is not indexed
+getPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84
+useBambooSystem/<@http://localhost:5173/src/hooks/useBambooSystem.ts:113:22
+commitHookEffectListMount@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:16915:34
+commitPassiveMountOnFiber@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18156:44
+commitPassiveMountEffects_complete@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18129:42
+commitPassiveMountEffects_begin@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18119:49
+commitPassiveMountEffects@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18109:42
+flushPassiveEffectsImpl@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:19490:36
+flushPassiveEffects@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:19447:22
+node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js/commitRootImpl/<@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:19328:17
+workLoop@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:197:50
+flushWork@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:176:22
+performWorkUntilDeadline@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:384:29
+
+From previous: 
+getPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84
+useBambooSystem/<@http://localhost:5173/src/hooks/useBambooSystem.ts:113:22
+commitHookEffectListMount@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:16915:34
+commitPassiveMountOnFiber@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18156:44
+commitPassiveMountEffects_complete@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18129:42
+commitPassiveMountEffects_begin@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18119:49
+commitPassiveMountEffects@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18109:42
+flushPassiveEffectsImpl@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:19490:36
+flushPassiveEffects@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:19447:22
+node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js/commitRootImpl/<@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:19328:17
+workLoop@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:197:50
+flushWork@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:176:22
+performWorkUntilDeadline@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:384:29
+2 dexie.js:1136:17
+Failed to get plants in plot: 
+Object { _e: Error, name: "SchemaError", message: "KeyPath [userId+plotId] on object store bambooPlants is not indexed", inner: null, _promise: {…}, _stack: "SchemaError: KeyPath [userId+plotId] on object store bambooPlants is not indexed\ngetPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84\nuseBambooSystem/<@http://localhost:5173/src/hooks/useBambooSystem.ts:113:22\ncommitHookEffectListMount@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:16915:34\ncommitPassiveMountOnFiber@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18156:44\ncommitPassiveMountEffects_complete@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18129:42\ncommitPassiveMountEffects_begin@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18119:49\ncommitPassiveMountEffects@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:18109:42\nflushPassiveEffectsImpl@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:19490:36\nflushPassiveEffects@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:19447:22\nnode_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js/commitRootImpl/<@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:19328:17\nworkLoop@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:197:50\nflushWork@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:176:22\nperformWorkUntilDeadline@http://localhost:5173/node_modules/.vite/deps/chunk-5FIUFYUJ.js?v=0d234a22:384:29\n", stack: "", … }
+bambooPlantingService.ts:544:13
+Bamboo trading system initialized bambooTradingService.ts:31:13
+Bamboo planting system initialized bambooPlantingService.ts:14:13
+Unhandled rejection: SchemaError: KeyPath [userId+plotId] on object store bambooPlants is not indexed
+getPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84
+useBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:62:36
+
+From previous: 
+getPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84
+useBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:62:36
+2 dexie.js:1136:17
+Failed to get plants in plot: 
+Object { _e: Error, name: "SchemaError", message: "KeyPath [userId+plotId] on object store bambooPlants is not indexed", inner: null, _promise: {…}, _stack: "SchemaError: KeyPath [userId+plotId] on object store bambooPlants is not indexed\ngetPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84\nuseBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:62:36\n", stack: "", … }
+bambooPlantingService.ts:544:13
+Bamboo planting system initialized bambooPlantingService.ts:14:13
+Unhandled rejection: SchemaError: KeyPath [userId+plotId] on object store bambooPlants is not indexed
+getPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84
+useBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:56:34
+
+From previous: 
+getPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84
+useBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:56:34
+2 dexie.js:1136:17
+Failed to get plants in plot: 
+Object { _e: Error, name: "SchemaError", message: "KeyPath [userId+plotId] on object store bambooPlants is not indexed", inner: null, _promise: {…}, _stack: "SchemaError: KeyPath [userId+plotId] on object store bambooPlants is not indexed\ngetPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84\nuseBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:56:34\n", stack: "", … }
+bambooPlantingService.ts:544:13
+Sync item added: milestones create 3 dataSyncService.ts:66:13
+Sync item added: milestones create 10 dataSyncService.ts:66:13
+Sync item added: milestones create 4 dataSyncService.ts:66:13
+Sync item added: milestones create 11 dataSyncService.ts:66:13
+Sync item added: milestones create 5 dataSyncService.ts:66:13
+Sync item added: milestones create 12 dataSyncService.ts:66:13
+CRITICAL: No labels found for essential scope resourceShortage (lang: en or fallback 'en'). Unable to build labels bundle. localizedContentService.ts:35:13
+Sync item added: milestones create 6 dataSyncService.ts:66:13
+Added Growth Boost Indicator labels db-update.ts:81:13
+Sync item added: milestones create 13 dataSyncService.ts:66:13
+Added panda evolution labels db-panda-evolution.ts:77:13
+Sync item added: milestones create 7 dataSyncService.ts:66:13
+Sync item added: milestones create 14 dataSyncService.ts:66:13
+Simulated sync for item bambooPlots_1_1747540370878: 
+Object { id: "bambooPlots_1_1747540370878", table: "bambooPlots", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:50 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Bamboo trading system initialized bambooTradingService.ts:31:13
+Bamboo planting system initialized bambooPlantingService.ts:14:13
+Unhandled rejection: SchemaError: KeyPath [userId+plotId] on object store bambooPlants is not indexed
+getPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84
+useBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:56:34
+
+From previous: 
+getPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84
+useBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:56:34
+2 dexie.js:1136:17
+Failed to get plants in plot: 
+Object { _e: Error, name: "SchemaError", message: "KeyPath [userId+plotId] on object store bambooPlants is not indexed", inner: null, _promise: {…}, _stack: "SchemaError: KeyPath [userId+plotId] on object store bambooPlants is not indexed\ngetPlantsInPlot@http://localhost:5173/src/services/bambooPlantingService.ts:542:84\nuseBambooSystem/loadPlantingData<@http://localhost:5173/src/hooks/useBambooSystem.ts:56:34\n", stack: "", … }
+bambooPlantingService.ts:544:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/morning_bell.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/fertilize.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 2 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+downloadable font: download failed (font-family: "LXGW WenKai Screen" style:normal weight:700 stretch:100 src index:0): status=2147746065 source: https://cdn.jsdelivr.net/gh/chawyehsu/lxgw-wenkai-webfont@latest/style/LXGW-WenKai-Screen-Bold.css
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_uncommon.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_epic.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_rare.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_legendary.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete_high.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete_main.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete_hard.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete_expert.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_failed.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/level_up.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/ability_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/ability_activated.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/error.mp3 加载失败。 localhost:5173
+SVC_DEXIE: Fetching HOME PAGE VIEW for lang: en localizedContentService.ts:47:11
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/success.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/notification.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/achievement.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/success.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_happy.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_sad.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_eat.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_play.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_talk.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_train.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water_splash.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/camera_shutter.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/lullaby.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/morning_bell.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/fertilize.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 2 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+Uncaught Error: useAuth must be used within an AuthProvider
+    useAuth AuthContext.tsx:39
+    ResourcesSection ResourcesSection.tsx:50
+    React 13
+AuthContext.tsx:44:11
+Uncaught ReferenceError: labels is not defined
+    VipValueModal VipValueModal.tsx:46
+    React 13
+VipValueModal.tsx:42:19
+Uncaught Error: useAuth must be used within an AuthProvider
+    useAuth AuthContext.tsx:39
+    ResourcesSection ResourcesSection.tsx:50
+    React 14
+AuthContext.tsx:44:11
+Uncaught ReferenceError: labels is not defined
+    VipValueModal VipValueModal.tsx:46
+    React 14
+VipValueModal.tsx:42:19
+The above error occurred in the <ResourcesSection> component:
+
+ResourcesSection@http://localhost:5173/src/features/home/ResourcesSection.tsx:46:27
+div
+div
+HomePage@http://localhost:5173/src/pages/HomePage.tsx:36:55
+div
+MotionComponent@http://localhost:5173/node_modules/.vite/deps/framer-motion.js?v=0d234a22:4619:40
+EnhancedPageTransition@http://localhost:5173/src/components/animation/EnhancedPageTransition.tsx:32:32
+RenderedRoute@http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=0d234a22:4092:7
+Routes@http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=0d234a22:4561:7
+PresenceChild@http://localhost:5173/node_modules/.vite/deps/framer-motion.js?v=0d234a22:137:21
+AnimatePresence@http://localhost:5173/node_modules/.vite/deps/framer-motion.js?v=0d234a22:216:23
+Suspense
+AppRouter@http://localhost:5173/src/router.tsx:76:20
+main
+div
+AppShell@http://localhost:5173/src/components/layout/AppShell.tsx:29:18
+Router@http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=0d234a22:4509:7
+BrowserRouter@http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=0d234a22:5252:7
+SkeletonProvider@http://localhost:5173/src/context/SkeletonProvider.tsx:20:33
+OfflineStatusProvider@http://localhost:5173/src/context/OfflineStatusProvider.tsx:21:38
+NotificationProvider@http://localhost:5173/src/context/NotificationProvider.tsx:36:37
+BackgroundMusicProvider@http://localhost:5173/src/context/BackgroundMusicProvider.tsx:88:40
+AnimationPerformanceProvider@http://localhost:5173/src/context/AnimationPerformanceProvider.tsx:30:45
+PandaStateProvider@http://localhost:5173/src/context/PandaStateProvider.tsx:35:35
+DataRefreshProvider@http://localhost:5173/src/context/DataRefreshProvider.tsx:20:36
+LanguageProvider@http://localhost:5173/src/context/LanguageProvider.tsx:22:33
+QueryClientProvider@http://localhost:5173/node_modules/.vite/deps/@tanstack_react-query.js?v=0d234a22:2874:27
+App@http://localhost:5173/src/App.tsx:60:12
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. chunk-5FIUFYUJ.js:14032:23
+The above error occurred in the <VipValueModal> component:
+
+VipValueModal@http://localhost:5173/src/components/vip/VipValueModal.tsx:25:23
+div
+div
+HomePage@http://localhost:5173/src/pages/HomePage.tsx:36:55
+div
+MotionComponent@http://localhost:5173/node_modules/.vite/deps/framer-motion.js?v=0d234a22:4619:40
+EnhancedPageTransition@http://localhost:5173/src/components/animation/EnhancedPageTransition.tsx:32:32
+RenderedRoute@http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=0d234a22:4092:7
+Routes@http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=0d234a22:4561:7
+PresenceChild@http://localhost:5173/node_modules/.vite/deps/framer-motion.js?v=0d234a22:137:21
+AnimatePresence@http://localhost:5173/node_modules/.vite/deps/framer-motion.js?v=0d234a22:216:23
+Suspense
+AppRouter@http://localhost:5173/src/router.tsx:76:20
+main
+div
+AppShell@http://localhost:5173/src/components/layout/AppShell.tsx:29:18
+Router@http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=0d234a22:4509:7
+BrowserRouter@http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=0d234a22:5252:7
+SkeletonProvider@http://localhost:5173/src/context/SkeletonProvider.tsx:20:33
+OfflineStatusProvider@http://localhost:5173/src/context/OfflineStatusProvider.tsx:21:38
+NotificationProvider@http://localhost:5173/src/context/NotificationProvider.tsx:36:37
+BackgroundMusicProvider@http://localhost:5173/src/context/BackgroundMusicProvider.tsx:88:40
+AnimationPerformanceProvider@http://localhost:5173/src/context/AnimationPerformanceProvider.tsx:30:45
+PandaStateProvider@http://localhost:5173/src/context/PandaStateProvider.tsx:35:35
+DataRefreshProvider@http://localhost:5173/src/context/DataRefreshProvider.tsx:20:36
+LanguageProvider@http://localhost:5173/src/context/LanguageProvider.tsx:22:33
+QueryClientProvider@http://localhost:5173/node_modules/.vite/deps/@tanstack_react-query.js?v=0d234a22:2874:27
+App@http://localhost:5173/src/App.tsx:60:12
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. chunk-5FIUFYUJ.js:14032:23
+Uncaught Error: useAuth must be used within an AuthProvider
+    useAuth AuthContext.tsx:39
+    ResourcesSection ResourcesSection.tsx:50
+    React 11
+AuthContext.tsx:44:11
+Auto sync stopped optimizedSyncService.ts:122:11
+Simulated sync for item bambooPlots_2_1747540370887: 
+Object { id: "bambooPlots_2_1747540370887", table: "bambooPlots", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:50 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Sync completed successfully dataSyncService.ts:126:13
+downloadable font: download failed (font-family: "思源宋体" style:normal weight:400 stretch:100 src index:0): status=2147746065 source: https://cdn.jsdelivr.net/gh/googlefonts/noto-cjk@main/Serif/OTF/Chinese-Simplified/NotoSerifCJKsc-Regular.otf
+无法播放媒体。没有相应格式的解码器：text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_uncommon.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_rare.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_legendary.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_epic.mp3 加载失败。 localhost:5173
+downloadable font: download failed (font-family: "思源宋体" style:normal weight:700 stretch:100 src index:0): status=2147746065 source: https://cdn.jsdelivr.net/gh/googlefonts/noto-cjk@main/Serif/OTF/Chinese-Simplified/NotoSerifCJKsc-Bold.otf
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete_main.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete_high.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/ability_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete_hard.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/ability_activated.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete_expert.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/error.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_failed.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/level_up.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/success.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/achievement.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/notification.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/success.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_happy.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_sad.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_eat.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_play.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_train.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_talk.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water_splash.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/camera_shutter.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/lullaby.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/morning_bell.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/fertilize.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 2 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_uncommon.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_epic.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_rare.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_legendary.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete_high.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete_main.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete_hard.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete_expert.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_failed.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/level_up.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/ability_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/ability_activated.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/error.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/success.mp3 加载失败。 2 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/notification.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/achievement.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_happy.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_sad.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_eat.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_play.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_train.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_talk.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water_splash.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/camera_shutter.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/lullaby.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/morning_bell.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/fertilize.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+无法播放媒体。没有相应格式的解码器：text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_uncommon.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_uncommon.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_uncommon.mp3 Error: Failed to load audio: /assets/sounds/reward_uncommon.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_common.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_common.mp3 Error: Failed to load audio: /assets/sounds/reward_common.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_rare.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_rare.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_rare.mp3 Error: Failed to load audio: /assets/sounds/reward_rare.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_complete.mp3 Error: Failed to load audio: /assets/sounds/task_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_legendary.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_legendary.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_legendary.mp3 Error: Failed to load audio: /assets/sounds/reward_legendary.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_epic.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_epic.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_epic.mp3 Error: Failed to load audio: /assets/sounds/reward_epic.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete_main.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_complete_main.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_complete_main.mp3 Error: Failed to load audio: /assets/sounds/task_complete_main.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_created.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_created.mp3 Error: Failed to load audio: /assets/sounds/task_created.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_failed.mp3 Error: Failed to load audio: /assets/sounds/task_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete_high.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_complete_high.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_complete_high.mp3 Error: Failed to load audio: /assets/sounds/task_complete_high.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_complete.mp3 Error: Failed to load audio: /assets/sounds/challenge_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/ability_unlocked.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/ability_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/ability_unlocked.mp3 Error: Failed to load audio: /assets/sounds/ability_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete_hard.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_complete_hard.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_complete_hard.mp3 Error: Failed to load audio: /assets/sounds/challenge_complete_hard.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/ability_activated.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/ability_activated.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/ability_activated.mp3 Error: Failed to load audio: /assets/sounds/ability_activated.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete_expert.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_complete_expert.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_complete_expert.mp3 Error: Failed to load audio: /assets/sounds/challenge_complete_expert.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_unlocked.mp3 Error: Failed to load audio: /assets/sounds/challenge_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/error.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/error.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/error.mp3 Error: Failed to load audio: /assets/sounds/error.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_failed.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_failed.mp3 Error: Failed to load audio: /assets/sounds/challenge_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/level_up.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/level_up.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/level_up.mp3 Error: Failed to load audio: /assets/sounds/level_up.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/button_click.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/button_click.mp3 Error: Failed to load audio: /assets/sounds/button_click.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/success.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/success.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/success.mp3 Error: Failed to load audio: /assets/sounds/success.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/achievement.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/achievement.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/achievement.mp3 Error: Failed to load audio: /assets/sounds/achievement.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/notification.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/notification.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/notification.mp3 Error: Failed to load audio: /assets/sounds/notification.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/success.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/success.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/success.mp3 Error: Failed to load audio: /assets/sounds/success.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_happy.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_happy.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_happy.mp3 Error: Failed to load audio: /assets/sounds/panda_happy.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_train.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_talk.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water_splash.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/camera_shutter.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/lullaby.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_sad.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/morning_bell.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_eat.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_play.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_train.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_train.mp3 Error: Failed to load audio: /assets/sounds/panda_train.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_talk.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_talk.mp3 Error: Failed to load audio: /assets/sounds/panda_talk.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/water_splash.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/water_splash.mp3 Error: Failed to load audio: /assets/sounds/water_splash.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/camera_shutter.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/camera_shutter.mp3 Error: Failed to load audio: /assets/sounds/camera_shutter.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/lullaby.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/lullaby.mp3 Error: Failed to load audio: /assets/sounds/lullaby.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_sad.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_sad.mp3 Error: Failed to load audio: /assets/sounds/panda_sad.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/morning_bell.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/morning_bell.mp3 Error: Failed to load audio: /assets/sounds/morning_bell.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/bamboo_collect.mp3 Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_eat.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_eat.mp3 Error: Failed to load audio: /assets/sounds/panda_eat.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_play.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_play.mp3 Error: Failed to load audio: /assets/sounds/panda_play.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/water.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/water.mp3 Error: Failed to load audio: /assets/sounds/water.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/fertilize.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/fertilize.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/fertilize.mp3 Error: Failed to load audio: /assets/sounds/fertilize.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/bamboo_collect.mp3 Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_common.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_common.mp3 Error: Failed to load audio: /assets/sounds/reward_common.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/button_click.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/button_click.mp3 Error: Failed to load audio: /assets/sounds/button_click.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_unlocked.mp3 Error: Failed to load audio: /assets/sounds/challenge_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_common.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_common.mp3 Error: Failed to load audio: /assets/sounds/reward_common.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/bamboo_collect.mp3 Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_complete.mp3 Error: Failed to load audio: /assets/sounds/task_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_failed.mp3 Error: Failed to load audio: /assets/sounds/task_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_created.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_created.mp3 Error: Failed to load audio: /assets/sounds/task_created.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_uncommon.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_uncommon.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_uncommon.mp3 Error: Failed to load audio: /assets/sounds/reward_uncommon.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_epic.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_epic.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_epic.mp3 Error: Failed to load audio: /assets/sounds/reward_epic.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_rare.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_rare.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_rare.mp3 Error: Failed to load audio: /assets/sounds/reward_rare.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_legendary.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_legendary.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_legendary.mp3 Error: Failed to load audio: /assets/sounds/reward_legendary.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_complete.mp3 Error: Failed to load audio: /assets/sounds/task_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete_high.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_complete_high.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_complete_high.mp3 Error: Failed to load audio: /assets/sounds/task_complete_high.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete_main.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_complete_main.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_complete_main.mp3 Error: Failed to load audio: /assets/sounds/task_complete_main.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_failed.mp3 Error: Failed to load audio: /assets/sounds/task_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_created.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_created.mp3 Error: Failed to load audio: /assets/sounds/task_created.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_complete.mp3 Error: Failed to load audio: /assets/sounds/challenge_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete_hard.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_complete_hard.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_complete_hard.mp3 Error: Failed to load audio: /assets/sounds/challenge_complete_hard.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_complete_expert.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_complete_expert.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_complete_expert.mp3 Error: Failed to load audio: /assets/sounds/challenge_complete_expert.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_failed.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_failed.mp3 Error: Failed to load audio: /assets/sounds/challenge_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_unlocked.mp3 Error: Failed to load audio: /assets/sounds/challenge_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/level_up.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/level_up.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/level_up.mp3 Error: Failed to load audio: /assets/sounds/level_up.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/success.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/success.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/success.mp3 Error: Failed to load audio: /assets/sounds/success.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/ability_unlocked.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/ability_activated.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/ability_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/ability_unlocked.mp3 Error: Failed to load audio: /assets/sounds/ability_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/ability_activated.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/ability_activated.mp3 Error: Failed to load audio: /assets/sounds/ability_activated.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/error.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/button_click.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/button_click.mp3 Error: Failed to load audio: /assets/sounds/button_click.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/error.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/error.mp3 Error: Failed to load audio: /assets/sounds/error.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/success.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/success.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/success.mp3 Error: Failed to load audio: /assets/sounds/success.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/notification.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/notification.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/notification.mp3 Error: Failed to load audio: /assets/sounds/notification.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/achievement.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/achievement.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/achievement.mp3 Error: Failed to load audio: /assets/sounds/achievement.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_happy.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_happy.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_happy.mp3 Error: Failed to load audio: /assets/sounds/panda_happy.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_sad.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_sad.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_sad.mp3 Error: Failed to load audio: /assets/sounds/panda_sad.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_eat.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_eat.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_eat.mp3 Error: Failed to load audio: /assets/sounds/panda_eat.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_play.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_play.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_play.mp3 Error: Failed to load audio: /assets/sounds/panda_play.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_train.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_train.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_train.mp3 Error: Failed to load audio: /assets/sounds/panda_train.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/panda_talk.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/panda_talk.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/panda_talk.mp3 Error: Failed to load audio: /assets/sounds/panda_talk.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water_splash.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/water_splash.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/water_splash.mp3 Error: Failed to load audio: /assets/sounds/water_splash.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/camera_shutter.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/camera_shutter.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/camera_shutter.mp3 Error: Failed to load audio: /assets/sounds/camera_shutter.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/lullaby.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/lullaby.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/lullaby.mp3 Error: Failed to load audio: /assets/sounds/lullaby.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/morning_bell.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/morning_bell.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/morning_bell.mp3 Error: Failed to load audio: /assets/sounds/morning_bell.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/bamboo_collect.mp3 Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/bamboo_collect.mp3 Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/bamboo_collect.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/bamboo_collect.mp3 Error: Failed to load audio: /assets/sounds/bamboo_collect.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/water.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/water.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/water.mp3 Error: Failed to load audio: /assets/sounds/water.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/fertilize.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/fertilize.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/fertilize.mp3 Error: Failed to load audio: /assets/sounds/fertilize.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/button_click.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/button_click.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/button_click.mp3 Error: Failed to load audio: /assets/sounds/button_click.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/challenge_unlocked.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/challenge_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/challenge_unlocked.mp3 Error: Failed to load audio: /assets/sounds/challenge_unlocked.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/reward_common.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/reward_common.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/reward_common.mp3 Error: Failed to load audio: /assets/sounds/reward_common.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_complete.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_complete.mp3 Error: Failed to load audio: /assets/sounds/task_complete.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_created.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_created.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_created.mp3 Error: Failed to load audio: /assets/sounds/task_created.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+不支持 HTTP "Content-Type" 设为 "text/html"。媒体资源 http://localhost:5173/assets/sounds/task_failed.mp3 加载失败。 localhost:5173
+Error preloading sounds: Error: Failed to load audio: /assets/sounds/task_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+SoundManager.tsx:62:17
+Failed to preload audio: /assets/sounds/task_failed.mp3 Error: Failed to load audio: /assets/sounds/task_failed.mp3
+    loadWithHtmlAudio soundLoader.ts:237
+soundLoader.ts:70:13
+无法播放媒体。没有相应格式的解码器：text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html, text/html localhost:5173
+已拦截跨源请求：同源策略禁止读取位于 https://your-database-url.turso.io/v2/pipeline 的远程资源。（原因：CORS 头缺少 'Access-Control-Allow-Origin'）。状态码：404。
+已拦截跨源请求：同源策略禁止读取位于 https://your-database-url.turso.io/v2/pipeline 的远程资源。（原因：CORS 请求未能成功）。状态码：(null)。
+Error creating Battle Pass tables in Turso: TypeError: NetworkError when attempting to fetch resource. db-battle-pass.ts:104:13
+Failed to initialize Battle Pass database: TypeError: NetworkError when attempting to fetch resource. db-battle-pass.ts:114:13
+Populating Battle Pass sample data... db-battle-pass-sample.ts:12:13
+Created Battle Pass with ID: 0 db-battle-pass-sample.ts:32:13
+Created 30 Battle Pass levels db-battle-pass-sample.ts:51:13
+Created 9 Battle Pass tasks db-battle-pass-sample.ts:148:13
+Created 4 items for Battle Pass rewards db-battle-pass-sample.ts:188:15
+Battle Pass sample data populated successfully db-battle-pass-sample.ts:190:13
+Initializing Battle Pass task tracking... battlePassTaskTrackingService.ts:22:13
+No active Battle Pass found battlePassTaskTrackingService.ts:25:15
+Data sync service initialized dataSyncService.ts:22:11
+Optimized sync service initialized with config: 
+Object { autoSyncInterval: 30000, maxRetryCount: 5, batchSize: 20, enableIncrementalSync: true, enablePrioritySync: true, networkCheckInterval: 10000, syncThrottleTime: 2000, syncTimeout: 30000, retryDelay: 5000, conflictResolution: "client-wins", … }
+optimizedSyncService.ts:50:11
+Sync services initialized syncInitializer.ts:32:11
+TimelyRewards table exists with 0 records App.tsx:79:25
+Bamboo planting system initialized bambooPlantingService.ts:14:13
+Bamboo planting system initialized successfully App.tsx:126:27
+Bamboo trading system initialized bambooTradingService.ts:31:13
+Bamboo trading system initialized successfully App.tsx:131:27
+Resource multipliers initialized resourceMultiplierService.ts:48:13
+Resource multipliers initialized successfully App.tsx:91:27
+Growth boosts initialized growthBoostService.ts:24:13
+Growth boosts initialized successfully App.tsx:96:27
+User titles initialized userTitleService.ts:48:13
+User titles initialized successfully App.tsx:101:27
+Pain point solutions initialized painPointService.ts:78:15
+Pain point solutions initialized successfully App.tsx:106:27
+Panda skins initialized successfully pandaSkinService.ts:64:15
+Panda skins initialized successfully App.tsx:111:27
+Meditation courses initialized successfully meditationInitService.ts:199:13
+Meditation courses initialized successfully App.tsx:121:27
+Offline support initialized offlineService.ts:17:13
+Offline support initialized successfully App.tsx:136:27
+Sync item added: timelyRewards create 1 dataSyncService.ts:66:13
+Sync started dataSyncService.ts:96:13
+Found 10 items to sync dataSyncService.ts:105:13
+Sync item added: vipTaskSeries create 1 dataSyncService.ts:66:13
+Failed to initialize VIP task series: TypeError: categories[0] is undefined
+    getCategoryId vipTaskService.ts:253
+    initializeVipTaskSeries vipTaskService.ts:276
+    initDB App.tsx:140
+    nativeAwaitCompatibleWrap promise.js:845
+    callListener promise.js:498
+    endMicroTickScope promise.js:584
+    wrap promise.js:653
+    create transaction.ts:133
+    tempTransaction temp-transaction.ts:32
+    _trans table.ts:64
+    _read collection.ts:49
+    count collection.ts:111
+    count table.ts:184
+    initDB App.tsx:87
+vipTaskService.ts:202:13
+VIP task series initialized successfully App.tsx:116:27
+Sync item added: timelyRewards create 2 dataSyncService.ts:66:13
+Lucky draw limits table initialized luckyDrawLimitService.ts:15:13
+Timely rewards initialized successfully App.tsx:81:27
+Sync item added: timelyRewards update 2 dataSyncService.ts:66:13
+Timely rewards status updated successfully App.tsx:83:29
+Simulated sync for item bambooPlots_3_1747540370950: 
+Object { id: "bambooPlots_3_1747540370950", table: "bambooPlots", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:50 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Simulated sync for item bambooPlots_4_1747540370959: 
+Object { id: "bambooPlots_4_1747540370959", table: "bambooPlots", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:50 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Simulated sync for item bambooPlots_5_1747540370986: 
+Object { id: "bambooPlots_5_1747540370986", table: "bambooPlots", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:50 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Simulated sync for item bambooPlots_6_1747540370989: 
+Object { id: "bambooPlots_6_1747540370989", table: "bambooPlots", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:50 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Simulated sync for item milestones_10_1747540371003: 
+Object { id: "milestones_10_1747540371003", table: "milestones", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:51 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Simulated sync for item milestones_11_1747540371052: 
+Object { id: "milestones_11_1747540371052", table: "milestones", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:51 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Simulated sync for item milestones_12_1747540371065: 
+Object { id: "milestones_12_1747540371065", table: "milestones", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:51 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Simulated sync for item milestones_13_1747540371074: 
+Object { id: "milestones_13_1747540371074", table: "milestones", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:51 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Simulated sync for item milestones_14_1747540371090: 
+Object { id: "milestones_14_1747540371090", table: "milestones", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:51 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Simulated sync for item milestones_1_1747540370907: 
+Object { id: "milestones_1_1747540370907", table: "milestones", action: "create", data: {…}, timestamp: Date Sun May 18 2025 11:52:50 GMT+0800 (中国标准时间), retryCount: 0, status: "idle" }
+dataSyncService.ts:141:11
+Sync completed successfully dataSyncService.ts:126:13
+Optimized sync started optimizedSyncService.ts:218:13
+Sync history entry added: 
+Object { timestamp: Date Sun May 18 2025 11:53:26 GMT+0800 (中国标准时间), status: "success", itemCount: 0 }
+optimizedSyncService.ts:372:13
+No pending items to sync optimizedSyncService.ts:238:15

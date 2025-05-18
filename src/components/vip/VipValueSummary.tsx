@@ -98,8 +98,8 @@ const VipValueSummary: React.FC<VipValueSummaryProps> = ({
     return `${num.toFixed(1)}x`;
   };
 
-  // Get content from viewData
-  const content = viewData?.labels || {} as { [key: string]: string };
+  // Get content from viewData or use provided labels
+  const content = viewData?.labels || labels || {} as { [key: string]: string };
 
   // 渲染加载状态
   const renderLoading = () => (

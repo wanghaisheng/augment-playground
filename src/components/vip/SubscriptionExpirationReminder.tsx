@@ -1,5 +1,5 @@
 // src/components/vip/SubscriptionExpirationReminder.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import LatticeDialog from '@/components/game/LatticeDialog';
@@ -28,8 +28,7 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
   subscription,
   daysLeft
 }) => {
-  // isClosing state is used to manage animation timing during dialog close
-  const [isClosing, setIsClosing] = useState(false);
+  // State management
   const navigate = useNavigate();
   // Function to fetch localized content for subscription expiration
   const fetchSubscriptionExpirationViewFn = React.useCallback(async (lang: Language) => {
@@ -44,17 +43,13 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
   // Fetch localized content for the subscription expiration
   const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('subscriptionExpiration', fetchSubscriptionExpirationViewFn);
 
-  // Get content from viewData
-  const content = viewData?.labels || {} as { [key: string]: string };
+  // Get content from viewData or use empty object as fallback
+  const content = (viewData?.labels || {}) as { [key: string]: string };
 
   // 处理关闭
   const handleClose = () => {
     playSound(SoundType.BUTTON_CLICK);
-    setIsClosing(true);
-    setTimeout(() => {
-      onClose();
-      setIsClosing(false);
-    }, 300);
+    onClose();
   };
 
   // 处理导航到VIP页面

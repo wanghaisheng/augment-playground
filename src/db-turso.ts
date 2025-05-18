@@ -3,15 +3,15 @@ import { createClient } from '@libsql/client';
 
 // 创建Turso客户端
 export const tursoClient = createClient({
-  url: process.env.TURSO_DATABASE_URL || 'libsql://your-database-url.turso.io',
-  authToken: process.env.TURSO_AUTH_TOKEN || 'your-auth-token',
+  url: import.meta.env.VITE_TURSO_DATABASE_URL || 'libsql://your-database-url.turso.io',
+  authToken: import.meta.env.VITE_TURSO_AUTH_TOKEN || 'your-auth-token',
 });
 
 // 初始化数据库模式
 export async function initializeSchema() {
   try {
     console.log('Initializing Turso database schema...');
-    
+
     // 创建uiLabels表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS ui_labels (
@@ -23,7 +23,7 @@ export async function initializeSchema() {
         UNIQUE(scope_key, label_key, language_code)
       )
     `);
-    
+
     // 创建panda_state表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS panda_state (
@@ -35,7 +35,7 @@ export async function initializeSchema() {
         experience INTEGER NOT NULL DEFAULT 0
       )
     `);
-    
+
     // 创建task_categories表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS task_categories (
@@ -46,7 +46,7 @@ export async function initializeSchema() {
         is_default INTEGER NOT NULL DEFAULT 0
       )
     `);
-    
+
     // 创建tasks表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS tasks (
@@ -60,7 +60,7 @@ export async function initializeSchema() {
         FOREIGN KEY (category_id) REFERENCES task_categories(id)
       )
     `);
-    
+
     // 创建subtasks表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS subtasks (
@@ -73,7 +73,7 @@ export async function initializeSchema() {
         FOREIGN KEY (parent_task_id) REFERENCES tasks(id) ON DELETE CASCADE
       )
     `);
-    
+
     // 创建task_completions表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS task_completions (
@@ -84,7 +84,7 @@ export async function initializeSchema() {
         FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
       )
     `);
-    
+
     // 创建task_reminders表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS task_reminders (
@@ -98,7 +98,7 @@ export async function initializeSchema() {
         FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
       )
     `);
-    
+
     // 创建rewards表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS rewards (
@@ -111,7 +111,7 @@ export async function initializeSchema() {
         FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE SET NULL
       )
     `);
-    
+
     // 创建items表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS items (
@@ -122,7 +122,7 @@ export async function initializeSchema() {
         obtained_at TEXT NOT NULL
       )
     `);
-    
+
     // 创建badges表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS badges (
@@ -132,7 +132,7 @@ export async function initializeSchema() {
         is_equipped INTEGER NOT NULL DEFAULT 0
       )
     `);
-    
+
     // 创建abilities表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS abilities (
@@ -145,7 +145,7 @@ export async function initializeSchema() {
         is_active INTEGER NOT NULL DEFAULT 0
       )
     `);
-    
+
     // 创建reward_abilities表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS reward_abilities (
@@ -156,7 +156,7 @@ export async function initializeSchema() {
         is_active INTEGER NOT NULL DEFAULT 0
       )
     `);
-    
+
     // 创建panda_accessories表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS panda_accessories (
@@ -174,7 +174,7 @@ export async function initializeSchema() {
         theme_type TEXT NOT NULL
       )
     `);
-    
+
     // 创建panda_environments表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS panda_environments (
@@ -193,7 +193,7 @@ export async function initializeSchema() {
         interactive_elements TEXT
       )
     `);
-    
+
     // 创建challenges表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS challenges (
@@ -208,7 +208,7 @@ export async function initializeSchema() {
         created_at TEXT NOT NULL
       )
     `);
-    
+
     // 创建challenge_categories表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS challenge_categories (
@@ -218,7 +218,7 @@ export async function initializeSchema() {
         icon_path TEXT
       )
     `);
-    
+
     // 创建challenge_completions表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS challenge_completions (
@@ -230,7 +230,7 @@ export async function initializeSchema() {
         FOREIGN KEY (challenge_id) REFERENCES challenges(id) ON DELETE CASCADE
       )
     `);
-    
+
     // 创建challenge_discoveries表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS challenge_discoveries (
@@ -244,7 +244,7 @@ export async function initializeSchema() {
         FOREIGN KEY (challenge_id) REFERENCES challenges(id) ON DELETE CASCADE
       )
     `);
-    
+
     // 创建reflections表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS reflections (
@@ -259,7 +259,7 @@ export async function initializeSchema() {
         FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE SET NULL
       )
     `);
-    
+
     // 创建reflection_triggers表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS reflection_triggers (
@@ -271,7 +271,7 @@ export async function initializeSchema() {
         is_completed INTEGER NOT NULL DEFAULT 0
       )
     `);
-    
+
     // 创建moods表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS moods (
@@ -282,7 +282,7 @@ export async function initializeSchema() {
         created_at TEXT NOT NULL
       )
     `);
-    
+
     // 创建store_categories表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS store_categories (
@@ -293,7 +293,7 @@ export async function initializeSchema() {
         created_at TEXT NOT NULL
       )
     `);
-    
+
     // 创建store_items表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS store_items (
@@ -313,7 +313,7 @@ export async function initializeSchema() {
         FOREIGN KEY (category_id) REFERENCES store_categories(id) ON DELETE SET NULL
       )
     `);
-    
+
     // 创建purchases表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS purchases (
@@ -327,7 +327,7 @@ export async function initializeSchema() {
         FOREIGN KEY (store_item_id) REFERENCES store_items(id) ON DELETE CASCADE
       )
     `);
-    
+
     // 创建vip_subscriptions表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS vip_subscriptions (
@@ -340,7 +340,7 @@ export async function initializeSchema() {
         created_at TEXT NOT NULL
       )
     `);
-    
+
     // 创建user_currencies表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS user_currencies (
@@ -351,7 +351,7 @@ export async function initializeSchema() {
         last_updated TEXT NOT NULL
       )
     `);
-    
+
     // 创建timely_rewards表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS timely_rewards (
@@ -364,7 +364,7 @@ export async function initializeSchema() {
         created_at TEXT NOT NULL
       )
     `);
-    
+
     // 创建lucky_points表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS lucky_points (
@@ -376,7 +376,7 @@ export async function initializeSchema() {
         created_at TEXT NOT NULL
       )
     `);
-    
+
     // 创建lucky_draws表
     await tursoClient.execute(`
       CREATE TABLE IF NOT EXISTS lucky_draws (
@@ -387,7 +387,7 @@ export async function initializeSchema() {
         created_at TEXT NOT NULL
       )
     `);
-    
+
     console.log('Turso database schema initialized successfully.');
   } catch (error) {
     console.error('Error initializing Turso database schema:', error);

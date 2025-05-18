@@ -15,7 +15,7 @@ import type {
   UILabelRecord, // ApiError, // Unused
   FetchHomePageViewResult, FetchSettingsPageViewResult, FetchGlobalLayoutViewResult,
   FetchTasksPageViewResult, FetchChallengesPageViewResult, FetchTimelyRewardsPageViewResult,
-  FetchAbilitiesPageViewResult, FetchVipBenefitsPageViewResult, FetchStorePageViewResult, FetchTeaRoomPageViewResult,
+  FetchAbilitiesPageViewResult, FetchVipBenefitsPageViewResult, FetchTeaRoomPageViewResult,
   FetchComponentsLabelsResult,
   MeditationPageViewLabelsBundle,
   FetchMeditationPageViewResult,
@@ -41,7 +41,8 @@ import type {
   FetchAvatarFrameShowcaseViewResult,
   SocialComparisonPageViewLabelsBundle,
   SocialComparisonPageDataPayload,
-  FetchSocialComparisonPageViewResult
+  FetchSocialComparisonPageViewResult,
+  FetchStorePageViewLabelsResult
 } from '@/types';
 import { AvatarFrameType } from '@/types';
 import { GoalStatus, type CustomGoalRecord as DbCustomGoalRecord } from '@/types/goals'; // Import DB types
@@ -156,7 +157,7 @@ export async function fetchAbilitiesPageView(lang: Language): Promise<FetchAbili
   return { labels, data: null };
 }
 
-export async function fetchStorePageView(lang: Language): Promise<LocalizedContent<null, StorePageViewLabelsBundle>> {
+export async function fetchStorePageView(lang: Language): Promise<FetchStorePageViewLabelsResult> {
   console.log(`SVC_DEXIE: Fetching STORE PAGE VIEW for lang: ${lang}`);
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
   const labels = await getScopedLabels<StorePageViewLabelsBundle>('storeView', lang);

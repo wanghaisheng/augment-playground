@@ -37,7 +37,6 @@ const ResourceShortagePrompt: React.FC<ResourceShortagePromptProps> = ({
   const isVip = pandaState?.isVip || false;
 
   const [isRewarded, setIsRewarded] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
 
   // Function to fetch localized content for resource shortage
   const fetchResourceShortageViewFn = React.useCallback(async (lang: Language) => {
@@ -50,10 +49,10 @@ const ResourceShortagePrompt: React.FC<ResourceShortagePromptProps> = ({
   }, []);
 
   // Fetch localized content for the resource shortage
-  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('resourceShortage', fetchResourceShortageViewFn);
+  const { labels } = useLocalizedView<null, { [key: string]: string }>('resourceShortage', fetchResourceShortageViewFn);
 
-  // Get content from viewData
-  const content = viewData?.labels || {} as { [key: string]: string };
+  // Get content from labels or use empty object as fallback
+  const content = labels || {} as { [key: string]: string };
 
   // Get refresh function from context
   const { refreshTable } = useDataRefreshContext();
@@ -68,11 +67,7 @@ const ResourceShortagePrompt: React.FC<ResourceShortagePromptProps> = ({
   // 处理关闭
   const handleClose = () => {
     playSound(SoundType.BUTTON_CLICK);
-    setIsClosing(true);
-    setTimeout(() => {
-      onClose();
-      setIsClosing(false);
-    }, 300);
+    onClose();
   };
 
   // 处理领取VIP资源

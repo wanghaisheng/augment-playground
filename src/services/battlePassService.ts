@@ -390,7 +390,16 @@ export async function claimBattlePassReward(
     }
 
     // Add the reward to user's inventory
-    await addItem(userId, rewardItemId);
+    await addItem({
+      type: 'item', // Placeholder type
+      name: `Level ${levelNumber} Reward`,
+      description: `Reward from Battle Pass level ${levelNumber}`,
+      rarity: 'common',
+      iconPath: '/assets/rewards/default.svg',
+      quantity: rewardQuantity,
+      isUsable: true,
+      obtainedAt: new Date()
+    });
 
     // Update claimed levels
     const updatedProgress = {

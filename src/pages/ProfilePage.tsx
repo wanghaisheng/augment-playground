@@ -20,11 +20,11 @@ import ProfileCustomization from '@/components/profile/ProfileCustomization';
 import SocialSharePanel from '@/components/profile/SocialSharePanel';
 import type { UserProfile, UserAchievement, UserStatistics as UserStatsType, UserTitle } from '@/types/user';
 import type { UserTitleRecord } from '@/services/userTitleService';
-import type { ProfilePageViewLabelsBundle, ApiError } from '@/types';
+import type { ProfilePageViewLabelsBundle } from '@/types';
 
 /**
  * 用户个人资料页面
- * 
+ *
  * 显示用户信息、成就、统计数据和个性化设置
  */
 const ProfilePage: React.FC = () => {
@@ -40,22 +40,22 @@ const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'achievements' | 'statistics' | 'customization' | 'social'>('achievements');
   const [initialDataLoading, setInitialDataLoading] = useState(true);
   const [dataError, setDataError] = useState<string | null>(null);
-  
+
   // 上下文
   const { addNotification } = useNotifications();
-  
+
   // 本地化视图
-  const { 
-    labels: pageLabels, 
-    isPending: labelsPending, 
-    isError: labelsError, 
-    error: labelLoadingError, 
-    refetch: refetchLabels 
+  const {
+    labels: pageLabels,
+    isPending: labelsPending,
+    isError: labelsError,
+    error: labelLoadingError,
+    refetch: refetchLabels
   } = useLocalizedView<null, ProfilePageViewLabelsBundle>(
     'profilePageViewContent',
     fetchProfilePageView
   );
-  
+
   // 加载用户数据 (User ID would typically come from auth context)
   const userId = 'current-user'; // Placeholder for actual user ID
 
@@ -66,13 +66,13 @@ const ProfilePage: React.FC = () => {
     try {
       const profile = await getUserProfile();
       setUserProfile(profile);
-      
+
       const userAchievementsData = await getUserAchievements();
       setAchievements(userAchievementsData);
-      
+
       const userStatsData = await getUserStatistics();
       setStatistics(userStatsData);
-      
+
       const titlesFromService = await getUserTitles(userId);
       setUserTitleRecords(titlesFromService);
 
@@ -90,7 +90,7 @@ const ProfilePage: React.FC = () => {
         limitedEndDate: record.expiryDate?.getTime(),
       }));
       setDisplayTitles(mappedDisplayTitles);
-      
+
       // Get active title directly
       const activeUserTitleRecord = await getActiveUserTitle(userId);
       setActiveTitleDisplay(activeUserTitleRecord?.titleText || null);
@@ -108,14 +108,14 @@ const ProfilePage: React.FC = () => {
       setInitialDataLoading(false);
     }
   }, [addNotification, pageLabels, userId]);
-  
+
   // 初始化 and load data when labels are ready
   useEffect(() => {
     if (pageLabels && !labelsError) {
     loadUserData();
     }
   }, [pageLabels, labelsError, loadUserData]);
-    
+
     // 注册数据刷新回调
   // Example: Refresh if userProfile related tables change. Adjust table names as per your DB structure.
   useRegisterTableRefresh('userProfile', loadUserData); // Placeholder table name
@@ -127,15 +127,15 @@ const ProfilePage: React.FC = () => {
     playSound(SoundType.CLICK);
     setIsEditing(true);
   };
-  
+
   const handleCancelEdit = () => {
     playSound(SoundType.CLICK);
     setIsEditing(false);
   };
-  
+
   const handleSaveProfile = async (updatedProfileData: Partial<UserProfile>) => {
     if (!userProfile) return;
-    
+
     const profileToSave: UserProfile = { ...userProfile, ...updatedProfileData };
 
     try {
@@ -164,16 +164,16 @@ const ProfilePage: React.FC = () => {
       setIsSaving(false);
     }
   };
-  
+
   const handleTabChange = (tab: 'achievements' | 'statistics' | 'customization' | 'social') => {
     playSound(SoundType.CLICK);
     setActiveTab(tab);
   };
-  
+
   if (labelsPending) {
     return <LoadingSpinner variant="jade" text={pageLabels?.loadingProfile || "Loading profile..."} />;
   }
-  
+
   if (labelsError || !pageLabels) {
     return (
       <ErrorDisplay
@@ -202,13 +202,13 @@ const ProfilePage: React.FC = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="profile-page p-4">
       <h1 className="text-2xl font-bold text-jade-800 mb-4">
         {pageLabels.pageTitle}
       </h1>
-      
+
       <ProfileHeader
         profile={userProfile}
         title={activeTitleDisplay}
@@ -218,7 +218,7 @@ const ProfilePage: React.FC = () => {
         onCancel={handleCancelEdit}
         isSaving={isSaving}
       />
-      
+
       {!isEditing && (
         <div className="mb-6">
           <Button
@@ -229,7 +229,7 @@ const ProfilePage: React.FC = () => {
           </Button>
         </div>
       )}
-      
+
       {/* Tab Navigation */}
       <div className="mb-6 border-b border-gray-300">
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
@@ -238,8 +238,8 @@ const ProfilePage: React.FC = () => {
               key={tabKey}
               onClick={() => handleTabChange(tabKey as 'achievements' | 'statistics' | 'customization' | 'social')}
               className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm \
-                ${activeTab === tabKey 
-                  ? 'border-jade-500 text-jade-600' 
+                ${activeTab === tabKey
+                  ? 'border-jade-500 text-jade-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
         >
               {pageLabels.tabs![tabKey]}
@@ -247,7 +247,7 @@ const ProfilePage: React.FC = () => {
           ))}
         </nav>
       </div>
-      
+
       {/* Tab Content */}
       <div>
         {activeTab === 'achievements' && <AchievementsShowcase achievements={achievements} />}
@@ -260,7 +260,7 @@ const ProfilePage: React.FC = () => {
             onSave={handleSaveProfile}
           />
         )}
-        {activeTab === 'social' && 
+        {activeTab === 'social' &&
         <SocialSharePanel
           profile={userProfile}
           achievements={achievements}
