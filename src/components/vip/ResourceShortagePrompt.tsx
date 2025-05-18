@@ -37,6 +37,7 @@ const ResourceShortagePrompt: React.FC<ResourceShortagePromptProps> = ({
   const isVip = pandaState?.isVip || false;
 
   const [isRewarded, setIsRewarded] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   // Function to fetch localized content for resource shortage
   const fetchResourceShortageViewFn = React.useCallback(async (lang: Language) => {

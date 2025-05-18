@@ -33,13 +33,13 @@ export async function createTaskCategory(
     ...category,
     createdAt: now
   };
-  
+
   // 添加到数据库
   const id = await db.taskCategories.add(newCategory);
-  
+
   // 添加同步项目
   await addSyncItem('taskCategories', 'create', { ...newCategory, id });
-  
+
   return id as number;
 }
 
@@ -49,22 +49,22 @@ export async function createTaskCategory(
  * @param updates 更新数据
  */
 export async function updateTaskCategory(
-  id: number, 
+  id: number,
   updates: Partial<Omit<TaskCategoryRecord, 'id' | 'createdAt'>>
 ): Promise<void> {
   const category = await db.taskCategories.get(id);
   if (!category) {
     throw new Error(`Task category with id ${id} not found`);
   }
-  
+
   const updatedCategory = {
     ...category,
     ...updates
   };
-  
+
   // 更新数据库
   await db.taskCategories.update(id, updatedCategory);
-  
+
   // 添加同步项目
   await addSyncItem('taskCategories', 'update', updatedCategory);
 }
@@ -78,15 +78,15 @@ export async function deleteTaskCategory(id: number): Promise<void> {
   if (!category) {
     throw new Error(`Task category with id ${id} not found`);
   }
-  
+
   // 检查是否为默认类别
   if (category.isDefault) {
     throw new Error('Cannot delete default task category');
   }
-  
+
   // 从数据库中删除
   await db.taskCategories.delete(id);
-  
+
   // 添加同步项目
   await addSyncItem('taskCategories', 'delete', category);
 }
@@ -96,5 +96,5 @@ export async function deleteTaskCategory(id: number): Promise<void> {
  * @returns 默认任务类别
  */
 export async function getDefaultTaskCategory(): Promise<TaskCategoryRecord | undefined> {
-  return db.taskCategories.where('isDefault').equals(true).first();
+  return db.taskCategories.where('isDefault').equals(1).first();
 }

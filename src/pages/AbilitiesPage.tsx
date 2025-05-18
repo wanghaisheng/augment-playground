@@ -5,7 +5,6 @@ import { usePandaState } from '@/context/PandaStateProvider';
 import AbilityList from '@/components/game/AbilityList';
 import AbilityUnlockNotification from '@/components/game/AbilityUnlockNotification';
 import PageTransition from '@/components/animation/PageTransition';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 import { PandaAbilityRecord } from '@/services/pandaAbilityService';
 import { useLocalizedView } from '@/hooks/useLocalizedView';

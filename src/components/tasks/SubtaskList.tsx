@@ -1,13 +1,13 @@
 // src/components/tasks/SubtaskList.tsx
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { SubtaskRecord } from '@/services/subtaskService';
 import { TaskStatus } from '@/services/taskService';
-import { getSubtasks, updateSubtask, completeSubtask, deleteSubtask, createSubtask } from '@/services/subtaskService';
+import { getSubtasks, completeSubtask, deleteSubtask, createSubtask } from '@/services/subtaskService';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { updateSubtaskOrder } from '@/services/subtaskService';
 import { playSound, SoundType } from '@/utils/sound';
 
@@ -101,15 +101,7 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
   };
 
   // 处理拖放结束
-  const handleDragEnd = async (result: {
-    destination?: {
-      index: number;
-    };
-    source: {
-      index: number;
-    };
-    draggableId: string;
-  }) => {
+  const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
 
     const sourceIndex = result.source.index;
@@ -132,12 +124,7 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
     }
   };
 
-  // 子任务项变体
-  const subtaskVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, x: -20 }
-  };
+  // 子任务项变体已移除，因为我们不再使用motion.div
 
   if (isLoading && subtasks.length === 0) {
     return (
@@ -172,7 +159,7 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
                     isDragDisabled={subtask.status === TaskStatus.COMPLETED}
                   >
                     {(provided, snapshot) => (
-                      <motion.div
+                      <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
@@ -181,11 +168,6 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
                             ? 'border-gray-300 bg-gray-50'
                             : 'border-jade-300 bg-white'
                         } ${snapshot.isDragging ? 'shadow-md' : ''}`}
-                        variants={subtaskVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        transition={{ duration: 0.2 }}
                       >
                         <div className="subtask-checkbox mr-2">
                           <input
@@ -217,7 +199,7 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
                             </svg>
                           </button>
                         </div>
-                      </motion.div>
+                      </div>
                     )}
                   </Draggable>
                 ))}
@@ -236,7 +218,7 @@ const SubtaskList: React.FC<SubtaskListProps> = ({ parentTaskId, onSubtasksChang
             onChange={(e) => setNewSubtaskTitle(e.target.value)}
             placeholder="添加新子任务..."
             className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-jade-500"
-            onKeyPress={(e) => {
+            onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 handleAddSubtask();
               }

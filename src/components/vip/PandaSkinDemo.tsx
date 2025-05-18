@@ -4,11 +4,8 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import {
-  getAllSkins,
-  PandaSkinRecord,
-  PandaSkinRarity
-} from '@/services/pandaSkinService';
+import { getAllSkins } from '@/services/pandaSkinService';
+import { PandaSkinRecord, SkinRarity } from '@/types/skins';
 import { usePandaState } from '@/context/PandaStateProvider';
 import { playSound, SoundType } from '@/utils/sound';
 
@@ -55,17 +52,17 @@ const PandaSkinDemo: React.FC = () => {
   };
 
   // 获取稀有度信息
-  const getRarityInfo = (rarity: PandaSkinRarity) => {
+  const getRarityInfo = (rarity: SkinRarity) => {
     switch (rarity) {
-      case PandaSkinRarity.COMMON:
+      case SkinRarity.COMMON:
         return { text: '普通', color: 'text-gray-600', bgColor: 'bg-gray-100' };
-      case PandaSkinRarity.UNCOMMON:
+      case SkinRarity.UNCOMMON:
         return { text: '不常见', color: 'text-green-600', bgColor: 'bg-green-100' };
-      case PandaSkinRarity.RARE:
+      case SkinRarity.RARE:
         return { text: '稀有', color: 'text-blue-600', bgColor: 'bg-blue-100' };
-      case PandaSkinRarity.EPIC:
+      case SkinRarity.EPIC:
         return { text: '史诗', color: 'text-purple-600', bgColor: 'bg-purple-100' };
-      case PandaSkinRarity.LEGENDARY:
+      case SkinRarity.LEGENDARY:
         return { text: '传说', color: 'text-gold-600', bgColor: 'bg-gold-100' };
       default:
         return { text: '普通', color: 'text-gray-600', bgColor: 'bg-gray-100' };

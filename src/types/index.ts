@@ -1251,6 +1251,41 @@ export interface StoreVipCardLabelsBundle {
   // Add any other specific labels for this card
 }
 
+// Store Page View Labels Bundle
+export interface StorePageViewLabelsBundle {
+  pageTitle?: string;
+  loadingMessage?: string;
+  errorLoadingLabelsTitle?: string;
+  errorLoadingLabelsMessage?: string;
+  errorLoadingData?: string;
+  errorLoadingDataTitle?: string;
+  retryButtonText?: string;
+  unexpectedError?: string;
+  featuredItemsTitle?: string;
+  saleItemsTitle?: string;
+  vipSectionTitle?: string;
+  showVipButton?: string;
+  hideVipButton?: string;
+  vipStatusActive?: string;
+  vipStatusNoExpiry?: string;
+  emptyCategoryMessage?: string;
+  currencyDisplayLabels?: {
+    bambooLabel?: string;
+    coinsLabel?: string;
+    jadeLabel?: string;
+  };
+  itemPreview?: {
+    closeButton?: string;
+    buyButton?: string;
+    notEnoughCoinsMessage?: string;
+    priceLabel?: string;
+    descriptionLabel?: string;
+    vipDiscountLabel?: string;
+  };
+}
+
+export type FetchStorePageViewResult = LocalizedContent<null, StorePageViewLabelsBundle>;
+
 // --- Social Comparison Page/View Specific Types ---
 export interface SocialComparisonPageFeatureLabels {
   featureName?: string;

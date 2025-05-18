@@ -100,7 +100,7 @@ const TaskDetailDialog: React.FC<TaskDetailDialogProps> = ({
       setIsCompleting(true);
 
       // 完成任务
-      const completedTask = await completeTask(task.id!);
+      await completeTask(task.id!);
 
       // 播放成功音效
       playSound(SoundType.SUCCESS, 0.5);

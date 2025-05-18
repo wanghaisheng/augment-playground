@@ -1,9 +1,8 @@
 // src/pages/VipTaskSeriesPage.tsx
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
-  VipTaskSeriesRecord,
+  ExtendedVipTaskSeriesRecord,
   getActiveVipTaskSeries,
   canAccessVipTasks
 } from '@/services/vipTaskService';
@@ -20,11 +19,11 @@ import { usePandaState } from '@/context/PandaStateProvider';
  * VIP任务系列页面
  */
 const VipTaskSeriesPage: React.FC = () => {
-  const [series, setSeries] = useState<VipTaskSeriesRecord[]>([]);
+  const [series, setSeries] = useState<ExtendedVipTaskSeriesRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [canAccess, setCanAccess] = useState(false);
-  const [selectedSeries, setSelectedSeries] = useState<VipTaskSeriesRecord | null>(null);
+  const [selectedSeries, setSelectedSeries] = useState<ExtendedVipTaskSeriesRecord | null>(null);
   const [selectedTasks, setSelectedTasks] = useState<TaskRecord[]>([]);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -94,7 +93,7 @@ const VipTaskSeriesPage: React.FC = () => {
   }, [registerRefreshListener]);
 
   // 处理查看任务
-  const handleViewTasks = (series: VipTaskSeriesRecord, tasks: TaskRecord[]) => {
+  const handleViewTasks = (series: ExtendedVipTaskSeriesRecord, tasks: TaskRecord[]) => {
     setSelectedSeries(series);
     setSelectedTasks(tasks);
     setShowDetails(true);

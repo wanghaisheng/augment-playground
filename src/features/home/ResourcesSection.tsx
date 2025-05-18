@@ -3,25 +3,17 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { getUserCurrency, UserCurrencyRecord } from '@/services/storeService';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
-import { getLuckyPointsTotal } from '@/services/timelyRewardService';
 import LuckyPointsDisplay from '@/components/game/LuckyPointsDisplay';
 import CurrencyDisplay from '@/components/store/CurrencyDisplay';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import BambooCollectionPanel from '@/components/bamboo/BambooCollectionPanel';
-// import { initializeBambooCollectionSystem as initializeBambooCollection } from '@/services/bambooCollectionService';
 import { playSound, SoundType } from '@/utils/sound';
-// import SectionHeader from '@/components/common/SectionHeader'; // Commented out due to path issue
-// import { useLanguage } from '@/context/LanguageProvider';
 import { useAuth } from '@/context/AuthContext';
 import { useNotifications } from '@/context/NotificationProvider';
-// import { ResourceType } from '@/types/resources'; // Commented out due to path issue
-import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 
 // Types
-import type { BambooCollectionRecord } from '@/db';
 import type { Language } from '@/types';
-import { NotificationType } from '@/types/notification'; // Import NotificationType
-// import type { ResourcesSectionLabelsBundle } from '@/types/page-specific/homeViewTypes'; // Commented out path issue
+import { NotificationType } from '@/types/notification';
 
 // Define a placeholder fetch function for useLocalizedView
 // In a real scenario, this would fetch labels and data for this section
@@ -55,16 +47,12 @@ const defaultLabels: ResourcesSectionLabelsBundle = {
 };
 
 const ResourcesSection: React.FC = () => {
-  // const { language } = useLanguage(); // Unused variable
   const { currentUser } = useAuth();
   const userId = currentUser?.id;
   const { addNotification } = useNotifications();
-  // const triggerRefresh = useDataRefreshContext().refreshTable; // Unused variable
 
   const [userCurrency, setUserCurrency] = useState<UserCurrencyRecord | null>(null);
-  // const [luckyPoints, setLuckyPoints] = useState(0); // Unused variable
   const [isLoading, setIsLoading] = useState(true);
-  // const [lastBambooCollection, setLastBambooCollection] = useState<BambooCollectionRecord | null>(null); // Unused variable
   const [isBambooPanelOpen, setIsBambooPanelOpen] = useState(false); // Added state for panel
 
   const { labels, /* data, */ isPending: labelsPending, isError: labelsError, error: labelsLoadingError } =
@@ -81,8 +69,6 @@ const ResourcesSection: React.FC = () => {
     try {
       const currencyData = await getUserCurrency(userId);
       setUserCurrency(currencyData);
-      // const points = await getLuckyPointsTotal(); // Corrected: no userId argument
-      // setLuckyPoints(points); // Unused variable
     } catch (error) {
       console.error("Error loading resources data:", error);
       addNotification({

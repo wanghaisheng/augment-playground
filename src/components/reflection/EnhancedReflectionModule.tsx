@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Button from '@/components/common/Button';
 import ScrollDialog from '@/components/game/ScrollDialog';
 import { playSound, SoundType } from '@/utils/sound';
-import { TaskRecord } from '@/services/taskService';
 import {
   ReflectionTriggerRecord,
   ReflectionTriggerType,
@@ -12,7 +11,8 @@ import {
   completeReflection,
   markTriggerAsCompleted
 } from '@/services/reflectionService';
-import { getPandaMood, updatePandaMood, PandaMood } from '@/services/pandaStateService';
+import { updatePandaMood, getPandaMood } from '@/services/pandaStateService';
+import type { PandaMood } from '@/types/pandaTypes';
 import MoodTracker from './MoodTracker';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useComponentLabels } from '@/hooks/useComponentLabels';
@@ -128,8 +128,8 @@ const EnhancedReflectionModule: React.FC<EnhancedReflectionModuleProps> = ({
   const [localTaskId, setTaskId] = useState<number | undefined>(taskId);
   const [localTaskName, setTaskName] = useState<string | undefined>(taskName);
 
-  // Get component labels with fallbacks
-  const { labels: componentLabels } = useComponentLabels();
+  // Use component labels or provided labels with fallbacks
+  useComponentLabels();
 
   // Merge provided labels with default fallbacks
   const labels = propLabels || {};

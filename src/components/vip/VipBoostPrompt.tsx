@@ -20,7 +20,7 @@ interface VipBoostPromptProps {
   vipAmount: number;
   rarity?: RewardRarity;
   source?: string;
-  promptType?: HighlightMomentType | 'achievement' | 'task' | 'challenge' | 'bamboo' | 'generic';
+  promptType?: HighlightMomentType | string;
   title?: string;
   description?: string;
   imageUrl?: string;

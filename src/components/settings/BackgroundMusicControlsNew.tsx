@@ -33,10 +33,7 @@ interface BackgroundMusicLabels {
  */
 const BackgroundMusicControlsNew: React.FC = () => {
   // 获取背景音乐上下文
-  const {
-    currentMusic,
-    isPlaying
-  } = useBackgroundMusic();
+  useBackgroundMusic();
 
   // 获取当前语言
   const { language } = useLanguage();

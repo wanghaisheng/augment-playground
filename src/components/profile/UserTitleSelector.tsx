@@ -58,7 +58,7 @@ const UserTitleSelector: React.FC<UserTitleSelectorProps> = ({
 
         // 设置当前激活的称号为选中状态
         const activeTitle = userTitles.find(title => title.isActive);
-        if (activeTitle) {
+        if (activeTitle && activeTitle.id !== undefined) {
           setSelectedTitleId(activeTitle.id);
         }
       } catch (error) {

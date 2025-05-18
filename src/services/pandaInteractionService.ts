@@ -12,7 +12,6 @@ import { playSound, SoundType } from '@/utils/sound';
 import { initializePandaInteractionLabels } from '@/data/pandaInteractionLabels';
 // Corrected import: InteractionType is an enum (value), others are types.
 import { InteractionType, type InteractionRecord, type InteractionResult } from '@/types/pandaInteractionTypes';
-import type { Table, Collection } from 'dexie'; // Ensure Table and Collection are imported
 
 // 互动类型
 // export enum InteractionType { ... }

@@ -1,22 +1,14 @@
 // src/pages/BambooCollectionPage.tsx
-import React, { useState, useEffect } from 'react';
-// import { motion } from 'framer-motion'; // Unused
+import React, { useState } from 'react';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { fetchBambooCollectionPageView } from '@/services/localizedContentService';
 import type {
   BambooCollectionPageViewLabelsBundle,
   BambooCollectionPageViewDataPayload,
-  // ApiError, // Not explicitly used in this simplified version beyond what useLocalizedView handles
 } from '@/types';
-import { useLanguage } from '@/context/LanguageProvider'; // Needed for date-fns locale
-// import LoadingSpinner from '@/components/common/LoadingSpinner'; // Replaced by page-level pending check
 import ErrorDisplay from '@/components/common/ErrorDisplay';
-// import { formatDistanceToNow } from 'date-fns'; // Let's simplify and remove direct date-fns usage for now to reduce errors
-// import { zhCN, enUS } from 'date-fns/locale'; // Matching above
 import { playSound, SoundType } from '@/utils/sound';
-// import { useBambooCollectionSystem } from '@/hooks/useBambooCollectionSystem'; // Commented out - Module not found
 import Button from '@/components/common/Button';
-// import PageHeader from '@/components/common/PageHeader'; // Commented out - Missing file
 
 // Mock type for BambooSpot - replace with actual from bambooCollectionService or db.ts if different
 interface BambooSpot {
@@ -28,15 +20,14 @@ interface BambooSpot {
 }
 
 const BambooCollectionPage: React.FC = () => {
-  const { language } = useLanguage();
   // const { spots, collectFromSpot, isLoading: isLoadingSpots } = useBambooCollectionSystem(); // Assuming hook structure
-  
+
   // Mocking collectFromSpot since useBambooCollectionSystem is commented out
   const mockCollectFromSpot = async (spotId: string): Promise<{success: boolean, respawnTimeMs?: number, error?: string}> => {
     console.log(`Mock collecting from ${spotId}`);
     await new Promise(resolve => setTimeout(resolve, 500));
     // Simulate success or failure randomly or based on spotId
-    if (Math.random() > 0.2) { 
+    if (Math.random() > 0.2) {
       return { success: true, respawnTimeMs: 1000 * 60 * (Math.random() * 10 + 5) }; // 5-15 min respawn
     } else {
       return { success: false, error: 'Mock collection failed' };
@@ -80,11 +71,11 @@ const BambooCollectionPage: React.FC = () => {
       if (result && result.success) {
         playSound(SoundType.BAMBOO_COLLECT);
         // Update local spot state - in a real app, useBambooCollectionSystem would handle this
-        setSpots(prevSpots => prevSpots.map(s => 
+        setSpots(prevSpots => prevSpots.map(s =>
           s.id === spotId ? { ...s, status: 'depleted', nextAvailableAt: Date.now() + (result.respawnTimeMs || 1000 * 60 * 10) } : s
         ));
         // Potentially refetch pageData if totalBambooCollected needs update
-        // refetch(); 
+        // refetch();
       } else {
         // Handle collection failure (e.g., display a toast)
         console.error('Failed to collect from spot:', result?.error);
@@ -101,7 +92,7 @@ const BambooCollectionPage: React.FC = () => {
     if (!timestamp) return '';
     const now = Date.now();
     if (timestamp <= now) return safePageLabels.spotStatusAvailable ?? 'Available';
-    
+
     const diffSeconds = Math.round((timestamp - now) / 1000);
     if (diffSeconds < 60) return `${diffSeconds}s`;
     const diffMinutes = Math.round(diffSeconds / 60);
@@ -120,11 +111,11 @@ const BambooCollectionPage: React.FC = () => {
 
   if (isError) {
     return (
-      <ErrorDisplay 
-        error={error} 
-        title={safePageLabels.errorTitle ?? 'Error Loading Spots'} 
+      <ErrorDisplay
+        error={error}
+        title={safePageLabels.errorTitle ?? 'Error Loading Spots'}
         messageTemplate={safePageLabels.errorMessage ?? 'Could not load spots: {message}'}
-        onRetry={refetch} 
+        onRetry={refetch}
         retryButtonText={safePageLabels.retryButtonText ?? 'Retry'}
       />
     );
@@ -134,7 +125,7 @@ const BambooCollectionPage: React.FC = () => {
     <div className="bamboo-collection-page" style={{padding: '20px'}}>
       {/* <PageHeader title={safePageLabels.pageTitle ?? 'Bamboo Collection'} /> */}
       <h1 className="text-xl font-semibold mb-4">{safePageLabels.pageTitle ?? 'Bamboo Collection'}</h1>
-      
+
       {safePageData?.totalBambooCollected !== undefined && (
         <p>Total Bamboo Collected: {safePageData.totalBambooCollected}</p>
       )}
@@ -152,13 +143,13 @@ const BambooCollectionPage: React.FC = () => {
                 spot.status === 'available' ? (safePageLabels.spotStatusAvailable ?? 'Available') :
                 spot.status === 'depleted' ? (safePageLabels.spotStatusDepleted ?? 'Depleted') :
                 (safePageLabels.spotStatusRespawning ?? 'Respawning')
-              } 
+              }
               {spot.status !== 'available' && spot.nextAvailableAt && (
                 <span style={{fontSize: '0.9em', color: '#555'}}> ({safePageLabels.nextAvailableLabel ?? 'Next in:'} {formatTimeRemaining(spot.nextAvailableAt)})</span>
               )}
             </p>
-            <Button 
-              onClick={() => handleCollect(spot.id)} 
+            <Button
+              onClick={() => handleCollect(spot.id)}
               disabled={spot.status !== 'available' || collectingSpotId === spot.id}
               isLoading={collectingSpotId === spot.id}
               loadingText="Collecting..."

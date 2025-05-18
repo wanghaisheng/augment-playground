@@ -88,30 +88,7 @@ interface SkeletonDetailPageProps extends BaseSkeletonProps {
   sidebarWidth?: number | string;
 }
 
-/**
- * 获取骨架屏颜色 - 已不再使用，保留作为参考
- * @param variant 骨架屏变体
- * @returns 骨架屏颜色
- */
-const getSkeletonColor = (variant: 'default' | 'jade' | 'gold' = 'default') => {
-  switch (variant) {
-    case 'jade':
-      return {
-        baseColor: '#e6f7f1',
-        highlightColor: '#c2e8d9'
-      };
-    case 'gold':
-      return {
-        baseColor: '#fdf6e3',
-        highlightColor: '#f5e7c3'
-      };
-    default:
-      return {
-        baseColor: '#f0f0f0',
-        highlightColor: '#e0e0e0'
-      };
-  }
-};
+// Note: The getSkeletonColor function has been removed as it was unused
 
 /**
  * 骨架屏文本组件

@@ -1,44 +1,23 @@
 // src/services/vipTaskService.ts
 import { db } from '@/db-old';
-import { 
-  TaskRecord, 
-  TaskType, 
-  TaskStatus, 
-  TaskPriority, 
+import {
+  TaskRecord,
+  TaskType,
+  TaskStatus,
+  TaskPriority,
   createTask,
   getAllTaskCategories
 } from './taskService';
 import { isUserVip } from './storeService';
 import { addSyncItem } from './dataSyncService';
+import { VipTaskSeriesType, VipTaskSeriesRecord as BaseVipTaskSeriesRecord } from '@/types/vip';
 
 /**
- * VIP任务系列类型
+ * 扩展VIP任务系列记录，添加额外的字段
  */
-export enum VipTaskSeriesType {
-  PRODUCTIVITY = 'productivity',   // 生产力提升系列
-  WELLNESS = 'wellness',           // 健康与幸福系列
-  CREATIVITY = 'creativity',       // 创造力培养系列
-  MINDFULNESS = 'mindfulness',     // 正念与冥想系列
-  LEARNING = 'learning'            // 学习与成长系列
-}
-
-/**
- * VIP任务系列记录
- */
-export interface VipTaskSeriesRecord {
-  id?: number;
-  type: VipTaskSeriesType;
-  title: string;
-  description: string;
-  iconPath: string;
-  isActive: boolean;
-  isCompleted: boolean;
-  startDate?: Date;
-  endDate?: Date;
-  completedAt?: Date;
-  taskIds: number[];
-  createdAt: Date;
-  updatedAt: Date;
+export interface ExtendedVipTaskSeriesRecord extends Omit<BaseVipTaskSeriesRecord, 'taskIds'> {
+  iconPath?: string;
+  taskIds: number[]; // Override the string type with number[]
 }
 
 /**
@@ -54,18 +33,30 @@ export async function canAccessVipTasks(userId: string): Promise<boolean> {
  * 获取所有VIP任务系列
  * @returns VIP任务系列列表
  */
-export async function getAllVipTaskSeries(): Promise<VipTaskSeriesRecord[]> {
-  return db.vipTaskSeries.toArray();
+export async function getAllVipTaskSeries(): Promise<ExtendedVipTaskSeriesRecord[]> {
+  const series = await db.vipTaskSeries.toArray();
+
+  // Convert taskIds from string to number[]
+  return series.map(item => ({
+    ...item,
+    taskIds: item.taskIds ? JSON.parse(item.taskIds as unknown as string) : []
+  })) as ExtendedVipTaskSeriesRecord[];
 }
 
 /**
  * 获取活跃的VIP任务系列
  * @returns 活跃的VIP任务系列列表
  */
-export async function getActiveVipTaskSeries(): Promise<VipTaskSeriesRecord[]> {
-  return db.vipTaskSeries
-    .filter((series: VipTaskSeriesRecord) => series.isActive === true)
+export async function getActiveVipTaskSeries(): Promise<ExtendedVipTaskSeriesRecord[]> {
+  const series = await db.vipTaskSeries
+    .filter(series => series.isActive === true)
     .toArray();
+
+  // Convert taskIds from string to number[]
+  return series.map(item => ({
+    ...item,
+    taskIds: item.taskIds ? JSON.parse(item.taskIds as unknown as string) : []
+  })) as ExtendedVipTaskSeriesRecord[];
 }
 
 /**
@@ -73,8 +64,16 @@ export async function getActiveVipTaskSeries(): Promise<VipTaskSeriesRecord[]> {
  * @param seriesId 系列ID
  * @returns VIP任务系列
  */
-export async function getVipTaskSeries(seriesId: number): Promise<VipTaskSeriesRecord | undefined> {
-  return db.vipTaskSeries.get(seriesId);
+export async function getVipTaskSeries(seriesId: number): Promise<ExtendedVipTaskSeriesRecord | undefined> {
+  const series = await db.vipTaskSeries.get(seriesId);
+
+  if (!series) return undefined;
+
+  // Convert taskIds from string to number[]
+  return {
+    ...series,
+    taskIds: series.taskIds ? JSON.parse(series.taskIds as unknown as string) : []
+  } as ExtendedVipTaskSeriesRecord;
 }
 
 /**
@@ -105,23 +104,32 @@ export async function getVipTaskSeriesTasks(seriesId: number): Promise<TaskRecor
  * @returns 创建的VIP任务系列
  */
 export async function createVipTaskSeries(
-  series: Omit<VipTaskSeriesRecord, 'id' | 'isCompleted' | 'taskIds' | 'createdAt' | 'updatedAt'>
-): Promise<VipTaskSeriesRecord> {
+  series: Omit<ExtendedVipTaskSeriesRecord, 'id' | 'isCompleted' | 'taskIds' | 'createdAt' | 'updatedAt'>
+): Promise<ExtendedVipTaskSeriesRecord> {
   const now = new Date();
-  const newSeries: VipTaskSeriesRecord = {
+  const newSeries: ExtendedVipTaskSeriesRecord = {
     ...series,
     isCompleted: false,
-    taskIds: [],
+    taskIds: [], // Using number[] for our extended type
     createdAt: now,
     updatedAt: now
   };
 
+  // Convert taskIds to string for database storage (to match BaseVipTaskSeriesRecord)
+  const dbSeries = {
+    ...newSeries,
+    taskIds: JSON.stringify(newSeries.taskIds)
+  };
+
   // 添加到数据库
-  const id = await db.vipTaskSeries.add(newSeries);
+  const id = await db.vipTaskSeries.add(dbSeries);
   const createdSeries = { ...newSeries, id: id as number };
 
   // 添加到同步队列
-  await addSyncItem('vipTaskSeries', 'create', createdSeries);
+  await addSyncItem('vipTaskSeries', 'create', {
+    ...createdSeries,
+    taskIds: JSON.stringify(createdSeries.taskIds)
+  });
 
   return createdSeries;
 }
@@ -134,8 +142,8 @@ export async function createVipTaskSeries(
  */
 export async function updateVipTaskSeries(
   seriesId: number,
-  updates: Partial<Omit<VipTaskSeriesRecord, 'id' | 'createdAt' | 'updatedAt'>>
-): Promise<VipTaskSeriesRecord> {
+  updates: Partial<Omit<ExtendedVipTaskSeriesRecord, 'id' | 'createdAt' | 'updatedAt'>>
+): Promise<ExtendedVipTaskSeriesRecord> {
   const series = await getVipTaskSeries(seriesId);
   if (!series) {
     throw new Error(`VIP task series with id ${seriesId} not found`);
@@ -147,11 +155,17 @@ export async function updateVipTaskSeries(
     updatedAt: new Date()
   };
 
+  // Convert taskIds to string for database storage
+  const dbSeries = {
+    ...updatedSeries,
+    taskIds: Array.isArray(updatedSeries.taskIds) ? JSON.stringify(updatedSeries.taskIds) : updatedSeries.taskIds
+  };
+
   // 更新数据库
-  await db.vipTaskSeries.update(seriesId, updatedSeries);
+  await db.vipTaskSeries.update(seriesId, dbSeries);
 
   // 添加到同步队列
-  await addSyncItem('vipTaskSeries', 'update', updatedSeries);
+  await addSyncItem('vipTaskSeries', 'update', dbSeries);
 
   return updatedSeries;
 }
@@ -197,7 +211,7 @@ export async function addTaskToVipSeries(
  */
 export async function checkVipTaskSeriesCompletion(seriesId: number): Promise<boolean> {
   const tasks = await getVipTaskSeriesTasks(seriesId);
-  
+
   // 如果没有任务，则系列未完成
   if (tasks.length === 0) {
     return false;
@@ -205,7 +219,7 @@ export async function checkVipTaskSeriesCompletion(seriesId: number): Promise<bo
 
   // 检查所有任务是否都已完成
   const allCompleted = tasks.every(task => task.status === TaskStatus.COMPLETED);
-  
+
   // 如果所有任务都已完成，更新系列状态
   if (allCompleted) {
     const now = new Date();
@@ -243,7 +257,7 @@ export async function initializeVipTaskSeries(): Promise<void> {
 
     // 创建生产力提升系列
     const productivitySeries = await createVipTaskSeries({
-      type: VipTaskSeriesType.PRODUCTIVITY,
+      type: VipTaskSeriesType.DAILY,
       title: '生产力提升大师',
       description: '完成这个系列的任务，掌握高效工作的技巧，提升您的生产力',
       iconPath: '/assets/vip/productivity-icon.svg',
@@ -279,7 +293,7 @@ export async function initializeVipTaskSeries(): Promise<void> {
 
     // 创建健康与幸福系列
     const wellnessSeries = await createVipTaskSeries({
-      type: VipTaskSeriesType.WELLNESS,
+      type: VipTaskSeriesType.WEEKLY,
       title: '健康生活方式',
       description: '通过这个系列的任务，培养健康的生活习惯，提升身心健康',
       iconPath: '/assets/vip/wellness-icon.svg',

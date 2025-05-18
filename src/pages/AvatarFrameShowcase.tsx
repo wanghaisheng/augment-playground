@@ -17,13 +17,13 @@ const AvatarFrameShowcase: React.FC = () => {
   const [animated, setAnimated] = useState<boolean>(true);
   const [showVipBadge, setShowVipBadge] = useState<boolean>(false);
   const [showOnlineStatus, setShowOnlineStatus] = useState<boolean>(false);
-  
+
   // Get localized labels
-  const { labels, isLoading, error } = useLocalizedView<null, AvatarFrameShowcaseLabelsBundle>(
+  const { labels } = useLocalizedView<null, AvatarFrameShowcaseLabelsBundle>(
     'avatarFrameShowcaseView',
     fetchAvatarFrameShowcaseView
   );
-  
+
   // Default labels
   const pageTitle = labels?.pageTitle || 'Avatar Frame Showcase';
   const pageDescription = labels?.pageDescription || 'Explore different avatar frames available in PandaHabit';
@@ -32,7 +32,7 @@ const AvatarFrameShowcase: React.FC = () => {
   const onlineStatusToggleLabel = labels?.onlineStatusToggleLabel || 'Show Online Status';
   const frameTypeSectionTitle = labels?.frameTypeSectionTitle || 'Frame Types';
   const frameDescriptionSectionTitle = labels?.frameDescriptionSectionTitle || 'Frame Description';
-  
+
   // Default frame type labels
   const frameTypeLabels = {
     [AvatarFrameType.NONE]: labels?.frameTypeLabels?.[AvatarFrameType.NONE] || 'No Frame',
@@ -46,7 +46,7 @@ const AvatarFrameShowcase: React.FC = () => {
     [AvatarFrameType.PHOENIX]: labels?.frameTypeLabels?.[AvatarFrameType.PHOENIX] || 'Phoenix Frame (VIP)',
     [AvatarFrameType.CUSTOM]: labels?.frameTypeLabels?.[AvatarFrameType.CUSTOM] || 'Custom Frame'
   };
-  
+
   // Default frame descriptions
   const frameDescriptions = {
     [AvatarFrameType.NONE]: labels?.frameDescriptions?.[AvatarFrameType.NONE] || 'No frame, just the avatar image.',
@@ -60,7 +60,7 @@ const AvatarFrameShowcase: React.FC = () => {
     [AvatarFrameType.PHOENIX]: labels?.frameDescriptions?.[AvatarFrameType.PHOENIX] || 'A phoenix frame exclusive to VIP users. Features a glowing animation with phoenix particles.',
     [AvatarFrameType.CUSTOM]: labels?.frameDescriptions?.[AvatarFrameType.CUSTOM] || 'A custom frame that can be used for special events or promotions.'
   };
-  
+
   // All frame types
   const frameTypes = [
     AvatarFrameType.NONE,
@@ -73,10 +73,10 @@ const AvatarFrameShowcase: React.FC = () => {
     AvatarFrameType.DRAGON,
     AvatarFrameType.PHOENIX
   ];
-  
+
   // Sample avatar URL
   const avatarUrl = 'https://api.dicebear.com/7.x/bottts/svg?seed=panda';
-  
+
   return (
     <PageTransition>
       <div className="avatar-frame-showcase">
@@ -88,7 +88,7 @@ const AvatarFrameShowcase: React.FC = () => {
         >
           {pageTitle}
         </motion.h1>
-        
+
         <motion.p
           className="page-description"
           initial={{ opacity: 0 }}
@@ -97,7 +97,7 @@ const AvatarFrameShowcase: React.FC = () => {
         >
           {pageDescription}
         </motion.p>
-        
+
         <div className="showcase-container">
           <motion.div
             className="showcase-main"
@@ -117,7 +117,7 @@ const AvatarFrameShowcase: React.FC = () => {
                 isOnline={true}
               />
             </div>
-            
+
             <div className="frame-controls">
               <div className="toggle-controls">
                 <label className="toggle-control">
@@ -128,7 +128,7 @@ const AvatarFrameShowcase: React.FC = () => {
                   />
                   <span>{animationToggleLabel}</span>
                 </label>
-                
+
                 <label className="toggle-control">
                   <input
                     type="checkbox"
@@ -137,7 +137,7 @@ const AvatarFrameShowcase: React.FC = () => {
                   />
                   <span>{vipBadgeToggleLabel}</span>
                 </label>
-                
+
                 <label className="toggle-control">
                   <input
                     type="checkbox"
@@ -147,14 +147,14 @@ const AvatarFrameShowcase: React.FC = () => {
                   <span>{onlineStatusToggleLabel}</span>
                 </label>
               </div>
-              
+
               <div className="frame-description">
                 <h3>{frameDescriptionSectionTitle}</h3>
                 <p>{frameDescriptions[selectedFrameType]}</p>
               </div>
             </div>
           </motion.div>
-          
+
           <motion.div
             className="frame-types"
             initial={{ opacity: 0, y: 20 }}
@@ -162,7 +162,7 @@ const AvatarFrameShowcase: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.6 }}
           >
             <h3>{frameTypeSectionTitle}</h3>
-            
+
             <div className="frame-type-grid">
               {frameTypes.map((frameType) => (
                 <div

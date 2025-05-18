@@ -1,23 +1,16 @@
 // src/pages/BambooPlantingPage.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-// import { useNavigate } from 'react-router-dom'; // Unused, remove
-// import { useLanguage } from '@/context/LanguageProvider'; // pageLabels from useLocalizedView handles this
-// import { useToast } from '@/context/ToastProvider'; // Commented out
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
-// import PageHeader from '@/components/layout/PageHeader'; // Commented out
 import PageTransition from '@/components/animation/PageTransition';
 import ConfirmationDialog from '@/components/common/ConfirmationDialog';
 import BambooSeedSelector from '@/components/bamboo/BambooSeedSelector';
 import BambooPlotCard from '@/components/bamboo/BambooPlotCard';
 import Button from '@/components/common/Button';
-import { Tooltip } from '@/components/common/Tooltip'; // Named import
 import { playSound, SoundType } from '@/utils/sound';
 import type {
   BambooPlantingPageViewLabelsBundle,
   BambooPlantingPageViewDataPayload,
-  // BambooPlotRecord, // Removed from here
-  // BambooSeed // Removed from here
 } from '@/types';
 import { fetchBambooPlantingPageView } from '@/services/localizedContentService';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
@@ -39,7 +32,6 @@ const BambooPlantingPage: React.FC = () => {
     labels: pageLabels,
     // data: localizedViewData, // Not directly used, data comes from useBambooSystem
     isPending: localizedViewIsPending,
-    isError: localizedViewIsError,
     error: localizedViewError,
     refetch: refetchLocalizedView
   } = useLocalizedView<
@@ -98,7 +90,7 @@ const BambooPlantingPage: React.FC = () => {
     try {
       const seedId = selectedSeed.id as number;
       if (typeof seedId !== 'number') throw new Error('Selected seed has an invalid ID.');
-      
+
       const newPlant = await bambooSystem.plantBamboo(selectedPlotId, seedId);
       if (newPlant) {
         playSound(SoundType.BAMBOO_COLLECT);
@@ -240,18 +232,18 @@ const BambooPlantingPage: React.FC = () => {
               {currentPlantInSelectedPlot ? (
                 <div className="plant-actions">
                   <p>
-                    {safePageLabels?.plantDetailsTitle ?? "Plant Details:"} 
-                    {(bambooSystem.seeds.find((s: BambooSeedRecord) => s.id === currentPlantInSelectedPlot.seedId)?.name) || 'Unknown Plant'} 
+                    {safePageLabels?.plantDetailsTitle ?? "Plant Details:"}
+                    {(bambooSystem.seeds.find((s: BambooSeedRecord) => s.id === currentPlantInSelectedPlot.seedId)?.name) || 'Unknown Plant'}
                     (Growth: {plantGrowthStageText(currentPlantInSelectedPlot.growthStage)})
                   </p>
-                  <Button 
-                    onClick={handleWaterAction} 
+                  <Button
+                    onClick={handleWaterAction}
                     disabled={currentPlantInSelectedPlot.growthStage === GROWTH_STAGE_HARVESTABLE || currentPlantInSelectedPlot.isWatered}
                   >
                     {safePageLabels?.waterButton ?? "Water"}
                   </Button>
                 <Button
-                    onClick={handleFertilizeAction} 
+                    onClick={handleFertilizeAction}
                     disabled={currentPlantInSelectedPlot.growthStage === GROWTH_STAGE_HARVESTABLE || currentPlantInSelectedPlot.isFertilized}
                 >
                     {safePageLabels?.fertilizeButton ?? "Fertilize"}
@@ -279,7 +271,7 @@ const BambooPlantingPage: React.FC = () => {
                   )}
                   {selectedSeed && (
                     <Button
-                      onClick={() => setShowConfirmPlantModal(true)} 
+                      onClick={() => setShowConfirmPlantModal(true)}
                       disabled={!selectedPlotId || !selectedSeed}
                     >
                       {safePageLabels?.plantButton ?? "Plant Seed"}

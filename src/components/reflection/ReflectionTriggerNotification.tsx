@@ -56,7 +56,6 @@ const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps
   const [triggers, setTriggers] = useState<ReflectionTriggerRecord[]>([]);
   const [currentTriggerIndex, setCurrentTriggerIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   // 当前用户ID（在实际应用中，这应该从用户会话中获取）
   const userId = 'current-user';
@@ -64,7 +63,6 @@ const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps
   // 加载未查看的反思触发记录
   const loadTriggers = async () => {
     try {
-      setIsLoading(true);
       const unviewedTriggers = await getUnviewedReflectionTriggers(userId);
       setTriggers(unviewedTriggers);
 
@@ -76,8 +74,6 @@ const ReflectionTriggerNotification: React.FC<ReflectionTriggerNotificationProps
       }
     } catch (err) {
       console.error('Failed to load reflection triggers:', err);
-    } finally {
-      setIsLoading(false);
     }
   };
 

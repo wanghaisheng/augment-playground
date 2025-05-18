@@ -2,13 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  PandaSkinRecord,
-  PandaSkinType,
-  PandaSkinRarity,
   getOwnedSkins,
   getEquippedSkin,
   equipSkin
 } from '@/services/pandaSkinService';
+import { PandaSkinRecord, SkinType, SkinRarity } from '@/types/skins';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { playSound, SoundType } from '@/utils/sound';
@@ -33,9 +31,8 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
   onSkinChanged
 }) => {
   const [skins, setSkins] = useState<PandaSkinRecord[]>([]);
-
   const [selectedSkin, setSelectedSkin] = useState<PandaSkinRecord | null>(null);
-  const [selectedType, setSelectedType] = useState<PandaSkinType | 'all'>('all');
+  const [selectedType, setSelectedType] = useState<SkinType | 'all'>('all');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -156,17 +153,17 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
   };
 
   // 获取稀有度信息
-  const getRarityInfo = (rarity: PandaSkinRarity) => {
+  const getRarityInfo = (rarity: SkinRarity) => {
     switch (rarity) {
-      case PandaSkinRarity.COMMON:
+      case SkinRarity.COMMON:
         return { text: '普通', color: 'text-gray-600', bgColor: 'bg-gray-100' };
-      case PandaSkinRarity.UNCOMMON:
+      case SkinRarity.UNCOMMON:
         return { text: '不常见', color: 'text-green-600', bgColor: 'bg-green-100' };
-      case PandaSkinRarity.RARE:
+      case SkinRarity.RARE:
         return { text: '稀有', color: 'text-blue-600', bgColor: 'bg-blue-100' };
-      case PandaSkinRarity.EPIC:
+      case SkinRarity.EPIC:
         return { text: '史诗', color: 'text-purple-600', bgColor: 'bg-purple-100' };
-      case PandaSkinRarity.LEGENDARY:
+      case SkinRarity.LEGENDARY:
         return { text: '传说', color: 'text-gold-600', bgColor: 'bg-gold-100' };
       default:
         return { text: '普通', color: 'text-gray-600', bgColor: 'bg-gray-100' };
@@ -174,18 +171,10 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
   };
 
   // 获取皮肤类型文本
-  const getSkinTypeText = (type: PandaSkinType) => {
+  const getSkinTypeText = (type: SkinType) => {
     switch (type) {
-      case PandaSkinType.NORMAL:
-        return '普通';
-      case PandaSkinType.SEASONAL:
-        return '季节';
-      case PandaSkinType.FESTIVAL:
-        return '节日';
-      case PandaSkinType.SPECIAL:
-        return '特殊';
-      case PandaSkinType.VIP:
-        return 'VIP专属';
+      case SkinType.PANDA:
+        return '熊猫';
       default:
         return '普通';
     }
@@ -286,19 +275,11 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
                 </button>
                 <button
                   className={`px-3 py-1 rounded-full text-sm ${
-                    selectedType === PandaSkinType.NORMAL ? 'bg-jade-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    selectedType === SkinType.PANDA ? 'bg-jade-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
-                  onClick={() => setSelectedType(PandaSkinType.NORMAL)}
+                  onClick={() => setSelectedType(SkinType.PANDA)}
                 >
-                  普通
-                </button>
-                <button
-                  className={`px-3 py-1 rounded-full text-sm ${
-                    selectedType === PandaSkinType.VIP ? 'bg-jade-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                  onClick={() => setSelectedType(PandaSkinType.VIP)}
-                >
-                  VIP专属
+                  熊猫
                 </button>
               </div>
             </div>

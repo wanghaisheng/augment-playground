@@ -65,10 +65,10 @@ export async function createSocialChallenge(
   challenge: Omit<SocialChallengeRecord, 'id' | 'createdAt' | 'updatedAt' | 'progress' | 'participantIds' | 'inviteCode'>
 ): Promise<SocialChallengeRecord> {
   const now = new Date();
-  
+
   // 生成邀请码
   const inviteCode = generateInviteCode();
-  
+
   const newChallenge: SocialChallengeRecord = {
     ...challenge,
     participantIds: [challenge.creatorId], // 创建者自动成为参与者
@@ -77,17 +77,17 @@ export async function createSocialChallenge(
     updatedAt: now,
     inviteCode
   };
-  
+
   // 添加到数据库
   const id = await db.table('socialChallenges').add(newChallenge);
   const createdChallenge = { ...newChallenge, id: id as number };
-  
+
   // 添加到同步队列
   await addSyncItem('socialChallenges', 'create', createdChallenge);
-  
+
   // 创建参与记录
   await createParticipation(id as number, challenge.creatorId);
-  
+
   return createdChallenge;
 }
 
@@ -107,7 +107,7 @@ export async function getAllSocialChallenges(
   filter?: Partial<SocialChallengeRecord>
 ): Promise<SocialChallengeRecord[]> {
   let collection = db.table('socialChallenges').toCollection();
-  
+
   if (filter) {
     collection = collection.filter(challenge => {
       for (const key in filter) {
@@ -120,7 +120,7 @@ export async function getAllSocialChallenges(
       return true;
     });
   }
-  
+
   return collection.sortBy('createdAt');
 }
 
@@ -139,8 +139,8 @@ export async function getUserSocialChallenges(userId: string): Promise<SocialCha
  */
 export async function getPublicSocialChallenges(): Promise<SocialChallengeRecord[]> {
   return db.table('socialChallenges')
-    .filter(challenge => 
-      challenge.isPublic && 
+    .filter(challenge =>
+      challenge.isPublic &&
       challenge.status === ChallengeStatus.ACTIVE &&
       challenge.participantIds.length < challenge.maxParticipants
     )
@@ -160,19 +160,19 @@ export async function updateSocialChallenge(
   if (!challenge) {
     throw new Error(`Social challenge with id ${id} not found`);
   }
-  
+
   const updatedChallenge = {
     ...challenge,
     ...updates,
     updatedAt: new Date()
   };
-  
+
   // 更新数据库
   await db.table('socialChallenges').update(id, updatedChallenge);
-  
+
   // 添加到同步队列
   await addSyncItem('socialChallenges', 'update', updatedChallenge);
-  
+
   return updatedChallenge;
 }
 
@@ -191,31 +191,31 @@ export async function joinSocialChallenge(
   if (!challenge) {
     throw new Error(`Social challenge with id ${challengeId} not found`);
   }
-  
+
   // 检查是否已经是参与者
   if (challenge.participantIds.includes(userId)) {
     return challenge;
   }
-  
+
   // 检查是否已达到最大参与人数
   if (challenge.participantIds.length >= challenge.maxParticipants) {
     throw new Error('Challenge has reached maximum number of participants');
   }
-  
+
   // 检查邀请码（如果是非公开挑战）
   if (!challenge.isPublic && challenge.inviteCode !== inviteCode) {
     throw new Error('Invalid invite code');
   }
-  
+
   // 更新参与者列表
   const updatedParticipantIds = [...challenge.participantIds, userId];
   const updatedChallenge = await updateSocialChallenge(challengeId, {
     participantIds: updatedParticipantIds
   });
-  
+
   // 创建参与记录
   await createParticipation(challengeId, userId);
-  
+
   return updatedChallenge;
 }
 
@@ -232,28 +232,28 @@ export async function leaveSocialChallenge(
   if (!challenge) {
     throw new Error(`Social challenge with id ${challengeId} not found`);
   }
-  
+
   // 检查是否是参与者
   if (!challenge.participantIds.includes(userId)) {
     return challenge;
   }
-  
+
   // 如果是创建者，不允许离开
   if (challenge.creatorId === userId) {
     throw new Error('Creator cannot leave the challenge');
   }
-  
+
   // 更新参与者列表
-  const updatedParticipantIds = challenge.participantIds.filter(id => id !== userId);
+  const updatedParticipantIds = challenge.participantIds.filter((id: string) => id !== userId);
   const updatedChallenge = await updateSocialChallenge(challengeId, {
     participantIds: updatedParticipantIds
   });
-  
+
   // 更新参与记录
   await updateParticipation(challengeId, userId, {
     status: 'abandoned'
   });
-  
+
   return updatedChallenge;
 }
 
@@ -267,7 +267,7 @@ export async function createParticipation(
   userId: string
 ): Promise<SocialChallengeParticipation> {
   const now = new Date();
-  
+
   const participation: SocialChallengeParticipation = {
     challengeId,
     userId,
@@ -275,14 +275,14 @@ export async function createParticipation(
     status: 'active',
     contribution: 0
   };
-  
+
   // 添加到数据库
   const id = await db.table('socialChallengeParticipations').add(participation);
   const createdParticipation = { ...participation, id: id as number };
-  
+
   // 添加到同步队列
   await addSyncItem('socialChallengeParticipations', 'create', createdParticipation);
-  
+
   return createdParticipation;
 }
 
@@ -300,27 +300,27 @@ export async function updateParticipation(
   const participation = await db.table('socialChallengeParticipations')
     .filter(p => p.challengeId === challengeId && p.userId === userId)
     .first();
-  
+
   if (!participation) {
     throw new Error(`Participation record not found for challenge ${challengeId} and user ${userId}`);
   }
-  
+
   const updatedParticipation = {
     ...participation,
     ...updates
   };
-  
+
   // 如果更新了贡献值，设置最后贡献时间
   if (updates.contribution !== undefined) {
     updatedParticipation.lastContributedAt = new Date();
   }
-  
+
   // 更新数据库
   await db.table('socialChallengeParticipations').update(participation.id!, updatedParticipation);
-  
+
   // 添加到同步队列
   await addSyncItem('socialChallengeParticipations', 'update', updatedParticipation);
-  
+
   return updatedParticipation;
 }
 
@@ -351,38 +351,38 @@ export async function contributeToChallenge(
   if (!challenge) {
     throw new Error(`Social challenge with id ${challengeId} not found`);
   }
-  
+
   // 检查是否是参与者
   if (!challenge.participantIds.includes(userId)) {
     throw new Error('User is not a participant of this challenge');
   }
-  
+
   // 获取参与记录
   const participation = await db.table('socialChallengeParticipations')
     .filter(p => p.challengeId === challengeId && p.userId === userId)
     .first();
-  
+
   if (!participation) {
     throw new Error(`Participation record not found for challenge ${challengeId} and user ${userId}`);
   }
-  
+
   // 更新参与记录
   await updateParticipation(challengeId, userId, {
     contribution: participation.contribution + amount
   });
-  
+
   // 更新挑战进度
   const newProgress = Math.min(100, challenge.progress + amount);
   const updatedChallenge = await updateSocialChallenge(challengeId, {
     progress: newProgress
   });
-  
+
   // 如果进度达到100%，标记为已完成
   if (newProgress >= 100 && challenge.status !== ChallengeStatus.COMPLETED) {
     await updateSocialChallenge(challengeId, {
       status: ChallengeStatus.COMPLETED
     });
-    
+
     // 更新所有活跃参与者的状态为已完成
     const participations = await getChallengeParticipations(challengeId);
     for (const p of participations) {
@@ -393,7 +393,7 @@ export async function contributeToChallenge(
       }
     }
   }
-  
+
   return updatedChallenge;
 }
 

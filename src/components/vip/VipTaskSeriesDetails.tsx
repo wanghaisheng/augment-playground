@@ -1,7 +1,7 @@
 // src/components/vip/VipTaskSeriesDetails.tsx
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { VipTaskSeriesRecord } from '@/services/vipTaskService';
+import { ExtendedVipTaskSeriesRecord } from '@/services/vipTaskService';
 import { TaskRecord, TaskStatus, completeTask } from '@/services/taskService';
 import LatticeDialog from '@/components/game/LatticeDialog';
 import Button from '@/components/common/Button';
@@ -12,7 +12,7 @@ import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 interface VipTaskSeriesDetailsProps {
   isOpen: boolean;
   onClose: () => void;
-  series: VipTaskSeriesRecord | null;
+  series: ExtendedVipTaskSeriesRecord | null;
   tasks: TaskRecord[];
 }
 

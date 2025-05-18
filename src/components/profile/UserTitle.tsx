@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { getActiveUserTitle, UserTitleRecord, UserTitleType } from '@/services/userTitleService';
-import { usePandaState } from '@/context/PandaStateProvider';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { fetchUserTitleView } from '@/services/localizedContentService';
 import { useLanguage } from '@/context/LanguageProvider';
@@ -27,8 +26,6 @@ const UserTitle: React.FC<UserTitleProps> = ({
 }) => {
   const [title, setTitle] = useState<UserTitleRecord | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { pandaState } = usePandaState();
-  const isVip = pandaState?.isVip || false;
   const { language } = useLanguage();
 
   // 本地化视图

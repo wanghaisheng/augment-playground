@@ -1,7 +1,7 @@
 // src/pages/StorePage.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   StoreCategoryRecord,
   StoreItemRecord,
@@ -21,7 +21,6 @@ import StoreItemPreview from '@/components/store/StoreItemPreview';
 import VipSubscriptionCard from '@/components/store/VipSubscriptionCard';
 import CurrencyDisplay from '@/components/store/CurrencyDisplay';
 import Button from '@/components/common/Button';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 import { playSound, SoundType } from '@/utils/sound';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
@@ -36,7 +35,6 @@ import type { StorePageViewLabelsBundle } from '@/types';
  * 用于显示和购买商店物品
  */
 const StorePage: React.FC = () => {
-  const navigate = useNavigate();
   const [categories, setCategories] = useState<StoreCategoryRecord[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<StoreCategoryRecord | null>(null);
   const [items, setItems] = useState<StoreItemRecord[]>([]);

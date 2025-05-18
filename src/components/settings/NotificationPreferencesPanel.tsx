@@ -71,7 +71,7 @@ interface NotificationLabelsBundle {
  */
 const NotificationPreferencesPanel: React.FC = () => {
   // 上下文
-  const { preferences, savePreferences, updateTypePreference } = useNotifications();
+  const { preferences, savePreferences } = useNotifications();
   const { language } = useLanguage();
 
   // 状态
@@ -311,14 +311,7 @@ const NotificationPreferencesPanel: React.FC = () => {
     }));
   };
 
-  // 处理锁屏显示开关变化
-  const handleLockScreenToggle = (enabled: boolean) => {
-    playSound(SoundType.BUTTON_CLICK);
-    setLocalPreferences(prev => ({
-      ...prev,
-      showOnLockScreen: enabled
-    }));
-  };
+
 
   // 处理显示时长变化
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -409,21 +402,7 @@ const NotificationPreferencesPanel: React.FC = () => {
     return typeLabel ? typeLabel[language] : type;
   };
 
-  // 获取优先级名称
-  const getPriorityLabel = (priority: NotificationPriority) => {
-    switch (priority) {
-      case NotificationPriority.LOW:
-        return labels.notifications.priorityLevels.low[language];
-      case NotificationPriority.MEDIUM:
-        return labels.notifications.priorityLevels.medium[language];
-      case NotificationPriority.HIGH:
-        return labels.notifications.priorityLevels.high[language];
-      case NotificationPriority.URGENT:
-        return labels.notifications.priorityLevels.urgent[language];
-      default:
-        return labels.notifications.priorityLevels.medium[language];
-    }
-  };
+
 
   // 按类别分组通知类型
   const notificationTypesByCategory = {

@@ -48,7 +48,7 @@ const highlightMomentHandlers: HighlightMomentHandler[] = [];
  */
 export function registerHighlightMomentHandler(handler: HighlightMomentHandler): () => void {
   highlightMomentHandlers.push(handler);
-  
+
   // 返回取消注册的函数
   return () => {
     const index = highlightMomentHandlers.indexOf(handler);
@@ -82,13 +82,13 @@ export async function shouldShowVipPrompt(data: HighlightMomentData): Promise<bo
   try {
     // 检查用户是否已经是VIP
     const isVip = await isUserVip('current-user');
-    
+
     // 如果用户已经是VIP，根据高光时刻类型决定是否显示
     if (isVip) {
       // 对于VIP用户，只在特定情况下显示（如获得了VIP加成的奖励）
       return data.rewardType !== undefined && data.rewardAmount !== undefined;
     }
-    
+
     // 对于非VIP用户，根据高光时刻类型决定是否显示
     switch (data.type) {
       case HighlightMomentType.ACHIEVEMENT_UNLOCKED:
@@ -98,18 +98,18 @@ export async function shouldShowVipPrompt(data: HighlightMomentData): Promise<bo
       case HighlightMomentType.STREAK_MILESTONE:
         // 这些高光时刻总是显示VIP提示
         return true;
-        
+
       case HighlightMomentType.ABILITY_UNLOCKED:
       case HighlightMomentType.COLLECTION_COMPLETED:
       case HighlightMomentType.SPECIAL_EVENT:
         // 这些高光时刻根据稀有度决定是否显示
         if (data.rarity) {
-          return data.rarity === RewardRarity.RARE || 
-                 data.rarity === RewardRarity.EPIC || 
+          return data.rarity === RewardRarity.RARE ||
+                 data.rarity === RewardRarity.EPIC ||
                  data.rarity === RewardRarity.LEGENDARY;
         }
         return false;
-        
+
       default:
         return false;
     }
@@ -129,7 +129,7 @@ export async function calculateVipRewardAmount(data: HighlightMomentData): Promi
     if (data.rewardType === undefined || data.rewardAmount === undefined) {
       return 0;
     }
-    
+
     // 计算VIP奖励数量
     const vipAmount = await applyResourceMultiplier(data.rewardType, data.rewardAmount);
     return vipAmount;
@@ -150,7 +150,7 @@ export async function getVipPromptData(data: HighlightMomentData): Promise<{
   rewardType: RewardType;
   rarity: RewardRarity;
   source: string;
-  promptType: string;
+  promptType: HighlightMomentType;
 } | null> {
   try {
     // 检查是否应该显示VIP提示
@@ -158,15 +158,15 @@ export async function getVipPromptData(data: HighlightMomentData): Promise<{
     if (!shouldShow) {
       return null;
     }
-    
+
     // 如果没有奖励类型或数量，返回null
     if (data.rewardType === undefined || data.rewardAmount === undefined) {
       return null;
     }
-    
+
     // 计算VIP奖励数量
     const vipAmount = await calculateVipRewardAmount(data);
-    
+
     return {
       baseAmount: data.rewardAmount,
       vipAmount,

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  VipTaskSeriesRecord,
+  ExtendedVipTaskSeriesRecord,
   getVipTaskSeriesTasks,
   checkVipTaskSeriesCompletion
 } from '@/services/vipTaskService';
@@ -13,8 +13,8 @@ import { playSound, SoundType } from '@/utils/sound';
 import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 
 interface VipTaskSeriesCardProps {
-  series: VipTaskSeriesRecord;
-  onViewTasks: (series: VipTaskSeriesRecord, tasks: TaskRecord[]) => void;
+  series: ExtendedVipTaskSeriesRecord;
+  onViewTasks: (series: ExtendedVipTaskSeriesRecord, tasks: TaskRecord[]) => void;
 }
 
 /**

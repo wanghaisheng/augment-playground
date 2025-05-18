@@ -42,7 +42,7 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
   const [isInteracting, setIsInteracting] = useState<boolean>(false);
   const [animationType, setAnimationType] = useState<PandaAnimationType>('idle');
   const [interactionStats, setInteractionStats] = useState<Record<InteractionType, { count: number; lastTime: Date | null; totalExperience: number }> | null>(null);
-  const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
+  const [cooldowns, setCooldowns] = useState<Record<InteractionType, number>>({} as Record<InteractionType, number>);
 
   // 获取语言
   const { language } = useLanguage();
@@ -70,8 +70,8 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
         let hasActiveCooldowns = false;
 
         for (const type in newCooldowns) {
-          if (newCooldowns[type] > 0) {
-            newCooldowns[type] -= 1;
+          if (Object.prototype.hasOwnProperty.call(newCooldowns, type) && newCooldowns[type as keyof typeof newCooldowns] > 0) {
+            newCooldowns[type as keyof typeof newCooldowns] -= 1;
             hasActiveCooldowns = true;
           }
         }

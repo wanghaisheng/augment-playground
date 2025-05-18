@@ -8,10 +8,8 @@ import {
   getActiveEnvironment,
   PandaEnvironmentRecord
 } from '@/services/pandaCustomizationService';
-import {
-  getEquippedSkin,
-  PandaSkinRecord
-} from '@/services/pandaSkinService';
+import { getEquippedSkin } from '@/services/pandaSkinService';
+import { PandaSkinRecord } from '@/types/skins';
 
 // 熊猫状态类型
 export type PandaMood = 'normal' | 'happy' | 'focused' | 'tired';

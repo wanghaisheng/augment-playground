@@ -1,6 +1,5 @@
 // src/pages/BambooTradingPage.tsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { useLanguage } from '@/context/LanguageProvider';
 import { useBambooSystem } from '@/hooks/useBambooSystem';
@@ -20,7 +19,6 @@ import ErrorDisplay from '@/components/common/ErrorDisplay';
  * 竹子交易页面
  */
 const BambooTradingPage: React.FC = () => {
-  const navigate = useNavigate();
   const { language } = useLanguage();
   // const { content } = useLocalizedView('bambooTrading'); // This seems to be for component-level labels, pageLabels is primary for page text
 
@@ -28,13 +26,8 @@ const BambooTradingPage: React.FC = () => {
   const {
     resources,
     tradeRates,
-    tradeHistory,
     bambooCount,
-    coinsCount,
-    jadeCount,
     // isLoadingTrading: isLoading, // isLoading will come from page-level useLocalizedView or local state
-    tradeBambooForResource,
-    tradeResourceForBamboo
   } = useBambooSystem();
 
   // const tradingSystem = useBambooTradingSystem(); // Assuming this hook might be defined elsewhere or its functionality integrated/mocked
@@ -70,13 +63,13 @@ const BambooTradingPage: React.FC = () => {
     }
   }, [resources, selectedResourceId]);
 
-  // 选择资源
-  const handleSelectResource = (resourceId: number) => {
-    setSelectedResourceId(resourceId);
-    setBuyAmount('');
-    setSellAmount('');
-    setTradeMessage(null);
-  };
+  // 选择资源 - Commented out as it's not used
+  // const handleSelectResource = (resourceId: number) => {
+  //   setSelectedResourceId(resourceId);
+  //   setBuyAmount('');
+  //   setSellAmount('');
+  //   setTradeMessage(null);
+  // };
 
   // 切换交易方向
   const handleToggleTradeDirection = () => {
@@ -197,11 +190,11 @@ const BambooTradingPage: React.FC = () => {
     });
   };
 
-  // 获取资源图标
-  const getResourceIcon = (resourceName: string) => {
-    const resource = resources.find(r => r.name === resourceName);
-    return resource?.imageUrl || '/assets/bamboo/resources/default.svg';
-  };
+  // 获取资源图标 - Commented out as it's not used
+  // const getResourceIcon = (resourceName: string) => {
+  //   const resource = resources.find(r => r.name === resourceName);
+  //   return resource?.imageUrl || '/assets/bamboo/resources/default.svg';
+  // };
 
   const tradePreview = calculateTradePreview();
 

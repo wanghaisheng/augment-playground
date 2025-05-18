@@ -29,7 +29,7 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
   daysLeft
 }) => {
   // isClosing state is used to manage animation timing during dialog close
-  const [_isClosing, setIsClosing] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
   // Function to fetch localized content for subscription expiration
   const fetchSubscriptionExpirationViewFn = React.useCallback(async (lang: Language) => {

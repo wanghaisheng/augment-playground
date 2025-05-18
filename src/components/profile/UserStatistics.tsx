@@ -55,7 +55,7 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
   const { language } = useLanguage();
 
   // 本地化视图
-  const { labels } = useLocalizedView(
+  const { labels } = useLocalizedView<any, any>(
     'userStatisticsViewContent',
     fetchUserStatisticsView
   );
@@ -81,7 +81,16 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
   }
 
   // 获取任务类型数据
-  const getTaskTypeData = () => {
+  const getTaskTypeData = (): {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string[];
+      borderColor: string[];
+      borderWidth: number;
+    }[];
+  } => {
     const chartLabels = Object.keys(statistics.tasks.byType).map(key =>
       key === 'daily' ? (labels?.taskTypes?.daily?.[language] || '每日') :
       key === 'weekly' ? (labels?.taskTypes?.weekly?.[language] || '每周') :
@@ -113,7 +122,16 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
   };
 
   // 获取任务优先级数据
-  const getTaskPriorityData = () => {
+  const getTaskPriorityData = (): {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string[];
+      borderColor: string[];
+      borderWidth: number;
+    }[];
+  } => {
     const chartLabels = Object.keys(statistics.tasks.byPriority).map(key =>
       key === 'high' ? (labels?.priorities?.high?.[language] || '高') :
       key === 'medium' ? (labels?.priorities?.medium?.[language] || '中') :
@@ -145,15 +163,36 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
   };
 
   // 获取每周完成情况数据
-  const getWeeklyCompletionData = () => {
+  const getWeeklyCompletionData = (): {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string;
+      borderColor: string;
+      borderWidth: number;
+      tension: number;
+      fill: boolean;
+    }[];
+  } => {
+    const weekdayLabels = {
+      sunday: labels?.weekdays?.sunday?.[language] || '周日',
+      monday: labels?.weekdays?.monday?.[language] || '周一',
+      tuesday: labels?.weekdays?.tuesday?.[language] || '周二',
+      wednesday: labels?.weekdays?.wednesday?.[language] || '周三',
+      thursday: labels?.weekdays?.thursday?.[language] || '周四',
+      friday: labels?.weekdays?.friday?.[language] || '周五',
+      saturday: labels?.weekdays?.saturday?.[language] || '周六'
+    };
+
     const chartLabels = [
-      labels?.weekdays?.sunday?.[language] || '周日',
-      labels?.weekdays?.monday?.[language] || '周一',
-      labels?.weekdays?.tuesday?.[language] || '周二',
-      labels?.weekdays?.wednesday?.[language] || '周三',
-      labels?.weekdays?.thursday?.[language] || '周四',
-      labels?.weekdays?.friday?.[language] || '周五',
-      labels?.weekdays?.saturday?.[language] || '周六'
+      weekdayLabels.sunday,
+      weekdayLabels.monday,
+      weekdayLabels.tuesday,
+      weekdayLabels.wednesday,
+      weekdayLabels.thursday,
+      weekdayLabels.friday,
+      weekdayLabels.saturday
     ];
 
     return {
@@ -173,13 +212,24 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
   };
 
   // 获取熊猫心情历史数据
-  const getPandaMoodData = () => {
-    const labels = Array.from({ length: statistics.panda.moodHistory.length }, (_, i) =>
+  const getPandaMoodData = (): {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string;
+      borderColor: string;
+      borderWidth: number;
+      tension: number;
+      fill: boolean;
+    }[];
+  } => {
+    const chartLabels = Array.from({ length: statistics.panda.moodHistory.length }, (_, i) =>
       `${labels?.day?.[language] || '天'} ${i + 1}`
     );
 
     return {
-      labels,
+      labels: chartLabels,
       datasets: [
         {
           label: labels?.moodChart?.[language] || '心情历史',

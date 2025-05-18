@@ -177,8 +177,8 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
   };
 
   // 装饰类型选项
-  const accessoryTypes: (PandaAccessoryType | 'all')[] = [
-    'all',
+  const accessoryTypes = [
+    'all' as const,
     PandaAccessoryType.HAT,
     PandaAccessoryType.GLASSES,
     PandaAccessoryType.SCARF,
@@ -216,6 +216,7 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
               <h3 className="text-lg font-bold mb-3">当前装备</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {accessoryTypes.slice(1).map((type) => {
+                  // We know these are all PandaAccessoryType since we sliced off the 'all' value
                   const equipped = getEquippedAccessory(type as PandaAccessoryType);
                   return (
                     <div key={type} className="equipped-item p-2 border border-gray-200 rounded-lg">

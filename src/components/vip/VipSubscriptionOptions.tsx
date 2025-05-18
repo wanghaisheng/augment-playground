@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLanguage } from '@/context/LanguageProvider';
 import { useComponentLabels } from '@/hooks/useComponentLabels';
 import { updatePandaVipStatus } from '@/services/pandaStateService';
 import { activateVipSubscription } from '@/services/storeService';

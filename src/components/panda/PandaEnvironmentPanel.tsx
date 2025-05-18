@@ -311,7 +311,7 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                     <Button
                       variant="jade"
                       onClick={() => handleActivateEnvironment(previewEnvironment)}
-                      disabled={isUpdating || (activeEnvironment !== null && activeEnvironment.id === previewEnvironment.id)}
+                      disabled={isUpdating || (activeEnvironment && activeEnvironment.id === previewEnvironment.id)}
                     >
                       {isUpdating ? (
                         <LoadingSpinner variant="white" size="small" />
