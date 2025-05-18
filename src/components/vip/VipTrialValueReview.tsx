@@ -63,10 +63,10 @@ const VipTrialValueReview: React.FC<VipTrialValueReviewProps> = ({
   }, []);
 
   // Fetch localized content for the VIP trial value review
-  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipTrialValueReview', fetchVipTrialValueReviewViewFn);
+  const { labels } = useLocalizedView<null, { [key: string]: string }>('vipTrialValueReview', fetchVipTrialValueReviewViewFn);
 
-  // Get content from viewData or use empty object as fallback
-  const content = (viewData?.labels || {}) as { [key: string]: string };
+  // Get content from labels or use empty object as fallback
+  const content = labels || {} as { [key: string]: string };
 
   // 加载价值统计数据
   useEffect(() => {

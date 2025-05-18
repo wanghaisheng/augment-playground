@@ -5,20 +5,20 @@ import { useNavigate } from 'react-router-dom';
 // import { CustomGoalRecord, CustomGoalStatus } from '@/services/customGoalService'; // REMOVE THIS LINE
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { fetchCustomGoalsPageView } from '@/services/localizedContentService';
-import type { 
-  CustomGoalsPageViewLabelsBundle, 
+import type {
+  CustomGoalsPageViewLabelsBundle,
   CustomGoalsPageViewDataPayload,
   CustomGoalRecord as CustomGoalViewModel,
   // ApiError
-} from '@/types'; 
+} from '@/types';
 // import { usePandaState } from '@/context/PandaStateProvider'; // Keep commented until PandaState integration is clarified
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import ErrorDisplay from '@/components/common/ErrorDisplay'; 
+import ErrorDisplay from '@/components/common/ErrorDisplay';
 import CustomGoalCard from '@/components/goals/CustomGoalCard';
 import CustomGoalForm from '@/components/goals/CustomGoalForm';
-import Header from '@/components/layout/Header'; 
-import ConfirmationDialog from '@/components/common/ConfirmationDialog'; 
+// import Header from '@/components/layout/Header';
+import ConfirmationDialog from '@/components/common/ConfirmationDialog';
 import VipModal from '@/components/vip/VipValueModal';
 import { playSound, SoundType } from '@/utils/sound';
 import { GoalStatus } from '@/types/goals'; // Ensure GoalStatus is imported correctly
@@ -26,15 +26,15 @@ import { GoalStatus } from '@/types/goals'; // Ensure GoalStatus is imported cor
 
 const CustomGoalsPage: React.FC = () => {
   const navigate = useNavigate();
-  
-  const { 
+
+  const {
     labels: pageLabels,
     data: pageData,
-    isPending, 
+    isPending,
     isError: pageLoadError,
     error: pageLoadErrorInfo,
     refetch,
-    isFetching 
+    isFetching
   } = useLocalizedView<CustomGoalsPageViewDataPayload | null, CustomGoalsPageViewLabelsBundle>(
     'customGoalsViewContent',
     fetchCustomGoalsPageView
@@ -63,7 +63,7 @@ const CustomGoalsPage: React.FC = () => {
   }, [pageData?.goals, filter]);
 
   const currentGoalCount = pageData?.currentGoalCount ?? 0;
-  const goalLimit = pageData?.goalLimit ?? (isVipUser ? 5 : 1); 
+  const goalLimit = pageData?.goalLimit ?? (isVipUser ? 5 : 1);
   const canCreateMoreGoals = isVipUser || currentGoalCount < goalLimit;
 
   const handleCreateGoal = () => {
@@ -73,21 +73,21 @@ const CustomGoalsPage: React.FC = () => {
     }
     setEditingGoal(null);
     setShowGoalForm(true);
-    playSound(SoundType.CREATE); 
+    playSound(SoundType.CREATE);
   };
 
   const handleEditGoal = (goalToEdit: CustomGoalViewModel) => {
     setEditingGoal(goalToEdit);
     setShowGoalForm(true);
-    playSound(SoundType.CLICK); 
+    playSound(SoundType.CLICK);
   };
-  
-  const handleSaveGoal = () => { 
+
+  const _handleSaveGoal = () => {
     // Mock implementation:
     // Real implementation would use a service call and potentially updateCustomGoal from pandaState
     setShowGoalForm(false);
     setEditingGoal(null);
-    refetch(); 
+    refetch();
     playSound(SoundType.SUCCESS);
     alert(editingGoal ? (pageLabels?.formTitleEdit ?? 'Goal updated (mock)') : (pageLabels?.formTitleCreate ?? 'Goal created (mock)'));
   };
@@ -102,14 +102,14 @@ const CustomGoalsPage: React.FC = () => {
   };
 
   const confirmDeleteGoal = async () => {
-    if (!goalToDelete ) return; 
+    if (!goalToDelete ) return;
     // await deleteCustomGoal(goalToDelete.id); // Assuming string ID
     setGoalToDelete(null);
-    refetch(); 
-    playSound(SoundType.SUCCESS); 
+    refetch();
+    playSound(SoundType.SUCCESS);
     alert(`Goal "${goalToDelete.title}" ${pageLabels?.deleteConfirmMessage ?? 'deleted (mock)'}`);
   };
-  
+
   const handleToggleComplete = async (goalToToggle: CustomGoalViewModel) => {
     if (!goalToToggle || !goalToToggle.id) return;
     playSound(SoundType.CLICK);
@@ -119,7 +119,7 @@ const CustomGoalsPage: React.FC = () => {
     try {
       // TODO: Replace with actual service call: updateCustomGoalProgress(goalToToggle.id, newStatus === GoalStatus.COMPLETED ? goalToToggle.targetValue : goalToToggle.currentValue, newStatus);
       // For now, assuming it can handle string ID and the GoalStatus enum
-      
+
       alert(`Goal "${goalToToggle.title}" status set to ${newStatus} (mocked)`);
       refetch();
       playSound(newStatus === GoalStatus.COMPLETED ? SoundType.TASK_COMPLETE_HIGH : SoundType.CLICK);
@@ -133,13 +133,13 @@ const CustomGoalsPage: React.FC = () => {
   const handleOpenVipModal = () => {
     setShowVipModal(true);
   };
-  
+
   const handleNavigateToVipPage = () => {
     playSound(SoundType.CLICK);
     navigate('/vip-benefits');
     setShowVipModal(false);
   };
-  
+
   // Render Logic
   // Temporary cast for diagnostics of persistent 'never' errors
   const safePageLabels = pageLabels as any;
@@ -151,12 +151,12 @@ const CustomGoalsPage: React.FC = () => {
         </div>
       );
     }
-    
+
   if (pageLoadError && !safePageLabels && !pageData) {
       return (
       <div className="p-4">
-        <ErrorDisplay 
-          error={pageLoadErrorInfo} 
+        <ErrorDisplay
+          error={pageLoadErrorInfo}
           title={safePageLabels?.errorTitle ?? 'Error Loading Goals'}
           messageTemplate={safePageLabels?.errorMessage ?? 'Could not load your custom goals. {message}'}
           onRetry={refetch}
@@ -165,20 +165,20 @@ const CustomGoalsPage: React.FC = () => {
         </div>
       );
     }
-    
+
   if (!safePageLabels) { // If pageLabels are still not available (e.g. initial load error after some retries, or still pending)
       return (
           <div className="flex justify-center items-center h-screen">
-            <LoadingSpinner text={"Loading interface..."} /> 
+            <LoadingSpinner text={"Loading interface..."} />
         </div>
       );
     }
 
   const displayGoals = filteredGoals;
   const noGoalsExist = !pageData?.goals || pageData.goals.length === 0;
-    
+
     return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
@@ -188,11 +188,11 @@ const CustomGoalsPage: React.FC = () => {
 
       {isFetching && <LoadingSpinner text={pageLabels?.loadingMessage ?? 'Updating goals...'} />}
       {pageLoadError && pageData === undefined && ( // Show error only if data specifically failed and labels might be present
-         <ErrorDisplay 
-            error={pageLoadErrorInfo} 
+         <ErrorDisplay
+            error={pageLoadErrorInfo}
             title={pageLabels?.errorTitle ?? 'Data Fetch Error'}
             messageTemplate={pageLabels?.errorMessage ?? 'Could not refresh goal data: {message}'}
-            onRetry={refetch} 
+            onRetry={refetch}
             retryButtonText={pageLabels?.retryButtonText ?? 'Try Again'}
           />
       )}
@@ -212,24 +212,24 @@ const CustomGoalsPage: React.FC = () => {
             </Button>
           ))}
         </div>
-        <Button 
+        <Button
           color="primary"
           variant="filled"
-          onClick={handleCreateGoal} 
+          onClick={handleCreateGoal}
           disabled={isFetching || (!canCreateMoreGoals && !isVipUser)}
             >
           {pageLabels?.createGoalButton ?? 'Create Goal'}
         </Button>
           </div>
-          
+
       {!canCreateMoreGoals && !isVipUser && (
         <div className="mb-4 p-3 bg-yellow-100 border border-yellow-300 text-yellow-700 rounded-md text-sm">
           {(pageLabels?.goalLimitInfo ?? 'You have created {count} of {limit} goals.')
             .replace('{count}', String(currentGoalCount))
             .replace('{limit}', String(goalLimit))}
           <Button
-            variant="text" 
-            onClick={handleOpenVipModal} 
+            variant="text"
+            onClick={handleOpenVipModal}
             className="ml-2 text-yellow-700 hover:text-yellow-800 underline font-semibold"
           >
             {pageLabels?.becomeVipButton ?? 'Become VIP'}
@@ -242,10 +242,10 @@ const CustomGoalsPage: React.FC = () => {
         <div className="text-center py-10">
           <h3 className="text-xl font-semibold text-gray-700 mb-2">{pageLabels?.emptyStateTitle ?? 'No Goals Yet'}</h3>
           <p className="text-gray-500 mb-4">{pageLabels?.emptyStateDescription ?? 'Start creating goals to track your progress!'}</p>
-          <Button 
+          <Button
             color="primary"
             variant="filled"
-            onClick={handleCreateGoal} 
+            onClick={handleCreateGoal}
             disabled={isFetching || (!canCreateMoreGoals && !isVipUser)}
                 >
             {pageLabels?.createGoalButton ?? 'Create Your First Goal'}
@@ -258,7 +258,7 @@ const CustomGoalsPage: React.FC = () => {
               key={goal.id}
               goal={goal}
               labels={pageLabels?.customGoalCardLabels}
-              onEdit={() => handleEditGoal(goal)} 
+              onEdit={() => handleEditGoal(goal)}
               onDelete={() => handleDeleteGoal(goal)}
               onToggleComplete={() => handleToggleComplete(goal)}
             />
@@ -272,7 +272,7 @@ const CustomGoalsPage: React.FC = () => {
           onClose={handleCloseGoalForm}
         />
       )}
-      
+
       {goalToDelete && (
         <ConfirmationDialog
           title={pageLabels?.deleteConfirmTitle ?? 'Confirm Deletion'}

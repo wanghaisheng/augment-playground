@@ -32,7 +32,7 @@ const ProfilePage: React.FC = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [achievements, setAchievements] = useState<UserAchievement[]>([]);
   const [statistics, setStatistics] = useState<UserStatsType | null>(null);
-  const [userTitleRecords, setUserTitleRecords] = useState<UserTitleRecord[]>([]); // Raw records from service
+  const [_userTitleRecords, setUserTitleRecords] = useState<UserTitleRecord[]>([]); // Raw records from service
   const [displayTitles, setDisplayTitles] = useState<UserTitle[]>([]); // Mapped for ProfileHeader
   const [activeTitleDisplay, setActiveTitleDisplay] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);

@@ -40,10 +40,10 @@ const VipValueModal: React.FC<VipValueModalProps> = ({
   }, []);
 
   // Fetch localized content for the VIP value
-  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipValue', fetchVipValueViewFn);
+  const { labels } = useLocalizedView<null, { [key: string]: string }>('vipValue', fetchVipValueViewFn);
 
-  // Get content from viewData or use provided labels
-  const content = viewData?.labels || labels || {} as { [key: string]: string };
+  // Get content from labels or use empty object as fallback
+  const content = labels || {} as { [key: string]: string };
 
   // 处理关闭
   const handleClose = () => {

@@ -47,7 +47,7 @@ const VipValueSummary: React.FC<VipValueSummaryProps> = ({
   }, []);
 
   // Fetch localized content for the VIP value
-  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipValue', fetchVipValueViewFn);
+  const { labels } = useLocalizedView<null, { [key: string]: string }>('vipValue', fetchVipValueViewFn);
 
   // 创建加载VIP价值统计数据的函数
   const loadVipValueStats = useCallback(async () => {
@@ -98,8 +98,8 @@ const VipValueSummary: React.FC<VipValueSummaryProps> = ({
     return `${num.toFixed(1)}x`;
   };
 
-  // Get content from viewData or use provided labels
-  const content = viewData?.labels || labels || {} as { [key: string]: string };
+  // Get content from labels or use empty object as fallback
+  const content = labels || {} as { [key: string]: string };
 
   // 渲染加载状态
   const renderLoading = () => (

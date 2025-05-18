@@ -16,7 +16,7 @@ import ErrorDisplay from '@/components/common/ErrorDisplay';
 import PageTransition from '@/components/animation/PageTransition';
 import DialogDemo from '@/components/game/DialogDemo';
 import SkeletonDemo from '@/components/demo/SkeletonDemo';
-import type { SettingsPageViewLabelsBundle, ApiError } from '@/types';
+import type { SettingsPageViewLabelsBundle } from '@/types';
 
 const SettingsPage: React.FC = () => {
   const {

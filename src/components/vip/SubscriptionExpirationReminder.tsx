@@ -41,10 +41,10 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
   }, []);
 
   // Fetch localized content for the subscription expiration
-  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('subscriptionExpiration', fetchSubscriptionExpirationViewFn);
+  const { labels } = useLocalizedView<null, { [key: string]: string }>('subscriptionExpiration', fetchSubscriptionExpirationViewFn);
 
-  // Get content from viewData or use empty object as fallback
-  const content = (viewData?.labels || {}) as { [key: string]: string };
+  // Get content from labels or use empty object as fallback
+  const content = labels || {} as { [key: string]: string };
 
   // 处理关闭
   const handleClose = () => {

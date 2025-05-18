@@ -4,9 +4,9 @@ import { motion } from 'framer-motion';
 import PandaAnimation, { PandaAnimationType } from '@/components/game/PandaAnimation';
 import { usePandaState } from '@/context/PandaStateProvider';
 import AnimatedButton from '@/components/animation/AnimatedButton';
-import { 
-  InteractionType, 
-  type InteractionResult 
+import {
+  InteractionType,
+  type InteractionResult
 } from '@/types/pandaInteractionTypes';
 import {
   performInteraction
@@ -18,7 +18,7 @@ import { playSound, SoundType, enableSound } from '@/utils/sound';
  * 展示各种熊猫互动动画和效果
  */
 const PandaInteractionShowcase: React.FC = () => {
-  const { pandaState, isLoading } = usePandaState();
+  const { pandaState } = usePandaState();
   const [selectedAnimation, setSelectedAnimation] = useState<PandaAnimationType>('idle');
   const [selectedInteraction, setSelectedInteraction] = useState<InteractionType | null>(null);
   const [interactionResult, setInteractionResult] = useState<InteractionResult | null>(null);
@@ -80,12 +80,12 @@ const PandaInteractionShowcase: React.FC = () => {
 
     try {
       setIsInteracting(true);
-      
+
       // 执行互动
       const result = await performInteraction(selectedInteraction);
       setInteractionResult(result);
       setShowResult(true);
-      
+
       if (result.success && result.animation) {
         setSelectedAnimation(result.animation as PandaAnimationType);
       }

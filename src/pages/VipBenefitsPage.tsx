@@ -53,7 +53,7 @@ const VipBenefitsPage: React.FC = () => {
   const {
     isLoading,
     error,
-    data: viewData
+    labels
   } = useLocalizedView<null, VipBenefitsPageViewLabelsBundle>('vipBenefits', fetchVipBenefitsView);
 
   // Register refresh listener for pandaState and initialize labels
@@ -72,8 +72,8 @@ const VipBenefitsPage: React.FC = () => {
     };
   }, [registerRefreshListener, refreshState]);
 
-  // Labels with fallbacks
-  const labels: VipBenefitsPageViewLabelsBundle = viewData?.labels || {
+  // Default labels as fallback
+  const defaultLabels: VipBenefitsPageViewLabelsBundle = {
     pageTitle: 'VIP Benefits',
     headerTitle: 'Become a Panda Guardian',
     headerSubtitle: 'Unlock exclusive benefits and accelerate your growth',
@@ -141,7 +141,8 @@ const VipBenefitsPage: React.FC = () => {
     }
   };
 
-  // Using labels directly as they already have fallbacks
+  // Combine fetched labels with default labels
+  const pageLabels = labels || defaultLabels;
 
   // Handle subscription button click
   const handleSubscribeClick = useCallback(() => {
@@ -189,10 +190,10 @@ const VipBenefitsPage: React.FC = () => {
           className="back-button jade-button"
           onClick={handleBackClick}
         >
-          {labels.buttons?.back ?? 'Back'}
+          {pageLabels.buttons?.back ?? 'Back'}
         </button>
         <h1 className="vip-title">
-          {labels.headerTitle ?? 'Become a Panda Guardian'}
+          {pageLabels.headerTitle ?? 'Become a Panda Guardian'}
           {pandaState?.isVip && (
             <motion.span
               className="vip-badge-header"
@@ -206,8 +207,8 @@ const VipBenefitsPage: React.FC = () => {
         </h1>
         <p className="vip-subtitle">
           {pandaState?.isVip
-            ? (labels.alreadyVipMessage ?? 'You are already enjoying all the VIP benefits as a Panda Guardian!')
-            : (labels.headerSubtitle ?? 'Unlock exclusive benefits and accelerate your growth')}
+            ? (pageLabels.alreadyVipMessage ?? 'You are already enjoying all the VIP benefits as a Panda Guardian!')
+            : (pageLabels.headerSubtitle ?? 'Unlock exclusive benefits and accelerate your growth')}
         </p>
       </motion.div>
 
@@ -218,122 +219,122 @@ const VipBenefitsPage: React.FC = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <h2 className="compare-title">{labels.compareTitle ?? 'Compare Benefits'}</h2>
+        <h2 className="compare-title">{pageLabels.compareTitle ?? 'Compare Benefits'}</h2>
 
         <div className="comparison-header">
           <div className="comparison-column-header free">
-            <h3>{labels.freeTitle ?? 'Free Panda Friend'}</h3>
+            <h3>{pageLabels.freeTitle ?? 'Free Panda Friend'}</h3>
           </div>
           <div className="comparison-column-header vip">
-            <h3>{labels.vipTitle ?? 'VIP Panda Guardian'}</h3>
+            <h3>{pageLabels.vipTitle ?? 'VIP Panda Guardian'}</h3>
           </div>
         </div>
 
         {/* Identity Benefits */}
         <div className="benefit-category">
-          <h4 className="category-title">{labels.benefitCategories?.identity ?? 'Identity'}</h4>
+          <h4 className="category-title">{pageLabels.benefitCategories?.identity ?? 'Identity'}</h4>
           <VipBenefitCard
-            title={labels.benefits?.avatarFrame?.title ?? 'Avatar Frame'}
-            freeBenefit={labels.benefits?.avatarFrame?.free ?? 'Basic frame'}
-            vipBenefit={labels.benefits?.avatarFrame?.vip ?? 'Dynamic bamboo leaf frame'}
+            title={pageLabels.benefits?.avatarFrame?.title ?? 'Avatar Frame'}
+            freeBenefit={pageLabels.benefits?.avatarFrame?.free ?? 'Basic frame'}
+            vipBenefit={pageLabels.benefits?.avatarFrame?.vip ?? 'Dynamic bamboo leaf frame'}
             isVip={pandaState?.isVip || false}
             valueType="items"
             showValueComparison={true}
             valueMultiplier={1.5}
-            labels={labels.benefitCardLabels}
+            labels={pageLabels.benefitCardLabels}
           />
           <VipBenefitCard
-            title={labels.benefits?.title?.title ?? 'Title Display'}
-            freeBenefit={labels.benefits?.title?.free ?? 'None'}
-            vipBenefit={labels.benefits?.title?.vip ?? '"Guardian" title next to name'}
+            title={pageLabels.benefits?.title?.title ?? 'Title Display'}
+            freeBenefit={pageLabels.benefits?.title?.free ?? 'None'}
+            vipBenefit={pageLabels.benefits?.title?.vip ?? '"Guardian" title next to name'}
             isVip={pandaState?.isVip || false}
             valueType="items"
             showValueComparison={true}
             valueMultiplier={2}
-            labels={labels.benefitCardLabels}
+            labels={pageLabels.benefitCardLabels}
           />
         </div>
 
         {/* Resources Benefits */}
         <div className="benefit-category">
-          <h4 className="category-title">{labels.benefitCategories?.resources ?? 'Resources'}</h4>
+          <h4 className="category-title">{pageLabels.benefitCategories?.resources ?? 'Resources'}</h4>
           <VipBenefitCard
-            title={labels.benefits?.bambooReward?.title ?? 'Bamboo Rewards'}
-            freeBenefit={labels.benefits?.bambooReward?.free ?? 'Normal (x1)'}
-            vipBenefit={labels.benefits?.bambooReward?.vip ?? 'Double (x2)'}
+            title={pageLabels.benefits?.bambooReward?.title ?? 'Bamboo Rewards'}
+            freeBenefit={pageLabels.benefits?.bambooReward?.free ?? 'Normal (x1)'}
+            vipBenefit={pageLabels.benefits?.bambooReward?.vip ?? 'Double (x2)'}
             isVip={pandaState?.isVip || false}
             valueType="currency"
             showValueComparison={true}
             valueMultiplier={2}
-            labels={labels.benefitCardLabels}
+            labels={pageLabels.benefitCardLabels}
           />
           <VipBenefitCard
-            title={labels.benefits?.growthSpeed?.title ?? 'Panda Growth Speed'}
-            freeBenefit={labels.benefits?.growthSpeed?.free ?? 'Normal speed'}
-            vipBenefit={labels.benefits?.growthSpeed?.vip ?? '+50% experience'}
+            title={pageLabels.benefits?.growthSpeed?.title ?? 'Panda Growth Speed'}
+            freeBenefit={pageLabels.benefits?.growthSpeed?.free ?? 'Normal speed'}
+            vipBenefit={pageLabels.benefits?.growthSpeed?.vip ?? '+50% experience'}
             isVip={pandaState?.isVip || false}
             valueType="percentage"
             showValueComparison={true}
             valueMultiplier={1.5}
-            labels={labels.benefitCardLabels}
+            labels={pageLabels.benefitCardLabels}
           />
         </div>
 
         {/* Features Benefits */}
         <div className="benefit-category">
-          <h4 className="category-title">{labels.benefitCategories?.features ?? 'Features'}</h4>
+          <h4 className="category-title">{pageLabels.benefitCategories?.features ?? 'Features'}</h4>
           <VipBenefitCard
-            title={labels.benefits?.luckyDraw?.title ?? 'Daily Lucky Draw'}
-            freeBenefit={labels.benefits?.luckyDraw?.free ?? '1 time'}
-            vipBenefit={labels.benefits?.luckyDraw?.vip ?? '3 times'}
+            title={pageLabels.benefits?.luckyDraw?.title ?? 'Daily Lucky Draw'}
+            freeBenefit={pageLabels.benefits?.luckyDraw?.free ?? '1 time'}
+            vipBenefit={pageLabels.benefits?.luckyDraw?.vip ?? '3 times'}
             isVip={pandaState?.isVip || false}
             valueType="multiplier"
             showValueComparison={true}
             valueMultiplier={3}
-            labels={labels.benefitCardLabels}
+            labels={pageLabels.benefitCardLabels}
           />
           <VipBenefitCard
-            title={labels.benefits?.customGoals?.title ?? 'Custom Goals'}
-            freeBenefit={labels.benefits?.customGoals?.free ?? '1 goal'}
-            vipBenefit={labels.benefits?.customGoals?.vip ?? '5 goals'}
+            title={pageLabels.benefits?.customGoals?.title ?? 'Custom Goals'}
+            freeBenefit={pageLabels.benefits?.customGoals?.free ?? '1 goal'}
+            vipBenefit={pageLabels.benefits?.customGoals?.vip ?? '5 goals'}
             isVip={pandaState?.isVip || false}
             valueType="items"
             showValueComparison={true}
             valueMultiplier={5}
-            labels={labels.benefitCardLabels}
+            labels={pageLabels.benefitCardLabels}
           />
         </div>
 
         {/* Exclusive Content Benefits */}
         <div className="benefit-category">
-          <h4 className="category-title">{labels.benefitCategories?.exclusive ?? 'Exclusive Content'}</h4>
+          <h4 className="category-title">{pageLabels.benefitCategories?.exclusive ?? 'Exclusive Content'}</h4>
           <VipBenefitCard
-            title={labels.benefits?.pandaSkins?.title ?? 'Panda Appearances'}
-            freeBenefit={labels.benefits?.pandaSkins?.free ?? 'Basic skins'}
-            vipBenefit={labels.benefits?.pandaSkins?.vip ?? 'Exclusive VIP skins'}
+            title={pageLabels.benefits?.pandaSkins?.title ?? 'Panda Appearances'}
+            freeBenefit={pageLabels.benefits?.pandaSkins?.free ?? 'Basic skins'}
+            vipBenefit={pageLabels.benefits?.pandaSkins?.vip ?? 'Exclusive VIP skins'}
             isVip={pandaState?.isVip || false}
             valueType="items"
             showValueComparison={true}
             valueMultiplier={10}
-            labels={labels.benefitCardLabels}
+            labels={pageLabels.benefitCardLabels}
           />
           <VipBenefitCard
-            title={labels.benefits?.specialTasks?.title ?? 'Special Quests'}
-            freeBenefit={labels.benefits?.specialTasks?.free ?? 'None'}
-            vipBenefit={labels.benefits?.specialTasks?.vip ?? 'Exclusive "Secret Garden" series'}
+            title={pageLabels.benefits?.specialTasks?.title ?? 'Special Quests'}
+            freeBenefit={pageLabels.benefits?.specialTasks?.free ?? 'None'}
+            vipBenefit={pageLabels.benefits?.specialTasks?.vip ?? 'Exclusive "Secret Garden" series'}
             isVip={pandaState?.isVip || false}
             valueType="feature"
             showValueComparison={false}
-            labels={labels.benefitCardLabels}
+            labels={pageLabels.benefitCardLabels}
           />
           <VipBenefitCard
-            title={labels.benefits?.meditation?.title ?? 'Meditation Courses'}
-            freeBenefit={labels.benefits?.meditation?.free ?? 'Basic courses'}
-            vipBenefit={labels.benefits?.meditation?.vip ?? 'All premium courses'}
+            title={pageLabels.benefits?.meditation?.title ?? 'Meditation Courses'}
+            freeBenefit={pageLabels.benefits?.meditation?.free ?? 'Basic courses'}
+            vipBenefit={pageLabels.benefits?.meditation?.vip ?? 'All premium courses'}
             isVip={pandaState?.isVip || false}
             valueType="feature"
             showValueComparison={false}
-            labels={labels.benefitCardLabels}
+            labels={pageLabels.benefitCardLabels}
           />
         </div>
       </motion.div>
@@ -375,7 +376,7 @@ const VipBenefitsPage: React.FC = () => {
             className="subscribe-button primary-button jade-variant-button"
           onClick={handleSubscribeClick}
         >
-            {labels.buttons?.subscribe ?? 'Become a Guardian'}
+            {pageLabels.buttons?.subscribe ?? 'Become a Guardian'}
         </button>
       </motion.div>
       )}
@@ -383,7 +384,7 @@ const VipBenefitsPage: React.FC = () => {
       {showSubscriptionOptions && (
         <VipSubscriptionOptions
           onClose={() => setShowSubscriptionOptions(false)}
-          labels={labels.vipSubscriptionOptionsLabels} // This label bundle needs to be defined in types
+          labels={pageLabels.vipSubscriptionOptionsLabels} // This label bundle needs to be defined in types
         />
       )}
 
@@ -421,7 +422,7 @@ const VipBenefitsPage: React.FC = () => {
         onClose={() => setShowVipValueModal(false)}
         userId={userId || ''}
         isVip={pandaState?.isVip || false}
-        labels={labels.vipValueModalLabels}
+        labels={pageLabels.vipValueModalLabels}
       />
     </div>
   );
