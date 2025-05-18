@@ -4,12 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ReflectionTriggerRecord,
   ReflectionTriggerType,
-  getUnviewedReflectionTriggers,
-  markTriggerAsViewed,
   createReflectionTrigger
 } from '@/services/reflectionService';
 import Button from '@/components/common/Button';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorDisplay from '@/components/common/ErrorDisplay';
 import { useRegisterTableRefresh } from '@/hooks/useDataRefresh';
 import EnhancedReflectionModule from '@/components/reflection/EnhancedReflectionModule';
@@ -177,7 +174,7 @@ const TeaRoomPage: React.FC = () => {
 
           {/* Meditation Section - Commenting out due to incorrect label structure */}
           {/*
-          <CollapsibleSection 
+          <CollapsibleSection
             title={pageLabels?.meditationSection?.title || "Meditation"}
             defaultOpen={true}
           >
@@ -196,7 +193,7 @@ const TeaRoomPage: React.FC = () => {
                 </p>
               </div>
             </div>
-            <AnimatedButton 
+            <AnimatedButton
               variant="outline"
               color="jade"
               onClick={() => navigate('/meditation')}

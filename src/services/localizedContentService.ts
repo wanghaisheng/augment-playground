@@ -156,7 +156,7 @@ export async function fetchAbilitiesPageView(lang: Language): Promise<FetchAbili
   return { labels, data: null };
 }
 
-export async function fetchStorePageView(lang: Language): Promise<FetchStorePageViewResult> {
+export async function fetchStorePageView(lang: Language): Promise<LocalizedContent<null, StorePageViewLabelsBundle>> {
   console.log(`SVC_DEXIE: Fetching STORE PAGE VIEW for lang: ${lang}`);
   await new Promise(r => setTimeout(r, SIMULATED_DELAY_MS / 2));
   const labels = await getScopedLabels<StorePageViewLabelsBundle>('storeView', lang);

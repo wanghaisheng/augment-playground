@@ -1,7 +1,6 @@
 // src/pages/StorePage.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import {
   StoreCategoryRecord,
   StoreItemRecord,
@@ -28,14 +27,13 @@ import { pageTransition } from '@/utils/animation';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { fetchStorePageView } from '@/services';
 import { StorePageSkeleton } from '@/components/skeleton';
-import type { StorePageViewLabelsBundle } from '@/types';
+import type { StorePageViewLabelsBundle, FetchStorePageViewResult, UserStoreDataPayload } from '@/types';
 
 /**
  * 商店页面
  * 用于显示和购买商店物品
  */
 const StorePage: React.FC = () => {
-  const [categories, setCategories] = useState<StoreCategoryRecord[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<StoreCategoryRecord | null>(null);
   const [items, setItems] = useState<StoreItemRecord[]>([]);
   const [featuredItems, setFeaturedItems] = useState<StoreItemRecord[]>([]);
@@ -74,7 +72,6 @@ const StorePage: React.FC = () => {
 
       // 获取商店类别
       const storeCategories = await getStoreCategories();
-      setCategories(storeCategories);
 
       // 如果有类别，选择第一个
       if (storeCategories.length > 0) {
