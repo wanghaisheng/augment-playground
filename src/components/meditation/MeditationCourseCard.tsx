@@ -1,10 +1,10 @@
 // src/components/meditation/MeditationCourseCard.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  MeditationCourseRecord, 
-  MeditationDifficulty 
-} from '@/services/meditationService';
+import {
+  MeditationCourseRecord,
+  MeditationDifficulty
+} from '@/types/meditation';
 import { playSound, SoundType } from '@/utils/sound';
 
 interface MeditationCourseCardProps {
@@ -26,7 +26,7 @@ const MeditationCourseCard: React.FC<MeditationCourseCardProps> = ({
     playSound(SoundType.BUTTON_CLICK);
     onClick(course);
   };
-  
+
   // 获取难度标签
   const getDifficultyLabel = (difficulty: MeditationDifficulty) => {
     switch (difficulty) {
@@ -42,7 +42,7 @@ const MeditationCourseCard: React.FC<MeditationCourseCardProps> = ({
         return '未知';
     }
   };
-  
+
   // 获取难度颜色
   const getDifficultyColor = (difficulty: MeditationDifficulty) => {
     switch (difficulty) {
@@ -58,13 +58,13 @@ const MeditationCourseCard: React.FC<MeditationCourseCardProps> = ({
         return 'bg-gray-100 text-gray-800';
     }
   };
-  
+
   // 获取评分星星
   const getRatingStars = (rating: number) => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating - fullStars >= 0.5;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-    
+
     return (
       <div className="flex items-center">
         {[...Array(fullStars)].map((_, i) => (
@@ -80,15 +80,15 @@ const MeditationCourseCard: React.FC<MeditationCourseCardProps> = ({
       </div>
     );
   };
-  
+
   // 获取默认封面图片
   const getDefaultCoverImage = () => {
     return '/assets/meditation/default-cover.jpg';
   };
-  
+
   // 检查是否可以访问
   const canAccess = !course.isVipExclusive || isVipUser;
-  
+
   return (
     <motion.div
       className={`meditation-course-card rounded-lg overflow-hidden shadow-md ${
@@ -107,14 +107,14 @@ const MeditationCourseCard: React.FC<MeditationCourseCardProps> = ({
           alt={course.title}
           className={`w-full h-40 object-cover ${!canAccess && 'opacity-50'}`}
         />
-        
+
         {/* VIP标签 */}
         {course.isVipExclusive && (
           <div className="absolute top-2 right-2 bg-gold-500 text-white text-xs px-2 py-1 rounded-full">
             VIP专属
           </div>
         )}
-        
+
         {/* 锁定图标 */}
         {course.isVipExclusive && !isVipUser && (
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
@@ -127,7 +127,7 @@ const MeditationCourseCard: React.FC<MeditationCourseCardProps> = ({
           </div>
         )}
       </div>
-      
+
       {/* 课程信息 */}
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
@@ -138,33 +138,33 @@ const MeditationCourseCard: React.FC<MeditationCourseCardProps> = ({
             {getDifficultyLabel(course.difficulty)}
           </span>
         </div>
-        
+
         <p className={`text-sm mb-3 line-clamp-2 ${!canAccess && 'text-gray-500'}`}>
           {course.description}
         </p>
-        
+
         <div className="flex justify-between items-center text-sm">
           <div className={`flex items-center ${!canAccess && 'text-gray-500'}`}>
             <span className="mr-1">🕒</span>
             <span>{course.durationMinutes} 分钟</span>
           </div>
-          
+
           {course.completionCount > 0 && canAccess && (
             <div className="text-xs">
               {getRatingStars(course.averageRating)}
             </div>
           )}
         </div>
-        
+
         {/* 讲师信息 */}
         <div className={`mt-3 text-xs ${!canAccess && 'text-gray-500'}`}>
           <span>讲师: {course.instructorName}</span>
         </div>
-        
+
         {/* 标签 */}
         {canAccess && (
           <div className="mt-3 flex flex-wrap gap-1">
-            {course.tags.slice(0, 3).map((tag, index) => (
+            {course.tags.slice(0, 3).map((tag: string, index: number) => (
               <span
                 key={index}
                 className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full"

@@ -99,7 +99,7 @@ const VipValueSummary: React.FC<VipValueSummaryProps> = ({
   };
 
   // Get content from viewData
-  const content = viewData?.labels || {};
+  const content = viewData?.labels || {} as { [key: string]: string };
 
   // 渲染加载状态
   const renderLoading = () => (

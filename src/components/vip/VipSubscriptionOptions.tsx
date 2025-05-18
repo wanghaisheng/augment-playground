@@ -32,9 +32,9 @@ interface SubscriptionPlan {
  * @param onClose - Function to close the subscription options modal
  */
 const VipSubscriptionOptions: React.FC<VipSubscriptionOptionsProps> = ({ onClose }) => {
-  const { language } = useLanguage();
+
   const { labels } = useComponentLabels();
-  const { pandaState, refreshState } = usePandaState();
+  const { refreshState } = usePandaState();
   const [selectedPlan, setSelectedPlan] = useState<string>('seasonal');
   const [isSubscribing, setIsSubscribing] = useState<boolean>(false);
   const [showRetentionFlow, setShowRetentionFlow] = useState<boolean>(false);

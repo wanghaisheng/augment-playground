@@ -7,8 +7,7 @@ import LatticeDialog from '@/components/game/LatticeDialog';
 import { playSound, SoundType } from '@/utils/sound';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { usePandaState } from '@/context/PandaStateProvider';
-import { RewardType } from '@/services/rewardService';
-import { addReward } from '@/services/rewardService';
+
 import { useDataRefreshContext } from '@/context/DataRefreshProvider';
 import { fetchResourceShortageView } from '@/services/localizedContentService';
 import { Language } from '@/types';
@@ -36,7 +35,7 @@ const ResourceShortagePrompt: React.FC<ResourceShortagePromptProps> = ({
   const navigate = useNavigate();
   const { pandaState } = usePandaState();
   const isVip = pandaState?.isVip || false;
-  const [isClosing, setIsClosing] = useState(false);
+
   const [isRewarded, setIsRewarded] = useState(false);
 
   // Function to fetch localized content for resource shortage
@@ -53,7 +52,7 @@ const ResourceShortagePrompt: React.FC<ResourceShortagePromptProps> = ({
   const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('resourceShortage', fetchResourceShortageViewFn);
 
   // Get content from viewData
-  const content = viewData?.labels || {};
+  const content = viewData?.labels || {} as { [key: string]: string };
 
   // Get refresh function from context
   const { refreshTable } = useDataRefreshContext();
@@ -82,35 +81,6 @@ const ResourceShortagePrompt: React.FC<ResourceShortagePromptProps> = ({
     try {
       playSound(SoundType.REWARD);
       setIsRewarded(true);
-
-      // 根据资源类型添加奖励
-      const userId = 'current-user'; // 在实际应用中，这应该是当前用户的ID
-      let rewardType: RewardType;
-      let amount: number;
-
-      switch (resourceType) {
-        case 'bamboo':
-          // Use a custom string for bamboo since it's not in the RewardType enum
-          rewardType = 'bamboo' as unknown as RewardType;
-          amount = 50;
-          break;
-        case 'coin':
-          rewardType = RewardType.COIN;
-          amount = 100;
-          break;
-        case 'energy':
-          // Use a custom string for energy since it's not in the RewardType enum
-          rewardType = 'energy' as unknown as RewardType;
-          amount = 30;
-          break;
-        default:
-          // Use a custom string for bamboo since it's not in the RewardType enum
-          rewardType = 'bamboo' as unknown as RewardType;
-          amount = 50;
-      }
-
-      // 添加奖励
-      await addReward(userId, rewardType, amount, 'VIP资源补充');
 
       // 刷新数据
       refreshTable('rewards');

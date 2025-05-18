@@ -13,7 +13,7 @@ import { getPandaState } from '@/services/pandaService';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { fetchVipTrialValueReviewView } from '@/services/localizedContentService';
 import { Language } from '@/types';
-import { UserStatistics } from '@/types/user';
+
 
 interface VipTrialValueReviewProps {
   isOpen: boolean;
@@ -66,7 +66,7 @@ const VipTrialValueReview: React.FC<VipTrialValueReviewProps> = ({
   const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipTrialValueReview', fetchVipTrialValueReviewViewFn);
 
   // Get content from viewData
-  const content = viewData?.labels || {};
+  const content = viewData?.labels || {} as { [key: string]: string };
 
   // 加载价值统计数据
   useEffect(() => {

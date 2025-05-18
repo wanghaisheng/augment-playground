@@ -1,16 +1,17 @@
 // src/components/vip/HighlightMomentManager.tsx
 import React, { useState, useEffect } from 'react';
-import { 
-  registerHighlightMomentHandler, 
+import {
+  registerHighlightMomentHandler,
   HighlightMomentData,
-  getVipPromptData
+  getVipPromptData,
+  HighlightMomentType
 } from '@/services/highlightMomentService';
 import VipBoostPrompt from './VipBoostPrompt';
 import { RewardType, RewardRarity } from '@/services/rewardService';
 
 /**
  * 高光时刻管理器组件
- * 
+ *
  * 监听高光时刻事件，并在适当的时候显示VIP提示
  */
 const HighlightMomentManager: React.FC = () => {
@@ -22,12 +23,12 @@ const HighlightMomentManager: React.FC = () => {
     vipAmount: number;
     rarity: RewardRarity;
     source: string;
-    promptType: string;
+    promptType: HighlightMomentType;
     title?: string;
     description?: string;
     imageUrl?: string;
   } | null>(null);
-  
+
   // 处理高光时刻
   useEffect(() => {
     // 注册高光时刻处理器
@@ -35,12 +36,12 @@ const HighlightMomentManager: React.FC = () => {
       try {
         // 获取VIP提示数据
         const vipPromptData = await getVipPromptData(data);
-        
+
         // 如果没有数据，不显示提示
         if (!vipPromptData) {
           return;
         }
-        
+
         // 设置提示数据
         setPromptData({
           rewardType: vipPromptData.rewardType,
@@ -53,30 +54,30 @@ const HighlightMomentManager: React.FC = () => {
           description: data.description,
           imageUrl: data.imageUrl
         });
-        
+
         // 显示提示
         setIsPromptVisible(true);
       } catch (error) {
         console.error('Error handling highlight moment:', error);
       }
     });
-    
+
     // 清理函数
     return () => {
       unregister();
     };
   }, []);
-  
+
   // 处理关闭提示
   const handleClosePrompt = () => {
     setIsPromptVisible(false);
   };
-  
+
   // 如果没有提示数据，不渲染任何内容
   if (!promptData) {
     return null;
   }
-  
+
   return (
     <VipBoostPrompt
       isOpen={isPromptVisible}

@@ -63,7 +63,7 @@ const StorePage: React.FC = () => {
     fetchStorePageView
   );
 
-  const safePageLabels = (pageLabels || {}) as any;
+  const safePageLabels = (pageLabels || {}) as StorePageViewLabelsBundle;
 
   // 当前用户ID（在实际应用中，这应该从用户会话中获取）
   const userId = 'current-user';
@@ -258,11 +258,11 @@ const StorePage: React.FC = () => {
   if (isLabelsError && !pageLabels) {
     return (
       <div className="p-4">
-        <ErrorDisplay 
-          error={labelsErrorInfo} 
+        <ErrorDisplay
+          error={labelsErrorInfo}
           title={safePageLabels.errorLoadingLabelsTitle ?? 'Error Loading Interface'}
           messageTemplate={safePageLabels.errorLoadingLabelsMessage ?? 'Could not load store interface: {message}'}
-          onRetry={refetchLabels} 
+          onRetry={refetchLabels}
           retryButtonText={safePageLabels.retryButtonText ?? 'Try Again'}
         />
       </div>
@@ -290,7 +290,7 @@ const StorePage: React.FC = () => {
   if (dataError && pageLabels) {
     return (
       <div className="p-4">
-        <ErrorDisplay 
+        <ErrorDisplay
           error={{ name: 'StoreDataError', message: dataError }}
           title={safePageLabels.errorLoadingDataTitle ?? 'Store Error'}
           messageTemplate='{message}'
@@ -300,7 +300,7 @@ const StorePage: React.FC = () => {
       </div>
     );
   }
-  
+
   // Ensure pageLabels are available before rendering the main content (even if empty object from safePageLabels)
   if (!pageLabels && !isLabelsPending) {
       return (
@@ -325,7 +325,7 @@ const StorePage: React.FC = () => {
               {userCurrency && (
                   <CurrencyDisplay
                     currency={userCurrency}
-              labels={safePageLabels.currencyDisplayLabels} 
+              labels={safePageLabels.currencyDisplayLabels}
                   />
               )}
         </header>
@@ -338,10 +338,10 @@ const StorePage: React.FC = () => {
 
         <AnimatePresence>
           {showVipSection && (
-            <motion.section 
+            <motion.section
               className="vip-section"
-              initial={{ opacity: 0, height: 0 }} 
-              animate={{ opacity: 1, height: 'auto' }} 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
                 >
@@ -379,7 +379,7 @@ const StorePage: React.FC = () => {
                 <motion.div key={item.id} variants={itemVariants}>
                             <StoreItemCard
                               item={item}
-                    onPreview={handlePreviewItem} 
+                    onPreview={handlePreviewItem}
                               onPurchase={handlePurchaseItem}
                               isVip={isVip}
                             />
@@ -402,7 +402,7 @@ const StorePage: React.FC = () => {
                 <motion.div key={item.id} variants={itemVariants}>
                             <StoreItemCard
                               item={item}
-                    onPreview={handlePreviewItem} 
+                    onPreview={handlePreviewItem}
                               onPurchase={handlePurchaseItem}
                               isVip={isVip}
                             />
@@ -412,7 +412,7 @@ const StorePage: React.FC = () => {
           </section>
                   )}
 
-        <StoreCategoryList 
+        <StoreCategoryList
           selectedCategoryId={selectedCategory?.id}
           onCategorySelect={handleCategorySelect}
         />
@@ -431,7 +431,7 @@ const StorePage: React.FC = () => {
                   <motion.div key={item.id} variants={itemVariants}>
                               <StoreItemCard
                                 item={item}
-                      onPreview={handlePreviewItem} 
+                      onPreview={handlePreviewItem}
                                 onPurchase={handlePurchaseItem}
                                 isVip={isVip}
                               />

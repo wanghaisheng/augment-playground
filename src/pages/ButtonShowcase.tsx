@@ -326,7 +326,7 @@ const ButtonShowcase: React.FC = () => {
                 variant={selectedVariant}
                 isLoading={isLoading}
                 fullWidth={fullWidth}
-                animationPreset={preset as any}
+                animationPreset={preset}
                 onClick={handleButtonClick}
               >
                 {preset}
@@ -341,7 +341,7 @@ const ButtonShowcase: React.FC = () => {
             <EnhancedAnimatedButton
               variant="filled"
               color={selectedColor}
-              size={selectedSize as any}
+              size={selectedSize}
               isLoading={isLoading}
               animationType="scale"
               particleType="burst"
@@ -353,7 +353,7 @@ const ButtonShowcase: React.FC = () => {
             <EnhancedAnimatedButton
               variant="filled"
               color={selectedColor}
-              size={selectedSize as any}
+              size={selectedSize}
               isLoading={isLoading}
               animationType="glow"
               particleType="fountain"

@@ -49,7 +49,7 @@ const VipValueDashboard: React.FC<VipValueDashboardProps> = ({
   const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipValue', fetchVipValueViewFn);
 
   // Get content from viewData
-  const content = viewData?.labels || {};
+  const content = viewData?.labels || {} as { [key: string]: string };
 
   // 这个useEffect已经被移动到下面
 

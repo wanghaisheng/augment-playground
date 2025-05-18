@@ -91,7 +91,7 @@ const ResourceShortageManager: React.FC = () => {
     checkResourceLevels();
 
     // 当数据刷新时重新检查
-    const handleRefresh = (data: any) => {
+    const handleRefresh = () => {
       checkResourceLevels();
     };
 

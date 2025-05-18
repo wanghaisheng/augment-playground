@@ -19,7 +19,7 @@ const SubscriptionManager: React.FC = () => {
   const [daysLeft, setDaysLeft] = useState(0);
   const [isChecking, setIsChecking] = useState(false);
   const [lastReminderDate, setLastReminderDate] = useState<Date | null>(null);
-  const { refreshTable, registerRefreshListener } = useDataRefreshContext();
+  const { registerRefreshListener } = useDataRefreshContext();
   const { pandaState: _pandaState } = usePandaState(); // Rename to _pandaState to indicate it's not used
 
   // 检查订阅状态

@@ -45,7 +45,7 @@ const SubscriptionExpirationReminder: React.FC<SubscriptionExpirationReminderPro
   const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('subscriptionExpiration', fetchSubscriptionExpirationViewFn);
 
   // Get content from viewData
-  const content = viewData?.labels || {};
+  const content = viewData?.labels || {} as { [key: string]: string };
 
   // 处理关闭
   const handleClose = () => {

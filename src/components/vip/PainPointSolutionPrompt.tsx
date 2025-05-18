@@ -1,5 +1,5 @@
 // src/components/vip/PainPointSolutionPrompt.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/common/Button';
@@ -13,7 +13,7 @@ import type { PainPointSolutionRecord, PainPointTriggerRecord } from '@/types/pa
 import { playSound, SoundType } from '@/utils/sound';
 import { useLocalizedView } from '@/hooks/useLocalizedView';
 import { fetchPainPointSolutionView } from '@/services/localizedContentService';
-import { Language } from '@/types';
+
 
 interface PainPointSolutionPromptProps {
   triggerId: number;
@@ -38,10 +38,10 @@ const PainPointSolutionPrompt: React.FC<PainPointSolutionPromptProps> = ({
   const [isResolved, setIsResolved] = useState<boolean>(false);
 
   // Fetch localized content for the pain point solution
-  const { data: viewData } = useLocalizedView<null, any>('painPointSolution', fetchPainPointSolutionView);
+  const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('painPointSolution', fetchPainPointSolutionView);
 
   // Get content from viewData
-  const content = viewData?.labels || {};
+  const content = viewData?.labels || {} as { [key: string]: string };
 
   // 加载痛点解决方案详情
   useEffect(() => {

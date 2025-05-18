@@ -4,10 +4,9 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/common/Button';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { 
-  getAllSkins, 
-  PandaSkinRecord, 
-  PandaSkinType,
+import {
+  getAllSkins,
+  PandaSkinRecord,
   PandaSkinRarity
 } from '@/services/pandaSkinService';
 import { usePandaState } from '@/context/PandaStateProvider';
@@ -20,21 +19,21 @@ const PandaSkinDemo: React.FC = () => {
   const [skins, setSkins] = useState<PandaSkinRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const { pandaState } = usePandaState();
   const isVip = pandaState?.isVip || false;
   const navigate = useNavigate();
-  
+
   // 加载皮肤数据
   useEffect(() => {
     const loadSkins = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // 获取所有皮肤
         const allSkins = await getAllSkins();
-        
+
         // 过滤出VIP专属皮肤
         const vipSkins = allSkins.filter(skin => skin.isVipExclusive);
         setSkins(vipSkins);
@@ -45,16 +44,16 @@ const PandaSkinDemo: React.FC = () => {
         setIsLoading(false);
       }
     };
-    
+
     loadSkins();
   }, []);
-  
+
   // 处理导航到VIP页面
   const handleNavigateToVip = () => {
     playSound(SoundType.BUTTON_CLICK);
     navigate('/vip-benefits');
   };
-  
+
   // 获取稀有度信息
   const getRarityInfo = (rarity: PandaSkinRarity) => {
     switch (rarity) {
@@ -72,7 +71,7 @@ const PandaSkinDemo: React.FC = () => {
         return { text: '普通', color: 'text-gray-600', bgColor: 'bg-gray-100' };
     }
   };
-  
+
   if (isLoading) {
     return (
       <div className="p-6 bg-white rounded-lg shadow-md">
@@ -82,7 +81,7 @@ const PandaSkinDemo: React.FC = () => {
       </div>
     );
   }
-  
+
   if (error) {
     return (
       <div className="p-6 bg-white rounded-lg shadow-md">
@@ -95,14 +94,14 @@ const PandaSkinDemo: React.FC = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4 text-jade-800">VIP专属熊猫皮肤</h2>
       <p className="text-gray-600 mb-6">
         VIP会员可以使用这些精美的熊猫皮肤，让您的熊猫伙伴更加独特
       </p>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {skins.map((skin) => {
           const rarityInfo = getRarityInfo(skin.rarity);
@@ -119,7 +118,7 @@ const PandaSkinDemo: React.FC = () => {
                   className="h-32 object-contain"
                 />
               </div>
-              
+
               <div className="skin-details p-4">
                 <h3 className="text-lg font-bold mb-1">{skin.name}</h3>
                 <div className="flex flex-wrap gap-2 mb-2">
@@ -131,7 +130,7 @@ const PandaSkinDemo: React.FC = () => {
                   </span>
                 </div>
                 <p className="text-gray-600 text-sm mb-4">{skin.description}</p>
-                
+
                 {isVip ? (
                   <div className="text-jade-600 text-sm font-medium">
                     ✓ 已解锁
@@ -150,7 +149,7 @@ const PandaSkinDemo: React.FC = () => {
           );
         })}
       </div>
-      
+
       {!isVip && (
         <div className="vip-promotion p-4 bg-gold-50 border border-gold-200 rounded-lg">
           <h3 className="font-bold text-gold-700 mb-2">

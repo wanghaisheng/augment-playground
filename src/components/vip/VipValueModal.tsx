@@ -42,7 +42,7 @@ const VipValueModal: React.FC<VipValueModalProps> = ({
   const { data: viewData } = useLocalizedView<null, { labels: { [key: string]: string } }>('vipValue', fetchVipValueViewFn);
 
   // Get content from viewData
-  const content = viewData?.labels || {};
+  const content = viewData?.labels || {} as { [key: string]: string };
 
   // 处理关闭
   const handleClose = () => {
