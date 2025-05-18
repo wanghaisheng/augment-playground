@@ -1,8 +1,8 @@
 // src/components/panda/PandaCustomizationPanel.tsx
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  PandaAccessoryRecord, 
+import { motion } from 'framer-motion';
+import {
+  PandaAccessoryRecord,
   PandaAccessoryType,
   getOwnedAccessories,
   getEquippedAccessories,
@@ -36,17 +36,17 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  
+
   // 加载装饰数据
   const loadAccessories = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // 获取已拥有的装饰
       const ownedAccessories = await getOwnedAccessories();
       setAccessories(ownedAccessories);
-      
+
       // 获取已装备的装饰
       const equipped = await getEquippedAccessories();
       setEquippedAccessories(equipped);
@@ -72,7 +72,7 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
   const handleEquipAccessory = async (accessory: PandaAccessoryRecord) => {
     try {
       setIsUpdating(true);
-      
+
       if (accessory.isEquipped) {
         // 取消装备
         await unequipAccessory(accessory.id!);
@@ -80,13 +80,13 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
         // 装备
         await equipAccessory(accessory.id!);
       }
-      
+
       // 播放音效
       playSound(SoundType.BUTTON_CLICK, 0.5);
-      
+
       // 重新加载数据
       await loadAccessories();
-      
+
       // 通知父组件
       if (onCustomizationChanged) {
         onCustomizationChanged();
@@ -144,7 +144,7 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
     if (selectedType === 'all') {
       return accessories;
     }
-    
+
     return accessories.filter(accessory => accessory.type === selectedType);
   };
 
@@ -216,11 +216,11 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
               <h3 className="text-lg font-bold mb-3">当前装备</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {accessoryTypes.slice(1).map((type) => {
-                  const equipped = getEquippedAccessory(type);
+                  const equipped = getEquippedAccessory(type as PandaAccessoryType);
                   return (
                     <div key={type} className="equipped-item p-2 border border-gray-200 rounded-lg">
                       <div className="item-type text-sm font-medium mb-1">
-                        {getAccessoryTypeLabel(type)}
+                        {getAccessoryTypeLabel(type as PandaAccessoryType)}
                       </div>
                       {equipped ? (
                         <div className="item-info flex items-center">
@@ -248,7 +248,7 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
                 })}
               </div>
             </div>
-            
+
             {/* 装饰类型过滤器 */}
             <div className="accessory-type-filter mb-4">
               <h3 className="text-lg font-bold mb-2">装饰类型</h3>
@@ -266,7 +266,7 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
                 ))}
               </div>
             </div>
-            
+
             {/* 装饰列表 */}
             <div className="accessories-list">
               <h3 className="text-lg font-bold mb-3">可用装饰</h3>
@@ -304,7 +304,7 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
                             </span>
                           </div>
                         </div>
-                        
+
                         <div className="accessory-image-container mb-2 flex justify-center">
                           <img
                             src={accessory.imagePath}
@@ -317,11 +317,11 @@ const PandaCustomizationPanel: React.FC<PandaCustomizationPanelProps> = ({
                             }}
                           />
                         </div>
-                        
+
                         <div className="accessory-description text-sm text-gray-600 mb-3">
                           {accessory.description}
                         </div>
-                        
+
                         <div className="accessory-actions">
                           <Button
                             variant={accessory.isEquipped ? 'secondary' : 'jade'}

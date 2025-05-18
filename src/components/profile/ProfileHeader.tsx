@@ -1,6 +1,5 @@
 // src/components/profile/ProfileHeader.tsx
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { UserProfile, UserTitle } from '@/types/user';
 import Button from '@/components/common/Button';
 import { playSound, SoundType } from '@/utils/sound';

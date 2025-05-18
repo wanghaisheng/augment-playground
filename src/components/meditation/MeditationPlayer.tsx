@@ -1,8 +1,8 @@
 // src/components/meditation/MeditationPlayer.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MeditationCourseRecord } from '@/types/meditation';
 import {
-  MeditationCourseRecord,
   startMeditationSession,
   completeMeditationSession
 } from '@/services/meditationService';
@@ -299,7 +299,7 @@ const MeditationPlayer: React.FC<MeditationPlayerProps> = ({
                   您获得了以下好处：
                 </h4>
                 <ul className="text-sm text-gray-600">
-                  {course.benefits.map((benefit, index) => (
+                  {course.benefits.map((benefit: string, index: number) => (
                     <li key={index} className="mb-1">
                       ✓ {benefit}
                     </li>

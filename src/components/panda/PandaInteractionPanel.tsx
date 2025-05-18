@@ -42,7 +42,7 @@ const PandaInteractionPanel: React.FC<PandaInteractionPanelProps> = ({
   const [isInteracting, setIsInteracting] = useState<boolean>(false);
   const [animationType, setAnimationType] = useState<PandaAnimationType>('idle');
   const [interactionStats, setInteractionStats] = useState<Record<InteractionType, { count: number; lastTime: Date | null; totalExperience: number }> | null>(null);
-  const [cooldowns, setCooldowns] = useState<Record<InteractionType, number>>({} as Record<InteractionType, number>);
+  const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
 
   // 获取语言
   const { language } = useLanguage();

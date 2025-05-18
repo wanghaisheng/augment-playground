@@ -1,8 +1,8 @@
 // src/components/panda/PandaSkinPanel.tsx
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  PandaSkinRecord, 
+import { motion } from 'framer-motion';
+import {
+  PandaSkinRecord,
   PandaSkinType,
   PandaSkinRarity,
   getOwnedSkins,
@@ -33,17 +33,17 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
   onSkinChanged
 }) => {
   const [skins, setSkins] = useState<PandaSkinRecord[]>([]);
-  const [equippedSkin, setEquippedSkin] = useState<PandaSkinRecord | null>(null);
+
   const [selectedSkin, setSelectedSkin] = useState<PandaSkinRecord | null>(null);
   const [selectedType, setSelectedType] = useState<PandaSkinType | 'all'>('all');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  
+
   const { pandaState } = usePandaState();
   const isVip = pandaState?.isVip || false;
   const navigate = useNavigate();
-  
+
   // 动画变体
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -54,7 +54,7 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
       }
     }
   };
-  
+
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -67,22 +67,21 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
       }
     }
   };
-  
+
   // 加载皮肤数据
   const loadSkins = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // 获取用户拥有的皮肤
       const userId = 'current-user'; // 在实际应用中，这应该是当前用户的ID
       const ownedSkins = await getOwnedSkins(userId);
       setSkins(ownedSkins);
-      
+
       // 获取当前装备的皮肤
-      const equipped = await getEquippedSkin();
-      setEquippedSkin(equipped);
-      
+      await getEquippedSkin();
+
       // 如果有选中的皮肤，更新它
       if (selectedSkin) {
         const updated = ownedSkins.find(s => s.id === selectedSkin.id);
@@ -97,17 +96,17 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
       setIsLoading(false);
     }
   };
-  
+
   // 初始加载
   useEffect(() => {
     if (isOpen) {
       loadSkins();
     }
   }, [isOpen]);
-  
+
   // 注册数据刷新监听
   useRegisterTableRefresh('pandaSkins', loadSkins);
-  
+
   // 处理皮肤类型过滤
   const getFilteredSkins = () => {
     if (selectedType === 'all') {
@@ -115,22 +114,22 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
     }
     return skins.filter(skin => skin.type === selectedType);
   };
-  
+
   // 处理装备皮肤
   const handleEquipSkin = async (skin: PandaSkinRecord) => {
     try {
       setIsUpdating(true);
-      
+
       // 装备皮肤
       const userId = 'current-user'; // 在实际应用中，这应该是当前用户的ID
       await equipSkin(skin.id!, userId);
-      
+
       // 播放音效
       playSound(SoundType.BUTTON_CLICK, 0.5);
-      
+
       // 重新加载数据
       await loadSkins();
-      
+
       // 通知父组件
       if (onSkinChanged) {
         onSkinChanged();
@@ -142,20 +141,20 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
       setIsUpdating(false);
     }
   };
-  
+
   // 处理选择皮肤
   const handleSelectSkin = (skin: PandaSkinRecord) => {
     setSelectedSkin(skin);
     playSound(SoundType.BUTTON_CLICK, 0.3);
   };
-  
+
   // 处理导航到VIP页面
   const handleNavigateToVip = () => {
     playSound(SoundType.BUTTON_CLICK);
     onClose();
     navigate('/vip-benefits');
   };
-  
+
   // 获取稀有度信息
   const getRarityInfo = (rarity: PandaSkinRarity) => {
     switch (rarity) {
@@ -173,7 +172,7 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
         return { text: '普通', color: 'text-gray-600', bgColor: 'bg-gray-100' };
     }
   };
-  
+
   // 获取皮肤类型文本
   const getSkinTypeText = (type: PandaSkinType) => {
     switch (type) {
@@ -191,7 +190,7 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
         return '普通';
     }
   };
-  
+
   return (
     <ScrollDialog
       isOpen={isOpen}
@@ -242,7 +241,7 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
                         </span>
                       )}
                     </div>
-                    
+
                     <Button
                       variant={selectedSkin.isEquipped ? 'secondary' : 'jade'}
                       onClick={() => handleEquipSkin(selectedSkin)}
@@ -259,7 +258,7 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
                         '装备'
                       )}
                     </Button>
-                    
+
                     {selectedSkin.isVipExclusive && !isVip && (
                       <Button
                         variant="gold"
@@ -273,7 +272,7 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
                 </div>
               </div>
             )}
-            
+
             {/* 皮肤类型过滤 */}
             <div className="skin-filters mb-4">
               <div className="flex flex-wrap gap-2">
@@ -303,7 +302,7 @@ const PandaSkinPanel: React.FC<PandaSkinPanelProps> = ({
                 </button>
               </div>
             </div>
-            
+
             {/* 皮肤列表 */}
             <div className="skins-list">
               <h3 className="text-lg font-bold mb-3">可用皮肤</h3>

@@ -1,7 +1,7 @@
 // src/components/panda/PandaEnvironmentPanel.tsx
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
+import { motion } from 'framer-motion';
+import {
   PandaEnvironmentRecord,
   getOwnedEnvironments,
   getActiveEnvironment,
@@ -35,17 +35,17 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [previewEnvironment, setPreviewEnvironment] = useState<PandaEnvironmentRecord | null>(null);
-  
+
   // 加载环境数据
   const loadEnvironments = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // 获取已拥有的环境
       const ownedEnvironments = await getOwnedEnvironments();
       setEnvironments(ownedEnvironments);
-      
+
       // 获取当前激活的环境
       const active = await getActiveEnvironment();
       if (active) {
@@ -73,16 +73,16 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
   const handleActivateEnvironment = async (environment: PandaEnvironmentRecord) => {
     try {
       setIsUpdating(true);
-      
+
       // 激活环境
       await activateEnvironment(environment.id!);
-      
+
       // 播放音效
       playSound(SoundType.SUCCESS, 0.5);
-      
+
       // 重新加载数据
       await loadEnvironments();
-      
+
       // 通知父组件
       if (onEnvironmentChanged) {
         onEnvironmentChanged();
@@ -98,7 +98,7 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
   // 处理预览环境
   const handlePreviewEnvironment = (environment: PandaEnvironmentRecord) => {
     setPreviewEnvironment(environment);
-    
+
     // 播放音效
     playSound(SoundType.BUTTON_CLICK, 0.3);
   };
@@ -144,7 +144,7 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
     if (selectedTheme === 'all') {
       return environments;
     }
-    
+
     return environments.filter(environment => environment.themeType === selectedTheme);
   };
 
@@ -152,13 +152,13 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
   const getAllThemes = (): string[] => {
     const themes = new Set<string>();
     themes.add('all');
-    
+
     environments.forEach(environment => {
       if (environment.themeType) {
         themes.add(environment.themeType);
       }
     });
-    
+
     return Array.from(themes);
   };
 
@@ -226,7 +226,7 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="environment-image-container mb-2 relative overflow-hidden rounded-lg">
                     <img
                       src={activeEnvironment.backgroundPath}
@@ -251,14 +251,14 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                       />
                     )}
                   </div>
-                  
+
                   <div className="environment-description text-sm text-gray-600">
                     {activeEnvironment.description}
                   </div>
                 </div>
               </div>
             )}
-            
+
             {/* 环境预览 */}
             {previewEnvironment && (
               <div className="environment-preview mb-6">
@@ -277,7 +277,7 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="environment-image-container mb-2 relative overflow-hidden rounded-lg">
                     <img
                       src={previewEnvironment.backgroundPath}
@@ -302,16 +302,16 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                       />
                     )}
                   </div>
-                  
+
                   <div className="environment-description text-sm text-gray-600 mb-3">
                     {previewEnvironment.description}
                   </div>
-                  
+
                   <div className="environment-actions flex justify-end">
                     <Button
                       variant="jade"
                       onClick={() => handleActivateEnvironment(previewEnvironment)}
-                      disabled={isUpdating || (activeEnvironment && activeEnvironment.id === previewEnvironment.id)}
+                      disabled={isUpdating || (activeEnvironment !== null && activeEnvironment.id === previewEnvironment.id)}
                     >
                       {isUpdating ? (
                         <LoadingSpinner variant="white" size="small" />
@@ -325,7 +325,7 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                 </div>
               </div>
             )}
-            
+
             {/* 主题过滤器 */}
             <div className="theme-filter mb-4">
               <h3 className="text-lg font-bold mb-2">主题</h3>
@@ -343,7 +343,7 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                 ))}
               </div>
             </div>
-            
+
             {/* 环境列表 */}
             <div className="environments-list">
               <h3 className="text-lg font-bold mb-3">可用环境</h3>
@@ -361,7 +361,7 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                   {getFilteredEnvironments().map((environment) => {
                     const rarityInfo = getRarityInfo(environment.rarity);
                     const isActive = activeEnvironment && activeEnvironment.id === environment.id;
-                    
+
                     return (
                       <motion.div
                         key={environment.id}
@@ -384,7 +384,7 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                             </span>
                           </div>
                         </div>
-                        
+
                         <div className="environment-image-container mb-2 relative overflow-hidden rounded-lg">
                           <img
                             src={environment.backgroundPath}
@@ -397,7 +397,7 @@ const PandaEnvironmentPanel: React.FC<PandaEnvironmentPanelProps> = ({
                             }}
                           />
                         </div>
-                        
+
                         <div className="environment-description text-sm text-gray-600 line-clamp-2">
                           {environment.description}
                         </div>

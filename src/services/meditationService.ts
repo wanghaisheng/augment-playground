@@ -9,6 +9,9 @@ import {
   type MeditationSessionRecord
 } from '@/types/meditation';
 
+// Re-export types needed by components
+export { MeditationDifficulty, MeditationType, type MeditationCourseRecord, type MeditationSessionRecord };
+
 /**
  * 检查用户是否可以访问VIP冥想课程
  * @param userId 用户ID
@@ -92,25 +95,25 @@ export async function getUserMeditationStats(userId: string): Promise<{
   try {
     // 获取用户的冥想会话
     const sessions = await getUserMeditationSessions(userId);
-    
+
     // 计算总会话数
     const totalSessions = sessions.length;
-    
+
     // 计算总冥想时间（分钟）
     const totalMinutes = sessions.reduce((total, session) => total + session.durationMinutes, 0);
-    
+
     // 计算连续冥想天数
     const sessionDates = sessions
       .filter(session => session.isCompleted)
       .map(session => new Date(session.startTime).toDateString());
-    
+
     const uniqueDates = [...new Set(sessionDates)].map(dateStr => new Date(dateStr));
     uniqueDates.sort((a, b) => a.getTime() - b.getTime());
-    
+
     let currentStreak = 0;
     let longestStreak = 0;
     let tempStreak = 0;
-    
+
     // 计算最长连续天数
     for (let i = 0; i < uniqueDates.length; i++) {
       if (i === 0) {
@@ -118,27 +121,27 @@ export async function getUserMeditationStats(userId: string): Promise<{
       } else {
         const prevDate = new Date(uniqueDates[i - 1]);
         prevDate.setDate(prevDate.getDate() + 1);
-        
+
         if (prevDate.toDateString() === uniqueDates[i].toDateString()) {
           tempStreak++;
         } else {
           tempStreak = 1;
         }
       }
-      
+
       longestStreak = Math.max(longestStreak, tempStreak);
     }
-    
+
     // 计算当前连续天数
     const today = new Date().toDateString();
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toDateString();
-    
+
     if (sessionDates.includes(today)) {
       currentStreak = 1;
       const checkDate = yesterday;
-      
+
       while (true) {
         const checkDateStr = checkDate.toDateString();
         if (sessionDates.includes(checkDateStr)) {
@@ -152,7 +155,7 @@ export async function getUserMeditationStats(userId: string): Promise<{
       currentStreak = 1;
       const checkDate = new Date(yesterday);
       checkDate.setDate(checkDate.getDate() - 1);
-      
+
       while (true) {
         const checkDateStr = checkDate.toDateString();
         if (sessionDates.includes(checkDateStr)) {
@@ -165,14 +168,14 @@ export async function getUserMeditationStats(userId: string): Promise<{
     } else {
       currentStreak = 0;
     }
-    
+
     // 计算完成的课程数量
     const completedCourseIds = new Set(
       sessions
         .filter(session => session.isCompleted)
         .map(session => session.courseId)
     );
-    
+
     return {
       totalSessions,
       totalMinutes,
@@ -212,7 +215,7 @@ export async function startMeditationSession(
     if (typeof course.audioPath !== 'string' || course.audioPath.trim() === '') {
       throw new Error(`Meditation course with ID ${courseId} does not have a valid audio path required for the session.`);
     }
-    
+
     // 检查用户是否可以访问VIP课程
     if (course.isVipExclusive) {
       const canAccess = await canAccessVipMeditations(userId);
@@ -220,7 +223,7 @@ export async function startMeditationSession(
         throw new Error('User cannot access VIP meditation courses');
       }
     }
-    
+
     // 创建会话
     const now = new Date();
     const session: MeditationSessionRecord = {
@@ -232,14 +235,14 @@ export async function startMeditationSession(
       isCompleted: false,
       createdAt: now
     };
-    
+
     // 添加到数据库
     const id = await db.meditationSessions.add(session);
     const createdSession = { ...session, id: id as number };
-    
+
     // 添加到同步队列
     await addSyncItem('meditationSessions', 'create', createdSession);
-    
+
     return createdSession;
   } catch (error) {
     console.error('Failed to start meditation session:', error);
@@ -267,7 +270,7 @@ export async function completeMeditationSession(
     if (!session) {
       throw new Error(`Meditation session with ID ${sessionId} not found`);
     }
-    
+
     // 更新会话
     const now = new Date();
     const updatedSession: MeditationSessionRecord = {
@@ -278,20 +281,20 @@ export async function completeMeditationSession(
       rating,
       feedback
     };
-    
+
     // 更新数据库
     await db.meditationSessions.update(sessionId, updatedSession);
-    
+
     // 添加到同步队列
     await addSyncItem('meditationSessions', 'update', updatedSession);
-    
+
     // 更新课程完成次数和评分
     if (rating) {
       await updateCourseRating(session.courseId, rating);
     }
-    
+
     await incrementCourseCompletionCount(session.courseId);
-    
+
     return updatedSession;
   } catch (error) {
     console.error('Failed to complete meditation session:', error);
@@ -311,25 +314,25 @@ async function updateCourseRating(courseId: number, newRating: number): Promise<
     if (!course) {
       throw new Error(`Meditation course with ID ${courseId} not found`);
     }
-    
+
     // 获取课程的所有评分会话
     const ratedSessions = await db.meditationSessions
       .where('courseId')
       .equals(courseId)
       .and((session: MeditationSessionRecord) => session.rating !== undefined && session.isCompleted)
       .toArray();
-    
+
     // 计算新的平均评分
     const totalRatings = ratedSessions.length + 1; // 包括新评分
     const totalRatingSum = ratedSessions.reduce((sum: number, session: MeditationSessionRecord) => sum + (session.rating || 0), 0) + newRating;
     const newAverageRating = totalRatingSum / totalRatings;
-    
+
     // 更新课程
     await db.meditationCourses.update(courseId, {
       averageRating: newAverageRating,
       updatedAt: new Date()
     });
-    
+
     // 添加到同步队列
     await addSyncItem('meditationCourses', 'update', {
       id: courseId,
@@ -352,13 +355,13 @@ async function incrementCourseCompletionCount(courseId: number): Promise<void> {
     if (!course) {
       throw new Error(`Meditation course with ID ${courseId} not found`);
     }
-    
+
     // 更新课程
     await db.meditationCourses.update(courseId, {
       completionCount: course.completionCount + 1,
       updatedAt: new Date()
     });
-    
+
     // 添加到同步队列
     await addSyncItem('meditationCourses', 'update', {
       id: courseId,

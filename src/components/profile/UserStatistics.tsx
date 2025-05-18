@@ -82,7 +82,7 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
 
   // 获取任务类型数据
   const getTaskTypeData = () => {
-    const labels = Object.keys(statistics.tasks.byType).map(key =>
+    const chartLabels = Object.keys(statistics.tasks.byType).map(key =>
       key === 'daily' ? (labels?.taskTypes?.daily?.[language] || '每日') :
       key === 'weekly' ? (labels?.taskTypes?.weekly?.[language] || '每周') :
       key === 'monthly' ? (labels?.taskTypes?.monthly?.[language] || '每月') : key
@@ -91,7 +91,7 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
     const data = Object.values(statistics.tasks.byType);
 
     return {
-      labels,
+      labels: chartLabels,
       datasets: [
         {
           label: labels?.taskTypeChart?.[language] || '任务类型分布',
@@ -114,7 +114,7 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
 
   // 获取任务优先级数据
   const getTaskPriorityData = () => {
-    const labels = Object.keys(statistics.tasks.byPriority).map(key =>
+    const chartLabels = Object.keys(statistics.tasks.byPriority).map(key =>
       key === 'high' ? (labels?.priorities?.high?.[language] || '高') :
       key === 'medium' ? (labels?.priorities?.medium?.[language] || '中') :
       key === 'low' ? (labels?.priorities?.low?.[language] || '低') : key
@@ -123,7 +123,7 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
     const data = Object.values(statistics.tasks.byPriority);
 
     return {
-      labels,
+      labels: chartLabels,
       datasets: [
         {
           label: labels?.priorityChart?.[language] || '优先级分布',
@@ -146,7 +146,7 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
 
   // 获取每周完成情况数据
   const getWeeklyCompletionData = () => {
-    const labels = [
+    const chartLabels = [
       labels?.weekdays?.sunday?.[language] || '周日',
       labels?.weekdays?.monday?.[language] || '周一',
       labels?.weekdays?.tuesday?.[language] || '周二',
@@ -157,7 +157,7 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
     ];
 
     return {
-      labels,
+      labels: chartLabels,
       datasets: [
         {
           label: labels?.weeklyCompletionChart?.[language] || '每周任务完成情况',
