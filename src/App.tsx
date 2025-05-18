@@ -11,9 +11,12 @@ import { AnimationPerformanceProvider } from '@/context/AnimationPerformanceProv
 import { BackgroundMusicProvider } from '@/context/BackgroundMusicProvider';
 import { NotificationProvider } from '@/context/NotificationProvider';
 import { OfflineStatusProvider } from '@/context/OfflineStatusProvider';
+import { AuthProvider } from '@/context/AuthContext';
 import { populateDB, db } from '@/db-old';
+import { migrateDatabase } from '@/db';
 import { addVipNavigationLabels, addBattlePassPageViewLabels, addGrowthBoostIndicatorLabels } from '@/db-update';
 import { addPandaEvolutionLabels } from '@/db-panda-evolution';
+import { addMissingLabels } from '@/db-missing-labels';
 import { initializeBattlePassDatabase } from '@/db-battle-pass';
 import { populateBattlePassSampleData } from '@/db-battle-pass-sample';
 import { initializeBattlePassTaskTracking } from '@/services/battlePassTaskTrackingService';
@@ -46,6 +49,9 @@ const App: React.FC = () => {
     // 初始化和填充数据库
     const initDB = async () => {
       try {
+        // Migrate database to the latest version
+        await migrateDatabase();
+
         // Populate Dexie DB on app start for development
         if (import.meta.env.DEV) { // Vite specific dev check
           await populateDB();
@@ -61,6 +67,9 @@ const App: React.FC = () => {
 
           // Add Panda Evolution labels
           await addPandaEvolutionLabels();
+
+          // Add missing labels for components and resourceShortage
+          await addMissingLabels();
 
           // Initialize Battle Pass database
           await initializeBattlePassDatabase();
@@ -238,20 +247,22 @@ const App: React.FC = () => {
                 <NotificationProvider>
                   <OfflineStatusProvider>
                     <SkeletonProvider>
-                    <BrowserRouter>
-                      <AppShell> {/* AppShell fetches global layout labels and provides overall structure */}
-                        <AppRouter /> {/* AppRouter handles page-specific content and routing */}
-                        <PandaEvolutionManager /> {/* Manages panda evolution animations */}
-                        <HighlightMomentManager /> {/* Manages high-light moment VIP promotions */}
-                        <PainPointManager /> {/* Manages pain point solution prompts */}
-                        <ResourceShortageManager /> {/* Manages resource shortage prompts */}
-                        <VipTrialManager /> {/* Manages VIP trial experience */}
-                        <SubscriptionManager /> {/* Manages subscription expiration reminders */}
-                        <SoundManager /> {/* Manages sound effects and background music */}
-                        <NotificationManager /> {/* Manages notifications */}
-                      </AppShell>
-                    </BrowserRouter>
-                  </SkeletonProvider>
+                      <AuthProvider>
+                        <BrowserRouter>
+                          <AppShell> {/* AppShell fetches global layout labels and provides overall structure */}
+                            <AppRouter /> {/* AppRouter handles page-specific content and routing */}
+                            <PandaEvolutionManager /> {/* Manages panda evolution animations */}
+                            <HighlightMomentManager /> {/* Manages high-light moment VIP promotions */}
+                            <PainPointManager /> {/* Manages pain point solution prompts */}
+                            <ResourceShortageManager /> {/* Manages resource shortage prompts */}
+                            <VipTrialManager /> {/* Manages VIP trial experience */}
+                            <SubscriptionManager /> {/* Manages subscription expiration reminders */}
+                            <SoundManager /> {/* Manages sound effects and background music */}
+                            <NotificationManager /> {/* Manages notifications */}
+                          </AppShell>
+                        </BrowserRouter>
+                      </AuthProvider>
+                    </SkeletonProvider>
                   </OfflineStatusProvider>
                 </NotificationProvider>
               </BackgroundMusicProvider>

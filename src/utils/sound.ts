@@ -397,14 +397,22 @@ export function preloadAllSounds(options: {
           const overallProgress = (soundIndex + progress) / totalSounds;
           options.onProgress?.(overallProgress);
         } : undefined,
-        onLoad: options.onComplete ? (_path) => {
-          // Check if all sounds are loaded
-          const allLoaded = Object.values(SoundType).every(type => {
-            const { getLoadedAudio } = require('./soundLoader');
-            return getLoadedAudio(soundPaths[type as SoundType]) !== null;
-          });
+        onLoad: options.onComplete ? async (_path) => {
+          try {
+            // Import the soundLoader module dynamically
+            const soundLoaderModule = await import('./soundLoader');
 
-          if (allLoaded) {
+            // Check if all sounds are loaded
+            const allLoaded = Object.values(SoundType).every(type => {
+              return soundLoaderModule.getLoadedAudio(soundPaths[type as SoundType]) !== null;
+            });
+
+            if (allLoaded) {
+              options.onComplete?.();
+            }
+          } catch (error) {
+            console.error('Error checking loaded sounds:', error);
+            // Call onComplete anyway to prevent blocking
             options.onComplete?.();
           }
         } : undefined,

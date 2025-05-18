@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sound Files Generator for PandaHabit</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-bottom: none;
+      margin-right: 5px;
+      border-radius: 5px 5px 0 0;
+    }
+    .tab.active {
+      background-color: #4CAF50;
+      color: white;
+      border-color: #4CAF50;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-top: none;
+      background-color: #fff;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 10px 2px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    button.secondary {
+      background-color: #3498db;
+    }
+    button.secondary:hover {
+      background-color: #2980b9;
+    }
+    #log {
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+      margin-top: 20px;
+      font-family: monospace;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+    .warning {
+      color: orange;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      position: sticky;
+      top: 0;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .table-container {
+      max-height: 500px;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+    .filter-container {
+      margin: 10px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .filter-container select, .filter-container input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .copy-btn {
+      padding: 2px 5px;
+      font-size: 12px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .copy-btn:hover {
+      background-color: #2980b9;
+    }
+    .ai-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .ai-tool-card {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      width: calc(33.33% - 15px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .ai-tool-card h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+    .ai-tool-card p {
+      font-size: 14px;
+      color: #555;
+    }
+    .ai-tool-card a {
+      display: inline-block;
+      margin-top: 10px;
+      color: #3498db;
+      text-decoration: none;
+    }
+    .ai-tool-card a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 768px) {
+      .ai-tool-card {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Sound Files Generator for PandaHabit</h1>
+  <p>This tool helps you generate and manage sound files for the PandaHabit application.</p>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="generator">Sound Generator</div>
+    <div class="tab" data-tab="resources">Sound Resources</div>
+    <div class="tab" data-tab="ai-tools">AI Tools Guide</div>
+  </div>
+
+  <div id="generator" class="tab-content active">
+    <h2>Generate Placeholder Sound Files</h2>
+    <p>Generate empty placeholder MP3 files for all required sounds in the PandaHabit application.</p>
+
+    <button id="generateBtn">Generate Sound Files</button>
+    <button id="downloadBtn" class="secondary">Download All Files as ZIP</button>
+
+    <div id="log"></div>
+  </div>
+
+  <div id="resources" class="tab-content">
+    <h2>Sound Resources</h2>
+    <p>Browse the complete list of required sound files with descriptions and AI generation prompts.</p>
+
+    <div class="filter-container">
+      <select id="typeFilter">
+        <option value="">All Types</option>
+        <option value="sound_effect">Sound Effects</option>
+        <option value="background_music">Background Music</option>
+      </select>
+
+      <select id="categoryFilter">
+        <option value="">All Categories</option>
+      </select>
+
+      <input type="text" id="searchInput" placeholder="Search...">
+    </div>
+
+    <div class="table-container">
+      <table id="soundResourcesTable">
+        <thead>
+          <tr>
+            <th>File Name</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Duration (sec)</th>
+            <th>Description</th>
+            <th>AI Prompt</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Table rows will be populated from CSV -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="ai-tools" class="tab-content">
+    <h2>AI Audio Generation Tools</h2>
+    <p>Here are some recommended AI tools for generating high-quality sound effects and background music.</p>
+
+    <h3>Sound Effects Tools</h3>
+    <div class="ai-tools">
+      <div class="ai-tool-card">
+        <h3>AudioCraft / AudioGen</h3>
+        <p>Meta's AI model for generating realistic sound effects based on text descriptions.</p>
+        <a href="https://github.com/facebookresearch/audiocraft" target="_blank">Visit Website</a>
+      </div>
+
+      <div class="ai-tool-card">
+        <h3>ElevenLabs Sound Effects</h3>
+        <p>Specialized in generating realistic sound effects with fine-tuned control.</p>
+        <a href="https://elevenlabs.io/sound-effects" target="_blank">Visit Website</a>
+      </div>
+
+      <div class="ai-tool-card">
+        <h3>DALL-E 3 Audio</h3>
+        <p>OpenAI's audio generation capabilities for creating various sound effects.</p>
+        <a href="https://openai.com/" target="_blank">Visit Website</a>
+      </div>
+    </div>
+
+    <h3>Background Music Tools</h3>
+    <div class="ai-tools">
+      <div class="ai-tool-card">
+        <h3>Suno</h3>
+        <p>AI music generation platform that creates high-quality, original music tracks.</p>
+        <a href="https://suno.ai/" target="_blank">Visit Website</a>
+      </div>
+
+      <div class="ai-tool-card">
+        <h3>MusicGen</h3>
+        <p>Meta's AI model specialized in generating music based on text descriptions.</p>
+        <a href="https://github.com/facebookresearch/audiocraft" target="_blank">Visit Website</a>
+      </div>
+
+      <div class="ai-tool-card">
+        <h3>Soundraw</h3>
+        <p>AI music generation with style controls and high-quality output.</p>
+        <a href="https://soundraw.io/" target="_blank">Visit Website</a>
+      </div>
+    </div>
+
+    <h3>Post-Processing Tools</h3>
+    <div class="ai-tools">
+      <div class="ai-tool-card">
+        <h3>Audacity</h3>
+        <p>Free, open-source audio editor for trimming, normalizing, and adding effects.</p>
+        <a href="https://www.audacityteam.org/" target="_blank">Visit Website</a>
+      </div>
+
+      <div class="ai-tool-card">
+        <h3>FFMPEG</h3>
+        <p>Command-line tool for audio conversion and optimization.</p>
+        <a href="https://ffmpeg.org/" target="_blank">Visit Website</a>
+      </div>
+
+      <div class="ai-tool-card">
+        <h3>Online Audio Converter</h3>
+        <p>Web-based tool for quick format conversions without installing software.</p>
+        <a href="https://online-audio-converter.com/" target="_blank">Visit Website</a>
+      </div>
+    </div>
+
+    <p>For more detailed instructions, check the <a href="/assets/sounds/AI-SOUND-GENERATION-GUIDE.md" target="_blank">AI Sound Generation Guide</a>.</p>
+  </div>
+
+  <script>
+    // Sound effect file names from sound.ts
+    const soundEffects = [
+      // Reward sounds
+      'reward_common',
+      'reward_uncommon',
+      'reward_rare',
+      'reward_epic',
+      'reward_legendary',
+
+      // Task related sounds
+      'task_complete',
+      'task_complete_high',
+      'task_complete_main',
+      'task_failed',
+      'task_created',
+
+      // Challenge related sounds
+      'challenge_complete',
+      'challenge_complete_epic',
+      'challenge_complete_legendary',
+      'challenge_failed',
+      'challenge_unlocked',
+
+      // System sounds
+      'level_up',
+      'ability_unlocked',
+      'ability_activated',
+      'button_click',
+      'error',
+      'success',
+      'notification',
+      'achievement',
+      'confirm',
+
+      // Panda interaction sounds
+      'panda_happy',
+      'panda_sad',
+      'panda_eat',
+      'panda_play',
+      'panda_train',
+      'panda_talk',
+
+      // Environment sounds
+      'water_splash',
+      'camera_shutter',
+      'lullaby',
+      'morning_bell',
+
+      // Bamboo system sounds
+      'bamboo_collect',
+      'water',
+      'fertilize'
+    ];
+
+    // Background music file names from backgroundMusic.ts
+    const backgroundMusic = [
+      // Environment music
+      'bamboo_forest',
+      'meditation_ambient',
+      'morning_nature',
+      'evening_calm',
+
+      // Traditional Chinese music
+      'traditional_guzheng',
+      'traditional_flute',
+      'traditional_ensemble',
+
+      // Seasonal theme music
+      'spring_theme',
+      'summer_theme',
+      'autumn_theme',
+      'winter_theme'
+    ];
+
+    // Log element
+    const logElement = document.getElementById('log');
+
+    // Log function
+    function log(message, type = 'info') {
+      const logEntry = document.createElement('div');
+      logEntry.textContent = message;
+      logEntry.className = type;
+      logElement.appendChild(logEntry);
+      logElement.scrollTop = logElement.scrollHeight;
+    }
+
+    // Generate a silent audio buffer
+    function generateSilentAudio(duration = 1, sampleRate = 44100) {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
+
+      // Fill with silence
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        data[i] = 0;
+      }
+
+      return buffer;
+    }
+
+    // Convert audio buffer to WAV
+    function bufferToWav(buffer, sampleRate = 44100) {
+      const numChannels = buffer.numberOfChannels;
+      const length = buffer.length * numChannels * 2;
+      const arrayBuffer = new ArrayBuffer(44 + length);
+      const view = new DataView(arrayBuffer);
+
+      // RIFF chunk descriptor
+      writeString(view, 0, 'RIFF');
+      view.setUint32(4, 36 + length, true);
+      writeString(view, 8, 'WAVE');
+
+      // fmt sub-chunk
+      writeString(view, 12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, numChannels, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * numChannels * 2, true);
+      view.setUint16(32, numChannels * 2, true);
+      view.setUint16(34, 16, true);
+
+      // data sub-chunk
+      writeString(view, 36, 'data');
+      view.setUint32(40, length, true);
+
+      // Write the PCM samples
+      const data = buffer.getChannelData(0);
+      let offset = 44;
+      for (let i = 0; i < data.length; i++) {
+        const sample = Math.max(-1, Math.min(1, data[i]));
+        view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+        offset += 2;
+      }
+
+      return new Blob([view], { type: 'audio/wav' });
+    }
+
+    // Helper to write a string to a DataView
+    function writeString(view, offset, string) {
+      for (let i = 0; i < string.length; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+      }
+    }
+
+    // Generate sound files
+    async function generateSoundFiles() {
+      log('Starting sound file generation...');
+
+      const files = [];
+
+      // Generate sound effects
+      log('Generating sound effect files...');
+      for (const sound of soundEffects) {
+        try {
+          const buffer = generateSilentAudio(1); // 1 second for sound effects
+          const blob = bufferToWav(buffer);
+          files.push({
+            name: `assets/sounds/${sound}.mp3`,
+            blob
+          });
+          log(`Generated: ${sound}.mp3`, 'success');
+        } catch (error) {
+          log(`Error generating ${sound}.mp3: ${error.message}`, 'error');
+        }
+      }
+
+      // Generate background music
+      log('Generating background music files...');
+      for (const music of backgroundMusic) {
+        try {
+          const buffer = generateSilentAudio(5); // 5 seconds for background music
+          const blob = bufferToWav(buffer);
+          files.push({
+            name: `assets/sounds/music/${music}.mp3`,
+            blob
+          });
+          log(`Generated: music/${music}.mp3`, 'success');
+        } catch (error) {
+          log(`Error generating music/${music}.mp3: ${error.message}`, 'error');
+        }
+      }
+
+      log('All sound files generated successfully!');
+      return files;
+    }
+
+    // Download a single file
+    function downloadFile(name, blob) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    // Event listeners
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+      try {
+        const files = await generateSoundFiles();
+        log(`Generated ${files.length} sound files. Click "Download All Files as ZIP" to download.`);
+      } catch (error) {
+        log(`Error: ${error.message}`, 'error');
+      }
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      try {
+        log('Preparing files for download...');
+        const files = await generateSoundFiles();
+
+        // Use JSZip if available, otherwise download individually
+        if (typeof JSZip !== 'undefined') {
+          const zip = new JSZip();
+
+          for (const file of files) {
+            zip.file(file.name, file.blob);
+          }
+
+          zip.generateAsync({ type: 'blob' }).then((content) => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(content);
+            a.download = 'panda-habit-sounds.zip';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            log('Downloaded ZIP file with all sound files.', 'success');
+          });
+        } else {
+          log('JSZip not available. Downloading files individually...', 'warning');
+          for (const file of files) {
+            downloadFile(file.name.split('/').pop(), file.blob);
+          }
+          log('Downloaded all files individually.', 'success');
+        }
+      } catch (error) {
+        log(`Error: ${error.message}`, 'error');
+      }
+    });
+  </script>
+
+  <!-- Include JSZip for ZIP file creation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</body>
+</html>

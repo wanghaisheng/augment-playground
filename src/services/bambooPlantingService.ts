@@ -835,8 +835,11 @@ export async function getPlantDetails(plantId: number): Promise<{
  */
 export async function getPlantsInPlot(userId: string, plotId: number): Promise<BambooPlantRecord[]> {
   try {
-    // 获取地块中的植物
-    return await db.bambooPlants.where('[userId+plotId]').equals([userId, plotId]).toArray();
+    // 使用过滤器查询而不是复合索引
+    return await db.bambooPlants
+      .where('userId').equals(userId)
+      .filter(plant => plant.plotId === plotId)
+      .toArray();
   } catch (error) {
     console.error('Failed to get plants in plot:', error);
     return [];

@@ -286,8 +286,8 @@ export class AppDB extends Dexie {
 
 
   constructor() {
-    super('PandaHabitDB_V19'); // Use a clear, consistent DB name. Increment if schema *actually* changes.
-    this.version(19).stores({
+    super('PandaHabitDB_V20'); // Incremented version for adding compound index to bambooPlants
+    this.version(20).stores({
       // Standard Schemas
       uiLabels: '++id, &[scopeKey+labelKey+languageCode], scopeKey, labelKey, languageCode',
       pandaState: '++id, userId, lastLogin, consecutiveDays, totalPandaXP, currentMood, currentEnergy, accessory1Id, accessory2Id, environmentId, lastInteractionTime, lastFedTime, lastPlayedTime, lastMeditatedTime, lastReflectedTime, pandaName, pandaColor, hatId, glassesId, scarfId, createdAt, updatedAt',
@@ -351,7 +351,7 @@ export class AppDB extends Dexie {
       // Bamboo System Schemas
       bambooPlots: '++id, userId, name, level, size, fertility, moisture, sunlight, isUnlocked, unlockCost, upgradeCost, maxPlants, lastHarvested, createdAt, updatedAt',
       bambooSeeds: '++id, name, description, rarity, growthTime, waterNeeds, sunlightNeeds, fertilityNeeds, yieldMin, yieldMax, imageUrl, isUnlocked, unlockCost, storeItemId, createdAt, updatedAt',
-      bambooPlants: '++id, userId, plotId, seedId, plantedAt, growthStage, growthProgress, health, fertility, isWatered, lastWateredAt, isFertilized, lastFertilizedAt, isHarvestable, harvestedAt, expectedYield, createdAt, updatedAt',
+      bambooPlants: '++id, userId, plotId, seedId, plantedAt, growthStage, growthProgress, health, fertility, isWatered, lastWateredAt, isFertilized, lastFertilizedAt, isHarvestable, harvestedAt, expectedYield, createdAt, updatedAt, [userId+plotId]',
       bambooTrades: '++id, userId, resourceId, bambooAmount, resourceAmount, tradeDirection, tradeRate, tradeDate, status, platformFee, createdAt, updatedAt',
       tradeableResources: '++id, name, description, type, rarity, imageUrl, isAvailable, baseValue, volatility, source, createdAt, updatedAt',
       tradeRates: '++id, resourceId, bambooToResourceRate, resourceToBambooRate, minTradeAmount, maxTradeAmount, dailyLimit, currentVolume, isActive, startDate, endDate, lastUpdated, createdAt, updatedAt',
@@ -391,6 +391,27 @@ export class AppDB extends Dexie {
 }
 
 export const db = new AppDB();
+
+/**
+ * Migrate database to the latest version
+ * This function handles any necessary data migrations when upgrading the database schema
+ */
+export async function migrateDatabase() {
+  try {
+    console.log('Checking if database migration is needed...');
+
+    // The migration will happen automatically when the database is opened
+    // with the new schema version, but we can add specific migration logic here if needed
+
+    // For example, if we need to rebuild indexes or transform data
+
+    console.log('Database migration completed successfully.');
+    return true;
+  } catch (error) {
+    console.error('Database migration failed:', error);
+    return false;
+  }
+}
 
 // Populate DB function (can be extensive)
 export async function populateDB() {
