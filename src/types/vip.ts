@@ -22,6 +22,7 @@ export interface VipTaskSeriesRecord {
   taskIds: string; // Comma-separated string of TaskRecord IDs
   rewardPreview?: string; // Description or image key for series completion reward
   unlockCondition?: string; // e.g., "vip_level_2"
+  iconPath?: string; // Path to the icon for this task series
   createdAt: Date;
   updatedAt: Date;
 }
@@ -63,4 +64,4 @@ export interface VipSubscriptionRecord {
   cancellationDate?: Date;
   createdAt: Date;
   updatedAt: Date;
-} 
+}

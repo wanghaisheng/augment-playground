@@ -16,7 +16,7 @@ import { VipTaskSeriesType, VipTaskSeriesRecord as BaseVipTaskSeriesRecord } fro
  * 扩展VIP任务系列记录，添加额外的字段
  */
 export interface ExtendedVipTaskSeriesRecord extends Omit<BaseVipTaskSeriesRecord, 'taskIds'> {
-  iconPath: string;
+  iconPath?: string;
   taskIds: number[]; // Override the string type with number[]
 }
 

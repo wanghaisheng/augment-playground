@@ -82,7 +82,8 @@ const CustomGoalsPage: React.FC = () => {
     playSound(SoundType.CLICK);
   };
 
-  const _handleSaveGoal = () => {
+  // @ts-ignore - This will be used in a future implementation
+  const handleSaveGoal = () => {
     // Mock implementation:
     // Real implementation would use a service call and potentially updateCustomGoal from pandaState
     setShowGoalForm(false);

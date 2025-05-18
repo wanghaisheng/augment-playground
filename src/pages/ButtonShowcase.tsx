@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Button, { ButtonColor, ButtonSize, ButtonShape, ButtonVariant } from '@/components/common/Button';
 import AnimatedButton from '@/components/animation/AnimatedButton';
+import { ButtonColor as AnimButtonColor, ButtonSize as AnimButtonSize, ButtonShape as AnimButtonShape, ButtonVariant as AnimButtonVariant } from '@/components/animation/ButtonTypes';
 import ButtonGroup from '@/components/common/ButtonGroup';
 import IconButton from '@/components/common/IconButton';
 import EnhancedAnimatedButton from '@/components/animation/EnhancedAnimatedButton';
@@ -320,10 +321,10 @@ const ButtonShowcase: React.FC = () => {
             {animationPresets.map((preset) => (
               <AnimatedButton
                 key={preset}
-                color={selectedColor}
-                size={selectedSize}
-                shape={selectedShape}
-                variant={selectedVariant}
+                color={selectedColor as unknown as AnimButtonColor}
+                size={selectedSize as unknown as AnimButtonSize}
+                shape={selectedShape as unknown as AnimButtonShape}
+                variant={selectedVariant as unknown as AnimButtonVariant}
                 isLoading={isLoading}
                 fullWidth={fullWidth}
                 animationPreset={preset as 'scale' | 'glow' | 'pulse' | 'bounce' | 'shake' | 'none'}

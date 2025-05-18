@@ -829,32 +829,32 @@ export interface VipValueModalLabelsBundle {
 
 // --- Store Page/View Specific Types ---
 export interface StoreItemPreviewLabelsBundle {
-  dialogTitle: string;
-  purchaseButtonText: string;
-  insufficientCurrencyError: string;
-  vipRequiredError: string;
-  purchaseFailedError: string;
-  closeButtonText: string; // Though ScrollDialog might handle its own close button text
-  rarityCommon: string;
-  rarityUncommon: string;
-  rarityRare: string;
-  rarityEpic: string;
-  rarityLegendary: string;
-  rarityUnknown: string;
-  itemTypeAvatar: string;
-  itemTypeAccessory: string;
-  itemTypeBackground: string;
-  itemTypeTheme: string;
-  itemTypeAbility: string;
-  itemTypeConsumable: string;
-  itemTypeVip: string;
-  itemTypeUnknown: string;
-  priceTypeCoins: string;
-  priceTypeJade: string;
-  priceTypeRealMoney: string;
-  vipExclusiveBadge: string;
-  saleBadge: string;
-  previewAnimationButtonLabel: string; // for the eye icon
+  dialogTitle?: string;
+  purchaseButtonText?: string;
+  insufficientCurrencyError?: string;
+  vipRequiredError?: string;
+  purchaseFailedError?: string;
+  closeButtonText?: string; // Though ScrollDialog might handle its own close button text
+  rarityCommon?: string;
+  rarityUncommon?: string;
+  rarityRare?: string;
+  rarityEpic?: string;
+  rarityLegendary?: string;
+  rarityUnknown?: string;
+  itemTypeAvatar?: string;
+  itemTypeAccessory?: string;
+  itemTypeBackground?: string;
+  itemTypeTheme?: string;
+  itemTypeAbility?: string;
+  itemTypeConsumable?: string;
+  itemTypeVip?: string;
+  itemTypeUnknown?: string;
+  priceTypeCoins?: string;
+  priceTypeJade?: string;
+  priceTypeRealMoney?: string;
+  vipExclusiveBadge?: string;
+  saleBadge?: string;
+  previewAnimationButtonLabel?: string; // for the eye icon
 }
 
 export interface StoreCategoryLabels {
@@ -1275,14 +1275,7 @@ export interface StorePageViewLabelsBundle {
     coinsLabel?: string;
     jadeLabel?: string;
   };
-  itemPreview?: {
-    closeButton?: string;
-    buyButton?: string;
-    notEnoughCoinsMessage?: string;
-    priceLabel?: string;
-    descriptionLabel?: string;
-    vipDiscountLabel?: string;
-  };
+  itemPreview?: StoreItemPreviewLabelsBundle;
 }
 
 // Store page view result without user data payload (labels only)

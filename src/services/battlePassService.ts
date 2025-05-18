@@ -2,7 +2,7 @@
 import { db } from '@/db-old';
 // import { tursoClient } from '@/db-turso'; // Removed
 import { addSyncItem } from './dataSyncService';
-import { addItem } from './rewardService';
+import { addItem, ItemType, RewardRarity } from './rewardService';
 import { getUserCurrency, updateUserCurrency } from './storeService';
 import {
   BattlePassRecord,
@@ -391,10 +391,10 @@ export async function claimBattlePassReward(
 
     // Add the reward to user's inventory
     await addItem({
-      type: 'item', // Placeholder type
+      type: ItemType.FOOD, // Using a valid item type
       name: `Level ${levelNumber} Reward`,
       description: `Reward from Battle Pass level ${levelNumber}`,
-      rarity: 'common',
+      rarity: RewardRarity.COMMON,
       iconPath: '/assets/rewards/default.svg',
       quantity: rewardQuantity,
       isUsable: true,

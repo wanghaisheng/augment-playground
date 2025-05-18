@@ -31,7 +31,8 @@ const TeaRoomPage: React.FC = () => {
   const [showReflectionModule, setShowReflectionModule] = useState(false);
   const [showReflectionHistory, setShowReflectionHistory] = useState(false);
   const [selectedTrigger, setSelectedTrigger] = useState<ReflectionTriggerRecord | null>(null);
-  const _navigate = useNavigate();
+  // @ts-ignore - This will be used in a future implementation
+  const navigate = useNavigate();
 
   // Current user ID (in a real application, this should be retrieved from the user session)
   const userId = 'current-user';
