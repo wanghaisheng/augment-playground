@@ -10,6 +10,7 @@ import '@/game-theme.css';
 
 interface VipSubscriptionOptionsProps {
   onClose: () => void;
+  labels?: any;
 }
 
 interface SubscriptionPlan {

@@ -174,7 +174,7 @@ export async function purchaseBattlePass(
     const newOwnership: Omit<UserBattlePassOwnershipRecord, 'id'> = {
       userId,
       passId,
-      purchaseDate: new Date(),
+      purchaseDate: new Date().toISOString(),
       platformTransactionId: platformTransactionId || '',
       passType
     };
@@ -390,12 +390,12 @@ export async function claimBattlePassReward(
     }
 
     // Add the reward to user's inventory
-    await addItem(userId, rewardItemId, rewardQuantity);
+    await addItem(userId, rewardItemId);
 
     // Update claimed levels
     const updatedProgress = {
       ...progress,
-      claimedFreeLevels: rewardType === 'free' 
+      claimedFreeLevels: rewardType === 'free'
         ? [...claimedFreeLevels, levelNumber]
         : claimedFreeLevels,
       claimedPaidLevels: rewardType === 'paid'
@@ -511,7 +511,7 @@ export async function getBattlePassViewData(
         id: 0,
         userId,
         passId: pass.id!,
-        purchaseDate: new Date(),
+        purchaseDate: new Date().toISOString(),
         platformTransactionId: '',
         passType: BattlePassType.STANDARD
       },

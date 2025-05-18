@@ -82,7 +82,7 @@ const TimelyRewardsPage: React.FC = () => {
   if (isError && !pageLabels) { // Critical error: page labels failed to load
     return (
       <div className="page-content">
-        <ErrorDisplay error={error} title={pageLabels?.errorTitle || "Timely Rewards Page Error"} onRetry={refetch} />
+        <ErrorDisplay error={error} title="Timely Rewards Page Error" onRetry={refetch} />
       </div>
     );
   }

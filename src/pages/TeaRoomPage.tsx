@@ -98,14 +98,14 @@ const TeaRoomPage: React.FC = () => {
     setShowReflectionHistory(true);
   };
 
-  // Handle navigate to meditation page
-  const handleNavigateToMeditation = () => {
-    // Play click sound
-    playSound(SoundType.BUTTON_CLICK, 0.5);
-
-    // Navigate to meditation page
-    navigate('/meditation');
-  };
+  // Handle navigate to meditation page - Commented out as it's not used
+  // const handleNavigateToMeditation = () => {
+  //   // Play click sound
+  //   playSound(SoundType.BUTTON_CLICK, 0.5);
+  //
+  //   // Navigate to meditation page
+  //   navigate('/meditation');
+  // };
 
   // Handle trigger accepted
   const handleTriggerAccepted = (trigger: ReflectionTriggerRecord) => {
@@ -282,7 +282,7 @@ const TeaRoomPage: React.FC = () => {
         <div className="error-container text-center p-4">
           <ErrorDisplay
             error={labelsError}
-            title={pageLabels?.errorTitle || "Tea Room Page Error"}
+            title="Tea Room Page Error"
             onRetry={refetchLabels}
           />
         </div>

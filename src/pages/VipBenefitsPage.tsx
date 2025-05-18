@@ -173,7 +173,7 @@ const VipBenefitsPage: React.FC = () => {
   }
 
   if (error) {
-    return <ErrorDisplay error={error} title={labels?.errorTitle || 'VIP Benefits Error'} onRetry={fetchVipBenefitsView.bind(null, 'en')} />;
+    return <ErrorDisplay error={error} title="VIP Benefits Error" onRetry={fetchVipBenefitsView.bind(null, 'en')} />;
   }
 
   return (

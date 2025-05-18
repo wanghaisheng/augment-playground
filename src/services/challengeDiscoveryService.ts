@@ -1,6 +1,5 @@
 // src/services/challengeDiscoveryService.ts
 import { db } from '@/db-old';
-import { addSyncItem } from './dataSyncService';
 import {
   ChallengeRecord,
   ChallengeStatus,
@@ -15,7 +14,6 @@ import {
   getAllTasks
 } from './taskService';
 import { getPandaState } from './pandaStateService';
-import { playSound, SoundType } from '@/utils/sound';
 
 /**
  * 挑战推荐记录类型
@@ -44,7 +42,7 @@ export interface ChallengeDiscovery {
  * 根据用户的任务完成情况、熊猫等级和偏好推荐挑战
  */
 export async function getRecommendedChallenges(
-  userId: number | string,
+  userId: string,
   count: number = 5
 ): Promise<ChallengeRecord[]> {
   try {

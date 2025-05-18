@@ -6,7 +6,6 @@ import {
   type MeditationCourseRecord,
   // MeditationSessionRecord is not used in this file, so no need to import it here
 } from '@/types/meditation'; // Corrected import path
-import { playSound, SoundType } from '@/utils/sound';
 
 /**
  * 初始化冥想课程
@@ -19,7 +18,7 @@ export async function initializeMeditationCourses(): Promise<void> {
       console.log('Meditation courses already initialized');
       return;
     }
-    
+
     // 创建默认冥想课程
     const now = new Date();
     const defaultCourses: Omit<MeditationCourseRecord, 'id'>[] = [
@@ -114,7 +113,7 @@ export async function initializeMeditationCourses(): Promise<void> {
         createdAt: now,
         updatedAt: now
       },
-      
+
       // VIP专属高级课程
       {
         title: '高级正念冥想',
@@ -207,10 +206,10 @@ export async function initializeMeditationCourses(): Promise<void> {
         updatedAt: now
       }
     ];
-    
+
     // 批量添加课程
     await db.table('meditationCourses').bulkAdd(defaultCourses);
-    
+
     console.log('Meditation courses initialized successfully');
   } catch (error) {
     console.error('Failed to initialize meditation courses:', error);

@@ -14,6 +14,7 @@ interface VipValueModalProps {
   userId: string;
   isVip: boolean;
   onSubscribe?: () => void;
+  labels?: any;
 }
 
 /**
